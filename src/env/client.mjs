@@ -1,4 +1,6 @@
+/* eslint-disable no-console */
 // @ts-check
+
 import { clientEnv, clientSchema } from "./schema.mjs";
 
 const _clientEnv = clientSchema.safeParse(clientEnv);
@@ -16,8 +18,7 @@ export const formatErrors = (
 
 if (!_clientEnv.success) {
   console.error(
-    "❌ Invalid environment variables:\n",
-    ...formatErrors(_clientEnv.error.format()),
+    "❌ Invalid environment variables:\n"
   );
   throw new Error("Invalid environment variables");
 }
