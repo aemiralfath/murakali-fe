@@ -1,5 +1,5 @@
 {
-  "name": "murakali-fe-next",
+  "name": "murakali",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,9 +10,16 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.7",
+    "@reduxjs/toolkit": "^1.9.1",
+    "classnames": "^2.3.2",
+    "daisyui": "^2.46.0",
     "next": "13.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hot-toast": "^2.4.0",
+    "react-icons": "^4.7.1",
+    "react-redux": "^8.0.5",
     "zod": "^3.18.0"
   },
   "devDependencies": {
