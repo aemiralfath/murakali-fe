@@ -35,7 +35,11 @@ authorizedClient.interceptors.request.use(async (req) => {
   unauthorizedClient
     .get<APIResponse<AccessTokenData>>('/auth/refresh')
     .then((res) => {
-      setCookie('access_token', res.data.message)
+      if (res.data.data) {
+        setCookie('access_token', res.data.data.access_token, {
+          expires: new Date(res.data.data.expired_at),
+        })
+      }
       req.headers.Authorization = `Bearer ${res.data.message}`
     })
 

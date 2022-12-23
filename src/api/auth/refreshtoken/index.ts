@@ -1,6 +1,5 @@
 import { unauthorizedClient } from '@/api/apiClient'
 import { useMutation } from '@tanstack/react-query'
-import moment from 'moment'
 
 import type { AccessTokenData } from '@/types/api/auth'
 import type { APIResponse } from '@/types/api/response'
@@ -15,10 +14,9 @@ export const useRefreshToken = () => {
     },
     {
       onSuccess: (data) => {
-        const now = new Date()
         if (data.data.data) {
           setCookie('access_token', data.data.data.access_token, {
-            expires: moment(now).add(5, 'm').toDate(),
+            expires: new Date(data.data.data.expired_at),
           })
         }
       },

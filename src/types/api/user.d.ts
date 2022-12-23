@@ -3,14 +3,15 @@ export interface UserData {
 }
 
 export interface UserDetail {
-  id: string
+  role: 1 | 2 | 3
+  user_name: string
   email: string
-  fullname: string
-  username: string
-  phone_no: string
-  gender: 'M' | 'F'
-  birth_date: string
-  photo_url: string
+  phone_number: string
+  full_name: string
+  gender: 'M' | 'F' | null
+  birth_date: string | null
+  photo_url: string | null
+  is_verify: boolean
 }
 
 export interface UserProfilePhotoEditRequest {

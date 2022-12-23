@@ -6,6 +6,7 @@ import useDebounce from './useDebounce'
 import useHover from './useHover'
 import useMediaQuery from './useMediaQuery'
 import useModal from './useModal'
+import { useUser, useProtectedUser } from './useUser'
 
 export {
   useDispatch,
@@ -14,4 +15,6 @@ export {
   useHover,
   useMediaQuery,
   useModal,
+  useUser,
+  useProtectedUser,
 }

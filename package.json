@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "next dev -p 5173",
     "lint": "next lint",
     "start": "next start",
     "prepare": "husky install"
@@ -17,6 +17,7 @@
     "classnames": "^2.3.2",
     "cookies-next": "^2.1.1",
     "daisyui": "^2.46.0",
+    "formik": "^2.2.9",
     "moment": "^2.29.4",
     "next": "13.0.2",
     "react": "18.2.0",
@@ -24,6 +25,8 @@
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.7.1",
     "react-redux": "^8.0.5",
+    "yup": "^0.32.11",
+    "yup-password": "^0.2.2",
     "zod": "^3.18.0"
   },
   "devDependencies": {

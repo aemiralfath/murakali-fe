@@ -2,12 +2,12 @@ import { authorizedClient } from '@/api/apiClient'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 
 import type { APIResponse } from '@/types/api/response'
-import type { UserData, UserDetail } from '@/types/api/user'
+import type { UserDetail } from '@/types/api/user'
 
 const profileKey = ['profile']
 
 const getUserProfile = async () => {
-  const response = await authorizedClient.get<APIResponse<UserData>>(
+  const response = await authorizedClient.get<APIResponse<UserDetail>>(
     '/user/profile'
   )
   return response.data
@@ -22,9 +22,9 @@ export const useEditUserProfile = () => {
     async (data: UserDetail) => {
       return await authorizedClient.put<APIResponse<null>>('/user/profile', {
         email: data.email,
-        fullname: data.fullname,
-        username: data.username,
-        phone_no: data.phone_no,
+        full_name: data.full_name,
+        user_name: data.user_name,
+        phone_number: data.phone_number,
         gender: data.gender,
         birth_date: data.birth_date,
       })
