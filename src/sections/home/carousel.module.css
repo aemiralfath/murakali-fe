@@ -1,3 +1,13 @@
 .bannerCarousel {
-  @apply carousel w-full;
+  display: flex;
+  width: 100%;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.bannerCarousel::-webkit-scrollbar {
+  display: none;
 }

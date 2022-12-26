@@ -3,13 +3,13 @@
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
  * This is especially useful for Docker builds.
  */
-// TODO: Delete unsplash
+// TODO: Delete image domains
 !process.env.SKIP_ENV_VALIDATION && (await import("./src/env/server.mjs"));
 
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ['images.unsplash.com']
+    domains: ['images.unsplash.com', 'i.ebayimg.com']
   },
   reactStrictMode: true,
   swcMinify: true,

@@ -17,7 +17,7 @@ const Banner: React.FC<{
 
   return (
     <div
-      className="flex w-full justify-center gap-4 bg-cover bg-top bg-no-repeat px-8 py-12 sm:px-12 sm:pt-12 sm:pb-20 lg:aspect-[5/2]"
+      className="flex max-h-[44rem] w-full justify-center gap-4 bg-cover bg-top bg-no-repeat px-8 py-12 sm:px-12 sm:pt-12 sm:pb-20"
       style={
         lg
           ? {
@@ -79,7 +79,7 @@ const BannerCarousel: React.FC<{
   const [selectedCategory, setSelectedCategory] = useState(0)
 
   return (
-    <div className="fixed right-0 top-[4.5rem] w-screen">
+    <div className="w-screen">
       <div className={style.bannerCarousel}>
         {banners.map((banner, index) => {
           return (
