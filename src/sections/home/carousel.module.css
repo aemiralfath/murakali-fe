@@ -1,0 +1,3 @@
+.bannerCarousel {
+  @apply carousel w-full;
+}

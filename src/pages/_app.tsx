@@ -3,6 +3,7 @@ import Modal from '@/components/modal'
 import { store } from '@/redux/store'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { type AppType } from 'next/dist/shared/lib/utils'
+import React from 'react'
 import { Provider } from 'react-redux'
 
 import '../styles/globals.css'

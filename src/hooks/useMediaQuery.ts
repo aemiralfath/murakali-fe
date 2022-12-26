@@ -12,7 +12,11 @@ export default function useMediaQuery(query: validScreenSize) {
 
     return false
   }
-  const [matches, setMatches] = useState<boolean>(getMatches(query))
+  const [matches, setMatches] = useState<boolean>(true)
+  useEffect(() => {
+    setMatches(getMatches(query))
+  }, [])
+
   function handleChange() {
     setMatches(getMatches(query))
   }

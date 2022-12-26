@@ -20,6 +20,7 @@ const TextInput: React.FC<TextInputProps> = ({
   inputSize = 'md',
   transparent,
   type,
+  className,
   ...rest
 }) => {
   const [showPassword, setShowPassword] = useState(false)
@@ -29,7 +30,7 @@ const TextInput: React.FC<TextInputProps> = ({
       className={cx(
         'form-control relative h-fit',
         full ? 'w-full' : '',
-        rest.className ?? ''
+        className ?? ''
       )}
     >
       {label ? (

@@ -17,14 +17,14 @@ module.exports = {
       },
     },
   },
-  plugins: [require('daisyui')],
+  plugins: [require('daisyui'), require('@tailwindcss/line-clamp')],
   daisyui: {
     themes: [
       {
         murakali: {
-          primary: '#2545CA',
+          primary: '#3b82f6',
           'primary-content': '#ffffff',
-          secondary: '#3B82F6',
+          secondary: '#2545CA',
           'secondary-content': '#ffffff',
           accent: '#FACC15',
           'accent-focus': "#EEC10C",
