@@ -13,7 +13,7 @@ const Home: NextPage = () => {
         <title>Murakali</title>
         <meta name="description" content="Murakali E-Commerce Application" />
       </Head>
-      <div className="max-w-screen absolute z-50 translate-y-[4.5rem] overflow-hidden">
+      <div className="absolute z-20 max-w-full translate-y-[4.5rem] overflow-hidden md:translate-y-[5rem]">
         <BannerCarousel banners={bannerData} />
       </div>
       <MainLayout>
