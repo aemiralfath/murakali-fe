@@ -3,6 +3,7 @@ import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 
 import type { APIResponse } from '@/types/api/response'
 import type { UserDetail } from '@/types/api/user'
+import moment from 'moment'
 
 const profileKey = ['profile']
 
@@ -22,11 +23,11 @@ export const useEditUserProfile = () => {
     async (data: UserDetail) => {
       return await authorizedClient.put<APIResponse<null>>('/user/profile', {
         email: data.email,
-        full_name: data.full_name,
-        user_name: data.user_name,
-        phone_number: data.phone_number,
+        fullname: data.full_name,
+        username: data.user_name,
+        phone_no: data.phone_number,
         gender: data.gender,
-        birth_date: data.birth_date,
+        birth_date: moment(data.birth_date).format('DD-MM-YYYY'),
       })
     },
     {
@@ -44,12 +45,17 @@ export const useEditProfilePicture = () => {
     async (photo?: File) => {
       const form = new FormData()
       if (photo) {
-        form.append('photo_url', photo)
+        form.append('Img', photo as File)
       }
 
-      return await authorizedClient.put<APIResponse<null>>(
-        '/user/profile',
-        form
+      return await authorizedClient.post<APIResponse<null>>(
+        '/user/profile/picture',
+        form,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
       )
     },
     {
