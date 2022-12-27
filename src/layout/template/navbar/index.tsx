@@ -1,17 +1,16 @@
 import { Avatar, Button, H2, Icon, TextInput } from '@/components'
 import hoverCartData from '@/dummy/hoverCartData'
 import { useHover, useMediaQuery, useUser } from '@/hooks'
-import { Transition } from '@headlessui/react'
+import { Menu, Transition } from '@headlessui/react'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { HiHeart, HiMenu, HiSearch, HiShoppingCart } from 'react-icons/hi'
 
 import type { CartData } from '@/types/api/cart'
 import Image from 'next/image'
 
-const HoverableCartButton: React.FC = () => {
+const HoverableCartButton: React.FC<{ cart: CartData[] }> = ({ cart }) => {
   const [cartRef, isCartHover] = useHover()
-  const cart: CartData[] = hoverCartData
 
   return (
     <div className="nav-item relative" ref={cartRef}>
@@ -33,7 +32,7 @@ const HoverableCartButton: React.FC = () => {
         leaveTo="transform opacity-0 scale-95"
       >
         <div className="absolute right-[10%] top-auto">
-          <div className="relative mt-4 w-[32rem] rounded-md bg-white py-2 px-4 shadow-lg">
+          <div className="relative mt-3 w-[32rem] rounded-md bg-white py-2 px-4 shadow-lg">
             <div className="absolute -top-[7px] right-[10px] h-5 w-5 rotate-45 bg-white" />
             <H2 className="text-primary">Cart</H2>
             <div className="grid grid-cols-1 divide-y">
@@ -85,10 +84,72 @@ const HoverableCartButton: React.FC = () => {
   )
 }
 
+const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
+  return (
+    <Menu as="div" className="relative h-full">
+      <Menu.Button className="inline-flex h-full items-center">
+        <Avatar url={url} />
+      </Menu.Button>
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg">
+          <Menu.Item>
+            {({ active }) => (
+              <button
+                className={`${
+                  active
+                    ? 'bg-primary bg-opacity-10 text-primary'
+                    : 'text-gray-900'
+                } group flex w-full items-center rounded-md px-2 py-2 text-sm font-semibold`}
+              >
+                My Account
+              </button>
+            )}
+          </Menu.Item>
+          <Menu.Item>
+            {({ active }) => (
+              <button
+                className={`${
+                  active
+                    ? 'bg-primary bg-opacity-10 text-primary'
+                    : 'text-gray-900'
+                } group flex w-full items-center rounded-md px-2 py-2 text-sm font-semibold`}
+              >
+                My Transactions
+              </button>
+            )}
+          </Menu.Item>
+          <Menu.Item>
+            {({ active }) => (
+              <button
+                className={`${
+                  active
+                    ? 'bg-primary bg-opacity-10 text-primary'
+                    : 'text-gray-900'
+                } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+              >
+                Logout
+              </button>
+            )}
+          </Menu.Item>
+        </Menu.Items>
+      </Transition>
+    </Menu>
+  )
+}
+
 const Navbar: React.FC = () => {
   const [navbarOpen, setNavbarOpen] = useState(false)
   const [keyword, setKeyword] = useState<string>('')
   const sm = useMediaQuery('sm')
+  const cart: CartData[] = hoverCartData
 
   const { user } = useUser()
 
@@ -147,7 +208,7 @@ const Navbar: React.FC = () => {
           ) : (
             <div className={'hidden items-center md:flex'}>
               <ul className="flex list-none flex-col md:ml-auto md:flex-row">
-                <HoverableCartButton />
+                <HoverableCartButton cart={cart} />
                 <li className="nav-item">
                   <Link
                     href={`/favorites`}
@@ -160,7 +221,7 @@ const Navbar: React.FC = () => {
                   <div className="h-full w-[1px] bg-white"></div>
                 </li>
                 <li className="nav-item flex items-center">
-                  <Avatar url={user.photo_url} />
+                  <AvatarMenu url={user.photo_url} />
                 </li>
               </ul>
             </div>
