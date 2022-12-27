@@ -40,7 +40,7 @@ const Banner: React.FC<{
       }
     >
       <div>
-        <div className="containermx-auto flex h-full flex-col gap-3 text-white lg:justify-center">
+        <div className="container mx-auto flex h-full flex-col gap-3 text-white lg:justify-center">
           <div className="flex flex-col gap-3 sm:max-w-[80%] lg:max-w-[50%]">
             <div className="block font-heading text-[2rem] font-extrabold leading-[2rem] tracking-tighter sm:text-[3rem] sm:leading-[3rem] xl:text-[5rem] xl:leading-[5rem]">
               {title}
@@ -79,7 +79,7 @@ const BannerCarousel: React.FC<{
   const [selectedCategory, setSelectedCategory] = useState(0)
 
   return (
-    <div className="w-screen">
+    <div className="max-w-full">
       <div className={style.bannerCarousel}>
         {banners.map((banner, index) => {
           return (
