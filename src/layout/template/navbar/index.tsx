@@ -1,31 +1,96 @@
 import { Avatar, Button, H2, Icon, TextInput } from '@/components'
 import hoverCartData from '@/dummy/hoverCartData'
-import { useHover, useMediaQuery, useUser, useDebounce } from '@/hooks'
+import { useHover, useMediaQuery, useUser } from '@/hooks'
 import { Transition } from '@headlessui/react'
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { HiHeart, HiMenu, HiSearch, HiShoppingCart } from 'react-icons/hi'
 
 import type { CartData } from '@/types/api/cart'
 import Image from 'next/image'
+
+const HoverableCartButton: React.FC = () => {
+  const [cartRef, isCartHover] = useHover()
+  const cart: CartData[] = hoverCartData
+
+  return (
+    <div className="nav-item relative" ref={cartRef}>
+      <Link
+        href={`/carts`}
+        className="flex items-center px-3 py-2 text-xs font-bold uppercase leading-snug text-white hover:opacity-75"
+      >
+        <div ref={cartRef}>
+          <HiShoppingCart size={26} />
+        </div>
+      </Link>
+      <Transition
+        show={isCartHover}
+        enter="transition ease-out duration-50"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <div className="absolute right-[10%] top-auto">
+          <div className="relative mt-4 w-[32rem] rounded-md bg-white py-2 px-4 shadow-lg">
+            <div className="absolute -top-[7px] right-[10px] h-5 w-5 rotate-45 bg-white" />
+            <H2 className="text-primary">Cart</H2>
+            <div className="grid grid-cols-1 divide-y">
+              {cart.map((data, idx) => {
+                return (
+                  <div key={idx} className="flex py-2">
+                    <Image
+                      width={60}
+                      height={60}
+                      src={data.thumbnail_url}
+                      alt={data.title}
+                      className={'aspect-square h-[4.5rem] w-[4.5rem]'}
+                    />
+                    <div className="flex flex-1 flex-col gap-2 px-2">
+                      <div className="mt-1 font-semibold leading-4 line-clamp-2">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Porro, voluptate unde! Placeat aliquam eum veritatis
+                        nisi doloribus rerum fuga iste.
+                      </div>
+                      <div className="text-sm text-gray-400">
+                        {data.variant_name}: {data.variant_type}
+                      </div>
+                    </div>
+                    <div className="flex w-[6rem] flex-col overflow-ellipsis text-right">
+                      <div className="text-lg font-semibold">Rp10.000</div>
+                      <div className="flex flex-1 justify-end gap-1 text-xs">
+                        <div className="font-light text-gray-400 line-through">
+                          Rp10.000
+                        </div>
+                        <div className="font-bold text-error">-80%</div>
+                      </div>
+                      <div className="text-sm text-gray-400">
+                        Qty: {data.quantity}
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            <div className="my-2 flex justify-end">
+              <Button size="sm" buttonType="ghost">
+                See More
+              </Button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </div>
+  )
+}
 
 const Navbar: React.FC = () => {
   const [navbarOpen, setNavbarOpen] = useState(false)
   const [keyword, setKeyword] = useState<string>('')
   const sm = useMediaQuery('sm')
 
-  const [cartRef, isCartHover] = useHover()
-  const [dialogRef, isDialogHover] = useHover()
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const debouncedDialogOpen = useDebounce(isDialogOpen, 100)
-
-  useEffect(() => {
-    setIsDialogOpen(isCartHover || isDialogHover)
-  }, [isCartHover, isDialogHover])
-
   const { user } = useUser()
-
-  const cart: CartData[] = hoverCartData
 
   return (
     <>
@@ -82,84 +147,7 @@ const Navbar: React.FC = () => {
           ) : (
             <div className={'hidden items-center md:flex'}>
               <ul className="flex list-none flex-col md:ml-auto md:flex-row">
-                <div className="nav-item relative" ref={cartRef}>
-                  <Link
-                    href={`/carts`}
-                    className="flex items-center px-3 py-2 text-xs font-bold uppercase leading-snug text-white hover:opacity-75"
-                  >
-                    <div ref={cartRef}>
-                      <HiShoppingCart size={26} />
-                    </div>
-                  </Link>
-                  <Transition
-                    show={debouncedDialogOpen}
-                    enter="transition ease-out duration-50"
-                    enterFrom="transform opacity-0 scale-95"
-                    enterTo="transform opacity-100 scale-100"
-                    leave="transition ease-in duration-75"
-                    leaveFrom="transform opacity-100 scale-100"
-                    leaveTo="transform opacity-0 scale-95"
-                  >
-                    <div
-                      className="absolute right-[10%] top-auto"
-                      ref={dialogRef}
-                    >
-                      <div className="relative mt-4 w-[32rem] rounded-md bg-white py-2 px-4 shadow-lg">
-                        <div className="absolute -top-[7px] right-[10px] h-5 w-5 rotate-45 bg-white" />
-                        <H2 className="text-primary">Cart</H2>
-                        <div className="grid grid-cols-1 divide-y">
-                          {cart.map((data, idx) => {
-                            return (
-                              <div key={idx} className="flex py-2">
-                                <Image
-                                  width={60}
-                                  height={60}
-                                  src={data.thumbnail_url}
-                                  alt={data.title}
-                                  className={
-                                    'aspect-square h-[4.5rem] w-[4.5rem]'
-                                  }
-                                />
-                                <div className="flex flex-1 flex-col gap-2 px-2">
-                                  <div className="mt-1 font-semibold leading-4 line-clamp-2">
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit. Porro, voluptate unde!
-                                    Placeat aliquam eum veritatis nisi doloribus
-                                    rerum fuga iste.
-                                  </div>
-                                  <div className="text-sm text-gray-400">
-                                    {data.variant_name}: {data.variant_type}
-                                  </div>
-                                </div>
-                                <div className="flex w-[6rem] flex-col overflow-ellipsis text-right">
-                                  <div className="text-lg font-semibold">
-                                    Rp10.000
-                                  </div>
-                                  <div className="flex flex-1 justify-end gap-1 text-xs">
-                                    <div className="font-light text-gray-400 line-through">
-                                      Rp10.000
-                                    </div>
-                                    <div className="font-bold text-error">
-                                      -80%
-                                    </div>
-                                  </div>
-                                  <div className="text-sm text-gray-400">
-                                    Qty: {data.quantity}
-                                  </div>
-                                </div>
-                              </div>
-                            )
-                          })}
-                        </div>
-                        <div className="my-2 flex justify-end">
-                          <Button size="sm" buttonType="ghost">
-                            See More
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </Transition>
-                </div>
+                <HoverableCartButton />
                 <li className="nav-item">
                   <Link
                     href={`/favorites`}
