@@ -8,8 +8,8 @@ import { HiHeart, HiMenu, HiSearch, HiShoppingCart } from 'react-icons/hi'
 const Navbar: React.FC = () => {
   const [navbarOpen, setNavbarOpen] = useState(false)
   const [keyword, setKeyword] = useState<string>('')
-  // const { user } = useUser()
-  const user = undefined
+  const { user } = useUser()
+  // const user = undefined
 
   const sm = useMediaQuery('sm')
 
