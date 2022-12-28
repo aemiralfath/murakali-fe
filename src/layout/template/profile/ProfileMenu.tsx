@@ -7,6 +7,7 @@ import {
   FaAddressCard,
   FaWallet,
   FaMoneyBillWave,
+  FaSignOutAlt,
 } from 'react-icons/fa'
 
 interface IData {
@@ -84,6 +85,15 @@ const ProfileMenu: React.FC<IData> = ({ selectedPage }) => {
             <div className="flex-column flex gap-x-2">
               <FaMoneyBillWave />
               Digiwalet
+            </div>
+          </button>
+
+          <button
+            className={selectedPage === 'logout' ? 'text-indigo-500' : ''}
+          >
+            <div className="flex-column flex gap-x-2">
+              <FaSignOutAlt />
+              Logout
             </div>
           </button>
         </div>
