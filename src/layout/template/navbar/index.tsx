@@ -9,7 +9,6 @@ const Navbar: React.FC = () => {
   const [navbarOpen, setNavbarOpen] = useState(false)
   const [keyword, setKeyword] = useState<string>('')
   const { user } = useUser()
-  // const user = undefined
 
   const sm = useMediaQuery('sm')
 
@@ -21,7 +20,9 @@ const Navbar: React.FC = () => {
         <div className="container mx-auto flex flex-wrap items-center justify-between gap-5 px-5">
           <div className="relative flex justify-between">
             <div className="mx-1 flex max-w-[2rem] items-center sm:max-w-[6rem]">
-              <Icon color="white" small={!sm} />
+              <Link href="/">
+                <Icon color="white" small={!sm} />
+              </Link>
             </div>
           </div>
           <div className="relative flex-1">
