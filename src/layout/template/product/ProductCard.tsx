@@ -1,19 +1,27 @@
 /* eslint-disable @next/next/no-img-element */
 import React from 'react'
-import { Chip, P } from '@/components'
+import { Button, Chip, P } from '@/components'
 import formatMoney from '@/helper/formatMoney'
 import { HiStar } from 'react-icons/hi'
 import type { ProductDetail } from '@/types/api/product'
+import { useHover } from '@/hooks'
+import { Transition } from '@headlessui/react'
 
 interface ProductCardProps {
   data: ProductDetail
+  hoverable?: boolean
 }
 
 // TODO: Create loading state
-const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ data, hoverable }) => {
+  const [cartRef, isHover] = useHover()
+
   return (
-    <div>
-      <div className="border-grey-200 group h-full w-full scale-100 cursor-pointer rounded-lg border-[1px] border-solid transition-all duration-100 ease-in hover:z-40 hover:border-primary hover:shadow-xl">
+    <div
+      ref={cartRef}
+      className="border-grey-200 group z-0 h-full w-full scale-100 cursor-pointer rounded-t-lg rounded-b-lg border-[1px] border-solid transition-all duration-100 ease-in hover:z-40 hover:rounded-b-none hover:border-primary hover:shadow-xl"
+    >
+      <div>
         <img
           className="aspect-square rounded-t-lg object-cover"
           src={data.thumbnail_url}
@@ -77,6 +85,54 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
             <></>
           )}
         </div>
+        {hoverable ? (
+          <Transition
+            show={isHover}
+            enter={'duration-50'}
+            enterFrom={'scale-y-0 opacity-0'}
+            enterTo={'scale-y-100 opacity-100'}
+            leave={'duration-50'}
+            leaveFrom={'scale-y-100 opacity-100'}
+            leaveTo={'scale-y-0 opacity-0'}
+            className={
+              'absolute z-40 block origin-top -translate-x-[1px] transition-all'
+            }
+            style={{
+              width: `calc(100% + 2px)`,
+            }}
+          >
+            <div className="grid grid-cols-2 gap-1 rounded-b-lg bg-primary p-2">
+              <div>
+                <Button
+                  size="xs"
+                  buttonType="ghost"
+                  className="w-full text-white"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    // TODO: Add OnClick
+                  }}
+                >
+                  See Details
+                </Button>
+              </div>
+              <div>
+                <Button
+                  size="xs"
+                  buttonType="white"
+                  className="w-full"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    // TODO: Add OnClick
+                  }}
+                >
+                  Buy Now
+                </Button>
+              </div>
+            </div>
+          </Transition>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   )

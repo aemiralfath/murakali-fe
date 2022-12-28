@@ -44,7 +44,11 @@ const Home: NextPage = () => {
             ) : recommendedProduct.isSuccess ? (
               recommendedProduct.data.data.rows.map((product, idx) => {
                 return (
-                  <ProductCard key={`${product.title} ${idx}`} data={product} />
+                  <ProductCard
+                    key={`${product.title} ${idx}`}
+                    data={product}
+                    hoverable
+                  />
                 )
               })
             ) : (
