@@ -1,37 +1,42 @@
 import { Button, H2, P } from '@/components'
 import ProfileMenu from '@/layout/template/profile/ProfileMenu'
 import { useModal } from '@/hooks'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Head from 'next/head'
 import MainLayout from '@/layout/MainLayout'
 import FormChangeEmail from '@/layout/template/profile/FormChangeEmail'
+import { useSendEmailChangePassword } from '@/api/auth/changepassword'
+import toast from 'react-hot-toast'
+import FormOTP from '@/components/form/FormOTP'
+import type { AxiosError } from 'axios'
+import type { APIResponse } from '@/types/api/response'
 
 function ChangeLoginCredential() {
   const modal = useModal()
-  //   const userSendEmailChangePassword = useSendEmailChangePassword()
+  const userSendEmailChangePassword = useSendEmailChangePassword()
 
-  //   useEffect(() => {
-  //     if (userSendEmailChangePassword.isSuccess) {
-  //       toast.success('OTP has been sended to your email')
-  //       modal.info({
-  //         title: 'Input OTP',
-  //         content: <FormOTP OTPType="change-password" />,
-  //         closeButton: false,
-  //       })
-  //     }
-  //   }, [userSendEmailChangePassword.isSuccess])
+  useEffect(() => {
+    if (userSendEmailChangePassword.isSuccess) {
+      toast.success('OTP has been sended to your email')
+      modal.info({
+        title: 'Input OTP',
+        content: <FormOTP OTPType="change-password" />,
+        closeButton: false,
+      })
+    }
+  }, [userSendEmailChangePassword.isSuccess])
 
-  //   useEffect(() => {
-  //     if (userSendEmailChangePassword.isError) {
-  //       const errmsg = userSendEmailChangePassword.failureReason as AxiosError<
-  //         APIResponse<null>
-  //       >
-  //       toast.error(errmsg.response?.data.message as string)
-  //     }
-  //   }, [userSendEmailChangePassword.isError])
+  useEffect(() => {
+    if (userSendEmailChangePassword.isError) {
+      const errmsg = userSendEmailChangePassword.failureReason as AxiosError<
+        APIResponse<null>
+      >
+      toast.error(errmsg.response?.data.message as string)
+    }
+  }, [userSendEmailChangePassword.isError])
 
   function handleSendOTP() {
-    // userSendEmailChangePassword.mutate()
+    userSendEmailChangePassword.mutate()
   }
 
   return (
