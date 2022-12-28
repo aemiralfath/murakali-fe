@@ -3,17 +3,38 @@ export interface UserData {
 }
 
 export interface UserDetail {
-  role: 1 | 2 | 3
-  user_name: string
+  id: string
   email: string
-  phone_number: string
   full_name: string
-  gender: 'M' | 'F' | null
-  birth_date: string | null
-  photo_url: string | null
-  is_verify: boolean
+  user_name: string
+  phone_number: string
+  gender: 'M' | 'F'
+  birth_date: string
+  photo_url: string
 }
 
 export interface UserProfilePhotoEditRequest {
   photo: File | undefined
+}
+
+export interface IUserResponse {
+  message: string
+  data: IUserData
+}
+export interface IUserData {
+  user: IUserDetail
+}
+export interface IUserDetail {
+  id: string
+  email: string
+  fullname: string
+  username: string
+  phone_no: string
+  gender: string
+  birth_date: string
+  photo_url: string
+}
+
+export interface IUserUploadPhotoProfile {
+  photo_url: File | undefined
 }

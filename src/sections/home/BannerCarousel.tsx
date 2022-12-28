@@ -74,7 +74,7 @@ const BannerCarousel: React.FC<{
   }>
 }> = ({ banners }) => {
   return (
-    <div className="w-screen">
+    <div className="max-w-full">
       <div className={style.bannerCarousel}>
         {banners.map((banner, index) => {
           return (

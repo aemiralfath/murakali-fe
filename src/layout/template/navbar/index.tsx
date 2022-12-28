@@ -148,10 +148,11 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
 const Navbar: React.FC = () => {
   const [navbarOpen, setNavbarOpen] = useState(false)
   const [keyword, setKeyword] = useState<string>('')
+  const { user } = useUser()
+  // const user = undefined
+
   const sm = useMediaQuery('sm')
   const cart: CartData[] = hoverCartData
-
-  const { user } = useUser()
 
   return (
     <>
