@@ -50,7 +50,7 @@ function ChangeLoginCredential() {
       </Head>
       <MainLayout>
         <div className="grid grid-cols-1 gap-x-0 gap-y-2 md:grid-cols-4 md:gap-x-2">
-          <ProfileMenu selectedPage="change-login-credential" />
+          <ProfileMenu selectedPage="edit-login-credential" />
           <div className="border-1 col-span-3 h-full rounded-lg border-solid border-slate-600 p-8 shadow-2xl">
             <H2>Change Login Credential</H2>
             <div className="my-4 mx-2 grid grid-cols-1 gap-2 md:grid-cols-2">
