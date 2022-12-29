@@ -1,5 +1,6 @@
 import React from 'react'
 import { Navbar } from './template'
+import Footer from './template/footer'
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
@@ -10,6 +11,9 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <main className="container relative mx-auto flex min-h-screen flex-col gap-6 px-5 pt-[5.5rem] sm:pt-[7rem]">
         {children}
       </main>
+      <div className="w-full">
+        <Footer />
+      </div>
     </div>
   )
 }
