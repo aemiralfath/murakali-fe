@@ -11,7 +11,7 @@ import {
 } from 'react-icons/hi'
 import cx from '@/helper/cx'
 
-type validPage =
+export type ValidPage =
   | 'profile'
   | 'edit-login-credential'
   | 'transaction-history'
@@ -21,13 +21,13 @@ type validPage =
   | 'logout'
 
 interface ProfileMenuProps {
-  selectedPage: validPage
+  selectedPage: ValidPage
 }
 
 interface MenuItemsProps {
   icon: React.ReactNode
   title: string
-  link: validPage
+  link: ValidPage
   active: boolean
 }
 

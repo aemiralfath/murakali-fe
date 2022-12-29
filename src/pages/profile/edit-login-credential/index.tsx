@@ -1,15 +1,15 @@
-import { Button, H2, P } from '@/components'
-import ProfileMenu from '@/layout/template/profile/ProfileMenu'
+import { A, Button, Divider, H1, H2, P } from '@/components'
 import { useModal } from '@/hooks'
 import React, { useEffect } from 'react'
 import Head from 'next/head'
-import MainLayout from '@/layout/MainLayout'
 import FormChangeEmail from '@/layout/template/profile/FormChangeEmail'
 import { useSendEmailChangePassword } from '@/api/auth/changepassword'
 import toast from 'react-hot-toast'
 import FormOTP from '@/components/form/FormOTP'
 import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
+import ProfileLayout from '@/layout/ProfileLayout'
+import { HiLockClosed } from 'react-icons/hi'
 
 function ChangeLoginCredential() {
   const modal = useModal()
@@ -42,26 +42,28 @@ function ChangeLoginCredential() {
   return (
     <>
       <Head>
-        <title>Change Login Credential | Murakali</title>
+        <title>Edit Login Credentials | Murakali</title>
         <meta
           name="description"
-          content="Change Login Credential | Murakali E-Commerce Application"
+          content="Edit Login Credentials | Murakali E-Commerce Application"
         />
       </Head>
-      <MainLayout>
-        <div className="grid grid-cols-1 gap-x-0 gap-y-2 md:grid-cols-4 md:gap-x-2">
-          <ProfileMenu selectedPage="edit-login-credential" />
-          <div className="border-1 col-span-3 h-full rounded-lg border-solid border-slate-600 p-8 shadow-2xl">
-            <H2>Change Login Credential</H2>
-            <div className="my-4 mx-2 grid grid-cols-1 gap-2 md:grid-cols-2">
-              <div className="flex flex-col">
-                <P>
-                  Click button bellow to change Email, you will get OTP Code
-                </P>
-              </div>
-              <div className="flex flex-col">
+      <ProfileLayout selectedPage="edit-login-credential">
+        <>
+          {' '}
+          <H1 className="text-primary">Edit Credentials</H1>
+          <div className="my-4">
+            <Divider />
+          </div>
+          <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-y-2">
+              <H2>Edit Email</H2>
+              <P> Click button below to start the Edit Email process.</P>
+              <div>
                 <Button
                   buttonType="primary"
+                  outlined
+                  size="sm"
                   onClick={() => {
                     modal.edit({
                       title: 'Change Email',
@@ -70,25 +72,61 @@ function ChangeLoginCredential() {
                     })
                   }}
                 >
-                  Change Email
+                  <HiLockClosed /> Change Email
                 </Button>
               </div>
             </div>
-            <div className=" my-4 mx-2 grid grid-cols-1 gap-2 md:grid-cols-2">
-              <div className="flex flex-col">
-                <P>
-                  Click button bellow to change Password, you will get OTP Code
-                </P>
-              </div>
-              <div className="flex flex-col">
-                <Button buttonType="primary" onClick={handleSendOTP}>
-                  Edit Passwords
+            <div className="flex flex-col gap-y-2">
+              <H2>Edit Password</H2>
+              <P>Click button below to start the Edit Password process.</P>
+              <div>
+                <Button
+                  buttonType="primary"
+                  outlined
+                  size="sm"
+                  onClick={() => {
+                    modal.edit({
+                      title: 'Change Password',
+                      content: (
+                        <div className="flex flex-col items-center gap-2">
+                          <P>Click button below to get OTP</P>
+                          <Button
+                            buttonType="primary"
+                            onClick={() => {
+                              handleSendOTP()
+                            }}
+                          >
+                            Send OTP
+                          </Button>
+                          <div className="mt-4 text-sm">
+                            Already got OTP?{' '}
+                            <A
+                              className="text-primary"
+                              onClick={() => {
+                                modal.info({
+                                  title: 'Input OTP',
+                                  content: (
+                                    <FormOTP OTPType="change-password" />
+                                  ),
+                                  closeButton: false,
+                                })
+                              }}
+                            >
+                              Insert OTP
+                            </A>
+                          </div>
+                        </div>
+                      ),
+                    })
+                  }}
+                >
+                  <HiLockClosed /> Change Password
                 </Button>
               </div>
             </div>
           </div>
-        </div>
-      </MainLayout>
+        </>
+      </ProfileLayout>
     </>
   )
 }

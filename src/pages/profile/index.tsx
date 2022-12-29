@@ -25,7 +25,7 @@ function ManageProfile() {
           content="Profile | Murakali E-Commerce Application"
         />
       </Head>
-      <ProfileLayout>
+      <ProfileLayout selectedPage="profile">
         <>
           <H1 className="text-primary">My Profile</H1>
           <div className="my-4">
@@ -54,10 +54,10 @@ function ManageProfile() {
               </A>
             </div>
 
-            <div className="col-span-2 flex flex-col gap-2 ">
+            <div className="col-span-2 mt-8 flex flex-col gap-2 sm:mt-0 ">
               {!userProfile.isLoading ? (
                 userProfile.data?.data ? (
-                  <div className="ml-4 flex flex-col gap-3">
+                  <div className="flex flex-col gap-3 overflow-hidden sm:ml-4">
                     <div className="">
                       <P className="text-sm leading-3 opacity-70">Name</P>
                       <P className="text-lg font-semibold">
@@ -126,10 +126,20 @@ function ManageProfile() {
                   <>Handle no data!</>
                 )
               ) : (
-                // TODO: Handle Data
-                <>
-                  <P>Loading</P>
-                </>
+                <div className="ml-4 flex flex-col gap-3">
+                  <div className="">
+                    <P className="h-[1.25rem] w-[4rem] animate-ping rounded bg-base-200 text-sm"></P>
+                    <P className="h-[1.75rem] w-[7rem] animate-ping rounded bg-base-200 text-lg"></P>
+                  </div>
+                  <div className="">
+                    <P className="h-[1.25rem] w-[4rem] animate-ping rounded bg-base-200 text-sm"></P>
+                    <P className="h-[1.75rem] w-[7rem] animate-ping rounded bg-base-200 text-lg"></P>
+                  </div>
+                  <div className="">
+                    <P className="h-[1.25rem] w-[4rem] animate-ping rounded bg-base-200 text-sm"></P>
+                    <P className="h-[1.75rem] w-[7rem] animate-ping rounded bg-base-200 text-lg"></P>
+                  </div>
+                </div>
               )}
             </div>
           </div>
