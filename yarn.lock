@@ -1885,6 +1885,11 @@ ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
+n-krypta@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/n-krypta/-/n-krypta-1.0.6.tgz#562d049e61beb1cb629e3f808847baf7b12c3642"
+  integrity sha512-tEWwAauCs+DDhY7flCbwOZADh4YUz1zRSHnFuPSawMGJtRyyApUH4W2VQ4ouzMeMRMEA/1A84t7k2o7uuYvFtQ==
+
 nanoclone@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/nanoclone/-/nanoclone-0.2.1.tgz#dd4090f8f1a110d26bb32c49ed2f5b9235209ed4"

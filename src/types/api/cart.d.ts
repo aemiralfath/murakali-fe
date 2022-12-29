@@ -43,6 +43,7 @@ export interface ProductCartDetail {
 
   promo: {
     sub_price: number
+    result_discount: number
   }
 }
 

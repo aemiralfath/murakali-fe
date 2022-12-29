@@ -64,7 +64,6 @@ function AddressOption() {
     }
   }
 
-  console.log('ini list address', userAllAddress)
   return (
     <div>
       {!userAllAddress.isLoading ? (
@@ -75,7 +74,7 @@ function AddressOption() {
                 <div
                   className={
                     selected === address.id
-                      ? 'col-span-3  my-2 h-fit rounded-lg border-2 border-solid border-primary p-2 '
+                      ? 'col-span-3  my-2 h-fit rounded-lg border-4 border-solid border-primary p-2 '
                       : 'col-span-3  my-2 h-fit rounded-lg border-2 border-solid border-slate-600 p-2 '
                   }
                 >
@@ -96,8 +95,8 @@ function AddressOption() {
                         <H4>{address.name}</H4>
                         <P>
                           {address.address_detail}, {address.sub_district},{' '}
-                          {address.district}, {address.city},{address.province},
-                          Indonesia
+                          {address.district}, {address.city}, {address.province}
+                          , Indonesia ({address.zip_code})
                         </P>
                         <div className="flex flex-wrap gap-2">
                           {address.is_default ? (

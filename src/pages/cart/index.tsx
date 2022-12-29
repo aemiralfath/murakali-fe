@@ -1,5 +1,5 @@
 import { useDeleteCart, useGetCart } from '@/api/user/cart'
-import { Button, H2, P } from '@/components'
+import { Button, H2, H4, P } from '@/components'
 import ProductCart from '@/components/card/ProductCart'
 import { useModal } from '@/hooks'
 import { Navbar } from '@/layout/template'
@@ -52,8 +52,9 @@ function Cart() {
       setCheckAll(false)
     }
   }, [selectedProducts.length])
-  console.log('list semua data', cartList.data?.data?.rows)
-  console.log('list id shop', selectedShop)
+
+  console.log(cartList.data?.data?.rows)
+  console.log(selectedProducts)
   return (
     <>
       <Navbar />
@@ -63,11 +64,11 @@ function Cart() {
         <div className="grid grid-cols-1 gap-2 xl:grid-cols-4">
           <div className="col-span-3  flex flex-col gap-10">
             <div className="border-grey-200 flex justify-between rounded-lg border-[1px] border-solid py-5 px-8">
-              <label className="flex-start flex gap-2">
+              <label className="flex-start flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={checkAll}
-                  className="checkbox"
+                  className="checkbox-primary checkbox"
                   onChange={() => {
                     if (cartList.data?.data?.rows) {
                       if (!checkAll) {
@@ -93,7 +94,7 @@ function Cart() {
                     }
                   }}
                 />
-                <P>Choose All</P>
+                <H4>Choose All</H4>
               </label>
               <Button
                 buttonType="ghost"
@@ -152,7 +153,7 @@ function Cart() {
                     >
                       <label className="flex-start mb-5 flex items-center gap-2">
                         <input
-                          className="checkbox"
+                          className="checkbox-primary checkbox "
                           type="checkbox"
                           checked={
                             selectedShop.findIndex((data) => {

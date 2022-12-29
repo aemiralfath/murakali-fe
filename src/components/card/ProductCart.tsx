@@ -8,10 +8,13 @@ import { closeModal } from '@/redux/reducer/modalReducer'
 import type { ProductCartDetail } from '@/types/api/cart'
 import type { APIResponse } from '@/types/api/response'
 import type { AxiosError } from 'axios'
+import Image from 'next/image'
 
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
+
+import imageEmpty from '../../../public/asset/image-empty.jpg'
 
 interface ProductCartProps extends React.InputHTMLAttributes<HTMLInputElement> {
   listProduct: ProductCartDetail
@@ -61,10 +64,10 @@ const ProductCart: React.FC<ProductCartProps> = ({
     <label>
       <div className="border-grey-200 z-40 mb-5 rounded-lg border-[1px] border-solid py-5 px-2 transition-all hover:shadow-xl sm:px-8">
         <div className="grid grid-cols-1 gap-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6">
-          <div className="align-center flex  gap-x-10 gap-y-2 ">
+          <div className="align-center flex justify-center  gap-x-10 gap-y-2 ">
             {forCart ? (
               <input
-                className="checkbox"
+                className="checkbox-primary checkbox my-auto"
                 type="checkbox"
                 checked={rest.checked}
                 defaultChecked={rest.checked}
@@ -73,13 +76,23 @@ const ProductCart: React.FC<ProductCartProps> = ({
             ) : (
               <></>
             )}
-
-            <img
-              className="h-28 w-28 rounded-t-lg object-cover "
-              src={listProduct.thumbnail_url}
-            />
+            {!listProduct.thumbnail_url ? (
+              <>
+                <img
+                  className="h-24 w-24 rounded-t-lg object-contain "
+                  src={listProduct.thumbnail_url}
+                />
+              </>
+            ) : (
+              <>
+                <img
+                  className="h-24 w-24 rounded-t-lg object-contain "
+                  src={imageEmpty.src}
+                />
+              </>
+            )}
           </div>
-          <div className="col-span-2  xl:ml-8">
+          <div className={forCart ? 'col-span-2  xl:ml-8' : 'col-span-2  '}>
             <H4>{listProduct.title}</H4>
 
             <P className="mt-3">Variant:</P>
@@ -97,12 +110,7 @@ const ProductCart: React.FC<ProductCartProps> = ({
                     {ConvertShowMoney(listProduct.product_price)}
                   </span>
                 </P>
-                <P>
-                  Rp.{' '}
-                  {ConvertShowMoney(
-                    listProduct.product_price - listProduct.promo.sub_price
-                  )}
-                </P>
+                <P>Rp. {ConvertShowMoney(listProduct.promo.sub_price)}</P>
               </>
             )}
           </div>
@@ -130,8 +138,7 @@ const ProductCart: React.FC<ProductCartProps> = ({
                 <P className="font-bold text-primary">
                   Rp.{' '}
                   {ConvertShowMoney(
-                    (listProduct.product_price - listProduct.promo.sub_price) *
-                      listProduct.quantity
+                    listProduct.promo.sub_price * listProduct.quantity
                   )}
                 </P>
               </>

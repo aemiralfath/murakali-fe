@@ -6,6 +6,8 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
+import { encrypt } from 'n-krypta'
+
 interface SummaryCartProps {
   idProducts: string[]
   idShops: string[]
@@ -16,13 +18,14 @@ const SummaryCart: React.FC<SummaryCartProps> = ({ idProducts, idShops }) => {
   const router = useRouter()
 
   const mapPriceQuantitys = new Map<string, typeof price2>()
-
   let totalProduct = 0
-  let totalPromo = 0
+  let totalSubPrice = 0
   let quantityTemp = 0
+  let resultDiscount = 0
   interface LabeledValue {
     price: number
     subPrice: number
+    result_discount: number
     quantity: number
   }
 
@@ -30,12 +33,14 @@ const SummaryCart: React.FC<SummaryCartProps> = ({ idProducts, idShops }) => {
     price: 0,
     subPrice: 0,
     quantity: 0,
+    result_discount: 0,
   })
 
   let price2: LabeledValue | undefined = {
     price: 0,
     subPrice: 0,
     quantity: 0,
+    result_discount: 0,
   }
 
   if (cartList.data?.data?.rows) {
@@ -45,11 +50,12 @@ const SummaryCart: React.FC<SummaryCartProps> = ({ idProducts, idShops }) => {
         const productPrice = productDetail.product_price
         const productSubPrice = productDetail.promo.sub_price
         const productQuantity = productDetail.quantity
-
+        const productResultDiscount = productDetail.promo.result_discount
         mapPriceQuantitys.set(id, {
           price: productPrice,
           subPrice: productSubPrice,
           quantity: productQuantity,
+          result_discount: productResultDiscount,
         })
       })
     })
@@ -62,13 +68,18 @@ const SummaryCart: React.FC<SummaryCartProps> = ({ idProducts, idShops }) => {
       price2 = mapPriceQuantitys.get(dataId)
       if (price2 !== undefined) {
         totalProduct = totalProduct + price2.price * price2.quantity
-        totalPromo = totalPromo + price2.subPrice * price2.quantity
+        totalSubPrice =
+          totalSubPrice +
+          (price2.price - price2.result_discount) * price2.quantity
         quantityTemp = quantityTemp + price2.quantity
+        resultDiscount =
+          resultDiscount + price2.result_discount * price2.quantity
       }
       setProductPrice({
         price: totalProduct,
-        subPrice: totalPromo,
+        subPrice: totalSubPrice,
         quantity: quantityTemp,
+        result_discount: resultDiscount,
       })
     })
     if (idProducts.length === 0) {
@@ -76,6 +87,7 @@ const SummaryCart: React.FC<SummaryCartProps> = ({ idProducts, idShops }) => {
         price: 0,
         subPrice: 0,
         quantity: 0,
+        result_discount: 0,
       })
     }
   }, [idProducts.length, cartList.dataUpdatedAt])
@@ -88,13 +100,13 @@ const SummaryCart: React.FC<SummaryCartProps> = ({ idProducts, idShops }) => {
         <div className=" grid grid-cols-1 gap-1 lg:grid-cols-2 ">
           <div>Total Price ({product.quantity} item)</div>
           <div className="flex justify-start lg:justify-end">
-            : Rp. {ConvertShowMoney(product.price)}
+            Rp. {ConvertShowMoney(product.price)}
           </div>
         </div>
         <div className=" grid grid-cols-1 gap-1 lg:grid-cols-2 ">
           <div>Promo Product</div>
           <div className="flex justify-start lg:justify-end">
-            : - Rp. {ConvertShowMoney(product.subPrice)}
+            - Rp. {ConvertShowMoney(product.result_discount)}
           </div>
         </div>
 
@@ -102,7 +114,7 @@ const SummaryCart: React.FC<SummaryCartProps> = ({ idProducts, idShops }) => {
         <div className="grid grid-cols-1 gap-1 font-bold lg:grid-cols-2 ">
           <div>All Total</div>
           <div className="flex justify-start lg:justify-end">
-            : Rp. {ConvertShowMoney(product.price - product.subPrice)}
+            Rp. {ConvertShowMoney(product.subPrice)}
           </div>
         </div>
 
@@ -112,14 +124,16 @@ const SummaryCart: React.FC<SummaryCartProps> = ({ idProducts, idShops }) => {
             if (idProducts.length === 0) {
               toast.error('You must choose one of the products')
             } else {
+              const secret = 'test'
               router.push({
                 pathname: '/checkout',
                 query: {
                   idProduct: idProducts,
                   idShop: idShops,
-                  price: product.price,
-                  subPrice: product.subPrice,
-                  quantity: product.quantity,
+                  price: encrypt(product.price, secret),
+                  subPrice: encrypt(product.subPrice, secret),
+                  quantity: encrypt(product.quantity, secret),
+                  resultDiscount: encrypt(product.result_discount, secret),
                 },
               })
             }
