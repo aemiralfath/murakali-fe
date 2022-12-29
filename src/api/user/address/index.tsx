@@ -70,3 +70,20 @@ export const useEditAddress = (id: string) => {
     }
   )
 }
+
+export const useDeleteAddress = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (id: string) => {
+      return await authorizedClient.delete<APIResponse<null>>(
+        '/user/address/' + id
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries(profileKey)
+      },
+    }
+  )
+}

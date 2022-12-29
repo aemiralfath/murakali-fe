@@ -1,9 +1,14 @@
 import { useEditProfilePicture } from '@/api/user/profile'
-import { Button, TextInput } from '@/components'
+import { Button, P } from '@/components'
 import { useDispatch } from '@/hooks'
-import type { IUserUploadPhotoProfile } from '@/types/api/user'
 import { closeModal } from '@/redux/reducer/modalReducer'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+
+import type { IUserUploadPhotoProfile } from '@/types/api/user'
+import type { AxiosError } from 'axios'
+import type { APIResponse } from '@/types/api/response'
+import { HiExclamationCircle } from 'react-icons/hi'
 
 function FormChangeProfilePicture() {
   const dispatch = useDispatch()
@@ -28,9 +33,25 @@ function FormChangeProfilePicture() {
   ) => {
     event.preventDefault()
     editUserImageProfile.mutate(input.photo_url)
-
-    void dispatch(closeModal())
   }
+
+  useEffect(() => {
+    if (editUserImageProfile.isSuccess) {
+      toast.success('Profile Picture Updated!')
+      dispatch(closeModal())
+    }
+  }, [editUserImageProfile.isSuccess])
+
+  useEffect(() => {
+    if (editUserImageProfile.isError) {
+      const errmsg = editUserImageProfile.error as AxiosError<APIResponse<null>>
+      toast.error(
+        errmsg.response ? errmsg.response.data.message : errmsg.message
+      )
+      dispatch(closeModal())
+    }
+  }, [editUserImageProfile.isError])
+
   return (
     <>
       <div className="px-6 py-6 lg:px-8">
@@ -42,25 +63,26 @@ function FormChangeProfilePicture() {
           }}
         >
           <div>
-            <label className=" block text-sm font-medium text-gray-900 dark:text-white">
-              Full Name
-            </label>
-            <TextInput
-              inputSize="md"
-              type="file"
+            <input
               name="photo_url"
+              type="file"
+              className="file-input"
               accept="image/png, image/jpeg"
               placeholder="Photo"
               onChange={handleChange}
-              full
               required
             />
+            <P className="mt-3 flex items-center gap-1 text-sm">
+              <HiExclamationCircle className="text-accent" /> Picture must be{' '}
+              <b>500KB</b> or less
+            </P>
           </div>
-
           <div className="flex justify-end gap-2">
             <Button
               type="button"
-              buttonType="accent"
+              outlined
+              buttonType="primary"
+              isLoading={editUserImageProfile.isLoading}
               onClick={() => {
                 setInput({
                   photo_url: undefined,
@@ -70,7 +92,11 @@ function FormChangeProfilePicture() {
             >
               Cancel
             </Button>
-            <Button type="submit" buttonType="primary">
+            <Button
+              type="submit"
+              buttonType="primary"
+              isLoading={editUserImageProfile.isLoading}
+            >
               Save
             </Button>
           </div>

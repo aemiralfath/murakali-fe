@@ -51,7 +51,7 @@ export interface Urban {
 }
 export interface UrbanDetail {
   urban: string
-  postalcode: string
+  postal_code: string
 }
 
 export interface FetchParamInfo {

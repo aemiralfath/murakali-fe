@@ -15,7 +15,7 @@ const queryClient = new QueryClient()
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <>
-      <NextNProgress color="#FACC15" />
+      <NextNProgress color="#2545CA" />
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} />
         <Provider store={store}>
