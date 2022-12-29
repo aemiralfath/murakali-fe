@@ -1,10 +1,14 @@
 import { useEditProfilePicture } from '@/api/user/profile'
-import { Button } from '@/components'
+import { Button, P } from '@/components'
 import { useDispatch } from '@/hooks'
-import type { IUserUploadPhotoProfile } from '@/types/api/user'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
+
+import type { IUserUploadPhotoProfile } from '@/types/api/user'
+import type { AxiosError } from 'axios'
+import type { APIResponse } from '@/types/api/response'
+import { HiExclamationCircle } from 'react-icons/hi'
 
 function FormChangeProfilePicture() {
   const dispatch = useDispatch()
@@ -40,7 +44,10 @@ function FormChangeProfilePicture() {
 
   useEffect(() => {
     if (editUserImageProfile.isError) {
-      toast.success('An error occured')
+      const errmsg = editUserImageProfile.error as AxiosError<APIResponse<null>>
+      toast.error(
+        errmsg.response ? errmsg.response.data.message : errmsg.message
+      )
       dispatch(closeModal())
     }
   }, [editUserImageProfile.isError])
@@ -65,8 +72,11 @@ function FormChangeProfilePicture() {
               onChange={handleChange}
               required
             />
+            <P className="mt-3 flex items-center gap-1 text-sm">
+              <HiExclamationCircle className="text-accent" /> Picture must be{' '}
+              <b>500KB</b> or less
+            </P>
           </div>
-
           <div className="flex justify-end gap-2">
             <Button
               type="button"
