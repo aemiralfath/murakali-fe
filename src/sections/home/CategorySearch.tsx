@@ -7,7 +7,7 @@ const CategorySearch = () => {
   const [selectedCategory, setSelectedCategory] = useState(0)
 
   return (
-    <div className="absolute z-50 flex w-full -translate-y-[5rem] justify-center">
+    <div className="z-50 flex w-full -translate-y-[2.5rem] justify-center lg:-translate-y-[0.5rem]">
       <div className="hidden items-center gap-4 rounded-full bg-white shadow-md sm:flex sm:px-12 sm:py-5">
         <Menu as="div" className="inline-block w-fit text-left">
           <Menu.Button>
