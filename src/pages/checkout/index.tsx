@@ -1,6 +1,6 @@
 import { Button, H2, H3, H4, P } from '@/components'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ProductCart from '../../components/card/ProductCart'
 
 import { FaTicketAlt, FaShippingFast } from 'react-icons/fa'
@@ -14,6 +14,7 @@ import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import CheckoutSummary from '@/sections/checkout/CheckoutSummary'
 import AddressOption from '@/sections/checkout/AddressOption'
 import { useRouter } from 'next/router'
+import type { CartPostCheckout } from '@/types/api/checkout'
 
 function Checkout() {
   const cartList = useGetCart()
@@ -32,17 +33,35 @@ function Checkout() {
     subPrice: Number(router.query.subPrice),
     quantity: Number(router.query.quantity),
   }
-  console.log(defaultAddress)
 
-  console.log(
-    'ini hasil yang difilter',
-    cartList.data.data.rows
-      .filter((item) => idShops.includes(item.shop.id))
-      .map((cart) =>
-        // cart.shop.id,
-        cart.product_details.filter((item) => idProducts.includes(item.id))
-      )
-  )
+  const [checkoutItems, setCheckoutItems] = useState<CartPostCheckout[]>([])
+  useEffect(() => {
+    if (cartList.data?.data) {
+      const tempCheckoutItem: CartPostCheckout[] = cartList.data.data.rows
+        .filter((item) => idShops.includes(item.shop.id))
+        .map((cartDetail) => {
+          const product_details = cartDetail.product_details
+            .filter((item) => idProducts.includes(item.id))
+            .map((product) => {
+              return {
+                id: product.id,
+                quantity: product.quantity,
+                sub_price: product.promo.sub_price,
+              }
+            })
+
+          return {
+            shop_id: cartDetail.shop.id,
+            voucher_shop_id: '',
+            courier_id: '',
+            product_details,
+          }
+        })
+
+      setCheckoutItems(tempCheckoutItem)
+    }
+  }, [cartList.data?.data])
+  console.log('data map terbaru', checkoutItems)
   return (
     <>
       <Navbar />
