@@ -1,24 +1,35 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useRef, useState, useEffect } from 'react'
+import useSsr from './useSSR'
 
-export default function useHover<T extends HTMLElement = HTMLDivElement>() {
-  const [hovered, setHovered] = useState(false)
-  const ref = useRef<T>(null)
-  const onMouseEnter = useCallback(() => setHovered(true), [])
-  const onMouseLeave = useCallback(() => setHovered(false), [])
+function useHover(): [React.RefObject<HTMLDivElement>, boolean] {
+  const ref = useRef<HTMLDivElement>(null)
+  const [isHovered, setIsHovered] = useState(false)
+  const { isBrowser } = useSsr()
+
+  function handleMouseOver() {
+    setIsHovered(true)
+  }
+  function handleMouseOut() {
+    setIsHovered(false)
+  }
 
   useEffect(() => {
-    if (ref.current) {
-      ref.current.addEventListener('mouseenter', onMouseEnter)
-      ref.current.addEventListener('mouseleave', onMouseLeave)
-
-      return () => {
-        ref.current?.removeEventListener('mouseenter', onMouseEnter)
-        ref.current?.removeEventListener('mouseleave', onMouseLeave)
+    if (isBrowser) {
+      const node = ref.current
+      if (document.readyState === 'complete') {
+        if (node) {
+          node.addEventListener('mouseover', handleMouseOver)
+          node.addEventListener('mouseout', handleMouseOut)
+          return () => {
+            node.removeEventListener('mouseover', handleMouseOver)
+            node.removeEventListener('mouseout', handleMouseOut)
+          }
+        }
       }
     }
+  }, [isBrowser])
 
-    return undefined
-  }, [])
-
-  return { ref, hovered }
+  return [ref, isHovered]
 }
+
+export default useHover

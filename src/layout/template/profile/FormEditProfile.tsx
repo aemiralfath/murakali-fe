@@ -82,6 +82,7 @@ const FormEditProfile: React.FC = () => {
     })
   }
 
+  //TODO: Still buggy, fix later
   return (
     <>
       <div className="px-6 py-6 lg:px-8">
@@ -93,10 +94,8 @@ const FormEditProfile: React.FC = () => {
           }}
         >
           <div>
-            <label className=" block text-sm font-medium text-gray-900 dark:text-white">
-              Full Name
-            </label>
             <TextInput
+              label={'Full Name'}
               inputSize="md"
               type="text"
               name="full_name"
@@ -109,10 +108,8 @@ const FormEditProfile: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-white">
-              Username
-            </label>
             <TextInput
+              label="Username"
               type="text"
               name="user_name"
               placeholder="username"
@@ -124,14 +121,12 @@ const FormEditProfile: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-white">
-              Phone Number
-            </label>
             <TextInput
+              label="Phone Number"
               type="number"
               name="phone_number"
               onChange={handleChange}
-              placeholder="08xxxxxxxx"
+              placeholder="628xxxxxxxx"
               value={input.phone_number}
               full
               required
@@ -139,10 +134,8 @@ const FormEditProfile: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-white">
-              Birth Date
-            </label>
             <TextInput
+              label="Birth Date"
               type="date"
               name="birth_date"
               onChange={handleChange}
@@ -154,16 +147,15 @@ const FormEditProfile: React.FC = () => {
             />
           </div>
 
-          <label className="mb-1 block text-sm font-medium text-gray-900 dark:text-white">
-            Gender
-          </label>
+          <label className="label-text ml-1 block">Gender</label>
           <div className="mx-5 flex flex-col gap-2">
             <div>
-              <label>
+              <label className="flex items-center gap-1">
                 <input
                   onChange={() => {
                     setSelected('M')
                   }}
+                  className={'radio-primary radio radio-xs'}
                   type="radio"
                   name="Male"
                   checked={selected === 'M'}
@@ -172,10 +164,11 @@ const FormEditProfile: React.FC = () => {
               </label>
             </div>
             <div>
-              <label>
+              <label className="flex items-center gap-1">
                 <input
                   type="radio"
                   name="Female"
+                  className={'radio-primary radio radio-xs'}
                   checked={selected === 'F'}
                   onChange={() => {
                     setSelected('F')
@@ -189,7 +182,8 @@ const FormEditProfile: React.FC = () => {
           <div className="flex justify-end gap-2">
             <Button
               type="button"
-              buttonType="accent"
+              outlined
+              buttonType="primary"
               onClick={() => {
                 setInput({
                   email: '',
