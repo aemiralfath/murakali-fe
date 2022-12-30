@@ -84,7 +84,7 @@ function Checkout() {
       <div className="container my-8 mx-auto mb-10 min-h-screen w-full px-2">
         <div className="grid grid-cols-1 gap-2 xl:grid-cols-4">
           <div className="col-span-3  flex flex-col gap-5">
-            <div className="border-grey-200 flex items-center justify-between gap-10 rounded-lg border-[1px] border-solid py-5 px-8">
+            <div className="border-grey-200 flex h-fit items-center justify-between gap-10 rounded-lg border-[1px] border-solid py-5 px-8">
               <div>
                 {!defaultAddress.isLoading ? (
                   <>
@@ -221,7 +221,7 @@ function Checkout() {
           </div>
           <div>
             <div className="col-span-3  flex flex-col gap-5">
-              <div className="border-grey-200 flex h-full items-center justify-center gap-10 rounded-lg border-[1px] border-solid py-5 px-8">
+              <div className="border-grey-200 flex h-fit  items-center justify-center gap-10 rounded-lg border-[1px] border-solid py-8 px-8">
                 <div className="dropdown">
                   <label
                     tabIndex={0}

@@ -60,7 +60,7 @@ function FormChangeEmail() {
     <div>
       <form className=" space-y-6" onSubmit={formik.handleSubmit}>
         <TextInput
-          label="Email"
+          label="New Email"
           type="email"
           name="email"
           placeholder="murakali@gmail.com"
@@ -74,10 +74,13 @@ function FormChangeEmail() {
               : ''
           }
         />
-
+        <P className="text-center text-sm">
+          Please make sure that you have entered a valid email.
+        </P>
         <div className="flex justify-center gap-2 py-3">
           <Button
-            buttonType="accent"
+            buttonType="primary"
+            outlined
             type="button"
             onClick={() => {
               dispatch(closeModal())
@@ -86,7 +89,7 @@ function FormChangeEmail() {
             Cancel
           </Button>
           <Button buttonType="primary" type="submit">
-            Change Email
+            Send OTP
           </Button>
         </div>
       </form>

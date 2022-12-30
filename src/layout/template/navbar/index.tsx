@@ -105,14 +105,14 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
           <Menu.Item>
             {({ active }) => (
               <button
+                onClick={() => router.push('/profile')}
                 className={`${
                   active
                     ? 'bg-primary bg-opacity-10 text-primary'
                     : 'text-gray-900'
                 } group flex w-full items-center rounded-md px-2 py-2 text-sm font-semibold`}
-                onClick={() => router.push('/profile')}
               >
-                My Account
+                My Profile
               </button>
             )}
           </Menu.Item>
@@ -124,7 +124,7 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
                     ? 'bg-primary bg-opacity-10 text-primary'
                     : 'text-gray-900'
                 } group flex w-full items-center rounded-md px-2 py-2 text-sm font-semibold`}
-                onClick={() => router.push('/my-transaction')}
+                onClick={() => router.push('/transaction-history')}
               >
                 My Transactions
               </button>
@@ -153,7 +153,6 @@ const Navbar: React.FC = () => {
   const [navbarOpen, setNavbarOpen] = useState(false)
   const [keyword, setKeyword] = useState<string>('')
   const { user } = useUser()
-  // const user = undefined
 
   const sm = useMediaQuery('sm')
   const cart: CartData[] = hoverCartData
@@ -166,7 +165,9 @@ const Navbar: React.FC = () => {
         <div className="container mx-auto flex flex-wrap items-center justify-between gap-5 px-5">
           <div className="relative flex justify-between">
             <div className="mx-1 flex max-w-[2rem] items-center sm:max-w-[6rem]">
-              <Icon color="white" small={!sm} />
+              <Link href="/">
+                <Icon color="white" small={!sm} />
+              </Link>
             </div>
           </div>
           <div className="relative flex-1">

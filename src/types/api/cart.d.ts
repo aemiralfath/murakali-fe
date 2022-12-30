@@ -21,6 +21,7 @@ export interface HoverCartData {
 
 export interface Cart {
   rows: CartDetail[]
+  total_pages: number
 }
 
 export interface CartDetail {

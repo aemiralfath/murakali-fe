@@ -1,101 +1,113 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import {
-  FaUserAlt,
-  FaLock,
-  FaListAlt,
-  FaAddressCard,
-  FaWallet,
-  FaMoneyBillWave,
-  FaSignOutAlt,
-} from 'react-icons/fa'
+  HiCreditCard,
+  HiIdentification,
+  HiLibrary,
+  HiLockClosed,
+  HiLogout,
+  HiTable,
+  HiUser,
+} from 'react-icons/hi'
+import cx from '@/helper/cx'
 
-interface IData {
-  selectedPage: string
+export type ValidPage =
+  | 'profile'
+  | 'edit-login-credential'
+  | 'transaction-history'
+  | 'address'
+  | 'wallet'
+  | 'digiwallet'
+  | 'logout'
+
+interface ProfileMenuProps {
+  selectedPage: ValidPage
 }
 
-const ProfileMenu: React.FC<IData> = ({ selectedPage }) => {
+interface MenuItemsProps {
+  icon: React.ReactNode
+  title: string
+  link: ValidPage
+  active: boolean
+}
+
+const MenuItems: React.FC<MenuItemsProps> = ({ icon, title, link, active }) => {
   const router = useRouter()
   return (
+    <button
+      className={cx(
+        'px-6 py-4 transition-all',
+        active
+          ? 'bg-primary font-bold text-white'
+          : 'hover:bg-primary hover:bg-opacity-20 hover:font-bold hover:text-primary'
+      )}
+      onClick={() => {
+        if (!active) {
+          router.push('/profile' + (link === 'profile' ? '' : `/${link}`))
+        }
+      }}
+    >
+      <div className="flex-column flex items-center gap-x-2 text-left">
+        <div>{icon}</div>
+        <span className=" line-clamp-1">{title}</span>
+      </div>
+    </button>
+  )
+}
+
+const ProfileMenu: React.FC<ProfileMenuProps> = ({ selectedPage }) => {
+  const items: Array<MenuItemsProps> = [
+    {
+      link: 'profile',
+      title: 'My Profile',
+      icon: <HiUser />,
+      active: selectedPage === 'profile',
+    },
+    {
+      link: 'edit-login-credential',
+      title: 'Edit Login Credentials',
+      icon: <HiLockClosed />,
+      active: selectedPage === 'edit-login-credential',
+    },
+    {
+      link: 'transaction-history',
+      title: 'Transaction History',
+      icon: <HiTable />,
+      active: selectedPage === 'transaction-history',
+    },
+    {
+      link: 'address',
+      title: 'Address',
+      icon: <HiIdentification />,
+      active: selectedPage === 'address',
+    },
+    {
+      link: 'wallet',
+      title: 'Wallet',
+      icon: <HiCreditCard />,
+      active: selectedPage === 'wallet',
+    },
+    {
+      link: 'digiwallet',
+      title: 'Digiwallet',
+      icon: <HiLibrary />,
+      active: selectedPage === 'digiwallet',
+    },
+    {
+      link: 'logout',
+      title: 'Logout',
+      icon: <HiLogout />,
+      active: selectedPage === 'logout',
+    },
+  ]
+
+  return (
     <div>
-      <div className="border-1 h-min rounded-lg border-solid border-slate-600 p-8 shadow-2xl">
-        <div className="flex flex-col gap-y-10">
-          <button
-            className={selectedPage === 'profile' ? 'text-indigo-500' : ''}
-            onClick={() => {
-              router.push('/profile')
-            }}
-          >
-            <div className="flex-column flex gap-x-2">
-              <FaUserAlt /> My Profile
-            </div>
-          </button>
-
-          <button
-            className={
-              selectedPage === 'change-login-credential'
-                ? 'text-indigo-500'
-                : ''
-            }
-            onClick={() => {
-              router.push('/profile/change-login-credential')
-            }}
-          >
-            <div className="flex-column flex gap-x-2">
-              <FaLock /> Change Login Credential
-            </div>
-          </button>
-
-          <button
-            className={
-              selectedPage === 'transactionhistory' ? 'text-indigo-500' : ''
-            }
-          >
-            <div className="flex-column flex gap-x-2">
-              {' '}
-              <FaListAlt />
-              Transaction History
-            </div>
-          </button>
-
-          <button
-            className={selectedPage === 'address' ? 'text-indigo-500' : ''}
-            onClick={() => {
-              router.push('/profile/address')
-            }}
-          >
-            <div className="flex-column flex gap-x-2">
-              <FaAddressCard />
-              Address
-            </div>
-          </button>
-
-          <button
-            className={selectedPage === 'wallet' ? 'text-indigo-500' : ''}
-          >
-            <div className="flex-column flex gap-x-2">
-              <FaWallet />
-              My Wallet
-            </div>
-          </button>
-
-          <button
-            className={selectedPage === 'digiwalet' ? 'text-indigo-500' : ''}
-          >
-            <div className="flex-column flex gap-x-2">
-              <FaMoneyBillWave />
-              Digiwalet
-            </div>
-          </button>
-
-          <button
-            className={selectedPage === 'logout' ? 'text-indigo-500' : ''}
-          >
-            <div className="flex-column flex gap-x-2">
-              <FaSignOutAlt />
-              Logout
-            </div>
-          </button>
+      <div className="h-fit rounded border-[1px]">
+        <div className="flex flex-col gap-2 py-4">
+          {items.map((item, idx) => (
+            <MenuItems key={idx} {...item} />
+          ))}
         </div>
       </div>
     </div>

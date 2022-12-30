@@ -14,7 +14,7 @@ const Banner: React.FC<{
 
   return (
     <div
-      className="flex h-[16rem] w-full justify-center gap-4 bg-cover bg-center bg-no-repeat px-8 py-12 sm:h-[18rem] sm:px-12 sm:pt-12 sm:pb-20 lg:h-[22rem]"
+      className="flex h-[16rem] w-full justify-center gap-4 bg-cover bg-center bg-no-repeat px-8 py-12 sm:h-[22rem] sm:px-12 sm:pt-12 sm:pb-20 lg:h-[28rem]"
       style={
         lg
           ? {
@@ -81,7 +81,7 @@ const BannerCarousel: React.FC<{
             <div
               key={index}
               id={`slide${index}`}
-              className="carousel-item relative h-[16rem] w-full sm:h-[18rem] lg:h-[22rem]"
+              className="carousel-item relative h-[16rem] w-full sm:h-[22rem] lg:h-[28rem]"
             >
               <Banner
                 title={banner.title}

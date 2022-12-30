@@ -1,7 +1,7 @@
 import { Navbar } from '@/layout/template'
 import React from 'react'
 
-function MyTransaction() {
+function TransactionHistory() {
   return (
     <div>
       <Navbar />{' '}
@@ -9,4 +9,4 @@ function MyTransaction() {
   )
 }
 
-export default MyTransaction
+export default TransactionHistory
