@@ -8,6 +8,7 @@ import { HiHeart, HiMenu, HiSearch, HiShoppingCart } from 'react-icons/hi'
 
 import type { CartData } from '@/types/api/cart'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 
 const HoverableCartButton: React.FC<{ cart: CartData[] }> = ({ cart }) => {
   const [cartRef, isCartHover] = useHover()
@@ -85,6 +86,7 @@ const HoverableCartButton: React.FC<{ cart: CartData[] }> = ({ cart }) => {
 }
 
 const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
+  const router = useRouter()
   return (
     <Menu as="div" className="relative h-full">
       <Menu.Button className="inline-flex h-full items-center">
@@ -108,6 +110,7 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
                     ? 'bg-primary bg-opacity-10 text-primary'
                     : 'text-gray-900'
                 } group flex w-full items-center rounded-md px-2 py-2 text-sm font-semibold`}
+                onClick={() => router.push('/profile')}
               >
                 My Account
               </button>
@@ -121,6 +124,7 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
                     ? 'bg-primary bg-opacity-10 text-primary'
                     : 'text-gray-900'
                 } group flex w-full items-center rounded-md px-2 py-2 text-sm font-semibold`}
+                onClick={() => router.push('/my-transaction')}
               >
                 My Transactions
               </button>
@@ -153,6 +157,7 @@ const Navbar: React.FC = () => {
 
   const sm = useMediaQuery('sm')
   const cart: CartData[] = hoverCartData
+  const router = useRouter()
 
   return (
     <>

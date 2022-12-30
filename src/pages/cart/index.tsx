@@ -53,7 +53,6 @@ function Cart() {
     }
   }, [selectedProducts.length])
 
-  console.log(cartList.data?.data?.rows)
   console.log(selectedProducts)
   return (
     <>

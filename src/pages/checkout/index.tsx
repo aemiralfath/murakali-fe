@@ -58,10 +58,11 @@ function Checkout() {
               }
             })
 
+          //hardcode courier id
           return {
             shop_id: cartDetail.shop.id,
             voucher_shop_id: '',
-            courier_id: '',
+            courier_id: '98c1921e-b80e-40f3-9cba-fe8806097517',
             product_details,
           }
         })
@@ -74,7 +75,7 @@ function Checkout() {
       })
     }
   }, [cartList.data?.data])
-  console.log('data map terbaru', checkoutItems)
+
   return (
     <>
       <Navbar />
@@ -91,7 +92,7 @@ function Checkout() {
                       defaultAddress.data.data.rows
                         .filter((item) => item.is_default)
                         .map((address) => (
-                          <>
+                          <div key={address.id}>
                             <H3 className="mb-1 font-bold">
                               Shipping Address:
                             </H3>
@@ -101,7 +102,7 @@ function Checkout() {
                               {address.district}, {address.city},
                               {address.province}, Indonesia ({address.zip_code})
                             </P>
-                          </>
+                          </div>
                         ))
                     ) : (
                       <P className="font-bold">
