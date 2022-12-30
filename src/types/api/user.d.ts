@@ -11,6 +11,7 @@ export interface UserDetail {
   gender: 'M' | 'F'
   birth_date: string
   photo_url: string
+  role: number
 }
 
 export interface UserProfilePhotoEditRequest {
@@ -33,6 +34,7 @@ export interface IUserDetail {
   gender: string
   birth_date: string
   photo_url: string
+  role: number
 }
 
 export interface IUserUploadPhotoProfile {
