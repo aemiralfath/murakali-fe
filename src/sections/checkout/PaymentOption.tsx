@@ -1,21 +1,28 @@
+import { useCreateTransaction } from '@/api/user/transaction'
 import { Button, H4, P } from '@/components'
 import paymentOptionData from '@/dummy/paymentOptionData'
+
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { PostCheckout } from '@/types/api/checkout'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 interface CheckoutSummaryProps {
-  postCheckout?: PostCheckout
+  postCheckout: PostCheckout
 }
 
 const PaymentOption: React.FC<CheckoutSummaryProps> = ({ postCheckout }) => {
   const [selected, setSelected] = useState<number>(0)
-
   const dispatch = useDispatch()
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value
     setSelected(Number(value))
+  }
+
+  const createTransaction = useCreateTransaction()
+
+  function handleTransaction() {
+    createTransaction.mutate(postCheckout)
   }
   return (
     <div>
@@ -67,7 +74,11 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({ postCheckout }) => {
           >
             Cancel
           </Button>
-          <Button type="button" buttonType="primary">
+          <Button
+            type="button"
+            buttonType="primary"
+            onClick={handleTransaction}
+          >
             Save
           </Button>
         </div>
