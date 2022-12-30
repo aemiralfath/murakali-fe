@@ -16,7 +16,7 @@ const HoverableCartButton: React.FC<{ cart: CartData[] }> = ({ cart }) => {
   return (
     <div className="nav-item relative" ref={cartRef}>
       <Link
-        href={`/carts`}
+        href={`/cart`}
         className="flex items-center px-3 py-2 text-xs font-bold uppercase leading-snug text-white hover:opacity-75"
       >
         <div ref={cartRef}>
@@ -273,7 +273,7 @@ const Navbar: React.FC = () => {
             <ul className="container mx-auto flex list-none flex-col gap-2">
               <li className="nav-item">
                 <Link
-                  href={`/carts`}
+                  href={`/cart`}
                   className="flex items-center gap-2 text-sm text-white hover:opacity-75"
                 >
                   <HiShoppingCart size={26} />

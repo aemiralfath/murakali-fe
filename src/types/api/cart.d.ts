@@ -18,3 +18,36 @@ export interface HoverCartData {
   total_item: number
   cart_items: CartData[]
 }
+
+export interface Cart {
+  rows: CartDetail[]
+}
+
+export interface CartDetail {
+  id: string
+  shop: {
+    id: string
+    name: string
+  }
+  product_details: ProductCartDetail[]
+}
+
+export interface ProductCartDetail {
+  id: string
+  title: string
+  quantity: number
+
+  thumbnail_url: string
+  rating_avg: number
+  product_price: number
+
+  promo: {
+    sub_price: number
+    result_discount: number
+  }
+}
+
+export interface UpdateCart {
+  id: string
+  quantity: number
+}
