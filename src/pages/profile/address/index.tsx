@@ -4,7 +4,7 @@ import { useModal } from '@/hooks'
 import type { APIResponse } from '@/types/api/response'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { AxiosError } from 'axios'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import FormManageAddress from '@/layout/template/profile/FormManageAddress'
@@ -17,7 +17,8 @@ import { HiPencilAlt, HiTrash } from 'react-icons/hi'
 function ManageAddress() {
   const modal = useModal()
 
-  const userAllAddress = useGetAllAddress()
+  const [page, setPage] = useState<number>(1)
+  const userAllAddress = useGetAllAddress(page)
   const deleteAddress = useDeleteAddress()
   const dispatch = useDispatch()
 
@@ -179,6 +180,27 @@ function ManageAddress() {
           ) : (
             <P>Loading</P>
           )}
+          <div className="flex justify-end">
+            <div className="btn-group">
+              {Array.from(Array(userAllAddress.data?.data?.total_pages)).map(
+                (_, index) => {
+                  return (
+                    <button
+                      key={index}
+                      defaultValue={1}
+                      value={index + 1}
+                      onClick={() => {
+                        setPage(index + 1)
+                      }}
+                      className={index + 1 === page ? 'btn-active btn' : 'btn'}
+                    >
+                      {index + 1}
+                    </button>
+                  )
+                }
+              )}
+            </div>
+          </div>
         </>
       </ProfileLayout>
     </>
