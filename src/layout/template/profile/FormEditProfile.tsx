@@ -41,6 +41,7 @@ const FormEditProfile: React.FC = () => {
     id: '',
     photo_url: '',
     gender: 'M',
+    role: 1,
   })
 
   useEffect(() => {
@@ -54,6 +55,7 @@ const FormEditProfile: React.FC = () => {
         id: '',
         photo_url: '',
         gender: selected,
+        role: 1,
       })
       setSelected(userProfile.data.data.gender)
     }
@@ -79,6 +81,7 @@ const FormEditProfile: React.FC = () => {
       id: '',
       photo_url: '',
       gender: 'M',
+      role: 1,
     })
   }
 
@@ -194,6 +197,7 @@ const FormEditProfile: React.FC = () => {
                   id: '',
                   photo_url: '',
                   gender: 'M',
+                  role: 1,
                 })
                 dispatch(closeModal())
               }}
