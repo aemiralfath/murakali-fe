@@ -1,7 +1,8 @@
-import { Avatar, H3, Icon, P } from '@/components'
+import { Avatar, H3, Icon } from '@/components'
 
 import { useMediaQuery, useUser } from '@/hooks'
 import { Menu, Transition } from '@headlessui/react'
+import { useRouter } from 'next/router'
 
 import React, { Fragment, useState } from 'react'
 import { HiMenu } from 'react-icons/hi'
@@ -71,7 +72,7 @@ const SellerPanelSideBar: React.FC = () => {
   const [navbarOpen, setNavbarOpen] = useState(false)
 
   const { user } = useUser()
-
+  const router = useRouter()
   const sm = useMediaQuery('sm')
 
   return (
@@ -135,7 +136,29 @@ const SellerPanelSideBar: React.FC = () => {
         </div>
       </Transition>
 
-      <div className="h-screen w-64 bg-primary"></div>
+      <div className="h-screen w-64 bg-primary px-6 py-5">
+        <div className="flex flex-col gap-y-10 ">
+          <button
+            onClick={() => {
+              router.push('/profile/address')
+            }}
+          >
+            <div className="flex-column flex gap-x-2">Address</div>
+          </button>
+
+          <button>
+            <div className="flex-column flex gap-x-2">My Wallet</div>
+          </button>
+
+          <button>
+            <div className="flex-column flex gap-x-2">Digiwalet</div>
+          </button>
+
+          <button>
+            <div className="flex-column flex gap-x-2">Logout</div>
+          </button>
+        </div>
+      </div>
     </>
   )
 }

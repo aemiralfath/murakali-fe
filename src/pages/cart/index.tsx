@@ -53,7 +53,6 @@ function Cart() {
     }
   }, [selectedProducts.length])
 
-  console.log(selectedProducts)
   return (
     <>
       <Navbar />

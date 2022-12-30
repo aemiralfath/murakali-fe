@@ -157,7 +157,6 @@ const Navbar: React.FC = () => {
 
   const sm = useMediaQuery('sm')
   const cart: CartData[] = hoverCartData
-  const router = useRouter()
 
   return (
     <>
