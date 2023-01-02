@@ -32,7 +32,18 @@ const Home: NextPage = () => {
         {categories.data?.data ? (
           <CategoriesCarousel categories={categories.data.data} />
         ) : (
-          <></>
+          <div className="flex w-full justify-center gap-4">
+            {Array(5)
+              .fill('')
+              .map((_, idx) => {
+                return (
+                  <div className="flex flex-col items-center gap-2" key={idx}>
+                    <div className="h-[96px] w-[96px] animate-pulse rounded-full bg-base-200" />
+                    <div className="mt-4 h-8 w-[4rem] animate-pulse rounded bg-base-200 text-center text-sm sm:text-base" />
+                  </div>
+                )
+              })}
+          </div>
         )}
         <div className="my-8">
           <Divider />

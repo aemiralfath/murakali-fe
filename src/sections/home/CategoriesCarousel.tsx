@@ -9,15 +9,15 @@ import { HiArrowLeft, HiArrowRight } from 'react-icons/hi'
 
 const CategoryItem: React.FC<{
   name?: string
-  image?: string
-}> = ({ name = 'md', image }) => {
+  photo_url?: string
+}> = ({ name = 'md', photo_url }) => {
   const sm = useMediaQuery('sm')
 
   return (
     <div className="carousel-item z-0 flex w-[8rem] flex-col items-center justify-center sm:w-[10rem]">
       <Link href="/subCategory" className="flex flex-col items-center">
         <Image
-          src={image}
+          src={photo_url}
           alt="Image Category"
           className="rounded-full"
           width={sm ? 80 : 60}
