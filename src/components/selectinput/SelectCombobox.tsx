@@ -63,7 +63,7 @@ const SelectComboBox: React.FC<SelectInputProps> = ({
           value={query}
           placeholder={data ? placeholder : '-'}
           className={cx(
-            'input-bordered input w-full',
+            'input-bordered input w-full placeholder-black',
             data
               ? data.length === 0
                 ? 'input-disabled'
