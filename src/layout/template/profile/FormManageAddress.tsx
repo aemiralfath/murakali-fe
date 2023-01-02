@@ -225,10 +225,9 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
 
   return (
     <>
-      <div className=" px-6 lg:px-8">
+      <div className=" z-auto px-6 lg:px-8">
         <form
           className=" flex flex-col gap-y-2 "
-          z-tabIndex={10}
           onSubmit={(e) => {
             void handleCreateAddress(e)
             return false
