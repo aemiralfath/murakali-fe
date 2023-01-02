@@ -1,5 +1,6 @@
 import { H1, H4, P } from '@/components'
 import { useMediaQuery } from '@/hooks'
+import type { CategoryData } from '@/types/api/category'
 import { Transition } from '@headlessui/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -31,7 +32,7 @@ const CategoryItem: React.FC<{
 }
 
 const CategoriesCarousel: React.FC<{
-  categories: Array<{ id: number; name: string; image: string }>
+  categories: Array<CategoryData>
 }> = ({ categories }) => {
   const carouselRef = useRef<HTMLDivElement>(null)
   const [isAtStart, setIsAtStart] = useState(true)

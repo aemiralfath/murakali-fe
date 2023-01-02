@@ -113,20 +113,3 @@ export const useDeleteAddress = () => {
     }
   )
 }
-
-export const useDeleteAddress = () => {
-  const queryClient = useQueryClient()
-
-  return useMutation(
-    async (id: string) => {
-      return await authorizedClient.delete<APIResponse<null>>(
-        '/user/address/' + id
-      )
-    },
-    {
-      onSuccess: () => {
-        void queryClient.invalidateQueries(profileKey)
-      },
-    }
-  )
-}
