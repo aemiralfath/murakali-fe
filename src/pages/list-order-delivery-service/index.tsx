@@ -4,7 +4,7 @@ import React from 'react'
 function ListOrderDeliveryService() {
   return (
     <div>
-      <SellerPanelSideBar />
+      <SellerPanelSideBar selectedPage="order" />
       ListOrderDeliveryService
     </div>
   )

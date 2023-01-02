@@ -1,10 +1,19 @@
 import { useDeleteAddress, useGetAllAddress } from '@/api/user/address'
-import { Button, Chip, Divider, H1, H2, P } from '@/components'
+import {
+  Button,
+  Chip,
+  Divider,
+  H1,
+  H2,
+  P,
+  PaginationNav,
+  Spinner,
+} from '@/components'
 import { useModal } from '@/hooks'
 import type { APIResponse } from '@/types/api/response'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { AxiosError } from 'axios'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import FormManageAddress from '@/layout/template/profile/FormManageAddress'
@@ -16,8 +25,8 @@ import { HiPencilAlt, HiTrash } from 'react-icons/hi'
 
 function ManageAddress() {
   const modal = useModal()
-
-  const userAllAddress = useGetAllAddress(1)
+  const [page, setPage] = useState<number>(1)
+  const userAllAddress = useGetAllAddress(page)
   const deleteAddress = useDeleteAddress()
   const dispatch = useDispatch()
 
@@ -149,6 +158,7 @@ function ManageAddress() {
                                       >
                                         Cancel
                                       </Button>
+                                      <P>Loading</P>{' '}
                                       <Button
                                         type="button"
                                         buttonType="primary"
@@ -172,14 +182,33 @@ function ManageAddress() {
                     </div>
                   </>
                 ))}
+                <div className="mt-4 flex justify-end">
+                  <PaginationNav
+                    page={page}
+                    total={userAllAddress.data.data.total_pages}
+                    onChange={(p) => {
+                      setPage(p)
+                    }}
+                  />
+                </div>
               </>
             ) : (
               <P></P>
             )
           ) : (
-            <P>Loading</P>
+            <Spinner />
           )}
         </>
+
+        {userAllAddress.data?.data?.total_pages === 0 ? (
+          <div className="border-grey-200 z-10 flex h-full items-center rounded-lg border-[1px] border-solid py-7 px-8">
+            <P className="flex w-full items-center justify-center font-extrabold">
+              Cart is Empty!
+            </P>
+          </div>
+        ) : (
+          <></>
+        )}
       </ProfileLayout>
     </>
   )

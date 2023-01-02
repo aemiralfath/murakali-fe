@@ -132,7 +132,11 @@ function AddressOption() {
                   onClick={() => {
                     setPage(index + 1)
                   }}
-                  className={index + 1 === page ? 'btn btn-active' : 'btn'}
+                  className={
+                    index + 1 === page
+                      ? 'btn btn-active'
+                      : 'btn-outline btn btn-primary'
+                  }
                 >
                   {index + 1}
                 </button>
@@ -145,7 +149,8 @@ function AddressOption() {
       <div className="my-2 flex justify-end gap-2">
         <Button
           type="button"
-          buttonType="gray"
+          buttonType="primary"
+          outlined
           onClick={() => {
             dispatch(closeModal())
           }}

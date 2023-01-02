@@ -3,6 +3,7 @@ import Button from './button'
 import Chip from './chip'
 import Divider from './divider'
 import Icon from './icon'
+import PaginationNav from './paginationNav'
 import Spinner from './spinner'
 import TextArea from './textarea'
 import TextInput from './textinput'
@@ -15,6 +16,7 @@ export {
   Chip,
   Divider,
   Icon,
+  PaginationNav,
   Spinner,
   TextArea,
   TextInput,
