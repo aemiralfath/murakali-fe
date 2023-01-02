@@ -2,13 +2,13 @@ import { unauthorizedClient } from '@/api/apiClient'
 import { useQuery } from '@tanstack/react-query'
 
 import type { APIResponse, PaginationData } from '@/types/api/response'
-import type { ProductDetail } from '@/types/api/product'
+import type { BriefProduct } from '@/types/api/product'
 
 const profileKey = ['recommended']
 
 const getRecommendedProduct = async () => {
   const response = await unauthorizedClient.get<
-    APIResponse<PaginationData<ProductDetail>>
+    APIResponse<PaginationData<BriefProduct>>
   >('/product/recommended')
   return response.data
 }
