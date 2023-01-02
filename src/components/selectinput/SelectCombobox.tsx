@@ -60,6 +60,11 @@ const SelectComboBox: React.FC<SelectInputProps> = ({
           onFocus={() => {
             setIsOpen(true)
           }}
+          onBlur={() => {
+            setTimeout(() => {
+              setIsOpen(false)
+            }, 200)
+          }}
           value={query}
           placeholder={data ? placeholder : '-'}
           className={cx(
@@ -87,12 +92,12 @@ const SelectComboBox: React.FC<SelectInputProps> = ({
             enter="transition-opacity duration-75"
             enterFrom="scale-x-0"
             enterTo="opacity-100"
-            leave="transition-opacity duration-150"
+            leave="transition-opacity duration-75"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
             <Combobox.Options
-              className="absolute z-50 max-h-48 w-full overflow-y-scroll rounded border bg-white shadow"
+              className=" absolute z-50 max-h-48 w-full overflow-y-scroll rounded border bg-white shadow"
               static={isOpen}
             >
               {filteredData.map((dataDetail, index) => (

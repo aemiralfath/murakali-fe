@@ -11,7 +11,7 @@ import { useDispatch } from '@/hooks'
 import type { AddressDetail, FetchParamInfo } from '@/types/api/address'
 import type { APIResponse } from '@/types/api/response'
 import { closeModal } from '@/redux/reducer/modalReducer'
-import { all, AxiosError } from 'axios'
+import { AxiosError } from 'axios'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
@@ -98,9 +98,15 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
   useEffect(() => {
     if (createAddress.isSuccess) {
       toast.success('Successfully Add Address')
+
+      void dispatch(closeModal())
+      setInput(addressInit)
     }
     if (editAddress.isSuccess) {
       toast.success('Successfully Edit Address')
+
+      void dispatch(closeModal())
+      setInput(addressInit)
     }
   }, [createAddress.isSuccess, editAddress.isSuccess])
   useEffect(() => {
@@ -206,9 +212,6 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
     } else {
       editAddress.mutate(temp)
     }
-
-    void dispatch(closeModal())
-    setInput(addressInit)
   }
 
   function removeFirstWord(str: string) {
@@ -220,20 +223,12 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
     return str.substring(indexOfSpace + 1)
   }
 
-  // ------ USESTATE BUAT COMBOBOX, nnti tolong dirapikan
-  // const [cities, setCities] = useState<string[]>([])
-  // useEffect(() => {
-  //   if (allCity.data?.data?.data) {
-  //     setCities(allCity.data.data.data.rows.map((data) => data.city))
-  //   }
-  // }, [allCity.data])
-  // ------ END
-
   return (
     <>
-      <div className="px-6 lg:px-8">
+      <div className=" px-6 lg:px-8">
         <form
-          className=" flex flex-col gap-y-2"
+          className=" flex flex-col gap-y-2 "
+          z-tabIndex={10}
           onSubmit={(e) => {
             void handleCreateAddress(e)
             return false
@@ -428,19 +423,21 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
                 type="checkbox"
                 name={'shippingaddress'}
                 value={0}
+                checked={selected[0]}
                 onChange={handleChangeCheckbox}
               />
               Choose as Shipping Address
             </label>
-            {/* <label className=" flex gap-2 text-sm font-medium text-gray-900 dark:text-white">
+            <label className=" flex gap-2 text-sm font-medium text-gray-900 dark:text-white">
               <input
                 type="checkbox"
                 name={'shopaddress'}
                 value={1}
+                checked={selected[1]}
                 onChange={handleChangeCheckbox}
               />
               Choose as Shop Address
-            </label> */}
+            </label>
           </div>
 
           <div className="flex justify-end gap-2">
