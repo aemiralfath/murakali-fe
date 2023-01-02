@@ -7,7 +7,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 const cartKey = ['cart']
 
 const getCart = async () => {
-  const response = await authorizedClient.get<APIResponse<Cart>>('/cart/items')
+  const response = await authorizedClient.get<APIResponse<Cart>>(
+    '/cart/items?limit=100'
+  )
   return response.data
 }
 

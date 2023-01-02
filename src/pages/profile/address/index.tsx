@@ -180,6 +180,16 @@ function ManageAddress() {
             <P>Loading</P>
           )}
         </>
+
+        {userAllAddress.data?.data?.total_pages === 0 ? (
+          <div className="border-grey-200 z-10 flex h-full items-center rounded-lg border-[1px] border-solid py-7 px-8">
+            <P className="flex w-full items-center justify-center font-extrabold">
+              Cart is Empty!
+            </P>
+          </div>
+        ) : (
+          <></>
+        )}
         <div className="flex justify-end">
           <div className="btn-group">
             {Array.from(Array(userAllAddress.data?.data?.total_pages)).map(
@@ -194,8 +204,8 @@ function ManageAddress() {
                     }}
                     className={
                       index + 1 === page
-                        ? 'btn btn-active'
-                        : 'btn-outline btn btn-primary'
+                        ? 'btn-active btn'
+                        : 'btn-outline btn-primary btn'
                     }
                   >
                     {index + 1}
