@@ -11,7 +11,7 @@ import { useDispatch } from '@/hooks'
 import type { AddressDetail, FetchParamInfo } from '@/types/api/address'
 import type { APIResponse } from '@/types/api/response'
 import { closeModal } from '@/redux/reducer/modalReducer'
-import type { AxiosError } from 'axios'
+import { all, AxiosError } from 'axios'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
@@ -267,25 +267,21 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
               data={allProvince.data?.data?.rows.map(
                 (dataDetail) => dataDetail.province
               )}
+              placeholder={input.province}
               selectedData={(data) => {
-                getAllCity(data)
-
                 setInput({
                   ...input,
                   province: data,
+                  city: '',
+                  district: '',
+                  sub_district: '',
                 })
-
+                getAllCity(data)
                 if (allSubDistrict.data?.data?.data?.rows) {
-                  setInput({
-                    ...input,
-                    district: '',
-                  })
+                  allSubDistrict.data.data.data.rows = []
                 }
                 if (allUrban.data?.data?.data?.rows) {
-                  setInput({
-                    ...input,
-                    sub_district: '',
-                  })
+                  allUrban.data.data.data.rows = []
                 }
               }}
             />
@@ -295,13 +291,12 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
             <label className=" block text-sm font-medium text-gray-900 dark:text-white">
               City
             </label>
-
             <SelectComboBox
               isLoading={allCity.isLoading ? true : undefined}
               isEdit={isEdit}
               selectedEdit={editData?.city}
               required
-              // data={cities}
+              placeholder={input.city}
               data={allCity.data?.data?.data?.rows.map(
                 (dataDetail) => dataDetail.city
               )}
@@ -310,8 +305,13 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
                 setInput({
                   ...input,
                   city: newData,
+                  district: '',
+                  sub_district: '',
                 })
                 getAllSubDistrict(newData)
+                if (allUrban.data?.data?.data?.rows) {
+                  allUrban.data.data.data.rows = []
+                }
               }}
             />
           </div>
@@ -326,6 +326,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
               isEdit={isEdit}
               selectedEdit={editData?.district}
               required
+              placeholder={input.district}
               data={
                 allSubDistrict.data?.data?.data?.rows
                   ? allSubDistrict.data.data.data.rows.map(
@@ -334,11 +335,12 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
                   : undefined
               }
               selectedData={(data) => {
-                getAllUrban(data)
                 setInput({
                   ...input,
                   district: data,
+                  sub_district: '',
                 })
+                getAllUrban(data)
               }}
             />
           </div>
@@ -351,6 +353,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
               isLoading={allUrban.isLoading ? true : undefined}
               isEdit={isEdit}
               selectedEdit={editData?.sub_district}
+              placeholder={input.sub_district}
               data={
                 allUrban.data?.data?.data?.rows
                   ? allUrban.data.data.data.rows.map(
