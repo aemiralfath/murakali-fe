@@ -7,6 +7,7 @@ import Icon from './icon'
 import IconLoading from './iconLoading'
 import NumberInput from './numberinput'
 import RatingStars from './ratingstars'
+import PaginationNav from './paginationNav'
 import Spinner from './spinner'
 import TextArea from './textarea'
 import TextInput from './textinput'
@@ -23,6 +24,7 @@ export {
   IconLoading,
   NumberInput,
   RatingStars,
+  PaginationNav,
   Spinner,
   TextArea,
   TextInput,
