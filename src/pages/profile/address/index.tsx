@@ -17,7 +17,7 @@ import { HiPencilAlt, HiTrash } from 'react-icons/hi'
 function ManageAddress() {
   const modal = useModal()
 
-  const userAllAddress = useGetAllAddress()
+  const userAllAddress = useGetAllAddress(1)
   const deleteAddress = useDeleteAddress()
   const dispatch = useDispatch()
 
