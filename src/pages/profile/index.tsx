@@ -15,7 +15,7 @@ function ManageProfile() {
   const modal = useModal()
 
   const userProfile = useGetUserProfile()
-
+  console.log(userProfile)
   return (
     <>
       <Head>

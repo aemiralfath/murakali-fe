@@ -146,6 +146,7 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
                     ? 'bg-primary bg-opacity-10 text-primary'
                     : 'text-gray-900'
                 } group flex w-full items-center rounded-md px-2 py-2 text-sm font-semibold`}
+                onClick={() => router.push('/transaction-history')}
               >
                 My Transactions
               </button>
@@ -217,14 +218,23 @@ const Navbar: React.FC = () => {
               id="example-navbar-danger"
             >
               <ul className="flex list-none flex-col items-start md:ml-auto md:flex-row">
-                <li className="nav-item relative mx-1 my-1 md:my-0">
+                <HoverableCartButton cart={cart} />
+                <li className="nav-item">
+                  <Link
+                    href={`/favorites`}
+                    className="flex items-center px-3 py-2 text-xs font-bold uppercase leading-snug text-white hover:opacity-75"
+                  >
+                    <HiHeart size={26} />
+                  </Link>
+                </li>
+                <li className="nav-item relative mx-1 my-1">
                   <Link href="/login">
                     <Button buttonType="white" outlined={true} size="sm">
                       Login
                     </Button>
                   </Link>
                 </li>
-                <li className="nav-item mx-1 my-1 md:my-0">
+                <li className="nav-item mx-1 my-1">
                   <Link href="/register">
                     <Button buttonType="white" size="sm">
                       Register
@@ -276,6 +286,24 @@ const Navbar: React.FC = () => {
         <div className="bg-primary px-5 pb-3">
           {!user ? (
             <ul className="flex list-none items-center justify-end gap-2">
+              <li className="nav-item">
+                <Link
+                  href={`/cart`}
+                  className="flex items-center gap-2 text-sm text-white hover:opacity-75"
+                >
+                  <HiShoppingCart size={26} />
+                  <div>Cart</div>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  href={`/favorites`}
+                  className="flex items-center gap-2 text-sm text-white hover:opacity-75"
+                >
+                  <HiHeart size={26} />
+                  <div>Favorites</div>
+                </Link>
+              </li>
               <li className="nav-item">
                 <Link href="/login">
                   <Button buttonType="white" outlined={true} size="sm">
