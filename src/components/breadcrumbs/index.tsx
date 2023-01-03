@@ -7,22 +7,25 @@ const Breadcrumbs: React.FC<{
   data: Array<{ name: string; link: string }>
 }> = ({ data }) => {
   return (
-    <div className="flex items-center gap-1 text-sm">
+    <div className="flex flex-wrap items-center gap-1 text-sm">
       {data.map((d, idx) => {
         return (
-          <>
+          <div key={idx} className={'flex items-center'}>
             <Link
-              key={idx}
               href={d.link}
               className={cx(
-                'text-primary hover:underline',
+                'text-primary line-clamp-1 hover:underline',
                 idx === data.length - 1 ? 'font-semibold' : ''
               )}
             >
               {d.name}
             </Link>
-            {idx === data.length - 1 ? <></> : <HiChevronRight />}
-          </>
+            {idx === data.length - 1 ? (
+              <></>
+            ) : (
+              <HiChevronRight className="ml-1" />
+            )}
+          </div>
         )
       })}
     </div>

@@ -1,14 +1,17 @@
 import cx from '@/helper/cx'
 import React from 'react'
-import { HiOutlineStar, HiStar } from 'react-icons/hi'
+import { AiFillStar, AiOutlineStar } from 'react-icons/ai'
 
-const RatingStars: React.FC<{ rating: number }> = ({ rating }) => {
+const RatingStars: React.FC<{ rating: number; size?: 'md' | 'lg' }> = ({
+  rating,
+  size = 'md',
+}) => {
   let fullStars = 0
   let partialStarRatio = 0
 
   if (rating >= 5) {
     fullStars = 4
-    partialStarRatio = 1
+    partialStarRatio = 10
   } else if (rating <= 0) {
     fullStars = 0
     partialStarRatio = 0
@@ -18,13 +21,15 @@ const RatingStars: React.FC<{ rating: number }> = ({ rating }) => {
   }
 
   return (
-    <div className="flex text-lg text-accent">
+    <div
+      className={cx('flex text-accent', size === 'lg' ? 'text-2xl' : 'text-lg')}
+    >
       {Array(fullStars)
         .fill('')
         .map((_, idx) => {
           return (
             <div key={idx} className={'relative'}>
-              <HiStar className="absolute" /> <HiOutlineStar />
+              <AiFillStar className="absolute" /> <AiOutlineStar />
             </div>
           )
         })}
@@ -35,9 +40,9 @@ const RatingStars: React.FC<{ rating: number }> = ({ rating }) => {
             width: `${partialStarRatio * 0.6 * 10 + 20}%`,
           }}
         >
-          <HiStar />
+          <AiFillStar />
         </span>{' '}
-        <HiOutlineStar />
+        <AiOutlineStar />
       </div>
       {fullStars + 1 >= 5 ? (
         <></>
@@ -47,7 +52,7 @@ const RatingStars: React.FC<{ rating: number }> = ({ rating }) => {
           .map((_, idx) => {
             return (
               <div key={idx} className={'relative'}>
-                <HiOutlineStar />
+                <AiOutlineStar />
               </div>
             )
           })

@@ -3,6 +3,7 @@ import { useHover } from '@/hooks'
 import { Transition } from '@headlessui/react'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
+import { useSwipeable } from 'react-swipeable'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 
 type ProductImageCarouselProps = LoadingDataWrapper<{
@@ -37,7 +38,7 @@ const SubImage: React.FC<{
     <div
       ref={ref}
       className={cx(
-        'aspect-square h-[4rem] cursor-pointer overflow-hidden rounded transition-all',
+        'aspect-square h-[50px] cursor-pointer overflow-hidden rounded transition-all md:h-[2.8rem] xl:h-[4rem]',
         isSelected ? 'p-[1px] ring-2 ring-primary' : ''
       )}
       onClick={() => {
@@ -62,6 +63,18 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
   const [ref, isHovered] = useHover()
 
+  const handleNextImage = () => {
+    setMainID(mainID === data.images.length - 1 ? 0 : mainID + 1)
+  }
+  const handlePreviousImage = () => {
+    setMainID(mainID === 0 ? data.images.length - 1 : mainID - 1)
+  }
+
+  const swipeHandler = useSwipeable({
+    onSwipedRight: handleNextImage,
+    onSwipedLeft: handlePreviousImage,
+  })
+
   useEffect(() => {
     if (data?.images) {
       setMainImage(selectedImageUrl ?? data.images[mainID])
@@ -75,15 +88,13 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   }, [mainID])
 
   return (
-    <div className="flex gap-2">
-      <div className="flex flex-col gap-2">
+    <div className="flex flex-col-reverse gap-2 md:flex-row">
+      <div className="flex h-[80px] max-w-fit gap-2 overflow-x-auto p-1 sm:h-fit sm:w-fit sm:overflow-visible sm:p-0 md:flex-col">
         {isLoading ? (
           <>
-            <div className="aspect-square h-[4rem] animate-pulse rounded bg-base-300" />
-            <div className="aspect-square h-[4rem] animate-pulse rounded bg-base-300" />
-            <div className="aspect-square h-[4rem] animate-pulse rounded bg-base-300" />
-            <div className="aspect-square h-[4rem] animate-pulse rounded bg-base-300" />
-            <div className="aspect-square h-[4rem] animate-pulse rounded bg-base-300" />
+            <div className="aspect-square h-[50px] animate-pulse rounded bg-base-300 md:h-[2.8rem] xl:h-[4rem]" />
+            <div className="aspect-square h-[50px] animate-pulse rounded bg-base-300 md:h-[2.8rem] xl:h-[4rem]" />
+            <div className="aspect-square h-[50px] animate-pulse rounded bg-base-300 md:h-[2.8rem] xl:h-[4rem]" />
           </>
         ) : (
           data.images.map((url, idx) => {
@@ -105,8 +116,8 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
       </div>
       <div
         className={cx(
-          'relative aspect-square h-[24rem] overflow-hidden rounded ',
-          isLoading ? 'animate-pulse bg-base-300' : 'shadow-lg'
+          'relative aspect-square h-full w-full overflow-hidden md:h-[18rem] xl:h-[24rem] ',
+          isLoading ? 'animate-pulse bg-base-300' : ''
         )}
         ref={ref}
       >
@@ -129,27 +140,26 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
               <>
                 <button
                   className="aspect-square transform cursor-pointer rounded-full bg-white p-1 text-lg"
-                  onClick={() => {
-                    setMainID(
-                      mainID === 0 ? data.images.length - 1 : mainID - 1
-                    )
-                  }}
+                  onClick={handlePreviousImage}
                 >
                   <HiChevronLeft />
                 </button>
                 <button
                   className="aspect-square cursor-pointer rounded-full bg-white p-1 text-lg"
-                  onClick={() => {
-                    setMainID(
-                      mainID === data.images.length - 1 ? 0 : mainID + 1
-                    )
-                  }}
+                  onClick={handleNextImage}
                 >
                   <HiChevronRight />
                 </button>
               </>
             </Transition>
-            <Image src={mainImage} width={400} height={400} alt={data.alt} />
+            <Image
+              {...swipeHandler}
+              src={mainImage}
+              width={400}
+              height={400}
+              alt={data.alt}
+              className={'w-full rounded'}
+            />
           </>
         )}
       </div>
