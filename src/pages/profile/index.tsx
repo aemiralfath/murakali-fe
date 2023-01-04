@@ -15,7 +15,6 @@ function ManageProfile() {
   const modal = useModal()
 
   const userProfile = useGetUserProfile()
-  console.log(userProfile)
   return (
     <>
       <Head>
@@ -34,7 +33,7 @@ function ManageProfile() {
           <div className=" mx-2 mt-8 grid grid-cols-1 gap-2 md:grid-cols-3">
             <div className="flex flex-col items-center gap-4">
               <div className="flex justify-center">
-                <Avatar size="lg" url={userProfile.data?.data?.photo_url} />
+                <Avatar size="xl" url={userProfile.data?.data?.photo_url} />
               </div>
               <A
                 className="flex items-center gap-1"

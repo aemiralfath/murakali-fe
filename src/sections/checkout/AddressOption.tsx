@@ -135,7 +135,7 @@ function AddressOption() {
                   className={
                     index + 1 === page
                       ? 'btn btn-active'
-                      : 'btn-outline btn btn-primary'
+                      : 'btn btn-outline btn-primary'
                   }
                 >
                   {index + 1}
