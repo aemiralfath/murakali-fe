@@ -22,7 +22,10 @@ const RatingStars: React.FC<{ rating: number; size?: 'md' | 'lg' }> = ({
 
   return (
     <div
-      className={cx('flex text-accent', size === 'lg' ? 'text-2xl' : 'text-lg')}
+      className={cx(
+        'flex max-w-fit text-accent',
+        size === 'lg' ? 'text-2xl' : 'text-lg'
+      )}
     >
       {Array(fullStars)
         .fill('')
