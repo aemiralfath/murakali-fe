@@ -25,7 +25,7 @@ const getDefaultAddress = async (
     '/user/address?limit=3' +
       '&is_default=' +
       String(isDefault) +
-      '&shop_default=' +
+      '&is_shop_default=' +
       String(isShopDefault)
   )
   return response.data

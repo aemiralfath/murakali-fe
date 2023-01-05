@@ -126,7 +126,14 @@ const Login = () => {
               </div>
               <div className="mt-8 text-center">
                 Don&apos;t have account?{' '}
-                <A className="text-primary">Register</A>
+                <A
+                  className="text-primary"
+                  onClick={() => {
+                    router.push('/register')
+                  }}
+                >
+                  Register
+                </A>
               </div>
             </form>
           </div>
