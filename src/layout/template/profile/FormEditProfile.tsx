@@ -28,6 +28,7 @@ const FormEditProfile: React.FC = () => {
         id: '',
         photo_url: '',
         gender: 'M',
+        role: 1,
       })
     }
   }, [editUserProfile.isSuccess])
@@ -53,6 +54,7 @@ const FormEditProfile: React.FC = () => {
     id: '',
     photo_url: '',
     gender: 'M',
+    role: 1,
   })
 
   useEffect(() => {
@@ -66,6 +68,7 @@ const FormEditProfile: React.FC = () => {
         id: '',
         photo_url: '',
         gender: selected,
+        role: 1,
       })
       setSelected(userProfile.data.data.gender)
     }
@@ -80,6 +83,19 @@ const FormEditProfile: React.FC = () => {
   const handleEditProfile = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     editUserProfile.mutate(input)
+
+    void dispatch(closeModal())
+    setInput({
+      email: '',
+      full_name: '',
+      user_name: '',
+      phone_number: '',
+      birth_date: '',
+      id: '',
+      photo_url: '',
+      gender: 'M',
+      role: 1,
+    })
   }
 
   //TODO: Still buggy, fix later
@@ -194,6 +210,7 @@ const FormEditProfile: React.FC = () => {
                   id: '',
                   photo_url: '',
                   gender: 'M',
+                  role: 1,
                 })
                 dispatch(closeModal())
               }}

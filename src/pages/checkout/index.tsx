@@ -121,7 +121,7 @@ function Checkout() {
                 onClick={() => {
                   modal.info({
                     title: 'Choose Address',
-                    content: <AddressOption />,
+                    content: <AddressOption is_shop_address={false} />,
                     closeButton: false,
                   })
                 }}
