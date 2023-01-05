@@ -3,9 +3,12 @@ import { useMediaQuery, usePagination } from '@/hooks'
 import React from 'react'
 import { HiChevronLeft, HiChevronRight, HiDotsHorizontal } from 'react-icons/hi'
 
-type PaginationBtnProps = React.ButtonHTMLAttributes<HTMLButtonElement>
+type PaginationBtnProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  size: 'sm' | 'md'
+}
 
 const PaginationBtn: React.FC<PaginationBtnProps> = ({
+  size,
   className,
   children,
   ...rest
@@ -14,11 +17,12 @@ const PaginationBtn: React.FC<PaginationBtnProps> = ({
     <button
       className={cx(
         className,
-        'flex aspect-square h-[2.4rem] items-center justify-center rounded-full border text-center text-sm transition-all',
+        'flex aspect-square items-center justify-center rounded-full border text-center text-sm transition-all',
         'hover:border-primary hover:bg-primary hover:text-white',
         rest.disabled
           ? 'cursor-not-allowed hover:bg-white hover:text-black'
-          : ''
+          : '',
+        size === 'sm' ? 'h-[2rem]' : ' h-[2.4rem]'
       )}
       {...rest}
     >
@@ -28,16 +32,18 @@ const PaginationBtn: React.FC<PaginationBtnProps> = ({
 }
 
 const PaginationNav: React.FC<{
+  size?: 'sm' | 'md'
   page: number
   total: number
   onChange: (page: number) => void
-}> = ({ page, total, onChange }) => {
+}> = ({ size = 'md', page, total, onChange }) => {
   const xs = useMediaQuery('xs')
   const pagination = usePagination({ total, page, siblings: 1, onChange })
 
   return (
     <div className="flex items-center gap-1">
       <PaginationBtn
+        size={size}
         className="border-0"
         disabled={page - 1 === 0}
         onClick={() => pagination.previous()}
@@ -52,6 +58,7 @@ const PaginationNav: React.FC<{
 
           return (
             <PaginationBtn
+              size={size}
               key={idx}
               className={cx(
                 page === range ? 'border-0 bg-primary text-white' : ''
@@ -67,9 +74,10 @@ const PaginationNav: React.FC<{
           )
         })
       ) : (
-        <PaginationBtn>{page}</PaginationBtn>
+        <PaginationBtn size={size}>{page}</PaginationBtn>
       )}
       <PaginationBtn
+        size={size}
         className="border-0"
         disabled={page === total}
         onClick={() => pagination.next()}
