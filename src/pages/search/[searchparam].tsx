@@ -12,7 +12,10 @@ const SearchPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Product {searchparam} - Murakali</title>
+        <title>
+          Search {typeof searchparam === 'string' ? `"${searchparam}"` : ''} -
+          Murakali
+        </title>
         <meta name="description" content="Murakali E-Commerce Application" />
       </Head>
       <MainLayout>
