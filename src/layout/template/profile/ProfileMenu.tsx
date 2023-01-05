@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import {
   HiCreditCard,
+  HiHome,
   HiIdentification,
   HiLibrary,
   HiLockClosed,
@@ -10,6 +11,10 @@ import {
   HiUser,
 } from 'react-icons/hi'
 import cx from '@/helper/cx'
+import { useLogout } from '@/api/auth/logout'
+import toast from 'react-hot-toast'
+import type { AxiosError } from 'axios'
+import type { APIResponse } from '@/types/api/response'
 
 export type ValidPage =
   | 'profile'
@@ -18,6 +23,7 @@ export type ValidPage =
   | 'address'
   | 'wallet'
   | 'digiwallet'
+  | 'merchant'
   | 'logout'
 
 interface ProfileMenuProps {
@@ -33,6 +39,23 @@ interface MenuItemsProps {
 
 const MenuItems: React.FC<MenuItemsProps> = ({ icon, title, link, active }) => {
   const router = useRouter()
+  const logout = useLogout()
+
+  useEffect(() => {
+    if (logout.isSuccess) {
+      toast.success('Logout Success')
+      router.push('/')
+    }
+  }, [logout.isSuccess])
+  useEffect(() => {
+    if (logout.isError) {
+      const reason = logout.failureReason as AxiosError<APIResponse<null>>
+      toast.error(
+        reason.response ? reason.response.data.message : reason.message
+      )
+    }
+  }, [logout.isError])
+
   return (
     <button
       className={cx(
@@ -42,7 +65,11 @@ const MenuItems: React.FC<MenuItemsProps> = ({ icon, title, link, active }) => {
           : 'hover:bg-primary hover:bg-opacity-20 hover:font-bold hover:text-primary'
       )}
       onClick={() => {
-        if (!active) {
+        if (link === 'logout') {
+          logout.mutate()
+        } else if (link === 'merchant') {
+          router.push('/merchant')
+        } else if (!active) {
           router.push('/profile' + (link === 'profile' ? '' : `/${link}`))
         }
       }}
@@ -92,6 +119,12 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ selectedPage }) => {
       title: 'Digiwallet',
       icon: <HiLibrary />,
       active: selectedPage === 'digiwallet',
+    },
+    {
+      link: 'merchant',
+      title: 'Merchant',
+      icon: <HiHome />,
+      active: selectedPage === 'merchant',
     },
     {
       link: 'logout',

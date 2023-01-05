@@ -1,7 +1,6 @@
 import { useRecommendedProduct } from '@/api/product/recommended'
 import { Divider, H1, H4 } from '@/components'
 import bannerData from '@/dummy/bannerData'
-import categoriesData from '@/dummy/categoriesData'
 import MainLayout from '@/layout/MainLayout'
 import ProductCard from '@/layout/template/product/ProductCard'
 import BannerCarousel from '@/sections/home/BannerCarousel'
@@ -11,8 +10,11 @@ import Head from 'next/head'
 import { type NextPage } from 'next'
 import CategorySearch from '@/sections/home/CategorySearch'
 import Link from 'next/link'
+import { useGetAllCategory } from '@/api/category'
 
 const Home: NextPage = () => {
+  const categories = useGetAllCategory()
+
   const recommendedProduct = useRecommendedProduct()
 
   return (
@@ -27,7 +29,22 @@ const Home: NextPage = () => {
       <MainLayout>
         <div className="-z-50 h-[16rem] w-full sm:h-[18rem] lg:h-[22rem]" />
         <CategorySearch />
-        <CategoriesCarousel categories={categoriesData} />
+        {categories.data?.data ? (
+          <CategoriesCarousel categories={categories.data.data} />
+        ) : (
+          <div className="flex w-full justify-center gap-4">
+            {Array(5)
+              .fill('')
+              .map((_, idx) => {
+                return (
+                  <div className="flex flex-col items-center gap-2" key={idx}>
+                    <div className="h-[96px] w-[96px] animate-pulse rounded-full bg-base-200" />
+                    <div className="mt-4 h-8 w-[4rem] animate-pulse rounded bg-base-200 text-center text-sm sm:text-base" />
+                  </div>
+                )
+              })}
+          </div>
+        )}
         <div className="my-8">
           <Divider />
         </div>

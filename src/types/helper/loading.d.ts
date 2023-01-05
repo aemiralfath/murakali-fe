@@ -8,4 +8,4 @@ type DataWrapperLoading = {
   isLoading: true
 }
 
-type DataWrapper<T> = DataWrapperBase<T> | DataWrapperLoading
+type LoadingDataWrapper<T> = DataWrapperBase<T> | DataWrapperLoading
