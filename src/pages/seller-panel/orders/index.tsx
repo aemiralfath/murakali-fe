@@ -162,7 +162,7 @@ function ListOrderDeliveryService() {
           <div className="my-4">
             <Divider />
           </div>
-          <div className="item-left w-full max-w-full overflow-auto">
+          <div className="item-left w-full">
             {sellerOrders.isLoading ? (
               <Table data={formatSub()} isLoading />
             ) : sellerOrders.isSuccess ? (
