@@ -339,9 +339,16 @@ const Navbar: React.FC = () => {
                   <div>Favorites</div>
                 </Link>
               </li>
-              <li className="nav-item flex items-center gap-2 text-sm text-white hover:opacity-75">
-                <Avatar size="sm" url={user.photo_url} />
-                <div>{user.full_name}</div>
+              <li className="nav-item">
+                <Link
+                  href={`/profile`}
+                  className={
+                    'flex items-center gap-2 text-sm text-white hover:opacity-75'
+                  }
+                >
+                  <Avatar size="sm" url={user.photo_url} />
+                  <div>{user.full_name}</div>
+                </Link>
               </li>
             </ul>
           )}

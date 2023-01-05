@@ -17,8 +17,7 @@ import { useGetUserProfile } from '@/api/user/profile'
 function MerchantRegistration() {
   const modal = useModal()
   const router = useRouter()
-  const address2 = useGetDefaultAddress(true, true)
-  const address1 = useGetDefaultAddress(false, true)
+  const address = useGetDefaultAddress(false, true)
 
   const addresses = useGetAllAddress(1)
 
@@ -88,9 +87,13 @@ function MerchantRegistration() {
       <MainLayout>
         <div className="my-10 mx-2 grid grid-cols-1 gap-x-0 gap-y-2 md:mx-5 md:grid-cols-4 md:gap-x-5">
           <div className="col-span-2">
-            {/* <image 
-            
-            width="100%" /> */}
+            <div
+              className="hidden h-full rounded-lg border-solid border-slate-900 bg-cover bg-center p-8 shadow-2xl md:flex"
+              style={{
+                backgroundImage: 'url(/asset/abstract-bg.png)',
+                border: '1px solid #E5E7EB',
+              }}
+            />
           </div>
           <div className="border-1 col-span-2 h-full rounded-lg border-solid border-slate-900 p-8 shadow-2xl">
             <form
@@ -123,93 +126,59 @@ function MerchantRegistration() {
                   </div>
                   <div className="col-span-1 py-2">
                     <H4>Address</H4>
-                    {address1.isSuccess && address2.isSuccess ? (
-                      address1.data?.data?.rows.length !== 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-3">
-                          <div className="col-span-2">
-                            <P>
-                              {address1.data?.data?.rows[0].address_detail},{' '}
-                              {address1.data?.data?.rows[0].sub_district},{' '}
-                              {address1.data?.data?.rows[0].district},{' '}
-                              {address1.data?.data?.rows[0].city},{' '}
-                              {address1.data?.data?.rows[0].province}, Indonesia
-                              ({address1.data?.data?.rows[0].zip_code})
-                            </P>
-                          </div>
-                          <div className="col-span-1 flex items-center justify-end px-2">
-                            <Button
-                              buttonType="primary"
-                              size="sm"
-                              onClick={() => {
-                                modal.info({
-                                  title: 'Choose Address',
-                                  content: (
-                                    <AddressOption is_shop_address={true} />
-                                  ),
-                                  closeButton: false,
-                                })
-                              }}
-                            >
-                              Choose Address
-                            </Button>
-                          </div>
+                    {address.isSuccess ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-3">
+                        <div className="col-span-2">
+                          <P>
+                            {address.data?.data?.rows[0].address_detail},{' '}
+                            {address.data?.data?.rows[0].sub_district},{' '}
+                            {address.data?.data?.rows[0].district},{' '}
+                            {address.data?.data?.rows[0].city},{' '}
+                            {address.data?.data?.rows[0].province}, Indonesia (
+                            {address.data?.data?.rows[0].zip_code})
+                          </P>
                         </div>
-                      ) : address2.data?.data?.rows.length !== 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-3">
-                          <div className="col-span-2">
-                            <P>
-                              {address2.data?.data?.rows[0].address_detail},{' '}
-                              {address2.data?.data?.rows[0].sub_district},{' '}
-                              {address2.data?.data?.rows[0].district},{' '}
-                              {address2.data?.data?.rows[0].city},{' '}
-                              {address2.data?.data?.rows[0].province}, Indonesia
-                              ({address2.data?.data?.rows[0].zip_code})
-                            </P>
-                          </div>
-                          <div className="col-span-1 flex items-center justify-end px-2">
-                            <Button
-                              buttonType="primary"
-                              size="sm"
-                              onClick={() => {
-                                modal.info({
-                                  title: 'Choose Address',
-                                  content: (
-                                    <AddressOption is_shop_address={true} />
-                                  ),
-                                  closeButton: false,
-                                })
-                              }}
-                            >
-                              Choose Address
-                            </Button>
-                          </div>
+                        <div className="col-span-1 flex items-center justify-end px-2">
+                          <Button
+                            buttonType="primary"
+                            size="sm"
+                            onClick={() => {
+                              modal.info({
+                                title: 'Choose Address',
+                                content: (
+                                  <AddressOption is_shop_address={true} />
+                                ),
+                                closeButton: false,
+                              })
+                            }}
+                          >
+                            Choose Address
+                          </Button>
                         </div>
-                      ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-3">
-                          <div className="col-span-2">
-                            Please add your address first for merchant
-                          </div>
-                          <div className="col-span-1 flex items-center justify-end px-2">
-                            <Button
-                              buttonType="primary"
-                              size="sm"
-                              onClick={() => {
-                                modal.info({
-                                  title: 'Choose Address',
-                                  content: (
-                                    <AddressOption is_shop_address={true} />
-                                  ),
-                                  closeButton: false,
-                                })
-                              }}
-                            >
-                              Choose Address
-                            </Button>
-                          </div>
-                        </div>
-                      )
+                      </div>
                     ) : (
-                      'Loading...'
+                      <div className="grid grid-cols-1 sm:grid-cols-3">
+                        <div className="col-span-2">
+                          Please add your address first for merchant
+                        </div>
+                        <div className="col-span-1 flex items-center justify-end px-2">
+                          <Button
+                            buttonType="primary"
+                            size="sm"
+                            onClick={() => {
+                              modal.info({
+                                title: 'Choose Address',
+                                content: (
+                                  <AddressOption is_shop_address={true} />
+                                ),
+                                closeButton: false,
+                              })
+                            }}
+                          >
+                            Choose Address
+                          </Button>
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>
