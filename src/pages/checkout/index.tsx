@@ -58,10 +58,11 @@ function Checkout() {
               }
             })
 
+          //hardcode courier id
           return {
             shop_id: cartDetail.shop.id,
             voucher_shop_id: '',
-            courier_id: '',
+            courier_id: '98c1921e-b80e-40f3-9cba-fe8806097517',
             product_details,
           }
         })
@@ -74,7 +75,7 @@ function Checkout() {
       })
     }
   }, [cartList.data?.data])
-  console.log('data map terbaru', checkoutItems)
+
   return (
     <>
       <Navbar />
@@ -83,7 +84,7 @@ function Checkout() {
       <div className="container my-8 mx-auto mb-10 min-h-screen w-full px-2">
         <div className="grid grid-cols-1 gap-2 xl:grid-cols-4">
           <div className="col-span-3  flex flex-col gap-5">
-            <div className="border-grey-200 flex items-center justify-between gap-10 rounded-lg border-[1px] border-solid py-5 px-8">
+            <div className="border-grey-200 flex h-fit items-center justify-between gap-10 rounded-lg border-[1px] border-solid py-5 px-8">
               <div>
                 {!defaultAddress.isLoading ? (
                   <>
@@ -91,7 +92,7 @@ function Checkout() {
                       defaultAddress.data.data.rows
                         .filter((item) => item.is_default)
                         .map((address) => (
-                          <>
+                          <div key={address.id}>
                             <H3 className="mb-1 font-bold">
                               Shipping Address:
                             </H3>
@@ -101,7 +102,7 @@ function Checkout() {
                               {address.district}, {address.city},
                               {address.province}, Indonesia ({address.zip_code})
                             </P>
-                          </>
+                          </div>
                         ))
                     ) : (
                       <P className="font-bold">
@@ -120,7 +121,7 @@ function Checkout() {
                 onClick={() => {
                   modal.info({
                     title: 'Choose Address',
-                    content: <AddressOption />,
+                    content: <AddressOption is_shop_address={false} />,
                     closeButton: false,
                   })
                 }}
@@ -220,7 +221,7 @@ function Checkout() {
           </div>
           <div>
             <div className="col-span-3  flex flex-col gap-5">
-              <div className="border-grey-200 flex h-full items-center justify-center gap-10 rounded-lg border-[1px] border-solid py-5 px-8">
+              <div className="border-grey-200 flex h-fit  items-center justify-center gap-10 rounded-lg border-[1px] border-solid py-8 px-8">
                 <div className="dropdown">
                   <label
                     tabIndex={0}

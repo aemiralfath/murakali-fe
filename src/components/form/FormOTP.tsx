@@ -49,6 +49,8 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType }) => {
   useEffect(() => {
     if (userSendEmailChangePassword.isSuccess) {
       toast.success('OTP has been sended to your email')
+      setMinute(2)
+      setSecond(59)
     }
   }, [userSendEmailChangePassword.isSuccess])
 
@@ -96,7 +98,7 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType }) => {
       >
         <TextInput
           className="  input-bordered input w-full border-white bg-transparent text-center text-black "
-          type="number"
+          type="text"
           name="otp"
           min={0}
           placeholder="XXXXXX"

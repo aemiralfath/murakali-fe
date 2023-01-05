@@ -1,10 +1,10 @@
 import sealabs from '../../public/asset/sealabs.png'
-
+import wallet from '../../public/asset/wallet.png'
 const paymentOptionData = [
   {
     id: 0,
     name: 'Wallet',
-    image: sealabs.src,
+    image: wallet.src,
   },
   {
     id: 1,

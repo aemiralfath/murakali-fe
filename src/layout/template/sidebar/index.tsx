@@ -1,12 +1,68 @@
-import { Avatar, Button, H3, Icon, TextInput } from '@/components'
-import hoverCartData from '@/dummy/hoverCartData'
+import { Avatar, H3, Icon } from '@/components'
+import cx from '@/helper/cx'
+
 import { useMediaQuery, useUser } from '@/hooks'
 import { Menu, Transition } from '@headlessui/react'
-import Link from 'next/link'
-import React, { Fragment, useState } from 'react'
-import { HiHeart, HiMenu, HiSearch, HiShoppingCart } from 'react-icons/hi'
+import { useRouter } from 'next/router'
 
-import type { CartData } from '@/types/api/cart'
+import React, { Fragment, useState } from 'react'
+import { HiMenu } from 'react-icons/hi'
+import {
+  FaShoppingBag,
+  FaPercent,
+  FaBook,
+  FaBoxOpen,
+  FaPeopleCarry,
+  FaWallet,
+} from 'react-icons/fa'
+
+export type ValidPage =
+  | 'order'
+  | 'promotion'
+  | 'shop'
+  | 'product'
+  | 'delivery-service'
+  | 'wallet'
+
+interface SellerSideBarProps {
+  selectedPage: ValidPage
+}
+
+interface SideBarMenuProps {
+  icon: React.ReactNode
+  title: string
+  link: ValidPage
+  active: boolean
+}
+
+const SideBarMenu: React.FC<SideBarMenuProps> = ({
+  icon,
+  title,
+  link,
+  active,
+}) => {
+  const router = useRouter()
+  return (
+    <button
+      className={cx(
+        'px-6 py-4 transition-all',
+        active
+          ? ' font-bold text-white'
+          : 'hover:bg-white hover:bg-opacity-20 hover:font-bold hover:text-primary'
+      )}
+      onClick={() => {
+        if (!active) {
+          router.push(`/${link}`)
+        }
+      }}
+    >
+      <div className="flex-column flex items-center gap-x-2 text-left text-lg text-white">
+        <div>{icon}</div>
+        <span className=" line-clamp-1">{title}</span>
+      </div>
+    </button>
+  )
+}
 
 const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
   return (
@@ -69,39 +125,80 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
   )
 }
 
-const SellerPanelSideBar: React.FC = () => {
+const SellerPanelSideBar: React.FC<SellerSideBarProps> = ({ selectedPage }) => {
   const [navbarOpen, setNavbarOpen] = useState(false)
-  const [keyword, setKeyword] = useState<string>('')
+
   const { user } = useUser()
 
   const sm = useMediaQuery('sm')
+
+  const items: Array<SideBarMenuProps> = [
+    {
+      link: 'order',
+      title: 'Order',
+      icon: <FaBook />,
+      active: selectedPage === 'order',
+    },
+    {
+      link: 'promotion',
+      title: 'Promotion',
+      icon: <FaPercent />,
+      active: selectedPage === 'promotion',
+    },
+    {
+      link: 'shop',
+      title: 'Shop',
+      icon: <FaShoppingBag />,
+      active: selectedPage === 'shop',
+    },
+    {
+      link: 'product',
+      title: 'Product',
+      icon: <FaBoxOpen />,
+      active: selectedPage === 'product',
+    },
+    {
+      link: 'delivery-service',
+      title: 'Selivery Service',
+      icon: <FaPeopleCarry />,
+      active: selectedPage === 'delivery-service',
+    },
+    {
+      link: 'wallet',
+      title: 'Wallet',
+      icon: <FaWallet />,
+      active: selectedPage === 'wallet',
+    },
+  ]
 
   return (
     <>
       <nav
         className={`relative flex flex-wrap items-center justify-between bg-primary px-2 py-5`}
       >
-        <div className="container mx-auto flex flex-wrap items-center justify-between gap-5 px-5">
-          <div className="relative flex justify-between">
+        <div className="mx-auto flex w-screen flex-wrap items-center justify-between gap-2 px-3">
+          <div className="relative flex justify-between ">
             <div className="mx-1 flex max-w-[2rem] items-center sm:max-w-[6rem]">
               <Icon color="white" small={!sm} />
             </div>
           </div>
-          <div className="relative flex-1">
+          <div className="relative flex flex-1 items-center text-white">
             <H3>Seller Panel</H3>
           </div>
-
-          <div className={'hidden items-center md:flex'}>
-            <ul className="flex list-none flex-col md:ml-auto md:flex-row">
-              <li className="nav-item mx-6 flex items-center">
-                <div className="h-full w-[1px] bg-white"></div>
-              </li>
-              <li className="nav-item flex items-center">
-                <AvatarMenu url={user.photo_url} />
-              </li>
-            </ul>
-          </div>
-
+          {user ? (
+            <div className={'hidden items-center md:flex'}>
+              <ul className="flex list-none flex-col md:ml-auto md:flex-row">
+                <li className="nav-item mx-6 flex items-center">
+                  <div className="h-full w-[1px] bg-white"></div>
+                </li>
+                <li className="nav-item flex items-center">
+                  <AvatarMenu url={user.photo_url} />
+                </li>
+              </ul>
+            </div>
+          ) : (
+            <></>
+          )}
           <button
             className="bg-transparent text-2xl text-white md:hidden"
             type="button"
@@ -122,14 +219,26 @@ const SellerPanelSideBar: React.FC = () => {
         className={'block origin-top md:hidden'}
       >
         <div className="bg-primary px-5 pb-3">
-          <ul className="container mx-auto flex list-none flex-col gap-2">
-            <li className="nav-item flex items-center gap-2 text-sm text-white hover:opacity-75">
-              <Avatar size="sm" url={user.photo_url} />
-              <div>{user.full_name}</div>
-            </li>
-          </ul>
+          {user ? (
+            <ul className="container mx-auto flex list-none flex-col gap-2">
+              <li className="nav-item flex items-center gap-2 text-sm text-white hover:opacity-75">
+                <Avatar size="sm" url={user.photo_url} />
+                <div>{user.full_name}</div>
+              </li>
+            </ul>
+          ) : (
+            <></>
+          )}
         </div>
       </Transition>
+
+      <div className="h-screen w-64 bg-primary py-5">
+        <div className="flex flex-col gap-2 py-4">
+          {items.map((item, idx) => (
+            <SideBarMenu key={idx} {...item} />
+          ))}
+        </div>
+      </div>
     </>
   )
 }

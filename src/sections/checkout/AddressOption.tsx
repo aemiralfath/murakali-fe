@@ -9,8 +9,11 @@ import type { AxiosError } from 'axios'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
+interface AddressOptionProps {
+  is_shop_address: boolean
+}
 
-function AddressOption() {
+const AddressOption: React.FC<AddressOptionProps> = ({ is_shop_address }) => {
   const [selected, setSelected] = useState<string>('')
   const [page, setPage] = useState<number>(1)
   const userAllAddress = useGetAllAddress(page)
@@ -44,6 +47,11 @@ function AddressOption() {
         }
       }
 
+      let isDefault = userAllAddress.data?.data?.rows[index].is_default
+      let isShopDefault = userAllAddress.data?.data?.rows[index].is_shop_default
+
+      is_shop_address ? (isShopDefault = true) : (isDefault = true)
+
       const temp: AddressDetail = {
         id: selected,
         user_id: '',
@@ -56,8 +64,8 @@ function AddressOption() {
         sub_district: userAllAddress.data?.data?.rows[index].sub_district,
         zip_code: userAllAddress.data?.data?.rows[index].zip_code,
         address_detail: userAllAddress.data?.data?.rows[index].address_detail,
-        is_default: true,
-        is_shop_default: userAllAddress.data?.data?.rows[index].is_shop_default,
+        is_default: isDefault,
+        is_shop_default: isShopDefault,
       }
 
       editAddress.mutate(temp)
@@ -99,9 +107,9 @@ function AddressOption() {
                           , Indonesia ({address.zip_code})
                         </P>
                         <div className="flex flex-wrap gap-2">
-                          {address.is_default ? (
+                          {address.is_shop_default ? (
                             <>
-                              <Chip>Shipping Address</Chip>
+                              <Chip>Shop Shipping Address</Chip>
                             </>
                           ) : (
                             <></>
@@ -132,7 +140,11 @@ function AddressOption() {
                   onClick={() => {
                     setPage(index + 1)
                   }}
-                  className={index + 1 === page ? 'btn btn-active' : 'btn'}
+                  className={
+                    index + 1 === page
+                      ? 'btn btn-active'
+                      : 'btn-outline btn btn-primary'
+                  }
                 >
                   {index + 1}
                 </button>
@@ -145,7 +157,8 @@ function AddressOption() {
       <div className="my-2 flex justify-end gap-2">
         <Button
           type="button"
-          buttonType="gray"
+          buttonType="primary"
+          outlined
           onClick={() => {
             dispatch(closeModal())
           }}

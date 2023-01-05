@@ -2,12 +2,18 @@ import React from 'react'
 import { HiUser } from 'react-icons/hi'
 
 const Avatar: React.FC<{
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'sm' | 'md' | 'lg' | 'xl'
   isLoading?: boolean
   url?: string
 }> = ({ size = 'md', isLoading, url }) => {
   const computedSize =
-    size === 'sm' ? `h-6 w-6` : size === 'lg' ? 'h-48 w-48' : 'h-8 w-8'
+    size === 'sm'
+      ? `h-6 w-6`
+      : size === 'lg'
+      ? 'h-14 w-14'
+      : size === 'xl'
+      ? 'h-48 w-48'
+      : 'h-8 w-8'
 
   return (
     <div className={`rounded-full p-[2px]`}>
@@ -20,7 +26,7 @@ const Avatar: React.FC<{
             ? {
                 backgroundImage: `url(${url})`,
               }
-            : { backgroundColor: '#fff' }
+            : { backgroundColor: '#E6E6E6' }
         }
       >
         {url ? <></> : <HiUser />}

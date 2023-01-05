@@ -11,6 +11,7 @@ interface SelectInputProps
   data?: string[]
   selectedData: (data: string) => void
   isLoading?: boolean
+  placeholder: string
 }
 
 const SelectComboBox: React.FC<SelectInputProps> = ({
@@ -19,15 +20,15 @@ const SelectComboBox: React.FC<SelectInputProps> = ({
   data,
   selectedData,
   isLoading,
+  placeholder,
   ...rest
 }) => {
   const [query, setQuery] = useState('')
-  const [placeholder, setPlaceholder] = useState('select')
+
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
     if (selectedEdit && isEdit) {
-      setPlaceholder(selectedEdit)
       selectedData(selectedEdit)
       setIsOpen(false)
     }
@@ -47,11 +48,6 @@ const SelectComboBox: React.FC<SelectInputProps> = ({
           })
   }
 
-  useEffect(() => {
-    if (data?.length === 0) {
-      setPlaceholder('select')
-    }
-  }, [data])
   return (
     <Combobox>
       <div className="relative">
@@ -64,17 +60,22 @@ const SelectComboBox: React.FC<SelectInputProps> = ({
           onFocus={() => {
             setIsOpen(true)
           }}
-          value={placeholder}
+          onBlur={() => {
+            setTimeout(() => {
+              setIsOpen(false)
+            }, 200)
+          }}
+          value={query}
           placeholder={data ? placeholder : '-'}
           className={cx(
-            'input-bordered input w-full',
+            'input-bordered input w-full placeholder-black',
             data
               ? data.length === 0
                 ? 'input-disabled'
                 : ''
               : 'input-disabled'
           )}
-          required={rest.required}
+          required={placeholder === '' ? rest.required : false}
         />
         <div className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 transform justify-end">
           {isLoading ? (
@@ -91,12 +92,12 @@ const SelectComboBox: React.FC<SelectInputProps> = ({
             enter="transition-opacity duration-75"
             enterFrom="scale-x-0"
             enterTo="opacity-100"
-            leave="transition-opacity duration-150"
+            leave="transition-opacity duration-75"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
             <Combobox.Options
-              className="absolute z-50 max-h-48 w-full overflow-y-scroll rounded border bg-white shadow"
+              className=" absolute z-50 max-h-48 w-full overflow-y-scroll rounded border bg-white shadow"
               static={isOpen}
             >
               {filteredData.map((dataDetail, index) => (
@@ -105,7 +106,6 @@ const SelectComboBox: React.FC<SelectInputProps> = ({
                     onClick={() => {
                       selectedData(dataDetail)
                       setQuery('')
-                      setPlaceholder(dataDetail)
                       setIsOpen(false)
                     }}
                     key={index}

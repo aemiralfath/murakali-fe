@@ -20,6 +20,12 @@ const useUser = () => {
     }
   }, [userProfile.data])
 
+  useEffect(() => {
+    if (userProfile.isError) {
+      setUser(null)
+    }
+  }, [userProfile.isError])
+
   return { user, isLoading }
 }
 
