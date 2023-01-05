@@ -17,7 +17,6 @@ function ListOrderDeliveryService() {
   const router = useRouter()
   const [orderStatusID, setOrderStatusID] = useState('')
   const sellerOrders = useSellerOrders(orderStatusID)
-  // setSellerOrders(useSellerOrders(orderStatusID))
   const orderStatuses = orderStatusData
 
   const formatSub = (pagination?: PaginationData<OrderData>) => {
@@ -106,16 +105,18 @@ function ListOrderDeliveryService() {
   }
 
   useEffect(() => {
-    router.push({
-      pathname: '/seller-panel/orders',
-      query: {
-        order_status: orderStatusID,
-      },
-    })
-    // setSellerOrders(useSellerOrders(orderStatusID))
-    // return () => {
-    //   second
-    // }
+    if (orderStatusID === '') {
+      router.push({
+        pathname: '/seller-panel/orders',
+      })
+    } else {
+      router.push({
+        pathname: '/seller-panel/orders',
+        query: {
+          order_status: orderStatusID,
+        },
+      })
+    }
   }, [orderStatusID])
 
   return (
