@@ -3,12 +3,16 @@ import hoverCartData from '@/dummy/hoverCartData'
 import { useHover, useMediaQuery, useUser } from '@/hooks'
 import { Menu, Transition } from '@headlessui/react'
 import Link from 'next/link'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { HiHeart, HiMenu, HiSearch, HiShoppingCart } from 'react-icons/hi'
 
 import type { CartData } from '@/types/api/cart'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
+import { useLogout } from '@/api/auth/logout'
+import toast from 'react-hot-toast'
+import type { AxiosError } from 'axios'
+import type { APIResponse } from '@/types/api/response'
 
 const HoverableCartButton: React.FC<{ cart: CartData[] }> = ({ cart }) => {
   const [cartRef, isCartHover] = useHover()
@@ -87,6 +91,24 @@ const HoverableCartButton: React.FC<{ cart: CartData[] }> = ({ cart }) => {
 
 const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
   const router = useRouter()
+
+  const logout = useLogout()
+
+  useEffect(() => {
+    if (logout.isSuccess) {
+      toast.success('Logout Success')
+      router.push('/')
+    }
+  }, [logout.isSuccess])
+  useEffect(() => {
+    if (logout.isError) {
+      const reason = logout.failureReason as AxiosError<APIResponse<null>>
+      toast.error(
+        reason.response ? reason.response.data.message : reason.message
+      )
+    }
+  }, [logout.isError])
+
   return (
     <Menu as="div" className="relative h-full">
       <Menu.Button className="inline-flex h-full items-center">
@@ -138,6 +160,7 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
                     ? 'bg-primary bg-opacity-10 text-primary'
                     : 'text-gray-900'
                 } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                onClick={() => logout.mutate()}
               >
                 Logout
               </button>
@@ -316,9 +339,16 @@ const Navbar: React.FC = () => {
                   <div>Favorites</div>
                 </Link>
               </li>
-              <li className="nav-item flex items-center gap-2 text-sm text-white hover:opacity-75">
-                <Avatar size="sm" url={user.photo_url} />
-                <div>{user.full_name}</div>
+              <li className="nav-item">
+                <Link
+                  href={`/profile`}
+                  className={
+                    'flex items-center gap-2 text-sm text-white hover:opacity-75'
+                  }
+                >
+                  <Avatar size="sm" url={user.photo_url} />
+                  <div>{user.full_name}</div>
+                </Link>
               </li>
             </ul>
           )}

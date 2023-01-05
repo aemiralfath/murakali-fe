@@ -29,7 +29,6 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({ postCheckout }) => {
   function handleTransaction() {
     //hardcode wallet id
     postCheckout.wallet_id = '60a54e99-33a7-40d8-8ed0-979413a8c33d'
-    console.log('post checkout data', postCheckout)
 
     if (selected === 0) {
       createTransaction.mutate(postCheckout)
@@ -40,7 +39,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({ postCheckout }) => {
     if (createTransaction.isSuccess) {
       toast.success('Checkout Success')
       dispatch(closeModal())
-      router.push('/my-transaction')
+      router.push('/profile/transaction-history')
     }
   }, [createTransaction.isSuccess])
 
