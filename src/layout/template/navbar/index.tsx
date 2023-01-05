@@ -19,7 +19,7 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
   isLogin,
 }) => {
   const [cartRef, isCartHover] = useHover()
-
+  const router = useRouter()
   return (
     <div className="nav-item relative" ref={cartRef}>
       <Link
@@ -46,50 +46,76 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
             <div className="grid grid-cols-1 divide-y">
               {isLogin ? (
                 <>
-                  {cart.map((data, idx) => {
-                    return (
-                      <div key={idx} className="flex py-2">
-                        <Image
-                          width={60}
-                          height={60}
-                          src={data.thumbnail_url}
-                          alt={data.title}
-                          className={'aspect-square h-[4.5rem] w-[4.5rem]'}
-                        />
-                        <div className="flex flex-1 flex-col gap-2 px-2">
-                          <div className="mt-1 font-semibold leading-4 line-clamp-2">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Porro, voluptate unde! Placeat aliquam eum
-                            veritatis nisi doloribus rerum fuga iste.
+                  {cart && cart.length > 0 ? (
+                    cart.map((data, idx) => {
+                      return (
+                        <div key={idx} className="flex py-2">
+                          <Image
+                            width={60}
+                            height={60}
+                            src={data.thumbnail_url}
+                            alt={data.title}
+                            className={'aspect-square h-[4.5rem] w-[4.5rem]'}
+                          />
+                          <div className="flex flex-1 flex-col gap-2 px-2">
+                            <div className="mt-1 font-semibold leading-4 line-clamp-2">
+                              Lorem ipsum dolor sit amet consectetur adipisicing
+                              elit. Porro, voluptate unde! Placeat aliquam eum
+                              veritatis nisi doloribus rerum fuga iste.
+                            </div>
+                            <div className="text-sm text-gray-400">
+                              {data.variant_name}: {data.variant_type}
+                            </div>
                           </div>
-                          <div className="text-sm text-gray-400">
-                            {data.variant_name}: {data.variant_type}
-                          </div>
-                        </div>
-                        <div className="flex w-[6rem] flex-col overflow-ellipsis text-right">
-                          <div className="text-lg font-semibold">Rp10.000</div>
-                          <div className="flex flex-1 justify-end gap-1 text-xs">
-                            <div className="font-light text-gray-400 line-through">
+                          <div className="flex w-[6rem] flex-col overflow-ellipsis text-right">
+                            <div className="text-lg font-semibold">
                               Rp10.000
                             </div>
-                            <div className="font-bold text-error">-80%</div>
-                          </div>
-                          <div className="text-sm text-gray-400">
-                            Qty: {data.quantity}
+                            <div className="flex flex-1 justify-end gap-1 text-xs">
+                              <div className="font-light text-gray-400 line-through">
+                                Rp10.000
+                              </div>
+                              <div className="font-bold text-error">-80%</div>
+                            </div>
+                            <div className="text-sm text-gray-400">
+                              Qty: {data.quantity}
+                            </div>
                           </div>
                         </div>
+                      )
+                    })
+                  ) : (
+                    <div className="flex py-2">
+                      <div className="flex flex-1 flex-col gap-2 px-2">
+                        <div className="mt-1 text-center font-semibold leading-4 line-clamp-2">
+                          No item in cart
+                        </div>
                       </div>
-                    )
-                  })}
+                    </div>
+                  )}
                 </>
               ) : (
-                <>No item in cart</>
+                <div className="flex py-2">
+                  <div className="flex flex-1 flex-col gap-2 px-2">
+                    <div className="mt-1 text-center font-semibold leading-4">
+                      Please login to see your cart
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
             <div className="my-2 flex justify-end">
-              <Button size="sm" buttonType="ghost">
-                See More
-              </Button>
+              {isLogin ? (
+                <Button
+                  size="sm"
+                  buttonType="ghost"
+                  onClick={() => {
+                    router.push('/cart')
+                  }}
+                >
+                  See More
+                </Button>
+              ) : null}
             </div>
           </div>
         </div>
@@ -188,8 +214,6 @@ const Navbar: React.FC = () => {
 
   const sm = useMediaQuery('sm')
   const cart: CartData[] = hoverCartData
-
-  console.log(user ? user : null)
 
   return (
     <>
