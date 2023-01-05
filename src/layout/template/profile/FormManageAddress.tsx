@@ -14,8 +14,6 @@ import { closeModal } from '@/redux/reducer/modalReducer'
 import type { AxiosError } from 'axios'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { getCookie } from 'cookies-next'
-import jwt_decode from 'jwt-decode'
 
 interface FormManageAddressProps {
   isEdit: boolean
@@ -26,11 +24,6 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
   isEdit,
   editData,
 }) => {
-  const token = getCookie('access_token')
-
-  const decoded = jwt_decode(String(token))
-
-  console.log(decoded)
   const addressInit: AddressDetail = {
     id: '',
     user_id: '',
