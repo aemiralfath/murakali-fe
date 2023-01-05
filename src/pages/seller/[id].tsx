@@ -1,5 +1,6 @@
 import { useGetSellerProduct } from '@/api/product'
 import { useGetSellerInfo } from '@/api/seller'
+import { useGetSellerCategory } from '@/api/seller/category'
 import { Avatar, H3 } from '@/components'
 import cx from '@/helper/cx'
 import MainLayout from '@/layout/MainLayout'
@@ -8,21 +9,27 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 
 function Seller() {
-  const product = useGetSellerProduct(
-    2,
-    1,
-    'rose'
-    // 'test2',
-    // 'abc',
-    // 'categoryName',
-    // 'asc'
-  )
-  const param = useRouter()
-  const sellerProfile = useGetSellerInfo(param.query.id as string)
-
   const [selectedTab, setSelectedTab] = useState('')
+  const param = useRouter()
 
+  const product = useGetSellerProduct(
+    1,
+    10,
+    '',
+    selectedTab,
+    param.query.id as string,
+    '',
+    '',
+    0,
+    0,
+    0,
+    0
+  )
+
+  const sellerProfile = useGetSellerInfo(param.query.id as string)
+  const sellerCategory = useGetSellerCategory(param.query.id as string)
   return (
+    // bikin fungsi untuk ngefetch category product sesuai dengan category yg dipilih
     <>
       <div>
         <Head>
@@ -64,42 +71,31 @@ function Seller() {
               </div>
             </div>
           </div>
-          <div className="flex-grow ">
-            <div className="tabs tabs-boxed flex justify-between bg-base-300">
+          <div className="flex-grow  overflow-x-auto">
+            <div className="tabs tabs-boxed min-w-fit flex-nowrap justify-start bg-base-300">
               <button
-                onClick={() => setSelectedTab('tab-1')}
+                onClick={() => setSelectedTab('')}
                 className={cx(
                   ' tab-lg my-auto flex w-52 items-center justify-center text-center',
-                  selectedTab === 'tab-1' ? 'tab-active' : ''
+                  selectedTab === '' ? 'tab-active' : ''
                 )}
               >
-                Shipping Option
+                All Item
               </button>
-              <a className="tab-lg my-auto flex w-52 items-center justify-center text-center">
-                Tab 2
-              </a>
-              <a className="tab-lg my-auto flex w-52 items-center justify-center text-center">
-                Tab 3
-              </a>
-              <div className="dropdown">
-                <label
-                  tabIndex={0}
-                  className="btn-outline btn-primary  btn m-1 gap-2"
-                >
-                  Shipping Option
-                </label>
-                <ul
-                  tabIndex={0}
-                  className="dropdown-content menu rounded-box z-50 w-52 bg-base-100 p-2 shadow"
-                >
-                  <li>
-                    <a>Item 1</a>
-                  </li>
-                  <li>
-                    <a>Item 2</a>
-                  </li>
-                </ul>
-              </div>
+              {sellerCategory.data?.data.map((item, index) => {
+                return (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedTab(item.name)}
+                    className={cx(
+                      ' tab-lg my-auto flex w-52 items-center justify-center text-center',
+                      selectedTab === item.name ? 'tab-active' : ''
+                    )}
+                  >
+                    {item.name}
+                  </button>
+                )
+              })}
             </div>
           </div>
         </MainLayout>
