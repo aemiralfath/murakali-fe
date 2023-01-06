@@ -15,7 +15,7 @@ const Table: React.FC<TableProps> = ({ data, isLoading, clickableColumn }) => {
   const columnNames = Object.keys(data[0])
 
   return (
-    <table className="min-w-full divide-y overflow-x-auto border bg-gray-300 ">
+    <table className="w-fit divide-y overflow-auto border">
       <thead>
         <tr className="divide-x">
           {columnNames.map((column, idx) => {
@@ -31,7 +31,7 @@ const Table: React.FC<TableProps> = ({ data, isLoading, clickableColumn }) => {
                 scope="col"
                 className={
                   isLoading
-                    ? 'animate-pulse rounded-lg bg-slate-300 px-6 py-3 text-left text-transparent'
+                    ? 'animate-pulse bg-base-300 px-6 py-3 text-left text-transparent'
                     : 'w-[9rem] px-6 py-3 text-left'
                 }
               >
