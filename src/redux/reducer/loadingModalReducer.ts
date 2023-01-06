@@ -1,25 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 export interface LoadingModalState {
-  isOpen: boolean
+  isLoadingOpen: boolean
 }
 
 const initialState: LoadingModalState = {
-  isOpen: false,
+  isLoadingOpen: false,
 }
 
 export const loadingModalSlice = createSlice({
   name: 'modal',
   initialState,
   reducers: {
-    openModal: (state) => {
-      state.isOpen = true
+    openLoadingModal: (state) => {
+      state.isLoadingOpen = true
     },
-    closeModal: (state) => {
-      state.isOpen = false
+    closeLoadingModal: (state) => {
+      state.isLoadingOpen = false
     },
   },
 })
 
-export const { openModal, closeModal } = loadingModalSlice.actions
+export const { openLoadingModal, closeLoadingModal } = loadingModalSlice.actions
 export default loadingModalSlice.reducer

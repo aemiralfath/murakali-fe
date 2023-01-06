@@ -1,16 +1,19 @@
-import { closeModal, openModal } from '@/redux/reducer/loadingModalReducer'
+import {
+  closeLoadingModal,
+  openLoadingModal,
+} from '@/redux/reducer/loadingModalReducer'
 import { useEffect, useState } from 'react'
 import { useDispatch } from '.'
 
 function useLoadingModal() {
   const dispatch = useDispatch()
-  const [isLoading, setIsLoading] = useState()
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     if (isLoading) {
-      dispatch(openModal())
+      dispatch(openLoadingModal())
     } else {
-      dispatch(closeModal())
+      dispatch(closeLoadingModal())
     }
   }, [isLoading])
 
