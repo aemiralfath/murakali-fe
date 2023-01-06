@@ -1,9 +1,7 @@
 import { useSellerOrders } from '@/api/seller/order'
-import { Button, Divider } from '@/components'
+import { Button, H2 } from '@/components'
 import Table from '@/components/table'
 import orderStatusData from '@/dummy/orderStatusData'
-import SectionOneSideBar from '@/layout/template/sidebar/sectionOne'
-import SectionTwoSideBar from '@/layout/template/sidebar/sectionTwo'
 import type { OrderData } from '@/types/api/order'
 import type { PaginationData } from '@/types/api/response'
 import moment from 'moment'
@@ -12,6 +10,9 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import type { MouseEvent } from 'react'
+import SellerPanelLayout from '@/layout/SellerPanelLayout'
+import cx from '@/helper/cx'
+import formatMoney from '@/helper/formatMoney'
 
 function ListOrderDeliveryService() {
   const router = useRouter()
@@ -21,7 +22,7 @@ function ListOrderDeliveryService() {
 
   const formatSub = (pagination?: PaginationData<OrderData>) => {
     if (pagination) {
-      if (pagination.rows.length) {
+      if (pagination.rows?.length) {
         return pagination.rows.map((data) => {
           return {
             Product: (
@@ -53,29 +54,35 @@ function ListOrderDeliveryService() {
             ),
             Price: (
               <div className="inline-block align-text-top">
-                {data.total_price}
+                Rp{formatMoney(data.total_price)}
               </div>
             ),
-            Status: data.order_status,
+            Status: orderStatusData.find((s) => s.id === `${data.order_status}`)
+              .name,
             'Transaction Date': (
               <div>{moment(data.created_at).format('DD MMMM YYYY')}</div>
             ),
             Action: (
-              <div className="flex flex-col">
-                <Button buttonType="primary" size="sm">
+              <div className="flex w-fit flex-col gap-1">
+                <Button buttonType="ghost" size="sm" className="rounded">
                   Look Detail
                 </Button>
                 {data.order_status === 2 ? (
                   <>
-                    <Button buttonType="primary" size="sm">
+                    <Button buttonType="primary" size="sm" className="rounded">
                       Confirm
                     </Button>
-                    <Button buttonType="primary" size="sm">
+                    <Button
+                      buttonType="primary"
+                      outlined
+                      size="sm"
+                      className="rounded"
+                    >
                       Cancel
                     </Button>
                   </>
                 ) : data.order_status === 3 ? (
-                  <Button buttonType="primary" size="sm">
+                  <Button buttonType="primary" size="sm" className="rounded">
                     Create Package
                   </Button>
                 ) : (
@@ -124,22 +131,16 @@ function ListOrderDeliveryService() {
       <Head>
         <title>Murakali | Seller Panel</title>
       </Head>
-      <SectionOneSideBar />
-      <div className="flex">
-        <SectionTwoSideBar selectedPage="order" />
-        <div
-          className="border-grey-200 z-10 m-5 flex h-full w-full max-w-full flex-col 
-        items-center overflow-auto rounded-lg border-[1px] border-solid py-7 px-8"
-        >
-          <div className="my-4 flex w-full space-x-10">
+      <SellerPanelLayout selectedPage="order">
+        <H2>Order</H2>
+        <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
+          <div className="my-4 flex h-fit w-fit max-w-full space-x-10 overflow-x-auto whitespace-nowrap border-b-[2px]">
             <button
               onClick={(e) => ChangeOrderStatusPage(e)}
-              value=""
-              className={
-                orderStatusID === ''
-                  ? 'h-full flex-none border-b-4 border-indigo-600'
-                  : 'flex-none'
-              }
+              className={cx(
+                '-mb-[2px] h-fit border-b-[3px] py-1 transition-all',
+                orderStatusID === '' ? 'border-primary' : 'border-transparent'
+              )}
             >
               All Order
             </button>
@@ -149,21 +150,19 @@ function ListOrderDeliveryService() {
                   key={index}
                   onClick={(e) => ChangeOrderStatusPage(e)}
                   value={status.id}
-                  className={
+                  className={cx(
+                    '-mb-[2px] h-full whitespace-nowrap border-b-[3px] py-1 transition-all',
                     orderStatusID === status.id
-                      ? 'h-full flex-none border-b-4 border-indigo-600'
-                      : 'flex-none'
-                  }
+                      ? 'border-primary'
+                      : 'border-transparent'
+                  )}
                 >
                   {status.name}
                 </button>
               )
             })}
           </div>
-          <div className="my-4">
-            <Divider />
-          </div>
-          <div className="item-left w-full">
+          <div className="max-w-full overflow-auto">
             {sellerOrders.isLoading ? (
               <Table data={formatSub()} isLoading />
             ) : sellerOrders.isSuccess ? (
@@ -176,7 +175,7 @@ function ListOrderDeliveryService() {
             )}
           </div>
         </div>
-      </div>
+      </SellerPanelLayout>
     </div>
   )
 }

@@ -204,7 +204,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
       zip_code: input.zip_code,
       address_detail: input.address_detail,
       is_default: selected[0],
-      is_shop_default: selected[1],
+      is_shop_default: input.is_shop_default,
     }
 
     if (!isEdit) {
@@ -427,7 +427,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
               />
               Choose as Shipping Address
             </label>
-            <label className=" flex gap-2 text-sm font-medium text-gray-900 dark:text-white">
+            {/* <label className=" flex gap-2 text-sm font-medium text-gray-900 dark:text-white">
               <input
                 type="checkbox"
                 name={'shopaddress'}
@@ -436,7 +436,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
                 onChange={handleChangeCheckbox}
               />
               Choose as Shop Address
-            </label>
+            </label> */}
           </div>
 
           <div className="flex justify-end gap-2">

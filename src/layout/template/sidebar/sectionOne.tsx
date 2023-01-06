@@ -1,4 +1,4 @@
-import { Avatar, H3, Icon } from '@/components'
+import { Avatar, Icon } from '@/components'
 
 import { useMediaQuery, useUser } from '@/hooks'
 import { Menu, Transition } from '@headlessui/react'
@@ -77,22 +77,22 @@ const SectionOneSideBar: React.FC = ({}) => {
   return (
     <>
       <nav
-        className={`relative flex flex-wrap items-center justify-between bg-primary px-2 py-5`}
+        className={`relative flex flex-wrap items-center justify-between bg-white px-2 py-5 shadow-md`}
       >
         <div className="mx-auto flex w-screen flex-wrap items-center justify-between gap-2 px-3">
           <div className="relative flex justify-between ">
             <div className="mx-1 flex max-w-[2rem] items-center sm:max-w-[6rem]">
-              <Icon color="white" small={!sm} />
+              <Icon color="primary" small={!sm} />
             </div>
           </div>
-          <div className="relative flex flex-1 items-center text-white">
-            <H3>Seller Panel</H3>
+          <div className="text-heading relative flex flex-1 items-center text-xl font-semibold text-primary">
+            Seller Panel
           </div>
           {user ? (
             <div className={'hidden items-center md:flex'}>
               <ul className="flex list-none flex-col md:ml-auto md:flex-row">
                 <li className="nav-item mx-6 flex items-center">
-                  <div className="h-full w-[1px] bg-white"></div>
+                  <div className="h-full w-[1px] bg-base-300"></div>
                 </li>
                 <li className="nav-item flex items-center">
                   <AvatarMenu url={user.photo_url} />

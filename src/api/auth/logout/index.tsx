@@ -1,6 +1,7 @@
 import { authorizedClient } from '@/api/apiClient'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import type { APIResponse } from '@/types/api/response'
+import { deleteCookie } from 'cookies-next'
 
 export const useLogout = () => {
   const queryClient = useQueryClient()
@@ -12,6 +13,7 @@ export const useLogout = () => {
     {
       onSuccess: () => {
         void queryClient.invalidateQueries(['profile'])
+        deleteCookie('access_token')
       },
     }
   )
