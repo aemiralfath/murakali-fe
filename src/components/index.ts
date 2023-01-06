@@ -5,6 +5,7 @@ import Chip from './chip'
 import Divider from './divider'
 import Icon from './icon'
 import IconLoading from './iconLoading'
+import LoadingModal from './loadingModal'
 import NumberInput from './numberinput'
 import RatingStars from './ratingstars'
 import PaginationNav from './paginationNav'
@@ -22,6 +23,7 @@ export {
   Divider,
   Icon,
   IconLoading,
+  LoadingModal,
   NumberInput,
   RatingStars,
   PaginationNav,

@@ -4,6 +4,7 @@ import {
 } from './useApp'
 import useDebounce from './useDebounce'
 import useHover from './useHover'
+import useLoadingModal from './useLoadingModal'
 import useMediaQuery from './useMediaQuery'
 import useModal from './useModal'
 import usePagination from './usePagination'
@@ -16,6 +17,7 @@ export {
   useSelector,
   useDebounce,
   useHover,
+  useLoadingModal,
   useMediaQuery,
   useModal,
   usePagination,

@@ -18,6 +18,8 @@ export const useGetUserProfile = () =>
   useQuery({
     queryKey: profileKey,
     queryFn: getUserProfile,
+    retry: false,
+    refetchOnWindowFocus: false,
   })
 
 export const useEditUserProfile = () => {

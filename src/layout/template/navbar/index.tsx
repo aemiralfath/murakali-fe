@@ -1,5 +1,5 @@
 import { Avatar, Button, H2, Icon, TextInput } from '@/components'
-import { useHover, useMediaQuery, useUser } from '@/hooks'
+import { useHover, useLoadingModal, useMediaQuery, useUser } from '@/hooks'
 import { Menu, Transition } from '@headlessui/react'
 import Link from 'next/link'
 import React, { Fragment, useEffect, useState } from 'react'
@@ -224,10 +224,15 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
 const Navbar: React.FC = () => {
   const [navbarOpen, setNavbarOpen] = useState(false)
   const [keyword, setKeyword] = useState<string>('')
-  const { user } = useUser()
+  const { user, isLoading } = useUser()
 
   const sm = useMediaQuery('sm')
   const cart = useGetHoverCart()
+  const setIsLoading = useLoadingModal()
+
+  useEffect(() => {
+    setIsLoading(isLoading)
+  }, [isLoading])
 
   return (
     <>
