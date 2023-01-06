@@ -34,7 +34,7 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
   useEffect(() => {
     if (postCheckout) {
       const tempDeliveryFee: number = postCheckout.cart_items.reduce(
-        (accumulator, currentValue) => accumulator + currentValue.delivery_fee,
+        (accumulator, currentValue) => accumulator + currentValue.courier_fee,
         0
       )
       setDeliveryFee(tempDeliveryFee)
@@ -80,7 +80,7 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
         </div>
 
         <Button buttonType="primary" onClick={handleCheckout}>
-          CHECKOUT
+          Choose Payment Option
         </Button>
       </div>
     </div>

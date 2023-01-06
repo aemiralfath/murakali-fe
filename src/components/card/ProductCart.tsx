@@ -63,8 +63,8 @@ const ProductCart: React.FC<ProductCartProps> = ({
   return (
     <label>
       <div className="z-40 mb-5 rounded-lg border-[1px] border-solid border-gray-300 py-5 px-2 transition-all hover:shadow-xl sm:px-8">
-        <div className="grid grid-cols-1 gap-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6">
-          <div className="align-center  flex flex-wrap    justify-center gap-y-2 gap-x-2 ">
+        <div className="flex flex-wrap justify-around gap-3 ">
+          <div className="align-center  flex-start flex  justify-between gap-x-4 ">
             {forCart ? (
               <input
                 className="checkbox-primary checkbox my-auto"
@@ -92,7 +92,11 @@ const ProductCart: React.FC<ProductCartProps> = ({
               </>
             )}
           </div>
-          <div className={forCart ? 'col-span-2  xl:ml-8' : 'col-span-2  '}>
+          <div
+            className={
+              forCart ? 'w-80 text-center sm:text-left xl:ml-4' : 'w-80  '
+            }
+          >
             <H4>{listProduct.title}</H4>
 
             <P className="mt-3">Variant:</P>
@@ -150,12 +154,12 @@ const ProductCart: React.FC<ProductCartProps> = ({
             )}
           </div>
           {forCart ? (
-            <div className="flex items-center justify-end gap-2">
+            <div className="flex items-center justify-center gap-2">
               <button
                 onClick={() => {
                   if (listProduct.quantity <= 1) {
                     modal.edit({
-                      title: 'Delete Address',
+                      title: 'Delete Cart',
                       content: (
                         <>
                           <P>Do you really want to delete this cart?</P>

@@ -61,7 +61,7 @@ function Checkout() {
             voucher_shop_id: '',
             courier_id: '',
             product_details,
-            delivery_fee: 0,
+            courier_fee: 0,
           }
         })
       let tempWallet: string
@@ -142,7 +142,7 @@ function Checkout() {
                               checkoutItems.cart_items.map((cartDetail) => {
                                 let tempCourier: string = cartDetail.courier_id
                                 let tempDeliveryFee: number =
-                                  cartDetail.delivery_fee
+                                  cartDetail.courier_fee
                                 if (cart.shop.id === cartDetail.shop_id) {
                                   tempCourier = courierID
                                   tempDeliveryFee = deliveryFee
@@ -153,7 +153,7 @@ function Checkout() {
                                   voucher_shop_id: cartDetail.voucher_shop_id,
                                   courier_id: tempCourier,
                                   product_details: cartDetail.product_details,
-                                  delivery_fee: tempDeliveryFee,
+                                  courier_fee: tempDeliveryFee,
                                 }
                               })
                             setCheckoutItems({
@@ -189,7 +189,7 @@ function Checkout() {
                 <div className="dropdown">
                   <label
                     tabIndex={0}
-                    className="btn-outline btn-primary btn-wide btn m-1 gap-2"
+                    className="btn-outline btn-primary btn m-1 w-44 gap-2"
                   >
                     <FaTicketAlt /> Voucher Murakali
                   </label>

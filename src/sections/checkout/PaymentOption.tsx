@@ -107,7 +107,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({ postCheckout }) => {
             buttonType="primary"
             onClick={handleTransaction}
           >
-            Save
+            Checkout
           </Button>
         </div>
       </div>
