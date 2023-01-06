@@ -20,7 +20,7 @@ const Modal: React.FC = () => {
   return (
     <>
       <Transition appear show={modalState.isOpen} as={Fragment}>
-        <Dialog as="div" className={'relative z-10'} onClose={handleClose}>
+        <Dialog as="div" className={'relative z-[999]'} onClose={handleClose}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"

@@ -3,7 +3,7 @@ import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import { useModal } from '@/hooks'
 import type { PostCheckout } from '@/types/api/checkout'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PaymentOption from './PaymentOption'
 
 interface CheckoutSummaryProps {
@@ -21,6 +21,8 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
   postCheckout,
 }) => {
   const modal = useModal()
+
+  const [deliveryFee, setDeliveryFee] = useState(0)
   function handleCheckout() {
     modal.edit({
       title: 'Choose Payment Option',
@@ -28,8 +30,18 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
       closeButton: false,
     })
   }
+
+  useEffect(() => {
+    if (postCheckout) {
+      const tempDeliveryFee: number = postCheckout.cart_items.reduce(
+        (accumulator, currentValue) => accumulator + currentValue.courier_fee,
+        0
+      )
+      setDeliveryFee(tempDeliveryFee)
+    }
+  }, [postCheckout])
   return (
-    <div className=" border-grey-200 h-fit rounded-lg border-[1px] border-solid   py-10">
+    <div className=" h-fit rounded-lg border-[1px] border-solid border-gray-300   py-10">
       <H3 className="text-center">Checkout Summary</H3>
 
       <div className="flex flex-col gap-y-5 px-5 py-5">
@@ -46,6 +58,12 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
           </div>
         </div>
         <div className=" grid grid-cols-1 gap-1 lg:grid-cols-2 ">
+          <div>Delivery Fee</div>
+          <div className="flex justify-start lg:justify-end">
+            - Rp. {ConvertShowMoney(deliveryFee)}
+          </div>
+        </div>
+        <div className=" grid grid-cols-1 gap-1 lg:grid-cols-2 ">
           <div>Vocher Shop</div>
           <div className="flex justify-start lg:justify-end"> Rp. 0</div>
         </div>
@@ -57,12 +75,12 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
         <div className="grid grid-cols-1 gap-1 font-bold lg:grid-cols-2 ">
           <div>All Total</div>
           <div className="flex justify-start lg:justify-end">
-            Rp. {ConvertShowMoney(mapPriceQuantity.subPrice)}
+            Rp. {ConvertShowMoney(mapPriceQuantity.subPrice + deliveryFee)}
           </div>
         </div>
 
         <Button buttonType="primary" onClick={handleCheckout}>
-          CHECKOUT
+          Choose Payment Option
         </Button>
       </div>
     </div>

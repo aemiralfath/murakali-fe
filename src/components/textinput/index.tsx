@@ -6,7 +6,9 @@ import Spinner from '../spinner'
 interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string
   full?: boolean
+  fit?: boolean
   errorMsg?: string
+  leftIcon?: React.ReactNode
   state?: 'success' | 'error' | 'loading'
   inputSize?: 'xs' | 'sm' | 'md' | 'lg'
   transparent?: boolean
@@ -15,7 +17,9 @@ interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 const TextInput: React.FC<TextInputProps> = ({
   label,
   full,
+  fit,
   errorMsg,
+  leftIcon,
   state,
   inputSize = 'md',
   transparent,
@@ -30,6 +34,7 @@ const TextInput: React.FC<TextInputProps> = ({
       className={cx(
         'form-control relative h-fit',
         full ? 'w-full' : '',
+        fit ? 'max-w-full' : '',
         className ?? ''
       )}
     >
@@ -40,13 +45,20 @@ const TextInput: React.FC<TextInputProps> = ({
       ) : (
         <></>
       )}
-      <div className={cx('flex gap-2', full ? 'w-full' : '')}>
+      <div
+        className={cx(
+          'flex gap-2',
+          full ? 'w-full' : '',
+          fit ? 'max-w-full' : ''
+        )}
+      >
         <input
           className={cx(
             transparent
               ? 'input-bordered input border-white bg-transparent text-white placeholder:text-white'
               : 'input-bordered input',
             full ? 'w-full' : '',
+            fit ? 'max-w-full' : '',
             errorMsg ? 'input-error' : '',
             inputSize === 'xs'
               ? 'input-xs'
@@ -54,7 +66,8 @@ const TextInput: React.FC<TextInputProps> = ({
               ? 'input-sm'
               : inputSize === 'lg'
               ? 'input-lg'
-              : 'input-md'
+              : 'input-md',
+            leftIcon ? 'pl-9' : ''
           )}
           type={
             type === 'password' ? (showPassword ? 'text' : 'password') : type
@@ -62,6 +75,19 @@ const TextInput: React.FC<TextInputProps> = ({
           {...rest}
         />
       </div>
+      {leftIcon ? (
+        <div
+          className={cx(
+            'pointer-events-none absolute top-1/2 left-2 -translate-y-1/2 transform',
+            label ? 'pt-[1.65rem]' : '',
+            errorMsg ? 'pb-[1.65rem]' : ''
+          )}
+        >
+          {leftIcon}
+        </div>
+      ) : (
+        <></>
+      )}
       {type === 'password' || state ? (
         <div
           className={cx(

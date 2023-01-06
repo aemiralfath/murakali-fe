@@ -1,5 +1,5 @@
 import { authorizedClient } from '@/api/apiClient'
-import type { Cart, UpdateCart } from '@/types/api/cart'
+import type { Cart, HoverCartData, UpdateCart } from '@/types/api/cart'
 import type { APIResponse } from '@/types/api/response'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -7,12 +7,25 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 const cartKey = ['cart']
 
 const getCart = async () => {
-  const response = await authorizedClient.get<APIResponse<Cart>>('/cart/items')
+  const response = await authorizedClient.get<APIResponse<Cart>>(
+    '/cart/items?limit=100'
+  )
   return response.data
 }
 
 export const useGetCart = () => {
   return useQuery(cartKey, async () => await getCart())
+}
+
+const getHoverCart = async () => {
+  const response = await authorizedClient.get<APIResponse<HoverCartData>>(
+    '/cart/hover-home?limit=5'
+  )
+  return response.data
+}
+
+export const useGetHoverCart = () => {
+  return useQuery(cartKey, async () => await getHoverCart())
 }
 
 export const useUpdateCart = () => {

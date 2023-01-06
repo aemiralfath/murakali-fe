@@ -1,9 +1,10 @@
 import { env } from '@/env/client.mjs'
 import axios from 'axios'
+import { getCookie, setCookie } from 'cookies-next'
 
 import type { APIResponse } from '@/types/api/response'
 import type { AccessTokenData } from '@/types/api/auth'
-import { getCookie, setCookie } from 'cookies-next'
+import type { AxiosError } from 'axios'
 
 const baseURL = env.NEXT_PUBLIC_BE_URL
 
@@ -41,6 +42,15 @@ authorizedClient.interceptors.request.use(async (req) => {
         })
       }
       req.headers.Authorization = `Bearer ${res.data.message}`
+    })
+    .catch((err: Error | AxiosError) => {
+      if (axios.isAxiosError(err)) {
+        // Access to config, request, and response
+      } else {
+        // Just a stock error
+        // eslint-disable-next-line no-console
+        console.error(err)
+      }
     })
 
   return req

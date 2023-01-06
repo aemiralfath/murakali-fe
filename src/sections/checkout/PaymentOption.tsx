@@ -4,15 +4,21 @@ import paymentOptionData from '@/dummy/paymentOptionData'
 
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { PostCheckout } from '@/types/api/checkout'
-import React, { useState } from 'react'
+import type { APIResponse } from '@/types/api/response'
+import type { AxiosError } from 'axios'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 interface CheckoutSummaryProps {
   postCheckout: PostCheckout
 }
 
 const PaymentOption: React.FC<CheckoutSummaryProps> = ({ postCheckout }) => {
+  console.log(postCheckout)
   const [selected, setSelected] = useState<number>(0)
   const dispatch = useDispatch()
+  const router = useRouter()
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value
@@ -22,8 +28,30 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({ postCheckout }) => {
   const createTransaction = useCreateTransaction()
 
   function handleTransaction() {
-    createTransaction.mutate(postCheckout)
+    //hardcode wallet id
+    postCheckout.wallet_id = '60a54e99-33a7-40d8-8ed0-979413a8c33d'
+
+    if (selected === 0) {
+      createTransaction.mutate(postCheckout)
+    }
   }
+
+  useEffect(() => {
+    if (createTransaction.isSuccess) {
+      toast.success('Checkout Success')
+      dispatch(closeModal())
+      router.push('/profile/transaction-history')
+    }
+  }, [createTransaction.isSuccess])
+
+  useEffect(() => {
+    if (createTransaction.isError) {
+      const errmsg = createTransaction.error as AxiosError<APIResponse<null>>
+      toast.error(
+        errmsg.response ? errmsg.response.data.message : errmsg.message
+      )
+    }
+  }, [createTransaction.isError])
   return (
     <div>
       <div>
@@ -79,7 +107,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({ postCheckout }) => {
             buttonType="primary"
             onClick={handleTransaction}
           >
-            Save
+            Checkout
           </Button>
         </div>
       </div>

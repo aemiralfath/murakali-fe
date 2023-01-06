@@ -98,9 +98,15 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
   useEffect(() => {
     if (createAddress.isSuccess) {
       toast.success('Successfully Add Address')
+
+      void dispatch(closeModal())
+      setInput(addressInit)
     }
     if (editAddress.isSuccess) {
       toast.success('Successfully Edit Address')
+
+      void dispatch(closeModal())
+      setInput(addressInit)
     }
   }, [createAddress.isSuccess, editAddress.isSuccess])
   useEffect(() => {
@@ -198,7 +204,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
       zip_code: input.zip_code,
       address_detail: input.address_detail,
       is_default: selected[0],
-      is_shop_default: selected[1],
+      is_shop_default: input.is_shop_default,
     }
 
     if (!isEdit) {
@@ -206,9 +212,6 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
     } else {
       editAddress.mutate(temp)
     }
-
-    void dispatch(closeModal())
-    setInput(addressInit)
   }
 
   function removeFirstWord(str: string) {
@@ -220,20 +223,11 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
     return str.substring(indexOfSpace + 1)
   }
 
-  // ------ USESTATE BUAT COMBOBOX, nnti tolong dirapikan
-  // const [cities, setCities] = useState<string[]>([])
-  // useEffect(() => {
-  //   if (allCity.data?.data?.data) {
-  //     setCities(allCity.data.data.data.rows.map((data) => data.city))
-  //   }
-  // }, [allCity.data])
-  // ------ END
-
   return (
     <>
-      <div className="px-6 lg:px-8">
+      <div className=" z-auto px-6 lg:px-8">
         <form
-          className=" flex flex-col gap-y-2"
+          className=" flex flex-col gap-y-2 "
           onSubmit={(e) => {
             void handleCreateAddress(e)
             return false
@@ -267,25 +261,21 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
               data={allProvince.data?.data?.rows.map(
                 (dataDetail) => dataDetail.province
               )}
+              placeholder={input.province}
               selectedData={(data) => {
-                getAllCity(data)
-
                 setInput({
                   ...input,
                   province: data,
+                  city: '',
+                  district: '',
+                  sub_district: '',
                 })
-
+                getAllCity(data)
                 if (allSubDistrict.data?.data?.data?.rows) {
-                  setInput({
-                    ...input,
-                    district: '',
-                  })
+                  allSubDistrict.data.data.data.rows = []
                 }
                 if (allUrban.data?.data?.data?.rows) {
-                  setInput({
-                    ...input,
-                    sub_district: '',
-                  })
+                  allUrban.data.data.data.rows = []
                 }
               }}
             />
@@ -295,13 +285,12 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
             <label className=" block text-sm font-medium text-gray-900 dark:text-white">
               City
             </label>
-
             <SelectComboBox
               isLoading={allCity.isLoading ? true : undefined}
               isEdit={isEdit}
               selectedEdit={editData?.city}
               required
-              // data={cities}
+              placeholder={input.city}
               data={allCity.data?.data?.data?.rows.map(
                 (dataDetail) => dataDetail.city
               )}
@@ -310,8 +299,13 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
                 setInput({
                   ...input,
                   city: newData,
+                  district: '',
+                  sub_district: '',
                 })
                 getAllSubDistrict(newData)
+                if (allUrban.data?.data?.data?.rows) {
+                  allUrban.data.data.data.rows = []
+                }
               }}
             />
           </div>
@@ -326,6 +320,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
               isEdit={isEdit}
               selectedEdit={editData?.district}
               required
+              placeholder={input.district}
               data={
                 allSubDistrict.data?.data?.data?.rows
                   ? allSubDistrict.data.data.data.rows.map(
@@ -334,11 +329,12 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
                   : undefined
               }
               selectedData={(data) => {
-                getAllUrban(data)
                 setInput({
                   ...input,
                   district: data,
+                  sub_district: '',
                 })
+                getAllUrban(data)
               }}
             />
           </div>
@@ -351,6 +347,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
               isLoading={allUrban.isLoading ? true : undefined}
               isEdit={isEdit}
               selectedEdit={editData?.sub_district}
+              placeholder={input.sub_district}
               data={
                 allUrban.data?.data?.data?.rows
                   ? allUrban.data.data.data.rows.map(
@@ -425,6 +422,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
                 type="checkbox"
                 name={'shippingaddress'}
                 value={0}
+                checked={selected[0]}
                 onChange={handleChangeCheckbox}
               />
               Choose as Shipping Address
@@ -434,6 +432,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
                 type="checkbox"
                 name={'shopaddress'}
                 value={1}
+                checked={selected[1]}
                 onChange={handleChangeCheckbox}
               />
               Choose as Shop Address
@@ -443,7 +442,8 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
           <div className="flex justify-end gap-2">
             <Button
               type="button"
-              buttonType="accent"
+              buttonType="primary"
+              outlined
               onClick={() => {
                 setInput(addressInit)
                 dispatch(closeModal())

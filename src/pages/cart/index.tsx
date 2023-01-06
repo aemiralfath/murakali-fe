@@ -53,8 +53,6 @@ function Cart() {
     }
   }, [selectedProducts.length])
 
-  console.log(cartList.data?.data?.rows)
-  console.log(selectedProducts)
   return (
     <>
       <Navbar />
@@ -62,8 +60,8 @@ function Cart() {
 
       <div className="container my-8 mx-auto mb-10 min-h-screen w-full px-2">
         <div className="grid grid-cols-1 gap-2 xl:grid-cols-4">
-          <div className="col-span-3  flex flex-col gap-10">
-            <div className="border-grey-200 flex justify-between rounded-lg border-[1px] border-solid py-5 px-8">
+          <div className="col-span-3  flex flex-col gap-5">
+            <div className="flex justify-between rounded-lg border-[1px] border-solid border-gray-300 py-5 px-8">
               <label className="flex-start flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -148,7 +146,7 @@ function Cart() {
                 {cartList.data?.data ? (
                   cartList.data.data.rows.map((cart, index) => (
                     <div
-                      className="border-grey-200 z-10 h-full rounded-lg border-[1px] border-solid py-10 px-8"
+                      className="z-10 h-full rounded-lg border-[1px] border-solid border-gray-300 py-7 px-8"
                       key={`${cart.id} ${index}`}
                     >
                       <label className="flex-start mb-5 flex items-center gap-2">
@@ -277,11 +275,21 @@ function Cart() {
                     </div>
                   ))
                 ) : (
-                  <P className="flex w-full justify-center">Data is Empty</P>
+                  <></>
                 )}
               </>
             ) : (
               <P className="flex w-full justify-center">Loading</P>
+            )}
+
+            {cartList.data?.data?.total_pages === 0 ? (
+              <div className="z-10 flex h-full items-center rounded-lg border-[1px] border-solid border-gray-300 py-7 px-8">
+                <P className="flex w-full items-center justify-center font-extrabold">
+                  Cart is Empty!
+                </P>
+              </div>
+            ) : (
+              <></>
             )}
           </div>
           <div>

@@ -20,7 +20,7 @@ const Chip: React.FC<ChipProps> = ({
           : type === 'secondary'
           ? 'bg-secondary text-white'
           : type === 'accent'
-          ? 'bg-accent text-accent-content'
+          ? 'bg-accent text-white'
           : type === 'gray'
           ? 'bg-base-200 text-base-content'
           : type === 'success'
