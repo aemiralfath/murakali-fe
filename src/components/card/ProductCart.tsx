@@ -62,9 +62,9 @@ const ProductCart: React.FC<ProductCartProps> = ({
 
   return (
     <label>
-      <div className="border-grey-200 z-40 mb-5 rounded-lg border-[1px] border-solid py-5 px-2 transition-all hover:shadow-xl sm:px-8">
+      <div className="z-40 mb-5 rounded-lg border-[1px] border-solid border-gray-300 py-5 px-2 transition-all hover:shadow-xl sm:px-8">
         <div className="grid grid-cols-1 gap-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6">
-          <div className="align-center flex justify-center  gap-x-10 gap-y-2 ">
+          <div className="align-center  flex flex-wrap    justify-center gap-y-2 gap-x-2 ">
             {forCart ? (
               <input
                 className="checkbox-primary checkbox my-auto"
@@ -76,7 +76,7 @@ const ProductCart: React.FC<ProductCartProps> = ({
             ) : (
               <></>
             )}
-            {!listProduct.thumbnail_url ? (
+            {listProduct.thumbnail_url ? (
               <>
                 <img
                   className="h-24 w-24 rounded-t-lg object-contain "
@@ -96,6 +96,11 @@ const ProductCart: React.FC<ProductCartProps> = ({
             <H4>{listProduct.title}</H4>
 
             <P className="mt-3">Variant:</P>
+            <P className="text-gray-400">
+              {Object.keys(listProduct.variant).map((key) => {
+                return `${key}: ${listProduct.variant[key]} `
+              })}
+            </P>
           </div>
           <div className="my-auto">
             <P className="">Unit Price :</P>{' '}

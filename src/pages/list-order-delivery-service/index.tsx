@@ -9,9 +9,7 @@ function ListOrderDeliveryService() {
 
       <div className="flex">
         <SectionTwoSideBar selectedPage="order" />
-        <div className="border-grey-200 z-10 m-5 flex h-full items-center rounded-lg border-[1px] border-solid py-7 px-8">
-          {/* fill here */}
-        </div>
+        <div className="border-grey-200 z-10 m-5 flex h-full items-center rounded-lg border-[1px] border-solid py-7 px-8"></div>
       </div>
     </div>
   )

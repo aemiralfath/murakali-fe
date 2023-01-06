@@ -15,6 +15,7 @@ interface CheckoutSummaryProps {
 }
 
 const PaymentOption: React.FC<CheckoutSummaryProps> = ({ postCheckout }) => {
+  console.log(postCheckout)
   const [selected, setSelected] = useState<number>(0)
   const dispatch = useDispatch()
   const router = useRouter()

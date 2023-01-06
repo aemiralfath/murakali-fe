@@ -30,6 +30,7 @@ export interface CartDetail {
     id: string
     name: string
   }
+  weight: number
   product_details: ProductCartDetail[]
 }
 
@@ -41,7 +42,9 @@ export interface ProductCartDetail {
   thumbnail_url: string
   rating_avg: number
   product_price: number
-
+  variant: {
+    [key: string]: string
+  }
   promo: {
     sub_price: number
     result_discount: number

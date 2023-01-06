@@ -93,7 +93,7 @@ const SummaryCart: React.FC<SummaryCartProps> = ({ idProducts, idShops }) => {
   }, [idProducts.length, cartList.dataUpdatedAt])
 
   return (
-    <div className=" border-grey-200 h-fit rounded-lg border-[1px] border-solid   py-10">
+    <div className=" h-fit rounded-lg border-[1px] border-solid border-gray-300   py-10">
       <H3 className="text-center"> Summary Cart</H3>
 
       <div className="flex flex-col gap-y-5 px-5 py-5">
