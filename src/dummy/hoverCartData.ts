@@ -11,8 +11,9 @@ const hoverCartData = [
     result_discount: 0,
     sub_price: 0,
     quantity: 1,
-    variant_name: 'warna',
-    variant_type: 'hitam',
+    variant: {
+      warna: 'hitam',
+    },
   },
   {
     title: 'title dummy',
@@ -26,8 +27,9 @@ const hoverCartData = [
     result_discount: 0,
     sub_price: 0,
     quantity: 1,
-    variant_name: 'warna',
-    variant_type: 'hitam',
+    variant: {
+      warna: 'hitam',
+    },
   },
 ]
 

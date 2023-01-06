@@ -1,5 +1,4 @@
 import { Avatar, Button, H2, Icon, TextInput } from '@/components'
-import hoverCartData from '@/dummy/hoverCartData'
 import { useHover, useMediaQuery, useUser } from '@/hooks'
 import { Menu, Transition } from '@headlessui/react'
 import Link from 'next/link'
@@ -13,6 +12,8 @@ import { useLogout } from '@/api/auth/logout'
 import toast from 'react-hot-toast'
 import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
+import { useGetHoverCart } from '@/api/user/cart'
+import formatMoney from '@/helper/formatMoney'
 
 const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
   cart,
@@ -53,30 +54,43 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                           <Image
                             width={60}
                             height={60}
-                            src={data.thumbnail_url}
+                            src={
+                              data.thumbnail_url === ' '
+                                ? undefined
+                                : data.thumbnail_url
+                            }
                             alt={data.title}
                             className={'aspect-square h-[4.5rem] w-[4.5rem]'}
                           />
                           <div className="flex flex-1 flex-col gap-2 px-2">
                             <div className="mt-1 font-semibold leading-4 line-clamp-2">
-                              Lorem ipsum dolor sit amet consectetur adipisicing
-                              elit. Porro, voluptate unde! Placeat aliquam eum
-                              veritatis nisi doloribus rerum fuga iste.
+                              {data.title}
                             </div>
                             <div className="text-sm text-gray-400">
-                              {data.variant_name}: {data.variant_type}
+                              {Object.keys(data.variant).map((key) => {
+                                return `${key}: ${data.variant[key]} `
+                              })}
                             </div>
                           </div>
                           <div className="flex w-[6rem] flex-col overflow-ellipsis text-right">
                             <div className="text-lg font-semibold">
-                              Rp10.000
+                              {data.sub_price === 0
+                                ? 'Rp.' + formatMoney(data.price)
+                                : 'Rp.' + formatMoney(data.sub_price)}
                             </div>
-                            <div className="flex flex-1 justify-end gap-1 text-xs">
-                              <div className="font-light text-gray-400 line-through">
-                                Rp10.000
+                            {data.sub_price === 0 ? null : (
+                              <div className="flex flex-1 justify-end gap-1 text-xs">
+                                <div className="font-light text-gray-400 line-through">
+                                  {'Rp.' + formatMoney(data.price)}
+                                </div>
+                                {data.discount_percentage === 0 ||
+                                data.discount_percentage === null ? null : (
+                                  <div className="font-bold text-error">
+                                    -{data.discount_percentage}%
+                                  </div>
+                                )}
                               </div>
-                              <div className="font-bold text-error">-80%</div>
-                            </div>
+                            )}
                             <div className="text-sm text-gray-400">
                               Qty: {data.quantity}
                             </div>
@@ -213,7 +227,7 @@ const Navbar: React.FC = () => {
   const { user } = useUser()
 
   const sm = useMediaQuery('sm')
-  const cart: CartData[] = hoverCartData
+  const cart = useGetHoverCart()
 
   return (
     <>
@@ -254,7 +268,7 @@ const Navbar: React.FC = () => {
             >
               <ul className="flex list-none flex-col items-start md:ml-auto md:flex-row">
                 <HoverableCartButton
-                  cart={cart}
+                  cart={cart.data?.data.cart_items}
                   isLogin={user ? true : false}
                 />
                 <li className="nav-item">
@@ -285,7 +299,7 @@ const Navbar: React.FC = () => {
             <div className={'hidden items-center md:flex'}>
               <ul className="flex list-none flex-col md:ml-auto md:flex-row">
                 <HoverableCartButton
-                  cart={cart}
+                  cart={cart.data?.data.cart_items}
                   isLogin={user ? true : false}
                 />
 
