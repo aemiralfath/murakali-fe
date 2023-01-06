@@ -9,7 +9,7 @@ import useModal from './useModal'
 import usePagination from './usePagination'
 import useSsr from './useSSR'
 import { useUncontrolled } from './useUncontrolled'
-import { useUser, useProtectedUser } from './useUser'
+import { useUser } from './useUser'
 
 export {
   useDispatch,
@@ -22,5 +22,4 @@ export {
   useSsr,
   useUncontrolled,
   useUser,
-  useProtectedUser,
 }
