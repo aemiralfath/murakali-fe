@@ -182,7 +182,7 @@ function Seller() {
               ) : (
                 <>
                   <div className="dropdown-hover dropdown-end dropdown mx-auto w-full">
-                    <label tabIndex={0} className="btn m-1 w-full ">
+                    <label tabIndex={0} className="btn w-full ">
                       Other Category
                     </label>
                     <button
