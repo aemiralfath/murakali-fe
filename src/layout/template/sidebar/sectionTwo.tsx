@@ -47,7 +47,7 @@ const SideBarMenu: React.FC<SideBarMenuProps> = ({
       )}
       onClick={() => {
         if (!active) {
-          router.push(`/${link}`)
+          router.push(`/seller-panel/${link}`)
         }
       }}
     >
