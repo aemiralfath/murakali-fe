@@ -130,26 +130,30 @@ const AddressOption: React.FC<AddressOptionProps> = ({ is_shop_address }) => {
       )}
       <div className="my-2 flex justify-end">
         <div className="btn-group">
-          {Array.from(Array(userAllAddress.data?.data?.total_pages)).map(
-            (_, index) => {
-              return (
-                <button
-                  key={index}
-                  defaultValue={1}
-                  value={index + 1}
-                  onClick={() => {
-                    setPage(index + 1)
-                  }}
-                  className={
-                    index + 1 === page
-                      ? 'btn btn-active'
-                      : 'btn btn-outline btn-primary'
-                  }
-                >
-                  {index + 1}
-                </button>
-              )
-            }
+          {userAllAddress.data?.data?.total_rows > 2 ? (
+            Array.from(Array(userAllAddress.data?.data?.total_pages)).map(
+              (_, index) => {
+                return (
+                  <button
+                    key={index}
+                    defaultValue={1}
+                    value={index + 1}
+                    onClick={() => {
+                      setPage(index + 1)
+                    }}
+                    className={
+                      index + 1 === page
+                        ? 'btn btn-active'
+                        : 'btn-outline btn btn-primary'
+                    }
+                  >
+                    {index + 1}
+                  </button>
+                )
+              }
+            )
+          ) : (
+            <></>
           )}
         </div>
       </div>

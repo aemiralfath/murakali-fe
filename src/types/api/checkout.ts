@@ -9,6 +9,7 @@ export interface CartPostCheckout {
   shop_id: string
   voucher_shop_id: string
   courier_id: string
+  courier_fee: number
   product_details: ProductPostCheckout[]
 }
 
