@@ -1,5 +1,14 @@
 import { useDeleteAddress, useGetAllAddress } from '@/api/user/address'
-import { Button, Chip, Divider, H1, H2, P } from '@/components'
+import {
+  Button,
+  Chip,
+  Divider,
+  H1,
+  H2,
+  P,
+  PaginationNav,
+  Spinner,
+} from '@/components'
 import { useModal } from '@/hooks'
 import type { APIResponse } from '@/types/api/response'
 import { closeModal } from '@/redux/reducer/modalReducer'
@@ -149,6 +158,7 @@ function ManageAddress() {
                                       >
                                         Cancel
                                       </Button>
+                                      <P>Loading</P>{' '}
                                       <Button
                                         type="button"
                                         buttonType="primary"
@@ -172,13 +182,43 @@ function ManageAddress() {
                     </div>
                   </>
                 ))}
+                <div className="mt-4 flex justify-end">
+                  <PaginationNav
+                    page={page}
+                    total={userAllAddress.data.data.total_pages}
+                    onChange={(p) => {
+                      setPage(p)
+                    }}
+                  />
+                </div>
               </>
             ) : (
               <P></P>
             )
           ) : (
-            <P>Loading</P>
+            <Spinner />
           )}
+          <div className="flex justify-end">
+            <div className="btn-group">
+              {Array.from(Array(userAllAddress.data?.data?.total_pages)).map(
+                (_, index) => {
+                  return (
+                    <button
+                      key={index}
+                      defaultValue={1}
+                      value={index + 1}
+                      onClick={() => {
+                        setPage(index + 1)
+                      }}
+                      className={index + 1 === page ? 'btn btn-active' : 'btn'}
+                    >
+                      {index + 1}
+                    </button>
+                  )
+                }
+              )}
+            </div>
+          </div>
         </>
 
         {userAllAddress.data?.data?.total_pages === 0 ? (
@@ -190,31 +230,6 @@ function ManageAddress() {
         ) : (
           <></>
         )}
-        <div className="flex justify-end">
-          <div className="btn-group">
-            {Array.from(Array(userAllAddress.data?.data?.total_pages)).map(
-              (_, index) => {
-                return (
-                  <button
-                    key={index}
-                    defaultValue={1}
-                    value={index + 1}
-                    onClick={() => {
-                      setPage(index + 1)
-                    }}
-                    className={
-                      index + 1 === page
-                        ? 'btn-active btn'
-                        : 'btn-outline btn-primary btn'
-                    }
-                  >
-                    {index + 1}
-                  </button>
-                )
-              }
-            )}
-          </div>
-        </div>
       </ProfileLayout>
     </>
   )

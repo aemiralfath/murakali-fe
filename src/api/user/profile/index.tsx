@@ -14,7 +14,13 @@ const getUserProfile = async () => {
   return response.data
 }
 
-export const useGetUserProfile = () => useQuery(profileKey, getUserProfile)
+export const useGetUserProfile = () =>
+  useQuery({
+    queryKey: profileKey,
+    queryFn: getUserProfile,
+    retry: false,
+    refetchOnWindowFocus: false,
+  })
 
 export const useEditUserProfile = () => {
   const queryClient = useQueryClient()

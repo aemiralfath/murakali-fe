@@ -14,8 +14,6 @@ import { closeModal } from '@/redux/reducer/modalReducer'
 import type { AxiosError } from 'axios'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { getCookie } from 'cookies-next'
-import jwt_decode from 'jwt-decode'
 
 interface FormManageAddressProps {
   isEdit: boolean
@@ -26,11 +24,6 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
   isEdit,
   editData,
 }) => {
-  const token = getCookie('access_token')
-
-  const decoded = jwt_decode(String(token))
-
-  console.log(decoded)
   const addressInit: AddressDetail = {
     id: '',
     user_id: '',
@@ -211,7 +204,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
       zip_code: input.zip_code,
       address_detail: input.address_detail,
       is_default: selected[0],
-      is_shop_default: selected[1],
+      is_shop_default: input.is_shop_default,
     }
 
     if (!isEdit) {
@@ -434,7 +427,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
               />
               Choose as Shipping Address
             </label>
-            <label className=" flex gap-2 text-sm font-medium text-gray-900 dark:text-white">
+            {/* <label className=" flex gap-2 text-sm font-medium text-gray-900 dark:text-white">
               <input
                 type="checkbox"
                 name={'shopaddress'}
@@ -443,7 +436,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
                 onChange={handleChangeCheckbox}
               />
               Choose as Shop Address
-            </label>
+            </label> */}
           </div>
 
           <div className="flex justify-end gap-2">

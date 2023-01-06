@@ -2,15 +2,14 @@ import cx from '@/helper/cx'
 
 import { useRouter } from 'next/router'
 import React from 'react'
-
 import {
-  FaShoppingBag,
-  FaPercent,
-  FaBook,
-  FaBoxOpen,
-  FaPeopleCarry,
-  FaWallet,
-} from 'react-icons/fa'
+  HiArchive,
+  HiInbox,
+  HiNewspaper,
+  HiReceiptTax,
+  HiShoppingBag,
+  HiTruck,
+} from 'react-icons/hi'
 
 export type ValidPage =
   | 'order'
@@ -41,10 +40,10 @@ const SideBarMenu: React.FC<SideBarMenuProps> = ({
   return (
     <button
       className={cx(
-        'px-6 py-4 transition-all',
+        'w-full px-6 py-4 text-white transition-all',
         active
-          ? ' font-bold text-white'
-          : 'hover:bg-white hover:bg-opacity-20 hover:font-bold hover:text-primary'
+          ? ' rounded-r-full bg-white font-semibold text-primary shadow-sm'
+          : 'hover:rounded-r-full hover:bg-white hover:font-semibold hover:text-primary'
       )}
       onClick={() => {
         if (!active) {
@@ -52,7 +51,7 @@ const SideBarMenu: React.FC<SideBarMenuProps> = ({
         }
       }}
     >
-      <div className="flex-column flex items-center gap-x-2 text-left text-lg text-white">
+      <div className="flex-column flex items-center gap-x-2 text-left text-lg">
         <div>{icon}</div>
         <span className=" line-clamp-1">{title}</span>
       </div>
@@ -65,37 +64,37 @@ const SectionTwoSideBar: React.FC<SellerSideBarProps> = ({ selectedPage }) => {
     {
       link: 'order',
       title: 'Order',
-      icon: <FaBook />,
+      icon: <HiArchive />,
       active: selectedPage === 'order',
     },
     {
       link: 'promotion',
       title: 'Promotion',
-      icon: <FaPercent />,
+      icon: <HiReceiptTax />,
       active: selectedPage === 'promotion',
     },
     {
       link: 'shop',
       title: 'Shop',
-      icon: <FaShoppingBag />,
+      icon: <HiShoppingBag />,
       active: selectedPage === 'shop',
     },
     {
       link: 'product',
       title: 'Product',
-      icon: <FaBoxOpen />,
+      icon: <HiInbox />,
       active: selectedPage === 'product',
     },
     {
       link: 'delivery-service',
-      title: 'Selivery Service',
-      icon: <FaPeopleCarry />,
+      title: 'Delivery Service',
+      icon: <HiTruck />,
       active: selectedPage === 'delivery-service',
     },
     {
       link: 'wallet',
       title: 'Wallet',
-      icon: <FaWallet />,
+      icon: <HiNewspaper className="-rotate-90" />,
       active: selectedPage === 'wallet',
     },
   ]
@@ -104,7 +103,7 @@ const SectionTwoSideBar: React.FC<SellerSideBarProps> = ({ selectedPage }) => {
     <>
       <div className="flex">
         <div className="flex h-screen w-64 bg-primary py-5">
-          <div className="flex flex-col gap-2 py-4">
+          <div className="mr-4 flex w-full flex-col gap-2 py-4">
             {items.map((item, idx) => (
               <SideBarMenu key={idx} {...item} />
             ))}

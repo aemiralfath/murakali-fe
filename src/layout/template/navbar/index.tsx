@@ -1,18 +1,26 @@
 import { Avatar, Button, H2, Icon, TextInput } from '@/components'
-import hoverCartData from '@/dummy/hoverCartData'
-import { useHover, useMediaQuery, useUser } from '@/hooks'
+import { useHover, useLoadingModal, useMediaQuery, useUser } from '@/hooks'
 import { Menu, Transition } from '@headlessui/react'
 import Link from 'next/link'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { HiHeart, HiMenu, HiSearch, HiShoppingCart } from 'react-icons/hi'
 
 import type { CartData } from '@/types/api/cart'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
+import { useLogout } from '@/api/auth/logout'
+import toast from 'react-hot-toast'
+import type { AxiosError } from 'axios'
+import type { APIResponse } from '@/types/api/response'
+import { useGetHoverCart } from '@/api/user/cart'
+import formatMoney from '@/helper/formatMoney'
 
-const HoverableCartButton: React.FC<{ cart: CartData[] }> = ({ cart }) => {
+const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
+  cart,
+  isLogin,
+}) => {
   const [cartRef, isCartHover] = useHover()
-
+  const router = useRouter()
   return (
     <div className="nav-item relative" ref={cartRef}>
       <Link
@@ -37,46 +45,91 @@ const HoverableCartButton: React.FC<{ cart: CartData[] }> = ({ cart }) => {
             <div className="absolute -top-[7px] right-[10px] h-5 w-5 rotate-45 bg-white" />
             <H2 className="text-primary">Cart</H2>
             <div className="grid grid-cols-1 divide-y">
-              {cart.map((data, idx) => {
-                return (
-                  <div key={idx} className="flex py-2">
-                    <Image
-                      width={60}
-                      height={60}
-                      src={data.thumbnail_url}
-                      alt={data.title}
-                      className={'aspect-square h-[4.5rem] w-[4.5rem]'}
-                    />
-                    <div className="flex flex-1 flex-col gap-2 px-2">
-                      <div className="mt-1 font-semibold leading-4 line-clamp-2">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Porro, voluptate unde! Placeat aliquam eum veritatis
-                        nisi doloribus rerum fuga iste.
-                      </div>
-                      <div className="text-sm text-gray-400">
-                        {data.variant_name}: {data.variant_type}
+              {isLogin ? (
+                <>
+                  {cart && cart.length > 0 ? (
+                    cart.map((data, idx) => {
+                      return (
+                        <div key={idx} className="flex py-2">
+                          <Image
+                            width={60}
+                            height={60}
+                            src={
+                              data.thumbnail_url === ' '
+                                ? undefined
+                                : data.thumbnail_url
+                            }
+                            alt={data.title}
+                            className={'aspect-square h-[4.5rem] w-[4.5rem]'}
+                          />
+                          <div className="flex flex-1 flex-col gap-2 px-2">
+                            <div className="mt-1 font-semibold leading-4 line-clamp-2">
+                              {data.title}
+                            </div>
+                            <div className="text-sm text-gray-400">
+                              {Object.keys(data.variant).map((key) => {
+                                return `${key}: ${data.variant[key]} `
+                              })}
+                            </div>
+                          </div>
+                          <div className="flex w-[6rem] flex-col overflow-ellipsis text-right">
+                            <div className="text-lg font-semibold">
+                              {data.sub_price === 0
+                                ? 'Rp.' + formatMoney(data.price)
+                                : 'Rp.' + formatMoney(data.sub_price)}
+                            </div>
+                            {data.sub_price === 0 ? null : (
+                              <div className="flex flex-1 justify-end gap-1 text-xs">
+                                <div className="font-light text-gray-400 line-through">
+                                  {'Rp.' + formatMoney(data.price)}
+                                </div>
+                                {data.discount_percentage === 0 ||
+                                data.discount_percentage === null ? null : (
+                                  <div className="font-bold text-error">
+                                    -{data.discount_percentage}%
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            <div className="text-sm text-gray-400">
+                              Qty: {data.quantity}
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })
+                  ) : (
+                    <div className="flex py-2">
+                      <div className="flex flex-1 flex-col gap-2 px-2">
+                        <div className="mt-1 text-center font-semibold leading-4 line-clamp-2">
+                          No item in cart
+                        </div>
                       </div>
                     </div>
-                    <div className="flex w-[6rem] flex-col overflow-ellipsis text-right">
-                      <div className="text-lg font-semibold">Rp10.000</div>
-                      <div className="flex flex-1 justify-end gap-1 text-xs">
-                        <div className="font-light text-gray-400 line-through">
-                          Rp10.000
-                        </div>
-                        <div className="font-bold text-error">-80%</div>
-                      </div>
-                      <div className="text-sm text-gray-400">
-                        Qty: {data.quantity}
-                      </div>
+                  )}
+                </>
+              ) : (
+                <div className="flex py-2">
+                  <div className="flex flex-1 flex-col gap-2 px-2">
+                    <div className="mt-1 text-center font-semibold leading-4">
+                      Please login to see your cart
                     </div>
                   </div>
-                )
-              })}
+                </div>
+              )}
             </div>
             <div className="my-2 flex justify-end">
-              <Button size="sm" buttonType="ghost">
-                See More
-              </Button>
+              {isLogin ? (
+                <Button
+                  size="sm"
+                  buttonType="ghost"
+                  onClick={() => {
+                    router.push('/cart')
+                  }}
+                >
+                  See More
+                </Button>
+              ) : null}
             </div>
           </div>
         </div>
@@ -87,6 +140,24 @@ const HoverableCartButton: React.FC<{ cart: CartData[] }> = ({ cart }) => {
 
 const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
   const router = useRouter()
+
+  const logout = useLogout()
+
+  useEffect(() => {
+    if (logout.isSuccess) {
+      toast.success('Logout Success')
+      router.push('/')
+    }
+  }, [logout.isSuccess])
+  useEffect(() => {
+    if (logout.isError) {
+      const reason = logout.failureReason as AxiosError<APIResponse<null>>
+      toast.error(
+        reason.response ? reason.response.data.message : reason.message
+      )
+    }
+  }, [logout.isError])
+
   return (
     <Menu as="div" className="relative h-full">
       <Menu.Button className="inline-flex h-full items-center">
@@ -138,6 +209,7 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
                     ? 'bg-primary bg-opacity-10 text-primary'
                     : 'text-gray-900'
                 } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                onClick={() => logout.mutate()}
               >
                 Logout
               </button>
@@ -152,10 +224,15 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
 const Navbar: React.FC = () => {
   const [navbarOpen, setNavbarOpen] = useState(false)
   const [keyword, setKeyword] = useState<string>('')
-  const { user } = useUser()
+  const { user, isLoading } = useUser()
 
   const sm = useMediaQuery('sm')
-  const cart: CartData[] = hoverCartData
+  const cart = useGetHoverCart()
+  const setIsLoading = useLoadingModal()
+
+  useEffect(() => {
+    setIsLoading(isLoading)
+  }, [isLoading])
 
   return (
     <>
@@ -195,14 +272,26 @@ const Navbar: React.FC = () => {
               id="example-navbar-danger"
             >
               <ul className="flex list-none flex-col items-start md:ml-auto md:flex-row">
-                <li className="nav-item relative mx-1 my-1 md:my-0">
+                <HoverableCartButton
+                  cart={cart.data?.data.cart_items}
+                  isLogin={user ? true : false}
+                />
+                <li className="nav-item">
+                  <Link
+                    href={`/favorites`}
+                    className="flex items-center px-3 py-2 text-xs font-bold uppercase leading-snug text-white hover:opacity-75"
+                  >
+                    <HiHeart size={26} />
+                  </Link>
+                </li>
+                <li className="nav-item relative mx-1 my-1">
                   <Link href="/login">
                     <Button buttonType="white" outlined={true} size="sm">
                       Login
                     </Button>
                   </Link>
                 </li>
-                <li className="nav-item mx-1 my-1 md:my-0">
+                <li className="nav-item mx-1 my-1">
                   <Link href="/register">
                     <Button buttonType="white" size="sm">
                       Register
@@ -214,7 +303,11 @@ const Navbar: React.FC = () => {
           ) : (
             <div className={'hidden items-center md:flex'}>
               <ul className="flex list-none flex-col md:ml-auto md:flex-row">
-                <HoverableCartButton cart={cart} />
+                <HoverableCartButton
+                  cart={cart.data?.data.cart_items}
+                  isLogin={user ? true : false}
+                />
+
                 <li className="nav-item">
                   <Link
                     href={`/favorites`}
@@ -255,6 +348,24 @@ const Navbar: React.FC = () => {
           {!user ? (
             <ul className="flex list-none items-center justify-end gap-2">
               <li className="nav-item">
+                <Link
+                  href={`/cart`}
+                  className="flex items-center gap-2 text-sm text-white hover:opacity-75"
+                >
+                  <HiShoppingCart size={26} />
+                  <div>Cart</div>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  href={`/favorites`}
+                  className="flex items-center gap-2 text-sm text-white hover:opacity-75"
+                >
+                  <HiHeart size={26} />
+                  <div>Favorites</div>
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link href="/login">
                   <Button buttonType="white" outlined={true} size="sm">
                     Login
@@ -289,9 +400,16 @@ const Navbar: React.FC = () => {
                   <div>Favorites</div>
                 </Link>
               </li>
-              <li className="nav-item flex items-center gap-2 text-sm text-white hover:opacity-75">
-                <Avatar size="sm" url={user.photo_url} />
-                <div>{user.full_name}</div>
+              <li className="nav-item">
+                <Link
+                  href={`/profile`}
+                  className={
+                    'flex items-center gap-2 text-sm text-white hover:opacity-75'
+                  }
+                >
+                  <Avatar size="sm" url={user.photo_url} />
+                  <div>{user.full_name}</div>
+                </Link>
               </li>
             </ul>
           )}

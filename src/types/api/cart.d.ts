@@ -9,8 +9,9 @@ export interface CartData {
   result_discount: number
   sub_price: number
   quantity: number
-  variant_name: string
-  variant_type: string
+  variant: {
+    [key: string]: string
+  }
 }
 
 export interface HoverCartData {
