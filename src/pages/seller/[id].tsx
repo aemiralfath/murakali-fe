@@ -1,16 +1,21 @@
 import { useGetSellerProduct } from '@/api/product'
 import { useGetSellerInfo } from '@/api/seller'
 import { useGetSellerCategory } from '@/api/seller/category'
-import { Avatar, H3 } from '@/components'
+import { Avatar, Button, H3 } from '@/components'
 import cx from '@/helper/cx'
+import { useMediaQuery } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
+import { Transition } from '@headlessui/react'
 import Head from 'next/head'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { HiMenu } from 'react-icons/hi'
 
 function Seller() {
   const [selectedTab, setSelectedTab] = useState('')
   const param = useRouter()
+  const [categoryOpen, setCategoryOpen] = useState(false)
 
   const product = useGetSellerProduct(
     1,
@@ -26,10 +31,13 @@ function Seller() {
     0
   )
 
+  const sm = useMediaQuery('sm')
+  console.log(sm)
+
   const sellerProfile = useGetSellerInfo(param.query.id as string)
   const sellerCategory = useGetSellerCategory(param.query.id as string)
+
   return (
-    // bikin fungsi untuk ngefetch category product sesuai dengan category yg dipilih
     <>
       <div>
         <Head>
@@ -71,32 +79,144 @@ function Seller() {
               </div>
             </div>
           </div>
-          <div className="flex-grow  overflow-x-auto">
-            <div className="tabs tabs-boxed min-w-fit flex-nowrap justify-start bg-base-300">
-              <button
-                onClick={() => setSelectedTab('')}
-                className={cx(
-                  ' tab-lg my-auto flex w-52 items-center justify-center text-center',
-                  selectedTab === '' ? 'tab-active' : ''
+          <div className="tabs-boxed grid w-full grid-cols-2 bg-base-300 sm:grid-cols-5 ">
+            {sm ? (
+              <div className="tabs col-span-4 flex-nowrap items-center space-x-5 overflow-auto">
+                <button
+                  onClick={() => setSelectedTab('')}
+                  className={cx(
+                    'tab-lg w-1/2 min-w-max text-center sm:w-1/4',
+                    selectedTab === '' ? 'tab-active' : ''
+                  )}
+                >
+                  All Item
+                </button>
+                {sellerCategory.data?.data.length <= 4 ? (
+                  sellerCategory.data?.data.map((item, index) => {
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedTab(item.name)}
+                        className={cx(
+                          'tab-lg w-1/4 min-w-max text-center',
+                          selectedTab === item.name ? 'tab-active' : ''
+                        )}
+                      >
+                        {item.name}
+                      </button>
+                    )
+                  })
+                ) : (
+                  <>
+                    {sellerCategory.data?.data
+                      .slice(0, 3)
+                      .map((item, index) => {
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => setSelectedTab(item.name)}
+                            className={cx(
+                              'tab-lg w-1/4 min-w-max text-center',
+                              selectedTab === item.name ? 'tab-active' : ''
+                            )}
+                          >
+                            {item.name}
+                          </button>
+                        )
+                      })}
+                  </>
                 )}
-              >
-                All Item
-              </button>
-              {sellerCategory.data?.data.map((item, index) => {
-                return (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedTab(item.name)}
-                    className={cx(
-                      ' tab-lg my-auto flex w-52 items-center justify-center text-center',
-                      selectedTab === item.name ? 'tab-active' : ''
-                    )}
-                  >
-                    {item.name}
-                  </button>
+              </div>
+            ) : (
+              <div className="tabs flex-nowrap items-center space-x-5 overflow-auto">
+                <button
+                  onClick={() => setSelectedTab('')}
+                  className={cx(
+                    'tab-lg w-full min-w-max text-center',
+                    selectedTab === '' ? 'tab-active' : ''
+                  )}
+                >
+                  All Item
+                </button>
+              </div>
+            )}
+            <>
+              {sm ? (
+                sellerCategory.data?.data.length > 4 ? (
+                  <div className="dropdown dropdown-end dropdown-hover mx-auto w-full">
+                    <label tabIndex={0} className="btn m-1 w-full ">
+                      Other Category
+                    </label>
+                    <button
+                      className="bg-transparent text-2xl text-white md:hidden "
+                      type="button"
+                      onClick={() => setCategoryOpen(!categoryOpen)}
+                    ></button>
+
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content dropdown-end dropdown-hover menu rounded-box w-52 bg-base-100 p-2 shadow"
+                    >
+                      {sellerCategory.data?.data
+                        .slice(3, 999)
+                        .map((item, index) => {
+                          return (
+                            <li key={index} className="">
+                              <button
+                                onClick={() => setSelectedTab(item.name)}
+                                className={cx(
+                                  'flexitems-center tab-lg my-auto min-w-max flex-auto justify-center px-10 text-center ',
+                                  selectedTab === item.name ? 'tab-active' : ''
+                                )}
+                              >
+                                {item.name}
+                              </button>
+                            </li>
+                          )
+                        })}
+                    </ul>
+                  </div>
+                ) : (
+                  <></>
                 )
-              })}
-            </div>
+              ) : (
+                <>
+                  <div className="dropdown dropdown-end dropdown-hover mx-auto w-full">
+                    <label tabIndex={0} className="btn w-full ">
+                      Other Category
+                    </label>
+                    <button
+                      className="bg-transparent text-2xl text-white md:hidden "
+                      type="button"
+                      onClick={() => setCategoryOpen(!categoryOpen)}
+                    ></button>
+
+                    <ul
+                      tabIndex={0}
+                      className="dropdown-content dropdown-end menu rounded-box w-52 bg-base-100 p-2 shadow"
+                    >
+                      {sellerCategory.data?.data
+                        .slice(0, 999)
+                        .map((item, index) => {
+                          return (
+                            <li key={index} className="">
+                              <button
+                                onClick={() => setSelectedTab(item.name)}
+                                className={cx(
+                                  'flexitems-center tab-lg my-auto min-w-max flex-auto justify-center text-center ',
+                                  selectedTab === item.name ? 'tab-active' : ''
+                                )}
+                              >
+                                {item.name}
+                              </button>
+                            </li>
+                          )
+                        })}
+                    </ul>
+                  </div>
+                </>
+              )}
+            </>
           </div>
         </MainLayout>
       </div>

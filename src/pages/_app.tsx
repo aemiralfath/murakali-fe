@@ -1,5 +1,5 @@
 import NextNProgress from 'nextjs-progressbar'
-import { CustomToaster } from '@/components'
+import { CustomToaster, LoadingModal } from '@/components'
 import Modal from '@/components/modal'
 import { store } from '@/redux/store'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -19,6 +19,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} />
         <Provider store={store}>
+          <LoadingModal />
           <Modal />
           <CustomToaster />
           <Component {...pageProps} />
