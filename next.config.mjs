@@ -9,7 +9,7 @@
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ['images.unsplash.com', 'i.ebayimg.com', 'cf.shopee.co.id']
+    domains: ['res.cloudinary.com', 'images.unsplash.com', 'i.ebayimg.com', 'cf.shopee.co.id']
   },
   reactStrictMode: true,
   swcMinify: true,
