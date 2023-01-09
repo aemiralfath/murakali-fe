@@ -15,6 +15,8 @@ import { Transition } from '@headlessui/react'
 import type { FilterPrice } from '@/sections/productslisting/PriceFilter'
 import type { ProvinceDetail } from '@/types/api/address'
 import type { SortDirection } from '@/types/helper/sort'
+import { BriefProduct } from '@/types/api/product'
+import ProductCard from './template/product/ProductCard'
 
 const defaultShownProvince = [
   'DKI Jakarta',
@@ -43,15 +45,10 @@ const FilterChip: React.FC<{ value: string; onClose: () => void }> = ({
   )
 }
 
-const ProductListingLayout = () => {
-  const lg = useMediaQuery('lg')
-  const allProvince = useGetAllProvince()
-
+const useProductListing = () => {
   const [priceSort, setPriceSort] = useState<SortDirection | undefined>()
   const [dateSort, setDateSort] = useState<SortDirection | undefined>()
   const [ratingSort, setRatingSort] = useState<SortDirection | undefined>()
-
-  const [shownProvince, setShownProvince] = useState(defaultShownProvince)
 
   const [filterLocation, setFilterLocation] = useState<ProvinceDetail[]>([])
   const [filterPrice, setFilterPrice] = useState<FilterPrice | undefined>()
@@ -59,6 +56,60 @@ const ProductListingLayout = () => {
   const [filterCategory, setFilterCategory] = useState<string[]>([])
 
   const [page, setPage] = useState(1)
+
+  return {
+    priceSort,
+    setPriceSort,
+    dateSort,
+    setDateSort,
+    ratingSort,
+    setRatingSort,
+    filterLocation,
+    setFilterLocation,
+    filterPrice,
+    setFilterPrice,
+    filterRating,
+    setFilterRating,
+    filterCategory,
+    setFilterCategory,
+    page,
+    setPage,
+  }
+}
+
+export type ProductListingHook = ReturnType<typeof useProductListing>
+
+type ProductListingLayoutProps = LoadingDataWrapper<BriefProduct[]> & {
+  controller: ProductListingHook
+}
+
+const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
+  data,
+  isLoading,
+  controller,
+}) => {
+  const {
+    priceSort,
+    setPriceSort,
+    dateSort,
+    setDateSort,
+    ratingSort,
+    setRatingSort,
+    filterLocation,
+    setFilterLocation,
+    filterPrice,
+    setFilterPrice,
+    filterRating,
+    setFilterRating,
+    filterCategory,
+    setFilterCategory,
+    page,
+    setPage,
+  } = controller
+
+  const lg = useMediaQuery('lg')
+  const allProvince = useGetAllProvince()
+  const [shownProvince, setShownProvince] = useState(defaultShownProvince)
   const [openMenu, setOpenMenu] = useState(false)
 
   return (
@@ -306,10 +357,30 @@ const ProductListingLayout = () => {
           </div>
           <PaginationNav total={12} page={page} onChange={setPage} size="sm" />
         </div>
-        <div className="min-h-[80vh] w-full bg-red-200">ABC</div>
+        <div className="min-h-[80vh] w-full">
+          <div className="grid w-full grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
+            {isLoading
+              ? Array(5)
+                  .fill('')
+                  .map((_, idx) => {
+                    return <ProductCard key={`${idx}`} isLoading />
+                  })
+              : data.map((product, idx) => {
+                  return (
+                    <ProductCard
+                      key={`${product.title} ${idx}`}
+                      data={product}
+                      isLoading={false}
+                      hoverable
+                    />
+                  )
+                })}
+          </div>
+        </div>
       </div>
     </div>
   )
 }
 
 export default ProductListingLayout
+export { useProductListing }
