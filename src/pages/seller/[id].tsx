@@ -1,19 +1,15 @@
-import { useGetSellerProduct } from '@/api/product'
 import { useGetSellerInfo } from '@/api/seller'
 import { useGetSellerCategory } from '@/api/seller/category'
-import { Avatar, Button, H2, H3, P } from '@/components'
+import { H2, P } from '@/components'
 import cx from '@/helper/cx'
 import { useMediaQuery } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
-import { CategoryData } from '@/types/api/category'
-import { Transition } from '@headlessui/react'
 import Head from 'next/head'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { AiFillStar } from 'react-icons/ai'
-import { HiMenu } from 'react-icons/hi'
+import type { CategoryData } from '@/types/api/category'
 
 const CategoryTab: React.FC<{
   categories: CategoryData[]
@@ -170,19 +166,19 @@ function Seller() {
   const [selectedTab, setSelectedTab] = useState('')
   const param = useRouter()
 
-  const product = useGetSellerProduct(
-    1,
-    10,
-    '',
-    selectedTab,
-    param.query.id as string,
-    '',
-    '',
-    0,
-    0,
-    0,
-    0
-  )
+  // const product = useGetSellerProduct(
+  //   1,
+  //   10,
+  //   '',
+  //   selectedTab,
+  //   param.query.id as string,
+  //   '',
+  //   '',
+  //   0,
+  //   0,
+  //   0,
+  //   0
+  // )
 
   const md = useMediaQuery('md')
 
