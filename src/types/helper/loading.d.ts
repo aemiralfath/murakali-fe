@@ -4,7 +4,7 @@ type DataWrapperBase<T> = {
 }
 
 type DataWrapperLoading = {
-  data: undefined
+  data?: undefined
   isLoading: true
 }
 
