@@ -1,4 +1,5 @@
 import ProfileLayout from '@/layout/ProfileLayout'
+
 import React from 'react'
 
 function TransactionHistory() {

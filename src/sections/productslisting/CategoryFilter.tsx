@@ -45,7 +45,7 @@ const CategoryFilter: React.FC<{
         })}
         {categories.length > 4 ? (
           <button
-            className="btn-ghost btn-sm btn flex w-full items-center gap-2 rounded bg-white text-primary"
+            className="btn btn-ghost btn-sm flex w-full items-center gap-2 rounded bg-white text-primary"
             onClick={() => setShowAllCategory(!showAllCategory)}
           >
             {showAllCategory ? (

@@ -12,8 +12,12 @@ export const useLogout = () => {
     },
     {
       onSuccess: () => {
-        void queryClient.invalidateQueries(['profile'])
+        void queryClient.removeQueries(['profile'])
         deleteCookie('access_token')
+        deleteCookie('refresh_token')
+        if (typeof window !== 'undefined') {
+          window.location.reload()
+        }
       },
     }
   )
