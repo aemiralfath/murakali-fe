@@ -1,5 +1,5 @@
 import { A, Breadcrumbs, Divider, P, Spinner } from '@/components'
-import { useModal } from '@/hooks'
+import { useMediaQuery, useModal } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
 import ProductImageCarousel from '@/layout/template/product/ProductImageCarousel'
 import type { NextPage } from 'next'
@@ -17,6 +17,10 @@ import type { ProductDetail } from '@/types/api/product'
 import ChooseVariantQty from '@/sections/productdetail/ChooseVariantQty'
 import ProductDescription from '@/sections/productdetail/ProductDescription'
 import ProductReview from '@/sections/productdetail/ProductReview'
+import Image from 'next/image'
+import ProductCard from '@/layout/template/product/ProductCard'
+import { useRecommendedProduct } from '@/api/product/recommended'
+import { useGetSellerProduct } from '@/api/product'
 
 const ProductPage: NextPage = () => {
   const dummyProduct = product
@@ -26,6 +30,19 @@ const ProductPage: NextPage = () => {
   const modal = useModal()
   const [isLoading, setIsLoading] = useState(false)
   const [qty, setQty] = useState(1)
+  const sellerProduct = useGetSellerProduct(
+    1,
+    12,
+    '',
+    '',
+    '',
+    '',
+    '',
+    0,
+    0,
+    0,
+    0
+  )
 
   const [variantNamesState, setVariantNames] = useState<string[]>([])
   const [variantTypesState, setVariantTypes] = useState<{
@@ -39,6 +56,11 @@ const ProductPage: NextPage = () => {
   const [selectVariant, setSelectVariant] = useState<
     ProductDetail | undefined
   >()
+
+  const sm = useMediaQuery('sm')
+  const md = useMediaQuery('md')
+  const lg = useMediaQuery('lg')
+  const recommendedProduct = useRecommendedProduct()
 
   useEffect(() => {
     if (dummyProduct) {
@@ -107,6 +129,9 @@ const ProductPage: NextPage = () => {
       setSelectVariant(undefined)
     }
   }, [selectMap])
+  {
+    console.log(sellerProduct.data?.data)
+  }
 
   return (
     <>
@@ -189,6 +214,509 @@ const ProductPage: NextPage = () => {
           </div>
         </div>
         <Divider />
+        <h4>PRODUCTS FROM THE SAME SELLER</h4>
+        {sm ? (
+          md ? (
+            lg ? (
+              <div className="carousel h-[430px] w-full">
+                <div
+                  id="slide1"
+                  className="carousel-item relative grid w-full grid-cols-6 gap-4"
+                >
+                  {sellerProduct.isLoading ? (
+                    Array(3)
+                      .fill('')
+                      .map((_, idx) => {
+                        return (
+                          <ProductCard
+                            key={`${idx}`}
+                            data={undefined}
+                            isLoading
+                          />
+                        )
+                      })
+                  ) : sellerProduct.isSuccess ? (
+                    sellerProduct.data.data.rows
+                      .slice(0, 6)
+                      .map((product, idx) => {
+                        return (
+                          <ProductCard
+                            key={`${product.title} ${idx}`}
+                            data={product}
+                            isLoading={false}
+                            hoverable={false}
+                          />
+                        )
+                      })
+                  ) : (
+                    <div>{'Error'}</div>
+                  )}
+                  {sellerProduct.data?.data.rows.length > 6 ? (
+                    <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                      <a href="#slide2" className="btn-circle btn">
+                        ❮
+                      </a>
+                      <a href="#slide2" className="btn-circle btn">
+                        ❯
+                      </a>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+                <div
+                  id="slide2"
+                  className="carousel-item relative grid w-full grid-cols-6 gap-4"
+                >
+                  {sellerProduct.isLoading ? (
+                    Array(3)
+                      .fill('')
+                      .map((_, idx) => {
+                        return (
+                          <ProductCard
+                            key={`${idx}`}
+                            data={undefined}
+                            isLoading
+                          />
+                        )
+                      })
+                  ) : sellerProduct.isSuccess ? (
+                    sellerProduct.data.data.rows
+                      .slice(7, 12)
+                      .map((product, idx) => {
+                        return (
+                          <ProductCard
+                            key={`${product.title} ${idx}`}
+                            data={product}
+                            isLoading={false}
+                            hoverable={false}
+                          />
+                        )
+                      })
+                  ) : (
+                    <div>{'Error'}</div>
+                  )}
+
+                  <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                    <a href="#slide1" className="btn-circle btn">
+                      ❮
+                    </a>
+                    <a href="#slide1" className="btn-circle btn">
+                      ❯
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="carousel h-[430px] w-full">
+                <div
+                  id="slide1"
+                  className="carousel-item relative grid w-full grid-cols-4 gap-4"
+                >
+                  <img
+                    src={
+                      'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                    }
+                    className="col-span-1 w-full"
+                  />
+                  <img
+                    src={
+                      'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                    }
+                    className="col-span-1 w-full"
+                  />
+                  <img
+                    src={
+                      'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                    }
+                    className="col-span-1 w-full"
+                  />
+                  <img
+                    src={
+                      'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                    }
+                    className="col-span-1 w-full"
+                  />
+
+                  <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                    <a href="#slide3" className="btn-circle btn">
+                      ❮
+                    </a>
+                    <a href="#slide2" className="btn-circle btn">
+                      ❯
+                    </a>
+                  </div>
+                </div>
+                <div
+                  id="slide2"
+                  className="carousel-item relative grid w-full grid-cols-4 gap-4"
+                >
+                  <img
+                    src={
+                      'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                    }
+                    className="col-span-1 w-full"
+                  />
+                  <img
+                    src={
+                      'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                    }
+                    className="col-span-1 w-full"
+                  />
+                  <img
+                    src={
+                      'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                    }
+                    className="col-span-1 w-full"
+                  />
+                  <img
+                    src={
+                      'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                    }
+                    className="col-span-1 w-full"
+                  />
+
+                  <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                    <a href="#slide1" className="btn-circle btn">
+                      ❮
+                    </a>
+                    <a href="#slide3" className="btn-circle btn">
+                      ❯
+                    </a>
+                  </div>
+                </div>
+                <div
+                  id="slide3"
+                  className="carousel-item relative grid w-full grid-cols-4 gap-4"
+                >
+                  <img
+                    src={
+                      'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                    }
+                    className="col-span-1 w-full"
+                  />
+                  <img
+                    src={
+                      'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                    }
+                    className="col-span-1 w-full"
+                  />
+                  <img
+                    src={
+                      'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                    }
+                    className="col-span-1 w-full"
+                  />
+                  <img
+                    src={
+                      'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                    }
+                    className="col-span-1 w-full"
+                  />
+
+                  <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                    <a href="#slide2" className="btn-circle btn">
+                      ❮
+                    </a>
+                    <a href="#slide1" className="btn-circle btn">
+                      ❯
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )
+          ) : (
+            <div className="carousel h-[430px] w-full">
+              <div
+                id="slide1"
+                className="carousel-item relative grid w-full grid-cols-3 gap-4"
+              >
+                <img
+                  src={
+                    'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                  }
+                  className="col-span-1 w-full"
+                />
+                <img
+                  src={
+                    'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                  }
+                  className="col-span-1 w-full"
+                />
+                <img
+                  src={
+                    'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                  }
+                  className="col-span-1 w-full"
+                />
+
+                <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                  <a href="#slide4" className="btn-circle btn">
+                    ❮
+                  </a>
+                  <a href="#slide2" className="btn-circle btn">
+                    ❯
+                  </a>
+                </div>
+              </div>
+              <div
+                id="slide2"
+                className="carousel-item relative grid w-full grid-cols-3 gap-4"
+              >
+                <img
+                  src={
+                    'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                  }
+                  className="col-span-1 w-full"
+                />
+                <img
+                  src={
+                    'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                  }
+                  className="col-span-1 w-full"
+                />
+                <img
+                  src={
+                    'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                  }
+                  className="col-span-1 w-full"
+                />
+
+                <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                  <a href="#slide1" className="btn-circle btn">
+                    ❮
+                  </a>
+                  <a href="#slide3" className="btn-circle btn">
+                    ❯
+                  </a>
+                </div>
+              </div>
+              <div
+                id="slide3"
+                className="carousel-item relative grid w-full grid-cols-3 gap-4"
+              >
+                <img
+                  src={
+                    'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                  }
+                  className="col-span-1 w-full"
+                />
+                <img
+                  src={
+                    'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                  }
+                  className="col-span-1 w-full"
+                />
+                <img
+                  src={
+                    'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                  }
+                  className="col-span-1 w-full"
+                />
+
+                <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                  <a href="#slide2" className="btn-circle btn">
+                    ❮
+                  </a>
+                  <a href="#slide4" className="btn-circle btn">
+                    ❯
+                  </a>
+                </div>
+              </div>
+              <div
+                id="slide4"
+                className="carousel-item relative grid w-full grid-cols-3 gap-4"
+              >
+                <img
+                  src={
+                    'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                  }
+                  className="col-span-1 w-full"
+                />
+                <img
+                  src={
+                    'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                  }
+                  className="col-span-1 w-full"
+                />
+                <img
+                  src={
+                    'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                  }
+                  className="col-span-1 w-full"
+                />
+
+                <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                  <a href="#slide3" className="btn-circle btn">
+                    ❮
+                  </a>
+                  <a href="#slide1" className="btn-circle btn">
+                    ❯
+                  </a>
+                </div>
+              </div>
+            </div>
+          )
+        ) : (
+          <div className="carousel h-[430px] w-full">
+            <div
+              id="slide1"
+              className="carousel-item relative grid w-full grid-cols-2 gap-4"
+            >
+              <img
+                src={
+                  'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                }
+                className="col-span-1 w-full"
+              />
+              <img
+                src={
+                  'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                }
+                className="col-span-1 w-full"
+              />
+
+              <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                <a href="#slide6" className="btn-circle btn">
+                  ❮
+                </a>
+                <a href="#slide2" className="btn-circle btn">
+                  ❯
+                </a>
+              </div>
+            </div>
+            <div
+              id="slide2"
+              className="carousel-item relative grid w-full grid-cols-2 gap-4"
+            >
+              <img
+                src={
+                  'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                }
+                className="col-span-1 w-full"
+              />
+              <img
+                src={
+                  'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                }
+                className="col-span-1 w-full"
+              />
+
+              <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                <a href="#slide1" className="btn-circle btn">
+                  ❮
+                </a>
+                <a href="#slide3" className="btn-circle btn">
+                  ❯
+                </a>
+              </div>
+            </div>
+            <div
+              id="slide3"
+              className="carousel-item relative grid w-full grid-cols-2 gap-4"
+            >
+              <img
+                src={
+                  'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                }
+                className="col-span-1 w-full"
+              />
+              <img
+                src={
+                  'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                }
+                className="col-span-1 w-full"
+              />
+
+              <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                <a href="#slide2" className="btn-circle btn">
+                  ❮
+                </a>
+                <a href="#slide4" className="btn-circle btn">
+                  ❯
+                </a>
+              </div>
+            </div>
+            <div
+              id="slide4"
+              className="carousel-item relative grid w-full grid-cols-2 gap-4"
+            >
+              <img
+                src={
+                  'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                }
+                className="col-span-1 w-full"
+              />
+              <img
+                src={
+                  'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                }
+                className="col-span-1 w-full"
+              />
+
+              <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                <a href="#slide3" className="btn-circle btn">
+                  ❮
+                </a>
+                <a href="#slide5" className="btn-circle btn">
+                  ❯
+                </a>
+              </div>
+            </div>
+            <div
+              id="slide5"
+              className="carousel-item relative grid w-full grid-cols-2 gap-4"
+            >
+              <img
+                src={
+                  'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                }
+                className="col-span-1 w-full"
+              />
+              <img
+                src={
+                  'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                }
+                className="col-span-1 w-full"
+              />
+
+              <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                <a href="#slide4" className="btn-circle btn">
+                  ❮
+                </a>
+                <a href="#slide6" className="btn-circle btn">
+                  ❯
+                </a>
+              </div>
+            </div>
+            <div
+              id="slide6"
+              className="carousel-item relative grid w-full grid-cols-2 gap-4"
+            >
+              <img
+                src={
+                  'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                }
+                className="col-span-1 w-full"
+              />
+              <img
+                src={
+                  'https://res.cloudinary.com/dhpao1zxi/image/upload/v1672385947/afdemumjkucfm826c1xm.jpg'
+                }
+                className="col-span-1 w-full"
+              />
+
+              <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                <a href="#slide5" className="btn-circle btn">
+                  ❮
+                </a>
+                <a href="#slide1" className="btn-circle btn">
+                  ❯
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
       </MainLayout>
     </>
   )
