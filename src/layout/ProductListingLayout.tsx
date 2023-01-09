@@ -11,12 +11,12 @@ import formatMoney from '@/helper/formatMoney'
 import cx from '@/helper/cx'
 import { useMediaQuery } from '@/hooks'
 import { Transition } from '@headlessui/react'
+import ProductCard from './template/product/ProductCard'
 
 import type { FilterPrice } from '@/sections/productslisting/PriceFilter'
 import type { ProvinceDetail } from '@/types/api/address'
 import type { SortDirection } from '@/types/helper/sort'
-import { BriefProduct } from '@/types/api/product'
-import ProductCard from './template/product/ProductCard'
+import type { BriefProduct } from '@/types/api/product'
 
 const defaultShownProvince = [
   'DKI Jakarta',
