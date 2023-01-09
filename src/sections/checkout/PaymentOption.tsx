@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 import { useCreateTransaction } from '@/api/user/transaction'
 import { Button, H4, P } from '@/components'
-import paymentOptionData from '@/dummy/paymentOptionData'
 
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { PostCheckout } from '@/types/api/checkout'
@@ -10,37 +10,70 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
+import walletImage from '../../../public/asset/wallet.png'
+import sealabsImage from '../../../public/asset/sealabs.png'
+import type { WalletUser } from '@/types/api/wallet'
+import type { SLPUser } from '@/types/api/slp'
+import { validateUUID } from '@/helper/uuid'
+
 interface CheckoutSummaryProps {
   postCheckout: PostCheckout
+  userWallet: WalletUser
+  userSLP: SLPUser[]
 }
 
-const PaymentOption: React.FC<CheckoutSummaryProps> = ({ postCheckout }) => {
-  console.log(postCheckout)
-  const [selected, setSelected] = useState<number>(0)
+const PaymentOption: React.FC<CheckoutSummaryProps> = ({
+  postCheckout,
+  userWallet,
+  userSLP,
+}) => {
+  const [selected, setSelected] = useState('')
   const dispatch = useDispatch()
   const router = useRouter()
 
+  const paymentOption = []
+  paymentOption.push({
+    id: userWallet.id,
+    name: 'Wallet',
+    image: walletImage.src,
+  })
+
+  userSLP.forEach((slp) => {
+    paymentOption.push({
+      id: slp.card_number,
+      name: slp.name,
+      image: sealabsImage.src,
+    })
+  })
+
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value
-    setSelected(Number(value))
+    setSelected(value)
   }
 
   const createTransaction = useCreateTransaction()
 
   function handleTransaction() {
-    //hardcode wallet id
-    postCheckout.wallet_id = '60a54e99-33a7-40d8-8ed0-979413a8c33d'
-
-    if (selected === 0) {
-      createTransaction.mutate(postCheckout)
+    if (validateUUID(selected)) {
+      postCheckout.wallet_id = selected
+    } else {
+      postCheckout.card_number = selected
     }
+    createTransaction.mutate(postCheckout)
   }
 
   useEffect(() => {
     if (createTransaction.isSuccess) {
       toast.success('Checkout Success')
       dispatch(closeModal())
-      router.push('/profile/transaction-history')
+      if (validateUUID(selected)) {
+        router.push('/profile/transaction-history')
+      } else {
+        router.push({
+          pathname: '/slp-payment',
+          query: { id: createTransaction.data.data.transaction_id },
+        })
+      }
     }
   }, [createTransaction.isSuccess])
 
@@ -55,41 +88,43 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({ postCheckout }) => {
   return (
     <div>
       <div>
-        {paymentOptionData.map((paymentOption, index) => (
-          <label key={index}>
-            <div
-              className={
-                selected === paymentOption.id
-                  ? 'col-span-3  my-2 h-fit rounded-lg border-4 border-solid border-primary p-2 '
-                  : 'col-span-3  my-2 h-fit rounded-lg border-2 border-solid border-slate-600 p-2 '
-              }
-            >
+        {paymentOption.length != 0 &&
+          paymentOption.map((paymentOption, index) => (
+            <label key={index}>
               <div
-                className="flex-start flex items-center gap-2
-                  "
+                className={
+                  selected === paymentOption.id
+                    ? 'col-span-3  my-2 h-fit rounded-lg border-4 border-solid border-primary p-2 '
+                    : 'col-span-3  my-2 h-fit rounded-lg border-2 border-solid border-slate-600 p-2 '
+                }
               >
-                <input
-                  className="mx-3"
-                  type="radio"
-                  name={'PaymentOption' + String(paymentOption.id)}
-                  value={paymentOption.id}
-                  checked={selected === paymentOption.id}
-                  onChange={handleChange}
-                />
-                <img
-                  className="h-20 w-20 rounded-t-lg object-contain "
-                  src={paymentOption.image}
-                />
-                <div className=" my-4 mx-2 grid grid-cols-1 gap-2 md:grid-cols-4">
-                  <div className="col-span-3 flex flex-col gap-y-2 ">
-                    <H4>{paymentOption.name}</H4>
-                    <P></P>
+                <div
+                  className="flex-start flex items-center gap-2
+                  "
+                >
+                  <input
+                    className="mx-3"
+                    type="radio"
+                    name={'PaymentOption' + String(paymentOption.id)}
+                    value={paymentOption.id}
+                    checked={selected === paymentOption.id}
+                    onChange={handleChange}
+                  />
+                  <img
+                    className="h-20 w-20 rounded-t-lg object-contain "
+                    src={paymentOption.image}
+                    alt={'payment option'}
+                  />
+                  <div className=" my-4 mx-2 grid grid-cols-1 gap-2 md:grid-cols-4">
+                    <div className="col-span-3 flex flex-col gap-y-2 ">
+                      <H4>{paymentOption.name}</H4>
+                      <P></P>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </label>
-        ))}
+            </label>
+          ))}
 
         <hr></hr>
         <div className="my-2 flex justify-end gap-2">
