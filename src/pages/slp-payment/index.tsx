@@ -6,6 +6,7 @@ import type { AxiosError } from 'axios'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
+import toast from 'react-hot-toast'
 
 const SLPPayment = () => {
   const router = useRouter()
@@ -40,6 +41,18 @@ const SLPPayment = () => {
     }
   }, [paymentURL.isError])
 
+  useEffect(() => {
+    if (paymentReason === 'invalid input on card_number, ') {
+      toast.error('Invalid SeaLabs Pay account, please change payment method!')
+      router.push('/profile/transaction-history')
+    }
+
+    if (paymentReason === 'insufficient fund to create transaction') {
+      toast.error('Insufficient balance, please top up first!')
+      router.push('/profile/transaction-history')
+    }
+  }, [paymentReason])
+
   return (
     <>
       <Navbar />
@@ -55,24 +68,6 @@ const SLPPayment = () => {
                 onLoad={onLoad}
               ></iframe>
             </>
-          ) : paymentURL.isError ? (
-            paymentReason === 'insufficient fund to create transaction' ? (
-              <>
-                <div className="flex flex-col items-center justify-center bg-warning">
-                  <h1>Insufficient balance</h1>
-                  <p>please top up first, and refresh this page!</p>
-                </div>
-              </>
-            ) : paymentReason === 'invalid input on card_number, ' ? (
-              <>
-                <div className="flex flex-col items-center justify-center bg-warning">
-                  <h1>Invalid SeaLabs Pay account</h1>
-                  <p>make sure your card number is correct!</p>
-                </div>
-              </>
-            ) : (
-              <></>
-            )
           ) : (
             <></>
           )}

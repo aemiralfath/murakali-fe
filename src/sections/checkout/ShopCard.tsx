@@ -1,5 +1,5 @@
 import { useLocationCost } from '@/api/user/location'
-import { Button, H2, H4, P } from '@/components'
+import { Button, H2, P } from '@/components'
 import ProductCart from '@/components/card/ProductCart'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import type { CartDetail } from '@/types/api/cart'
