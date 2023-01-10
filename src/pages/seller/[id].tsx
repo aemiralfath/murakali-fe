@@ -234,7 +234,7 @@ function Seller() {
                       </span>
                     </P>
                     {md ? (
-                      sellerCategory.data.data ? (
+                      sellerCategory.data?.data ? (
                         <CategoryTab
                           categories={sellerCategory.data.data}
                           selectedTab={selectedTab}
@@ -254,7 +254,7 @@ function Seller() {
             </div>
           </div>
           {!md ? (
-            sellerCategory.data.data ? (
+            sellerCategory.data?.data ? (
               <CategoryTab
                 categories={sellerCategory.data.data}
                 selectedTab={selectedTab}

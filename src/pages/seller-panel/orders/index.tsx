@@ -133,12 +133,12 @@ function ListOrderDeliveryService() {
       </Head>
       <SellerPanelLayout selectedPage="order">
         <H2>Order</H2>
-        <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
-          <div className="my-4 flex h-fit w-fit max-w-full space-x-10 overflow-x-auto whitespace-nowrap border-b-[2px]">
+        <div className="mt-3 flex h-fit flex-col rounded border bg-white p-6 ">
+          <div className="my-4 flex h-[2.5rem] w-fit max-w-full space-x-10 overflow-x-auto whitespace-nowrap border-b-[2px]">
             <button
               onClick={(e) => ChangeOrderStatusPage(e)}
               className={cx(
-                '-mb-[2px] h-fit border-b-[3px] py-1 transition-all',
+                'h-full border-b-[3px] transition-all',
                 orderStatusID === '' ? 'border-primary' : 'border-transparent'
               )}
             >
@@ -151,7 +151,7 @@ function ListOrderDeliveryService() {
                   onClick={(e) => ChangeOrderStatusPage(e)}
                   value={status.id}
                   className={cx(
-                    '-mb-[2px] h-full whitespace-nowrap border-b-[3px] py-1 transition-all',
+                    'h-full whitespace-nowrap border-b-[3px] transition-all',
                     orderStatusID === status.id
                       ? 'border-primary'
                       : 'border-transparent'

@@ -26,7 +26,7 @@ interface SellerSideBarProps {
 interface SideBarMenuProps {
   icon: React.ReactNode
   title: string
-  link: ValidPage
+  link: string
   active: boolean
 }
 
@@ -62,7 +62,7 @@ const SideBarMenu: React.FC<SideBarMenuProps> = ({
 const SectionTwoSideBar: React.FC<SellerSideBarProps> = ({ selectedPage }) => {
   const items: Array<SideBarMenuProps> = [
     {
-      link: 'order',
+      link: 'seller-panel/orders',
       title: 'Order',
       icon: <HiArchive />,
       active: selectedPage === 'order',
@@ -80,7 +80,7 @@ const SectionTwoSideBar: React.FC<SellerSideBarProps> = ({ selectedPage }) => {
       active: selectedPage === 'shop',
     },
     {
-      link: 'product',
+      link: 'seller-panel/products',
       title: 'Product',
       icon: <HiInbox />,
       active: selectedPage === 'product',
