@@ -1,7 +1,8 @@
 import cx from '@/helper/cx'
 import React from 'react'
 
-interface TextAreaProps extends React.InputHTMLAttributes<HTMLTextAreaElement> {
+interface TextAreaProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string
   full?: boolean
   errorMsg?: string

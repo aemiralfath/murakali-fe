@@ -62,7 +62,7 @@ const SideBarMenu: React.FC<SideBarMenuProps> = ({
 const SectionTwoSideBar: React.FC<SellerSideBarProps> = ({ selectedPage }) => {
   const items: Array<SideBarMenuProps> = [
     {
-      link: 'seller-panel/orders',
+      link: 'order',
       title: 'Order',
       icon: <HiArchive />,
       active: selectedPage === 'order',
@@ -80,7 +80,7 @@ const SectionTwoSideBar: React.FC<SellerSideBarProps> = ({ selectedPage }) => {
       active: selectedPage === 'shop',
     },
     {
-      link: 'seller-panel/products',
+      link: 'products',
       title: 'Product',
       icon: <HiInbox />,
       active: selectedPage === 'product',
@@ -102,7 +102,7 @@ const SectionTwoSideBar: React.FC<SellerSideBarProps> = ({ selectedPage }) => {
   return (
     <>
       <div className="flex">
-        <div className="flex h-screen w-64 bg-primary py-5">
+        <div className="flex min-h-screen w-64 bg-primary py-5">
           <div className="mr-4 flex w-full flex-col gap-2 py-4">
             {items.map((item, idx) => (
               <SideBarMenu key={idx} {...item} />
