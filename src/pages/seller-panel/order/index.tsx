@@ -114,11 +114,11 @@ function ListOrderDeliveryService() {
   useEffect(() => {
     if (orderStatusID === '') {
       router.push({
-        pathname: '/seller-panel/orders',
+        pathname: '/seller-panel/order',
       })
     } else {
       router.push({
-        pathname: '/seller-panel/orders',
+        pathname: '/seller-panel/order',
         query: {
           order_status: orderStatusID,
         },

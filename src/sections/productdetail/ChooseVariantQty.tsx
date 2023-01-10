@@ -1,7 +1,13 @@
 import { H3, P, NumberInput, Divider, H4, Button } from '@/components'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { HiTag, HiPlus } from 'react-icons/hi'
 import type { ProductDetail } from '@/types/api/product'
+import { useAddToCart } from '@/api/user/cart'
+import toast from 'react-hot-toast'
+import { AxiosError } from 'axios'
+import { APIResponse } from '@/types/api/response'
+import { useUser } from '@/hooks'
+import { useRouter } from 'next/router'
 
 interface ChooseVariantQtyProps {
   variantNamesState: string[]
@@ -17,6 +23,25 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
   qty,
   setQty,
 }) => {
+  const addToCart = useAddToCart()
+
+  useEffect(() => {
+    if (addToCart.isSuccess) {
+      toast.success('Added to cart!')
+    }
+  }, [addToCart.isSuccess])
+  useEffect(() => {
+    if (addToCart.isError) {
+      const reason = addToCart.failureReason as AxiosError<APIResponse<null>>
+      toast.error(
+        reason.response ? reason.response.data.message : reason.message
+      )
+    }
+  }, [addToCart.isError])
+
+  const { user, isLoading } = useUser()
+  const router = useRouter()
+
   return (
     <>
       <div className="flex flex-1 flex-col gap-2">
@@ -62,7 +87,25 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
         <Button buttonType="primary" className="rounded">
           <HiTag /> Buy Now
         </Button>
-        <Button buttonType="primary" outlined className="rounded">
+        <Button
+          buttonType="primary"
+          outlined
+          className="rounded"
+          onClick={() => {
+            if (!user && !isLoading) {
+              router.push('/login')
+            } else {
+              if (selectVariant) {
+                addToCart.mutate({
+                  id: selectVariant.id,
+                  quantity: qty,
+                })
+              } else {
+                toast.error('Please select variant!')
+              }
+            }
+          }}
+        >
           <HiPlus /> Add to Cart
         </Button>
       </div>
