@@ -1,6 +1,8 @@
 import { useSLPPayment } from '@/api/user/transaction'
 import { Navbar } from '@/layout/template'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
+import type { APIResponse } from '@/types/api/response'
+import type { AxiosError } from 'axios'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
@@ -9,6 +11,7 @@ const SLPPayment = () => {
   const router = useRouter()
   const transactionID = router.query.id as string
   const paymentURL = useSLPPayment()
+  const [paymentReason, setPaymentReason] = useState('')
 
   useEffect(() => {
     if (transactionID) {
@@ -28,6 +31,15 @@ const SLPPayment = () => {
     }
   }, [redirectCount])
 
+  useEffect(() => {
+    if (paymentURL.isError) {
+      const reason = paymentURL.failureReason as AxiosError<APIResponse<null>>
+      setPaymentReason(
+        reason.response ? reason.response.data.message : reason.message
+      )
+    }
+  }, [paymentURL.isError])
+
   return (
     <>
       <Navbar />
@@ -43,6 +55,24 @@ const SLPPayment = () => {
                 onLoad={onLoad}
               ></iframe>
             </>
+          ) : paymentURL.isError ? (
+            paymentReason === 'insufficient fund to create transaction' ? (
+              <>
+                <div className="flex flex-col items-center justify-center bg-warning">
+                  <h1>Insufficient balance</h1>
+                  <p>please top up first, and refresh this page!</p>
+                </div>
+              </>
+            ) : paymentReason === 'invalid input on card_number, ' ? (
+              <>
+                <div className="flex flex-col items-center justify-center bg-warning">
+                  <h1>Invalid SeaLabs Pay account</h1>
+                  <p>make sure your card number is correct!</p>
+                </div>
+              </>
+            ) : (
+              <></>
+            )
           ) : (
             <></>
           )}

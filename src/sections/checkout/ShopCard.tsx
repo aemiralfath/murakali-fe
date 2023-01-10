@@ -60,7 +60,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
       <div className="flex flex-wrap items-center justify-center gap-y-2 md:justify-end">
         <div className="block">
           <Menu>
-            <Menu.Button className="btn-outline btn btn-primary  m-1 w-44 gap-4">
+            <Menu.Button className="btn-outline btn-primary btn  m-1 w-44 gap-4">
               {delivery.name ? (
                 <div className="flex-start flex items-center gap-2">
                   <FaShippingFast />
@@ -78,32 +78,46 @@ const ShopCard: React.FC<ShopCardProps> = ({
             <Menu.Items className="absolute w-44 origin-top-left  divide-y divide-gray-100 rounded-md bg-white shadow-lg focus:outline-none ">
               <div className="p-1">
                 {locationCost.isSuccess ? (
-                  locationCost.data.data.data.shipping_option.map(
-                    (shipping, index) => (
-                      <Menu.Item key={index}>
-                        {() => (
-                          <Button
-                            onClick={() => {
-                              courierID(shipping.courier.id, shipping.fee)
-                              setDelivery({
-                                name: shipping.courier.name,
-                                delivery_fee: shipping.fee,
-                                etd: shipping.etd,
-                              })
-                            }}
-                            className="btn m-1 h-24  w-40  gap-4 border-gray-300 bg-white text-primary outline hover:border-white hover:bg-primary hover:text-white"
-                          >
-                            <a className="flex flex-col gap-3">
-                              <span className="text-start font-bold">
-                                {shipping.courier.name}
-                              </span>
-                              <span className="">Rp. {shipping.fee}</span>
-                              <span>{shipping.etd}</span>
-                            </a>
-                          </Button>
-                        )}
-                      </Menu.Item>
+                  locationCost.data.data.data.shipping_option.length > 0 ? (
+                    locationCost.data.data.data.shipping_option.map(
+                      (shipping, index) => (
+                        <Menu.Item key={index}>
+                          {() => (
+                            <Button
+                              onClick={() => {
+                                courierID(shipping.courier.id, shipping.fee)
+                                setDelivery({
+                                  name: shipping.courier.name,
+                                  delivery_fee: shipping.fee,
+                                  etd: shipping.etd,
+                                })
+                              }}
+                              className="btn m-1 h-24  w-40  gap-4 border-gray-300 bg-white text-primary outline hover:border-white hover:bg-primary hover:text-white"
+                            >
+                              <a className="flex flex-col gap-3">
+                                <span className="text-start font-bold">
+                                  {shipping.courier.name}
+                                </span>
+                                <span className="">Rp. {shipping.fee}</span>
+                                <span>{shipping.etd}</span>
+                              </a>
+                            </Button>
+                          )}
+                        </Menu.Item>
+                      )
                     )
+                  ) : (
+                    <Menu.Item key={-1}>
+                      {() => (
+                        <Button className="btn m-1 h-24  w-40  gap-4 border-gray-300 bg-white text-primary outline hover:border-white hover:bg-primary hover:text-white">
+                          <a className="flex flex-col gap-3">
+                            <span className="text-start font-bold">
+                              No Shipping option
+                            </span>
+                          </a>
+                        </Button>
+                      )}
+                    </Menu.Item>
                   )
                 ) : (
                   <a></a>
@@ -116,7 +130,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
         <div className="dropdown">
           <label
             tabIndex={0}
-            className="btn-outline btn btn-primary  w-40 gap-2"
+            className="btn-outline btn-primary btn  w-40 gap-2"
           >
             <FaTicketAlt /> Voucher Shop
           </label>
