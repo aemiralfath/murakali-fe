@@ -15,8 +15,9 @@ import ProductCard from './template/product/ProductCard'
 
 import type { FilterPrice } from '@/sections/productslisting/PriceFilter'
 import type { ProvinceDetail } from '@/types/api/address'
-import type { SortDirection } from '@/types/helper/sort'
+import type { SortBy } from '@/types/helper/sort'
 import type { BriefProduct } from '@/types/api/product'
+import { useRouter } from 'next/router'
 
 const defaultShownProvince = [
   'DKI Jakarta',
@@ -45,25 +46,26 @@ const FilterChip: React.FC<{ value: string; onClose: () => void }> = ({
   )
 }
 
+const ButtonSortData = [
+  { name: 'date', sort_by: 'created_at' },
+  { name: 'price', sort_by: 'min_price' },
+  { name: 'sold', sort_by: 'unit_sold' },
+  { name: 'view', sort_by: 'view_count' },
+]
+
 const useProductListing = () => {
-  const [priceSort, setPriceSort] = useState<SortDirection | undefined>()
-  const [dateSort, setDateSort] = useState<SortDirection | undefined>()
-  const [ratingSort, setRatingSort] = useState<SortDirection | undefined>()
+  const [sortBy, setSortBy] = useState<SortBy>({ sort_by: '', direction: '' })
 
   const [filterLocation, setFilterLocation] = useState<ProvinceDetail[]>([])
-  const [filterPrice, setFilterPrice] = useState<FilterPrice | undefined>()
+  const [filterPrice, setFilterPrice] = useState<FilterPrice>()
   const [filterRating, setFilterRating] = useState<number>(-1)
   const [filterCategory, setFilterCategory] = useState<string[]>([])
 
   const [page, setPage] = useState(1)
 
   return {
-    priceSort,
-    setPriceSort,
-    dateSort,
-    setDateSort,
-    ratingSort,
-    setRatingSort,
+    sortBy,
+    setSortBy,
     filterLocation,
     setFilterLocation,
     filterPrice,
@@ -81,20 +83,18 @@ export type ProductListingHook = ReturnType<typeof useProductListing>
 
 type ProductListingLayoutProps = LoadingDataWrapper<BriefProduct[]> & {
   controller: ProductListingHook
+  totalPage?: number
 }
 
 const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   data,
   isLoading,
   controller,
+  totalPage,
 }) => {
   const {
-    priceSort,
-    setPriceSort,
-    dateSort,
-    setDateSort,
-    ratingSort,
-    setRatingSort,
+    sortBy,
+    setSortBy,
     filterLocation,
     setFilterLocation,
     filterPrice,
@@ -107,6 +107,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
     setPage,
   } = controller
 
+  const Router = useRouter()
   const lg = useMediaQuery('lg')
   const allProvince = useGetAllProvince()
   const [shownProvince, setShownProvince] = useState(defaultShownProvince)
@@ -158,122 +159,71 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
             <H4>Sort</H4>
             <div className="ml-2 h-[1px] w-8 bg-base-300" />
             <div className="flex flex-wrap items-center gap-2">
-              <div
-                className={cx(
-                  ' flex items-center gap-1 rounded-full py-1 pl-2 pr-1 font-medium',
-                  priceSort ? 'bg-primary bg-opacity-10 text-primary-focus' : ''
-                )}
-              >
-                Price
-                <button
-                  className={cx(
-                    'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
-                    priceSort === 'ASC' ? 'bg-primary text-xs text-white' : ''
-                  )}
-                  onClick={() => {
-                    if (priceSort === 'ASC') {
-                      setPriceSort(undefined)
-                    } else {
-                      setPriceSort('ASC')
-                    }
-                  }}
-                >
-                  <HiArrowUp />
-                </button>
-                <button
-                  className={cx(
-                    'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
-                    priceSort === 'DESC' ? 'bg-primary text-xs text-white' : ''
-                  )}
-                  onClick={() => {
-                    if (priceSort === 'DESC') {
-                      setPriceSort(undefined)
-                    } else {
-                      setPriceSort('DESC')
-                    }
-                  }}
-                >
-                  <HiArrowDown />
-                </button>
-              </div>
-              <div
-                className={cx(
-                  ' flex items-center gap-1 rounded-full py-1 pl-2 pr-1 font-medium',
-                  dateSort ? 'bg-primary bg-opacity-10 text-primary-focus' : ''
-                )}
-              >
-                Date
-                <button
-                  className={cx(
-                    'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
-                    dateSort === 'ASC' ? 'bg-primary text-xs text-white' : ''
-                  )}
-                  onClick={() => {
-                    if (dateSort === 'ASC') {
-                      setDateSort(undefined)
-                    } else {
-                      setDateSort('ASC')
-                    }
-                  }}
-                >
-                  <HiArrowUp />
-                </button>
-                <button
-                  className={cx(
-                    'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
-                    dateSort === 'DESC' ? 'bg-primary text-xs text-white' : ''
-                  )}
-                  onClick={() => {
-                    if (dateSort === 'DESC') {
-                      setDateSort(undefined)
-                    } else {
-                      setDateSort('DESC')
-                    }
-                  }}
-                >
-                  <HiArrowDown />
-                </button>
-              </div>
-              <div
-                className={cx(
-                  ' flex items-center gap-1 rounded-full py-1 pl-2 pr-1 font-medium',
-                  ratingSort
-                    ? 'bg-primary bg-opacity-10 text-primary-focus'
-                    : ''
-                )}
-              >
-                Rating
-                <button
-                  className={cx(
-                    'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
-                    ratingSort === 'ASC' ? 'bg-primary text-xs text-white' : ''
-                  )}
-                  onClick={() => {
-                    if (ratingSort === 'ASC') {
-                      setRatingSort(undefined)
-                    } else {
-                      setRatingSort('ASC')
-                    }
-                  }}
-                >
-                  <HiArrowUp />
-                </button>
-                <button
-                  className={cx(
-                    'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
-                    ratingSort === 'DESC' ? 'bg-primary text-xs text-white' : ''
-                  )}
-                  onClick={() => {
-                    if (ratingSort === 'DESC') {
-                      setRatingSort(undefined)
-                    } else {
-                      setRatingSort('DESC')
-                    }
-                  }}
-                >
-                  <HiArrowDown />
-                </button>
-              </div>
+              {ButtonSortData.map((sorting, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={cx(
+                      ' flex items-center gap-1 rounded-full py-1 pl-2 pr-1 font-medium',
+                      sortBy.sort_by === sorting.sort_by
+                        ? 'bg-primary bg-opacity-10 text-primary-focus'
+                        : ''
+                    )}
+                  >
+                    {sorting.name}
+                    <button
+                      className={cx(
+                        'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                        sortBy.sort_by === sorting.sort_by &&
+                          sortBy.direction === 'ASC'
+                          ? 'bg-primary text-xs text-white'
+                          : ''
+                      )}
+                      onClick={() => {
+                        if (
+                          sortBy.sort_by === sorting.sort_by &&
+                          sortBy.direction === 'ASC'
+                        ) {
+                          setSortBy({ ...sortBy, sort_by: '', direction: '' })
+                        } else {
+                          setSortBy({
+                            ...sortBy,
+                            sort_by: sorting.sort_by,
+                            direction: 'ASC',
+                          })
+                        }
+                      }}
+                    >
+                      <HiArrowUp />
+                    </button>
+                    <button
+                      className={cx(
+                        'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                        sortBy.sort_by === sorting.sort_by &&
+                          sortBy.direction === 'DESC'
+                          ? 'bg-primary text-xs text-white'
+                          : ''
+                      )}
+                      onClick={() => {
+                        if (
+                          sortBy.sort_by === sorting.sort_by &&
+                          sortBy.direction === 'DESC'
+                        ) {
+                          setSortBy({ ...sortBy, sort_by: '', direction: '' })
+                        } else {
+                          setSortBy({
+                            ...sortBy,
+                            sort_by: sorting.sort_by,
+                            direction: 'DESC',
+                          })
+                        }
+                      }}
+                    >
+                      <HiArrowDown />
+                    </button>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
@@ -355,7 +305,12 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
               <HiFilter /> Open Filter Menu
             </A>
           </div>
-          <PaginationNav total={12} page={page} onChange={setPage} size="sm" />
+          <PaginationNav
+            total={totalPage ?? 1}
+            page={page}
+            onChange={setPage}
+            size="sm"
+          />
         </div>
         <div className="min-h-[80vh] w-full">
           <div className="grid w-full grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">

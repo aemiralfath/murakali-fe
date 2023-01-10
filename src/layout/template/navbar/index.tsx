@@ -1,5 +1,11 @@
 import { Avatar, Button, H2, Icon, TextInput } from '@/components'
-import { useHover, useLoadingModal, useMediaQuery, useUser } from '@/hooks'
+import {
+  useHover,
+  useLoadingModal,
+  useMediaQuery,
+  useSearchKeyword,
+  useUser,
+} from '@/hooks'
 import { Menu, Transition } from '@headlessui/react'
 import Link from 'next/link'
 import React, { Fragment, useEffect, useState } from 'react'
@@ -229,10 +235,15 @@ const Navbar: React.FC = () => {
   const sm = useMediaQuery('sm')
   const cart = useGetHoverCart()
   const setIsLoading = useLoadingModal()
+  const setSearchKeyword = useSearchKeyword()
 
   useEffect(() => {
     setIsLoading(isLoading)
   }, [isLoading])
+
+  useEffect(() => {
+    setSearchKeyword(keyword)
+  }, [keyword])
 
   return (
     <>
@@ -257,7 +268,7 @@ const Navbar: React.FC = () => {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
             />
-            <Link href={`/search?keyword=${keyword}`}>
+            <Link href={`/search/${keyword}`}>
               <button
                 type="submit"
                 className="absolute top-0 right-0 h-full px-1 text-xl"
