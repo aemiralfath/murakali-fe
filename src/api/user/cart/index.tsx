@@ -4,17 +4,15 @@ import type { APIResponse } from '@/types/api/response'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-const cartKey = ['cart']
+const cartKey = 'cart'
 
 const getCart = async () => {
-  const response = await authorizedClient.get<APIResponse<Cart>>(
-    '/cart/items?limit=100'
-  )
+  const response = await authorizedClient.get<APIResponse<Cart>>('/cart/items')
   return response.data
 }
 
 export const useGetCart = () => {
-  return useQuery(cartKey, async () => await getCart())
+  return useQuery([cartKey, 1], async () => await getCart())
 }
 
 const getHoverCart = async () => {
@@ -25,7 +23,7 @@ const getHoverCart = async () => {
 }
 
 export const useGetHoverCart = () => {
-  return useQuery(cartKey, async () => await getHoverCart())
+  return useQuery([cartKey, 2], async () => await getHoverCart())
 }
 
 export const useUpdateCart = () => {
@@ -40,7 +38,7 @@ export const useUpdateCart = () => {
     },
     {
       onSuccess: () => {
-        void queryClient.invalidateQueries(cartKey)
+        void queryClient.invalidateQueries([cartKey])
       },
     }
   )
@@ -57,7 +55,7 @@ export const useDeleteCart = () => {
     },
     {
       onSuccess: () => {
-        void queryClient.invalidateQueries(cartKey)
+        void queryClient.invalidateQueries([cartKey])
       },
     }
   )
@@ -75,7 +73,7 @@ export const useAddToCart = () => {
     },
     {
       onSuccess: () => {
-        void queryClient.invalidateQueries(cartKey)
+        void queryClient.invalidateQueries([cartKey])
       },
     }
   )
