@@ -12,7 +12,7 @@ export const store = configureStore({
   reducer: {
     modal: modalReducer,
     loadingModal: loadingModalReducer,
-    searhReducer: searchKeywordReducer,
+    searchKeyword: searchKeywordReducer,
   },
   middleware: (middleware) =>
     middleware({

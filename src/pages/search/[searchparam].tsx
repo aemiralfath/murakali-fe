@@ -14,11 +14,12 @@ const SearchPage: NextPage = () => {
   const INF = 1000000000
 
   const { searchparam } = router.query
-  const [queryParam, setQueryParam] = useState<Map<string, string>>(
-    // Object.entries({'search':String(searchparam)})
-    new Map<string, string>()
-  )
+  const [queryParam] = useState<Map<string, string>>(new Map<string, string>())
+
   const [flag, setFlag] = useState(true)
+  const [locationState, setLocationState] = useState('')
+  const [categoryState, setCategoryState] = useState('')
+  const [resultFor, setResultFor] = useState('')
   const controller = useProductListing()
   const {
     sortBy,
@@ -65,27 +66,59 @@ const SearchPage: NextPage = () => {
     setFlag(true)
   }, [filterRating])
 
-  let location = ''
-  filterLocation.map((provinceDetail) => {
-    if (location === '') {
-      location = provinceDetail.province_id
+  useEffect(() => {
+    let locationQuery = ''
+    filterLocation.map((provinceDetail) => {
+      if (locationQuery === '') {
+        locationQuery = provinceDetail.province_id
+      } else {
+        locationQuery = locationQuery + ',' + provinceDetail.province_id
+      }
+    })
+    if (locationQuery === '') {
+      setLocationState('')
+      queryParam.delete('location')
     } else {
-      location = location + ',' + provinceDetail.province_id
+      setLocationState(locationQuery)
+      queryParam.set('location', locationQuery)
     }
-  })
+    setFlag(true)
+  }, [filterLocation])
 
-  let queryCategory = ''
-  filterCategory.map((category) => {
+  useEffect(() => {
+    let queryCategory = ''
+    filterCategory.map((category) => {
+      if (queryCategory === '') {
+        queryCategory = category
+      } else {
+        queryCategory = queryCategory + ',' + category
+      }
+    })
     if (queryCategory === '') {
-      queryCategory = category
+      setCategoryState('')
+      queryParam.delete('category')
     } else {
-      queryCategory = queryCategory + ',' + category
+      setCategoryState(queryCategory)
+      queryParam.set('category', queryCategory)
     }
-  })
+    setFlag(true)
+  }, [filterCategory])
+
+  useEffect(() => {
+    queryParam.set('page', String(page))
+    setFlag(true)
+  }, [page])
+
+  useEffect(() => {
+    setFlag(true)
+    router.push({
+      pathname: `/search/${searchparam}`,
+    })
+  }, [searchparam])
 
   const productQuery: ProductQuery = {
     search: String(searchparam),
-    category: queryCategory,
+    category: categoryState,
     limit: 30,
     page: page,
     sort_by: sortBy.sort_by,
@@ -95,13 +128,14 @@ const SearchPage: NextPage = () => {
     min_rating: filterRating,
     max_rating: 5,
     shop_id: '',
-    province_ids: location,
+    province_ids: locationState,
   }
 
+  const SearchProductList = useSearchQueryProduct(productQuery)
+
   useEffect(() => {
+    setFlag(false)
     if (flag === true) {
-      setFlag(false)
-      console.log('asdasd', queryParam)
       let stringQuery = ''
       let fr = false
       queryParam.forEach((value, key) => {
@@ -111,16 +145,36 @@ const SearchPage: NextPage = () => {
         stringQuery = stringQuery + key + '=' + value
         fr = true
       })
-      console.log(stringQuery)
+      let num1 = 0
+      let num2 = 0
+      if (SearchProductList.isSuccess) {
+        num1 =
+          (SearchProductList.data.data.page - 1) *
+            SearchProductList.data.data.limit +
+          1
+        num2 = num1 + SearchProductList.data.data.limit - 1
+        if (num2 > SearchProductList.data.data.total_rows) {
+          num2 = SearchProductList.data.data.total_rows
+        }
+        setResultFor(
+          num1 +
+            ' - ' +
+            num2 +
+            ' of ' +
+            SearchProductList.data.data.total_rows +
+            ' results for "' +
+            searchparam +
+            '"'
+        )
+      } else {
+        setResultFor('no results for "' + searchparam + '"')
+      }
       router.push({
         pathname: `/search/${searchparam}`,
         query: stringQuery,
       })
     }
   }, [flag])
-
-  const SearchProductList = useSearchQueryProduct(productQuery)
-  // Get the state like this :
 
   return (
     <>
@@ -129,7 +183,7 @@ const SearchPage: NextPage = () => {
         <meta name="description" content="Murakali E-Commerce Application" />
       </Head>
       <MainLayout>
-        asd
+        {resultFor}
         {SearchProductList.isLoading ? (
           <ProductListingLayout controller={controller} isLoading={true} />
         ) : SearchProductList.data.data.rows ? (
@@ -148,3 +202,9 @@ const SearchPage: NextPage = () => {
 }
 
 export default SearchPage
+
+export async function getServerSideProps() {
+  return {
+    props: {},
+  }
+}

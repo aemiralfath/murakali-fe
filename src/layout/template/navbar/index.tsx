@@ -4,6 +4,7 @@ import {
   useLoadingModal,
   useMediaQuery,
   useSearchKeyword,
+  useSelector,
   useUser,
 } from '@/hooks'
 import { Menu, Transition } from '@headlessui/react'
@@ -228,14 +229,16 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
 }
 
 const Navbar: React.FC = () => {
+  const { keyword } = useSelector((state) => state.searchKeyword)
+
   const [navbarOpen, setNavbarOpen] = useState(false)
-  const [keyword, setKeyword] = useState<string>('')
   const { user, isLoading } = useUser()
 
   const sm = useMediaQuery('sm')
   const cart = useGetHoverCart()
   const setIsLoading = useLoadingModal()
   const setSearchKeyword = useSearchKeyword()
+  const router = useRouter()
 
   useEffect(() => {
     setIsLoading(isLoading)
@@ -266,16 +269,17 @@ const Navbar: React.FC = () => {
               full
               transparent
               value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
+              onChange={(e) => setSearchKeyword(e.target.value)}
             />
-            <Link href={`/search/${keyword}`}>
-              <button
-                type="submit"
-                className="absolute top-0 right-0 h-full px-1 text-xl"
-              >
-                <HiSearch color="white" />
-              </button>
-            </Link>
+            <button
+              type="submit"
+              className="absolute top-0 right-0 h-full px-1 text-xl"
+              onClick={() => {
+                router.push(`/search/${keyword}`)
+              }}
+            >
+              <HiSearch color="white" />
+            </button>
           </div>
           {!user ? (
             <div

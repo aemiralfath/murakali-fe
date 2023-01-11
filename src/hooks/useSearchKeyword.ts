@@ -7,7 +7,7 @@ function useSearchKeyword() {
   const [keyword, setKeyword] = useState('')
 
   useEffect(() => {
-    dispatch(searchingKeyword())
+    dispatch(searchingKeyword(keyword))
   }, [keyword])
 
   return setKeyword
