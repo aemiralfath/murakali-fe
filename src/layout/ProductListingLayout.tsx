@@ -1,5 +1,5 @@
 import { useGetAllProvince } from '@/api/user/address/extra'
-import { A, Divider, H4, PaginationNav } from '@/components'
+import { A, Divider, H4, P, PaginationNav } from '@/components'
 import productListingCategory from '@/dummy/productListingCategory'
 import LocationFilter from '@/sections/productslisting/LocationFilter'
 import React, { useState } from 'react'
@@ -12,12 +12,12 @@ import cx from '@/helper/cx'
 import { useMediaQuery } from '@/hooks'
 import { Transition } from '@headlessui/react'
 import ProductCard from './template/product/ProductCard'
+import Image from 'next/image'
 
 import type { FilterPrice } from '@/sections/productslisting/PriceFilter'
 import type { ProvinceDetail } from '@/types/api/address'
 import type { SortBy } from '@/types/helper/sort'
 import type { BriefProduct } from '@/types/api/product'
-import { useRouter } from 'next/router'
 
 const defaultShownProvince = [
   'DKI Jakarta',
@@ -107,7 +107,6 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
     setPage,
   } = controller
 
-  const Router = useRouter()
   const lg = useMediaQuery('lg')
   const allProvince = useGetAllProvince()
   const [shownProvince, setShownProvince] = useState(defaultShownProvince)
@@ -313,24 +312,50 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
           />
         </div>
         <div className="min-h-[80vh] w-full">
-          <div className="grid w-full grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
-            {isLoading
-              ? Array(5)
-                  .fill('')
-                  .map((_, idx) => {
-                    return <ProductCard key={`${idx}`} isLoading />
-                  })
-              : data.map((product, idx) => {
-                  return (
-                    <ProductCard
-                      key={`${product.title} ${idx}`}
-                      data={product}
-                      isLoading={false}
-                      hoverable
-                    />
-                  )
-                })}
+          <div className="-z-10 grid w-full grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
+            {isLoading ? (
+              Array(5)
+                .fill('')
+                .map((_, idx) => {
+                  return <ProductCard key={`${idx}`} isLoading />
+                })
+            ) : data.length === 0 ? (
+              <div className="col-span-2 flex w-full flex-col items-center justify-center p-6 sm:col-span-3 md:col-span-4 xl:col-span-6">
+                <Image
+                  src={'/asset/sorry.svg'}
+                  width={300}
+                  height={300}
+                  alt={'Sorry'}
+                />
+                <P className="text-sm italic text-gray-400">
+                  Sorry, product you requested is not found.
+                </P>
+              </div>
+            ) : (
+              data.map((product, idx) => {
+                return (
+                  <ProductCard
+                    key={`${product.title} ${idx}`}
+                    data={product}
+                    isLoading={false}
+                    hoverable
+                  />
+                )
+              })
+            )}
           </div>
+          {!isLoading && data?.length !== 0 ? (
+            <div className="mt-4 flex w-full justify-center">
+              <PaginationNav
+                total={totalPage ?? 1}
+                page={page}
+                onChange={setPage}
+                size="sm"
+              />
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
     </div>

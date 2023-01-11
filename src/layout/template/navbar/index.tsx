@@ -270,6 +270,13 @@ const Navbar: React.FC = () => {
               transparent
               value={keyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  if (keyword) {
+                    router.push(`/search/${keyword}`)
+                  }
+                }
+              }}
             />
             <button
               type="submit"
