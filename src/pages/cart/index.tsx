@@ -143,7 +143,7 @@ function Cart() {
             </div>
             {!cartList.isLoading ? (
               <>
-                {cartList.data?.data ? (
+                {cartList.data?.data.rows ? (
                   cartList.data.data.rows.map((cart, index) => (
                     <div
                       className="z-10 h-full rounded-lg border-[1px] border-solid border-gray-300 py-7 px-8"

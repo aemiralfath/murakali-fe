@@ -16,9 +16,11 @@ import { FaAddressCard } from 'react-icons/fa'
 import { decrypt } from 'n-krypta'
 import ShopCard from '@/sections/checkout/ShopCard'
 import { useGetUserWallet } from '@/api/user/wallet'
+import { useGetUserSLP } from '@/api/user/slp'
 function Checkout() {
   const cartList = useGetCart()
   const userWallet = useGetUserWallet()
+  const userSLP = useGetUserSLP()
   const defaultAddress = useGetDefaultAddress(true, false)
   const modal = useModal()
   const router = useRouter()
@@ -41,7 +43,7 @@ function Checkout() {
 
   const [checkoutItems, setCheckoutItems] = useState<PostCheckout>()
   useEffect(() => {
-    if (cartList.data?.data) {
+    if (cartList.data?.data.rows) {
       const tempCheckoutItem: CartPostCheckout[] = cartList.data.data.rows
         .filter((item) => idShops.includes(item.shop.id))
         .map((cartDetail) => {
@@ -64,13 +66,9 @@ function Checkout() {
             courier_fee: 0,
           }
         })
-      let tempWallet: string
-      if (userWallet.isSuccess) {
-        tempWallet = userWallet.data.data.id
-      }
 
       setCheckoutItems({
-        wallet_id: tempWallet,
+        wallet_id: '',
         card_number: '',
         voucher_marketplace_id: '',
         cart_items: tempCheckoutItem,
@@ -206,11 +204,16 @@ function Checkout() {
                   </ul>
                 </div>
               </div>
-
-              <CheckoutSummary
-                mapPriceQuantity={mapPriceQuantitys}
-                postCheckout={checkoutItems}
-              />
+              {!userWallet.isLoading && !userSLP.isLoading ? (
+                <CheckoutSummary
+                  mapPriceQuantity={mapPriceQuantitys}
+                  postCheckout={checkoutItems}
+                  userWallet={userWallet.data.data}
+                  userSLP={userSLP.data.data}
+                />
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         </div>

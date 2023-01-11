@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useDeleteCart, useUpdateCart } from '@/api/user/cart'
 import { Button, H4, P } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
@@ -8,7 +9,6 @@ import { closeModal } from '@/redux/reducer/modalReducer'
 import type { ProductCartDetail } from '@/types/api/cart'
 import type { APIResponse } from '@/types/api/response'
 import type { AxiosError } from 'axios'
-import Image from 'next/image'
 
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
@@ -81,6 +81,7 @@ const ProductCart: React.FC<ProductCartProps> = ({
                 <img
                   className="h-24 w-24 rounded-t-lg object-contain "
                   src={listProduct.thumbnail_url}
+                  alt={'product image'}
                 />
               </>
             ) : (
@@ -88,6 +89,7 @@ const ProductCart: React.FC<ProductCartProps> = ({
                 <img
                   className="h-24 w-24 rounded-t-lg object-contain "
                   src={imageEmpty.src}
+                  alt={'product image'}
                 />
               </>
             )}
