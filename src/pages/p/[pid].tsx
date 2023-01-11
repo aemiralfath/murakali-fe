@@ -1,4 +1,4 @@
-import { A, Breadcrumbs, Divider, P, Spinner } from '@/components'
+import { A, Breadcrumbs, Divider, H3, P, Spinner } from '@/components'
 import { useModal } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
 import ProductImageCarousel from '@/layout/template/product/ProductImageCarousel'
@@ -17,6 +17,8 @@ import type { ProductDetail } from '@/types/api/product'
 import ChooseVariantQty from '@/sections/productdetail/ChooseVariantQty'
 import ProductDescription from '@/sections/productdetail/ProductDescription'
 import ProductReview from '@/sections/productdetail/ProductReview'
+import { useGetSellerProduct } from '@/api/product'
+import ProductCarousel from '@/sections/home/ProductCarousel'
 
 const ProductPage: NextPage = () => {
   const dummyProduct = product
@@ -26,6 +28,19 @@ const ProductPage: NextPage = () => {
   const modal = useModal()
   const [isLoading, setIsLoading] = useState(false)
   const [qty, setQty] = useState(1)
+  const sellerProduct = useGetSellerProduct(
+    1,
+    12,
+    '',
+    '',
+    '', //isi seller id
+    '',
+    '',
+    0,
+    0,
+    0,
+    0
+  )
 
   const [variantNamesState, setVariantNames] = useState<string[]>([])
   const [variantTypesState, setVariantTypes] = useState<{
@@ -189,6 +204,8 @@ const ProductPage: NextPage = () => {
           </div>
         </div>
         <Divider />
+        <H3>Another Products from Seller</H3>
+        <ProductCarousel product={sellerProduct.data?.data.rows} />
       </MainLayout>
     </>
   )
