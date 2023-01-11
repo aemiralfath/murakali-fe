@@ -37,6 +37,7 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
           postCheckout={postCheckout}
           userWallet={userWallet}
           userSLP={userSLP}
+          totalOrder={mapPriceQuantity.subPrice + deliveryFee}
         />
       ),
       closeButton: false,

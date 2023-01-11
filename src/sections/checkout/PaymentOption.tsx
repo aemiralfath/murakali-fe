@@ -15,26 +15,33 @@ import sealabsImage from '../../../public/asset/sealabs.png'
 import type { WalletUser } from '@/types/api/wallet'
 import type { SLPUser } from '@/types/api/slp'
 import { validateUUID } from '@/helper/uuid'
+import { ConvertShowMoney } from '@/helper/convertshowmoney'
+import { useModal } from '@/hooks'
+import FormPin from './FormPin'
 
 interface CheckoutSummaryProps {
   postCheckout: PostCheckout
   userWallet: WalletUser
   userSLP: SLPUser[]
+  totalOrder: number
 }
 
 const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   postCheckout,
   userWallet,
   userSLP,
+  totalOrder,
 }) => {
   const [selected, setSelected] = useState('')
   const dispatch = useDispatch()
+  const modalPIN = useModal()
   const router = useRouter()
 
   const paymentOption = []
   paymentOption.push({
     id: userWallet.id,
     name: 'Wallet',
+    balance: userWallet.balance,
     image: walletImage.src,
   })
 
@@ -55,20 +62,31 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
 
   function handleTransaction() {
     if (validateUUID(selected)) {
+      postCheckout.card_number = ''
       postCheckout.wallet_id = selected
+      modalPIN.info({
+        title: 'Input PIN',
+        content: <FormPin amount={totalOrder} postCheckout={postCheckout} />,
+        closeButton: false,
+      })
     } else {
+      postCheckout.wallet_id = ''
       postCheckout.card_number = selected
+      createTransaction.mutate(postCheckout)
     }
-    createTransaction.mutate(postCheckout)
   }
+
+  useEffect(() => {
+    if (userWallet.balance - totalOrder >= 0) {
+      setSelected(userWallet.id)
+    }
+  }, [totalOrder])
 
   useEffect(() => {
     if (createTransaction.isSuccess) {
       toast.success('Checkout Success')
       dispatch(closeModal())
-      if (validateUUID(selected)) {
-        router.push('/profile/transaction-history')
-      } else {
+      if (!validateUUID(selected)) {
         router.push({
           pathname: '/slp-payment',
           query: { id: createTransaction.data.data.transaction_id },
@@ -79,12 +97,13 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
 
   useEffect(() => {
     if (createTransaction.isError) {
-      const errmsg = createTransaction.error as AxiosError<APIResponse<null>>
+      const errMsg = createTransaction.error as AxiosError<APIResponse<null>>
       toast.error(
-        errmsg.response ? errmsg.response.data.message : errmsg.message
+        errMsg.response ? errMsg.response.data.message : errMsg.message
       )
     }
   }, [createTransaction.isError])
+
   return (
     <div>
       <div>
@@ -118,7 +137,11 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
                   <div className=" my-4 mx-2 grid grid-cols-1 gap-2 md:grid-cols-4">
                     <div className="col-span-3 flex flex-col gap-y-2 ">
                       <H4>{paymentOption.name}</H4>
-                      <P></P>
+                      {paymentOption.balance ? (
+                        <P>Rp. {ConvertShowMoney(paymentOption.balance)}</P>
+                      ) : (
+                        <P>{paymentOption.id}</P>
+                      )}
                     </div>
                   </div>
                 </div>

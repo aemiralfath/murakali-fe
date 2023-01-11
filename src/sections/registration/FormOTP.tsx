@@ -21,7 +21,7 @@ interface FormOTPProps extends React.InputHTMLAttributes<HTMLSelectElement> {
 
 const FormOTP: React.FC<FormOTPProps> = ({ OTPType, email, setState }) => {
   const modal = useModal()
-  const userVerivyOTPChangePassword = useVerifyOTPChangePassword()
+  const userVerifyOTPChangePassword = useVerifyOTPChangePassword()
   const userSendEmailChangePassword = useSendEmailChangePassword()
 
   const [second, setSecond] = React.useState(59)
@@ -40,7 +40,7 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType, email, setState }) => {
   })
 
   useEffect(() => {
-    if (userVerivyOTPChangePassword.isSuccess) {
+    if (userVerifyOTPChangePassword.isSuccess) {
       toast.success('Verify OTP Success')
       modal.edit({
         title: 'Change Password',
@@ -48,7 +48,7 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType, email, setState }) => {
         closeButton: false,
       })
     }
-  }, [userVerivyOTPChangePassword.isSuccess])
+  }, [userVerifyOTPChangePassword.isSuccess])
 
   useEffect(() => {
     if (userSendEmailChangePassword.isSuccess) {
@@ -57,13 +57,13 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType, email, setState }) => {
   }, [userSendEmailChangePassword.isSuccess])
 
   useEffect(() => {
-    if (userVerivyOTPChangePassword.isError) {
-      const errmsg = userVerivyOTPChangePassword.failureReason as AxiosError<
+    if (userVerifyOTPChangePassword.isError) {
+      const errmsg = userVerifyOTPChangePassword.failureReason as AxiosError<
         APIResponse<null>
       >
       toast.error(errmsg.response?.data.message as string)
     }
-  }, [userVerivyOTPChangePassword.isError])
+  }, [userVerifyOTPChangePassword.isError])
 
   useEffect(() => {
     if (userSendEmailChangePassword.isError) {
@@ -104,7 +104,7 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType, email, setState }) => {
     event.preventDefault()
 
     if (OTPType === 'change-password') {
-      userVerivyOTPChangePassword.mutate(input.otp)
+      userVerifyOTPChangePassword.mutate(input.otp)
     } else if (OTPType === 'registration') {
       registrationOtp.mutate({
         otp: input.otp,
