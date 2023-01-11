@@ -1,5 +1,5 @@
 export interface WalletUser {
   id: string
-  ballance: number
+  balance: number
   attempt_count: number
 }

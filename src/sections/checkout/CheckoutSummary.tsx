@@ -2,6 +2,8 @@ import { Button, H3 } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import { useModal } from '@/hooks'
 import type { PostCheckout } from '@/types/api/checkout'
+import type { SLPUser } from '@/types/api/slp'
+import type { WalletUser } from '@/types/api/wallet'
 
 import React, { useEffect, useState } from 'react'
 import PaymentOption from './PaymentOption'
@@ -14,11 +16,15 @@ interface CheckoutSummaryProps {
     result_discount: number
   }
   postCheckout: PostCheckout
+  userWallet: WalletUser
+  userSLP: SLPUser[]
 }
 
 const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
   mapPriceQuantity,
   postCheckout,
+  userWallet,
+  userSLP,
 }) => {
   const modal = useModal()
 
@@ -26,7 +32,13 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
   function handleCheckout() {
     modal.edit({
       title: 'Choose Payment Option',
-      content: <PaymentOption postCheckout={postCheckout} />,
+      content: (
+        <PaymentOption
+          postCheckout={postCheckout}
+          userWallet={userWallet}
+          userSLP={userSLP}
+        />
+      ),
       closeButton: false,
     })
   }
