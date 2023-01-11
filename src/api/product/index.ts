@@ -1,8 +1,8 @@
 import { unauthorizedClient } from '@/api/apiClient'
 import { useQuery } from '@tanstack/react-query'
 
-import type { APIResponse } from '@/types/api/response'
-import type { ProductDetail } from '@/types/api/product'
+import type { APIResponse, PaginationData } from '@/types/api/response'
+import type { BriefProduct, ProductDetail } from '@/types/api/product'
 
 const profileKey = 'seller'
 
@@ -19,7 +19,9 @@ const getSellerProduct = async (
   min_rating: number,
   max_rating: number
 ) => {
-  const response = await unauthorizedClient.get<APIResponse<ProductDetail[]>>(
+  const response = await unauthorizedClient.get<
+    APIResponse<PaginationData<BriefProduct>>
+  >(
     '/product/?limit=' +
       String(limit) +
       '&page=' +

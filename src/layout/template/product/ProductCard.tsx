@@ -7,6 +7,7 @@ import type { BriefProduct } from '@/types/api/product'
 import { useHover } from '@/hooks'
 import { Transition } from '@headlessui/react'
 import { useRouter } from 'next/router'
+import cx from '@/helper/cx'
 
 type ProductCardProps = LoadingDataWrapper<BriefProduct> & {
   hoverable?: boolean
@@ -23,7 +24,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       ref={cartRef}
-      className="border-grey-200 group z-0 h-full w-full scale-100 cursor-pointer rounded-t-lg rounded-b-lg border-[1px] border-solid transition-all hover:z-40 hover:rounded-b-none hover:border-primary hover:shadow-xl"
+      className={cx(
+        'border-grey-200 group z-0 h-full w-full scale-100 cursor-pointer rounded-t-lg rounded-b-lg border-[1px] border-solid transition-all hover:border-primary',
+        hoverable ? 'hover:z-40 hover:rounded-b-none hover:shadow-xl' : ''
+      )}
       onClick={() => {
         // TODO: Add router to ID
         router.push('/p/1')
