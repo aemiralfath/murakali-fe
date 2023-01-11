@@ -60,3 +60,21 @@ export const useDeleteCart = () => {
     }
   )
 }
+
+export const useAddToCart = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (data: UpdateCart) => {
+      return await authorizedClient.post<APIResponse<null>>('/cart/items', {
+        product_detail_id: data.id,
+        quantity: data.quantity,
+      })
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries(cartKey)
+      },
+    }
+  )
+}
