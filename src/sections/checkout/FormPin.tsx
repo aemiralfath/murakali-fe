@@ -53,6 +53,13 @@ const FormPIN: React.FC<FormPINProps> = ({ postCheckout, amount }) => {
       pinInputRef.clear()
       const errMsg = verifyPIN.failureReason as AxiosError<APIResponse<null>>
       toast.error(errMsg.response.data.message as string)
+
+      if (
+        errMsg.response.data.message ===
+        'Wallet is temporarily blocked, please wait.'
+      ) {
+        dispatch(closeModal())
+      }
     }
   }, [verifyPIN.isError])
 

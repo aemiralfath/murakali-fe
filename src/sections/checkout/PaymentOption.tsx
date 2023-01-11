@@ -7,7 +7,7 @@ import type { PostCheckout } from '@/types/api/checkout'
 import type { APIResponse } from '@/types/api/response'
 import type { AxiosError } from 'axios'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import walletImage from '../../../public/asset/wallet.png'
@@ -18,6 +18,7 @@ import { validateUUID } from '@/helper/uuid'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import { useModal } from '@/hooks'
 import FormPin from './FormPin'
+import moment from 'moment'
 
 interface CheckoutSummaryProps {
   postCheckout: PostCheckout
@@ -37,6 +38,41 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   const modalPIN = useModal()
   const router = useRouter()
 
+  const [second, setSecond] = useState(0)
+  const [minute, setMinute] = useState(0)
+  const [blocked, setBlocked] = useState(false)
+
+  useEffect(() => {
+    if (userWallet.unlocked_at.Valid) {
+      const unlockTime = moment(userWallet.unlocked_at.Time)
+      const unlockTimeSecond = Math.abs(moment().diff(unlockTime, 'seconds'))
+      const unlockTimeMinute = Math.floor(unlockTimeSecond / 60)
+      setMinute(unlockTimeMinute)
+      setSecond(unlockTimeSecond - unlockTimeMinute * 60)
+    }
+  }, [userWallet.unlocked_at.Valid])
+
+  useEffect(() => {
+    second > 0 && setTimeout(() => setSecond(second - 1), 1000)
+    if (second === 0) {
+      if (minute <= 0) {
+        setBlocked(false)
+        setSelected(userWallet.id)
+      } else {
+        setMinute(minute - 1)
+        setSecond(59)
+      }
+    }
+
+    if (
+      second > 0 &&
+      minute > 0 &&
+      moment().isBefore(moment(userWallet.unlocked_at.Time))
+    ) {
+      setBlocked(true)
+    }
+  }, [second])
+
   const paymentOption = []
   paymentOption.push({
     id: userWallet.id,
@@ -55,7 +91,13 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value
-    setSelected(value)
+    if (value !== userWallet.id) {
+      setSelected(value)
+    } else {
+      if (userWallet.balance - totalOrder >= 0 && !blocked) {
+        setSelected(value)
+      }
+    }
   }
 
   const createTransaction = useCreateTransaction()
@@ -77,10 +119,12 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   }
 
   useEffect(() => {
-    if (userWallet.balance - totalOrder >= 0) {
+    if (userWallet.balance - totalOrder >= 0 && !blocked) {
       setSelected(userWallet.id)
+    } else {
+      setSelected('')
     }
-  }, [totalOrder])
+  }, [totalOrder, blocked])
 
   useEffect(() => {
     if (createTransaction.isSuccess) {
@@ -118,8 +162,12 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
                 }
               >
                 <div
-                  className="flex-start flex items-center gap-2
-                  "
+                  className={
+                    paymentOption.balance &&
+                    (paymentOption.balance - totalOrder < 0 || blocked)
+                      ? 'flex-start flex items-center gap-2 bg-slate-200'
+                      : 'flex-start flex items-center gap-2'
+                  }
                 >
                   <input
                     className="mx-3"
@@ -130,7 +178,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
                     onChange={handleChange}
                   />
                   <img
-                    className="h-20 w-20 rounded-t-lg object-contain "
+                    className="h-10 w-10 rounded-t-lg object-contain "
                     src={paymentOption.image}
                     alt={'payment option'}
                   />
@@ -144,6 +192,24 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
                       )}
                     </div>
                   </div>
+                  {paymentOption.balance ? (
+                    paymentOption.balance - totalOrder < 0 ? (
+                      <Button type="button" buttonType="primary">
+                        Top up
+                      </Button>
+                    ) : blocked ? (
+                      <div className="mt-2">
+                        <span className="mx-2 mt-2">
+                          {minute} : {second < 10 ? <>0</> : <></>}
+                          {second}
+                        </span>
+                      </div>
+                    ) : (
+                      ''
+                    )
+                  ) : (
+                    ''
+                  )}
                 </div>
               </div>
             </label>

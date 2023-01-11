@@ -30,7 +30,7 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType, email, setState }) => {
   React.useEffect(() => {
     second > 0 && setTimeout(() => setSecond(second - 1), 1000)
     if (second === 0) {
-      minute > 0 && setTimeout(() => setMinute(minute - 1), 1000)
+      minute > 0 && setMinute(minute - 1)
       minute > 0 && setSecond(59)
     }
   }, [second])

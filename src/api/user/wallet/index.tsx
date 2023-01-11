@@ -30,6 +30,9 @@ export const useVerifyPIN = () => {
       onSuccess: () => {
         void queryClient.invalidateQueries(profileKey)
       },
+      onError: () => {
+        void queryClient.invalidateQueries(profileKey)
+      },
     }
   )
 }
