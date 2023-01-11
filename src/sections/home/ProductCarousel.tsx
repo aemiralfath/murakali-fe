@@ -1,13 +1,8 @@
-import { H1, H4, P } from '@/components'
-import { useMediaQuery } from '@/hooks'
 import ProductCard from '@/layout/template/product/ProductCard'
-import type { CategoryData } from '@/types/api/category'
-import { BriefProduct } from '@/types/api/product'
 import { Transition } from '@headlessui/react'
-import Image from 'next/image'
-import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 import { HiArrowLeft, HiArrowRight } from 'react-icons/hi'
+import type { BriefProduct } from '@/types/api/product'
 
 const ProductCarousel: React.FC<{
   product: Array<BriefProduct>
@@ -58,15 +53,16 @@ const ProductCarousel: React.FC<{
     <div className="relative">
       <Transition
         show={!isAtEnd}
-        enter={'transition-transform duration-50'}
-        enterFrom={'scale-x-0'}
-        enterTo={'scale-x-100'}
-        leave={'transition-transform duration-50'}
-        leaveFrom={'scale-x-100'}
-        leaveTo={'scale-x-0'}
-        className="absolute right-0 z-40 flex h-[85%] origin-right cursor-pointer items-center bg-white px-3 text-xl"
+        enter={'transition-all duration-50'}
+        enterFrom={'translate-x-1/2 opacity-0'}
+        enterTo={'translate-x-0 opacity-100'}
+        leave={'transition-all duration-50'}
+        leaveFrom={'translate-x-0 opacity-100'}
+        leaveTo={'translate-x-1/2 opacity-0'}
+        className="absolute right-0 z-40 flex h-[85%] origin-right items-center px-3 text-xl"
       >
         <div
+          className="cursor-pointer rounded-full bg-white p-3 shadow"
           onClick={() => {
             setScroll('right')
           }}
@@ -76,17 +72,16 @@ const ProductCarousel: React.FC<{
       </Transition>
       <Transition
         show={!isAtStart}
-        enter={'transition-transform duration-50'}
-        enterFrom={'scale-x-0'}
-        enterTo={'scale-x-100'}
-        leave={'transition-transform duration-50'}
-        leaveFrom={'scale-x-100'}
-        leaveTo={'scale-x-0'}
-        className={
-          'absolute left-0 z-40 flex h-[85%] origin-left cursor-pointer items-center bg-white px-3 text-xl'
-        }
+        enter={'transition-all duration-50'}
+        enterFrom={'-translate-x-1/2 opacity-0'}
+        enterTo={'translate-x-0 opacity-100'}
+        leave={'transition-all duration-50'}
+        leaveFrom={'translate-x-0 opacity-100'}
+        leaveTo={'-translate-x-1/2 opacity-0'}
+        className="absolute left-0 z-40 flex h-[85%] origin-left items-center px-3 text-xl"
       >
         <div
+          className="cursor-pointer rounded-full bg-white p-3 shadow"
           onClick={() => {
             setScroll('left')
           }}

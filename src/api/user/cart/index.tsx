@@ -73,7 +73,7 @@ export const useAddToCart = () => {
     },
     {
       onSuccess: () => {
-        void queryClient.invalidateQueries(cartKey)
+        void queryClient.invalidateQueries([cartKey])
       },
     }
   )

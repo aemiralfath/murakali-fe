@@ -1,5 +1,5 @@
-import { A, Breadcrumbs, Divider, P, Spinner } from '@/components'
-import { useMediaQuery, useModal } from '@/hooks'
+import { A, Breadcrumbs, Divider, H3, P, Spinner } from '@/components'
+import { useModal } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
 import ProductImageCarousel from '@/layout/template/product/ProductImageCarousel'
 import type { NextPage } from 'next'
@@ -17,9 +17,6 @@ import type { ProductDetail } from '@/types/api/product'
 import ChooseVariantQty from '@/sections/productdetail/ChooseVariantQty'
 import ProductDescription from '@/sections/productdetail/ProductDescription'
 import ProductReview from '@/sections/productdetail/ProductReview'
-import Image from 'next/image'
-import ProductCard from '@/layout/template/product/ProductCard'
-import { useRecommendedProduct } from '@/api/product/recommended'
 import { useGetSellerProduct } from '@/api/product'
 import ProductCarousel from '@/sections/home/ProductCarousel'
 
@@ -125,9 +122,6 @@ const ProductPage: NextPage = () => {
       setSelectVariant(undefined)
     }
   }, [selectMap])
-  {
-    console.log(sellerProduct.data?.data)
-  }
 
   return (
     <>
@@ -210,7 +204,7 @@ const ProductPage: NextPage = () => {
           </div>
         </div>
         <Divider />
-        <h4>PRODUCTS FROM THE SAME SELLER</h4>
+        <H3>Another Products from Seller</H3>
         <ProductCarousel product={sellerProduct.data?.data.rows} />
       </MainLayout>
     </>
