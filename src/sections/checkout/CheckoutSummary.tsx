@@ -72,7 +72,7 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
         <div className=" grid grid-cols-1 gap-1 lg:grid-cols-2 ">
           <div>Delivery Fee</div>
           <div className="flex justify-start lg:justify-end">
-            - Rp. {ConvertShowMoney(deliveryFee)}
+            + Rp. {ConvertShowMoney(deliveryFee)}
           </div>
         </div>
         <div className=" grid grid-cols-1 gap-1 lg:grid-cols-2 ">

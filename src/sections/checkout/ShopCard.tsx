@@ -138,12 +138,8 @@ const ShopCard: React.FC<ShopCardProps> = ({
             tabIndex={0}
             className="dropdown-content menu rounded-box z-50 w-52 bg-base-100 p-2 shadow"
           >
-            <li>
-              <a>Item 1</a>
-            </li>
-            <li>
-              <a>Item 2</a>
-            </li>
+            <li>a</li>
+            <li>b</li>
           </ul>
         </div>
         <div className="border-1 mx-2 flex flex-col gap-2 gap-y-2 border-l-primary px-2 text-primary md:border-l-2">

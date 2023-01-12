@@ -56,6 +56,7 @@ function Cart() {
   return (
     <>
       <Navbar />
+      <title>Cart</title>
       <TitlePageExtend title="Cart" />
 
       <div className="container my-8 mx-auto mb-10 min-h-screen w-full px-2">
