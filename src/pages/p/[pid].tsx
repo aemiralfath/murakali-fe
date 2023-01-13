@@ -19,6 +19,7 @@ import ProductDescription from '@/sections/productdetail/ProductDescription'
 import ProductReview from '@/sections/productdetail/ProductReview'
 import { useGetSellerProduct } from '@/api/product'
 import ProductCarousel from '@/sections/home/ProductCarousel'
+import ProductCard from '@/layout/template/product/ProductCard'
 
 const ProductPage: NextPage = () => {
   const dummyProduct = product
@@ -34,6 +35,20 @@ const ProductPage: NextPage = () => {
     '',
     '',
     '', //isi seller id
+    '',
+    '',
+    0,
+    0,
+    0,
+    0
+  )
+
+  const similiarProduct = useGetSellerProduct(
+    1,
+    24,
+    '',
+    '', // isi category product
+    '',
     '',
     '',
     0,
@@ -206,6 +221,30 @@ const ProductPage: NextPage = () => {
         <Divider />
         <H3>Another Products from Seller</H3>
         <ProductCarousel product={sellerProduct.data?.data.rows} />
+        <Divider />
+        <H3>Similiar Products</H3>
+        <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {similiarProduct.isLoading ? (
+            Array(3)
+              .fill('')
+              .map((_, idx) => {
+                return <ProductCard key={`${idx}`} data={undefined} isLoading />
+              })
+          ) : similiarProduct.isSuccess ? (
+            similiarProduct.data.data.rows.map((product, idx) => {
+              return (
+                <ProductCard
+                  key={`${product.title} ${idx}`}
+                  data={product}
+                  isLoading={false}
+                  hoverable
+                />
+              )
+            })
+          ) : (
+            <div>{'Error'}</div>
+          )}
+        </div>
       </MainLayout>
     </>
   )
