@@ -7,6 +7,7 @@ export interface OrderData {
   resi_no: string
   shop_id: string
   shop_name: string
+  shop_phone_number: string
   voucher_code: string
   created_at: string
   invoice: string
@@ -29,4 +30,7 @@ export interface OrderProductDetail {
   order_quantity: number
   order_item_price: number
   order_total_price: number
+  variant: {
+    [key: string]: string
+  }
 }
