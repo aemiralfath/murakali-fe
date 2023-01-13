@@ -48,3 +48,24 @@ export const useSLPPayment = () => {
     }
   )
 }
+
+export const useWalletPayment = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (id: string) => {
+      const response = await authorizedClient.post<APIResponse<SLPPayment>>(
+        '/user/transaction/wallet-payment',
+        {
+          transaction_id: id,
+        }
+      )
+      return response.data
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([transactionKey])
+      },
+    }
+  )
+}
