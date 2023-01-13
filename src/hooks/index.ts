@@ -11,6 +11,7 @@ import usePagination from './usePagination'
 import useSsr from './useSSR'
 import { useUncontrolled } from './useUncontrolled'
 import { useUser } from './useUser'
+import useSearchKeyword from './useSearchKeyword'
 
 export {
   useDispatch,
@@ -24,4 +25,5 @@ export {
   useSsr,
   useUncontrolled,
   useUser,
+  useSearchKeyword,
 }
