@@ -10,6 +10,7 @@ import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+import { getGoogleUrl } from '@/helper/googleoauth'
 
 YupPassword(Yup)
 
@@ -120,7 +121,14 @@ const Login = () => {
                   Login with Email
                 </Button>
                 <Divider>OR</Divider>
-                <Button type="button" buttonType="ghost" outlined disabled>
+                <Button
+                  type="button"
+                  buttonType="ghost"
+                  outlined
+                  onClick={() => {
+                    router.push(getGoogleUrl(router.pathname))
+                  }}
+                >
                   <FaGoogle /> Login with Google
                 </Button>
               </div>
