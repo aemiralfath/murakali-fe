@@ -2,6 +2,8 @@ import { Button, H3 } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import { useModal } from '@/hooks'
 import type { PostCheckout } from '@/types/api/checkout'
+import type { SLPUser } from '@/types/api/slp'
+import type { WalletUser } from '@/types/api/wallet'
 
 import React, { useEffect, useState } from 'react'
 import PaymentOption from './PaymentOption'
@@ -14,11 +16,15 @@ interface CheckoutSummaryProps {
     result_discount: number
   }
   postCheckout: PostCheckout
+  userWallet: WalletUser
+  userSLP: SLPUser[]
 }
 
 const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
   mapPriceQuantity,
   postCheckout,
+  userWallet,
+  userSLP,
 }) => {
   const modal = useModal()
 
@@ -26,7 +32,14 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
   function handleCheckout() {
     modal.edit({
       title: 'Choose Payment Option',
-      content: <PaymentOption postCheckout={postCheckout} />,
+      content: (
+        <PaymentOption
+          postCheckout={postCheckout}
+          userWallet={userWallet}
+          userSLP={userSLP}
+          totalOrder={mapPriceQuantity.subPrice + deliveryFee}
+        />
+      ),
       closeButton: false,
     })
   }
@@ -60,7 +73,7 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
         <div className=" grid grid-cols-1 gap-1 lg:grid-cols-2 ">
           <div>Delivery Fee</div>
           <div className="flex justify-start lg:justify-end">
-            - Rp. {ConvertShowMoney(deliveryFee)}
+            + Rp. {ConvertShowMoney(deliveryFee)}
           </div>
         </div>
         <div className=" grid grid-cols-1 gap-1 lg:grid-cols-2 ">

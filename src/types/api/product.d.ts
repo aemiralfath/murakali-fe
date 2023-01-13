@@ -39,6 +39,7 @@ export interface Product {
 }
 
 export interface BriefProduct {
+  id: string
   title: string
   unit_sold: number
   rating_avg: number
@@ -60,4 +61,18 @@ export interface BriefProduct {
 export interface ProductImages {
   product_detail_id?: string
   url: string
+}
+export interface ProductQuery {
+  search: string
+  category: string
+  limit: number
+  page: number
+  sort_by: string
+  sort: string
+  min_price: number
+  max_price: number
+  min_rating: number
+  max_rating: number
+  shop_id: string
+  province_ids: string
 }

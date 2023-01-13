@@ -2,7 +2,7 @@ import { H4 } from '@/components'
 import { useDebounce } from '@/hooks'
 import { Menu, Transition } from '@headlessui/react'
 import React, { Fragment, useState } from 'react'
-import { HiChevronRight, HiSearch } from 'react-icons/hi'
+import { HiChevronDown, HiSearch } from 'react-icons/hi'
 import type { Province, ProvinceDetail } from '@/types/api/address'
 import type { UseQueryResult } from '@tanstack/react-query'
 import type { APIResponse } from '@/types/api/response'
@@ -24,7 +24,7 @@ const ProvinceBtnMenu: React.FC<{
   return (
     <Menu as="div" className="relative w-full">
       <Menu.Button className="btn btn-ghost btn-sm flex w-full items-center gap-2 rounded bg-white text-primary">
-        Show All <HiChevronRight />
+        Show All <HiChevronDown />
       </Menu.Button>
       <Transition
         as={Fragment}
@@ -33,9 +33,9 @@ const ProvinceBtnMenu: React.FC<{
         enterTo="transform opacity-100 scale-100"
         leave="transition ease-in duration-75"
         leaveFrom="transform opacity-100 scale-100"
-        leaveTo="transform opacity-0 scale-95"
+        leaveTo="transform opacity-0 scale-95 "
       >
-        <Menu.Items className="absolute right-0 top-1/2 h-[16rem] w-56 origin-left -translate-y-1/2 translate-x-[100%] divide-y divide-gray-100 overflow-auto rounded border bg-white shadow-lg">
+        <Menu.Items className="absolute right-1/2 top-[110%] z-20 h-[16rem] w-56 origin-top translate-x-1/2 divide-y divide-gray-100 overflow-auto rounded border bg-white shadow-lg">
           <div className="relative p-2">
             <input
               className="input-bordered input input-sm w-full"

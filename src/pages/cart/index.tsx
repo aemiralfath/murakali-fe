@@ -56,6 +56,7 @@ function Cart() {
   return (
     <>
       <Navbar />
+      <title>Cart</title>
       <TitlePageExtend title="Cart" />
 
       <div className="container my-8 mx-auto mb-10 min-h-screen w-full px-2">
@@ -143,7 +144,7 @@ function Cart() {
             </div>
             {!cartList.isLoading ? (
               <>
-                {cartList.data?.data ? (
+                {cartList.data?.data.rows ? (
                   cartList.data.data.rows.map((cart, index) => (
                     <div
                       className="z-10 h-full rounded-lg border-[1px] border-solid border-gray-300 py-7 px-8"

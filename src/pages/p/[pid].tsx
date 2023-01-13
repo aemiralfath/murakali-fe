@@ -1,4 +1,4 @@
-import { A, Divider, P, Spinner } from '@/components'
+import { A, Divider, H3, P, Spinner } from '@/components'
 import { useModal } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
 import ProductImageCarousel from '@/layout/template/product/ProductImageCarousel'
@@ -20,6 +20,9 @@ import {
   useGetTotalReview,
 } from '@/api/product'
 import { useGetSellerInfo } from '@/api/seller'
+import { useGetSellerProduct } from '@/api/product'
+import ProductCarousel from '@/sections/home/ProductCarousel'
+import ProductCard from '@/layout/template/product/ProductCard'
 
 const ProductPage: NextPage = () => {
   // const dummyProduct = product
@@ -32,6 +35,33 @@ const ProductPage: NextPage = () => {
   const modal = useModal()
   const [isLoading] = useState(false)
   const [qty, setQty] = useState(1)
+  const sellerProduct = useGetSellerProduct(
+    1,
+    12,
+    '',
+    '',
+    '', //isi seller id
+    '',
+    '',
+    0,
+    0,
+    0,
+    0
+  )
+
+  const similiarProduct = useGetSellerProduct(
+    1,
+    24,
+    '',
+    '', // isi category product
+    '',
+    '',
+    '',
+    0,
+    0,
+    0,
+    0
+  )
 
   const [variantNamesState, setVariantNames] = useState<string[]>([])
   const [variantTypesState, setVariantTypes] = useState<{
@@ -226,6 +256,32 @@ const ProductPage: NextPage = () => {
           </div>
         </div>
         <Divider />
+        <H3>Another Products from Seller</H3>
+        <ProductCarousel product={sellerProduct.data?.data.rows} />
+        <Divider />
+        <H3>Similiar Products</H3>
+        <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {similiarProduct.isLoading ? (
+            Array(3)
+              .fill('')
+              .map((_, idx) => {
+                return <ProductCard key={`${idx}`} data={undefined} isLoading />
+              })
+          ) : similiarProduct.isSuccess ? (
+            similiarProduct.data.data.rows.map((product, idx) => {
+              return (
+                <ProductCard
+                  key={`${product.title} ${idx}`}
+                  data={product}
+                  isLoading={false}
+                  hoverable
+                />
+              )
+            })
+          ) : (
+            <div>{'Error'}</div>
+          )}
+        </div>
       </MainLayout>
     </>
   )

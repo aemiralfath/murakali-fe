@@ -1,5 +1,5 @@
 import { useLocationCost } from '@/api/user/location'
-import { Button, H2, H4, P } from '@/components'
+import { Button, H2, P } from '@/components'
 import ProductCart from '@/components/card/ProductCart'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import type { CartDetail } from '@/types/api/cart'
@@ -78,32 +78,46 @@ const ShopCard: React.FC<ShopCardProps> = ({
             <Menu.Items className="absolute w-44 origin-top-left  divide-y divide-gray-100 rounded-md bg-white shadow-lg focus:outline-none ">
               <div className="p-1">
                 {locationCost.isSuccess ? (
-                  locationCost.data.data.data.shipping_option.map(
-                    (shipping, index) => (
-                      <Menu.Item key={index}>
-                        {() => (
-                          <Button
-                            onClick={() => {
-                              courierID(shipping.courier.id, shipping.fee)
-                              setDelivery({
-                                name: shipping.courier.name,
-                                delivery_fee: shipping.fee,
-                                etd: shipping.etd,
-                              })
-                            }}
-                            className="btn m-1 h-24  w-40  gap-4 border-gray-300 bg-white text-primary outline hover:border-white hover:bg-primary hover:text-white"
-                          >
-                            <a className="flex flex-col gap-3">
-                              <span className="text-start font-bold">
-                                {shipping.courier.name}
-                              </span>
-                              <span className="">Rp. {shipping.fee}</span>
-                              <span>{shipping.etd}</span>
-                            </a>
-                          </Button>
-                        )}
-                      </Menu.Item>
+                  locationCost.data.data.data.shipping_option.length > 0 ? (
+                    locationCost.data.data.data.shipping_option.map(
+                      (shipping, index) => (
+                        <Menu.Item key={index}>
+                          {() => (
+                            <Button
+                              onClick={() => {
+                                courierID(shipping.courier.id, shipping.fee)
+                                setDelivery({
+                                  name: shipping.courier.name,
+                                  delivery_fee: shipping.fee,
+                                  etd: shipping.etd,
+                                })
+                              }}
+                              className="btn m-1 h-24  w-40  gap-4 border-gray-300 bg-white text-primary outline hover:border-white hover:bg-primary hover:text-white"
+                            >
+                              <a className="flex flex-col gap-3">
+                                <span className="text-start font-bold">
+                                  {shipping.courier.name}
+                                </span>
+                                <span className="">Rp. {shipping.fee}</span>
+                                <span>{shipping.etd}</span>
+                              </a>
+                            </Button>
+                          )}
+                        </Menu.Item>
+                      )
                     )
+                  ) : (
+                    <Menu.Item key={-1}>
+                      {() => (
+                        <Button className="btn m-1 h-24  w-40  gap-4 border-gray-300 bg-white text-primary outline hover:border-white hover:bg-primary hover:text-white">
+                          <a className="flex flex-col gap-3">
+                            <span className="text-start font-bold">
+                              No Shipping option
+                            </span>
+                          </a>
+                        </Button>
+                      )}
+                    </Menu.Item>
                   )
                 ) : (
                   <a></a>
@@ -124,12 +138,8 @@ const ShopCard: React.FC<ShopCardProps> = ({
             tabIndex={0}
             className="dropdown-content menu rounded-box z-50 w-52 bg-base-100 p-2 shadow"
           >
-            <li>
-              <a>Item 1</a>
-            </li>
-            <li>
-              <a>Item 2</a>
-            </li>
+            <li>a</li>
+            <li>b</li>
           </ul>
         </div>
         <div className="border-1 mx-2 flex flex-col gap-2 gap-y-2 border-l-primary px-2 text-primary md:border-l-2">

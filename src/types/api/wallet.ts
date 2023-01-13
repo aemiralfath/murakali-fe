@@ -1,5 +1,9 @@
 export interface WalletUser {
   id: string
-  ballance: number
+  balance: number
   attempt_count: number
+  unlocked_at: {
+    Time: string
+    Valid: boolean
+  }
 }

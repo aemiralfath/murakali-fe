@@ -16,9 +16,11 @@ import { FaAddressCard } from 'react-icons/fa'
 import { decrypt } from 'n-krypta'
 import ShopCard from '@/sections/checkout/ShopCard'
 import { useGetUserWallet } from '@/api/user/wallet'
+import { useGetUserSLP } from '@/api/user/slp'
 function Checkout() {
   const cartList = useGetCart()
   const userWallet = useGetUserWallet()
+  const userSLP = useGetUserSLP()
   const defaultAddress = useGetDefaultAddress(true, false)
   const modal = useModal()
   const router = useRouter()
@@ -41,7 +43,7 @@ function Checkout() {
 
   const [checkoutItems, setCheckoutItems] = useState<PostCheckout>()
   useEffect(() => {
-    if (cartList.data?.data) {
+    if (cartList.data?.data.rows && idShops) {
       const tempCheckoutItem: CartPostCheckout[] = cartList.data.data.rows
         .filter((item) => idShops.includes(item.shop.id))
         .map((cartDetail) => {
@@ -64,23 +66,20 @@ function Checkout() {
             courier_fee: 0,
           }
         })
-      let tempWallet: string
-      if (userWallet.isSuccess) {
-        tempWallet = userWallet.data.data.id
-      }
 
       setCheckoutItems({
-        wallet_id: tempWallet,
+        wallet_id: '',
         card_number: '',
         voucher_marketplace_id: '',
         cart_items: tempCheckoutItem,
       })
     }
-  }, [cartList.data?.data])
+  }, [cartList.data?.data, idShops])
 
   return (
     <>
       <Navbar />
+      <title>Checkout</title>
       <TitlePageExtend title="Checkout" />
       <div className="container my-8 mx-auto mb-10 min-h-screen w-full px-2">
         <div className="grid grid-cols-1 gap-2 xl:grid-cols-4">
@@ -131,7 +130,7 @@ function Checkout() {
             </div>
             {!cartList.isLoading ? (
               <>
-                {cartList.data?.data ? (
+                {cartList.data?.data && idShops ? (
                   cartList.data.data.rows
                     .filter((item) => idShops.includes(item.shop.id))
                     .map((cart, index) => (
@@ -197,20 +196,21 @@ function Checkout() {
                     tabIndex={0}
                     className="dropdown-content menu rounded-box z-50 w-52 bg-base-100 p-2 shadow"
                   >
-                    <li>
-                      <a>Item 1</a>
-                    </li>
-                    <li>
-                      <a>Item 2</a>
-                    </li>
+                    <li></li>
+                    <li></li>
                   </ul>
                 </div>
               </div>
-
-              <CheckoutSummary
-                mapPriceQuantity={mapPriceQuantitys}
-                postCheckout={checkoutItems}
-              />
+              {!userWallet.isLoading && !userSLP.isLoading && checkoutItems ? (
+                <CheckoutSummary
+                  mapPriceQuantity={mapPriceQuantitys}
+                  postCheckout={checkoutItems}
+                  userWallet={userWallet.data.data}
+                  userSLP={userSLP.data.data}
+                />
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         </div>
