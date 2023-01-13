@@ -13,12 +13,42 @@ import type { MouseEvent } from 'react'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
 import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
+import { useModal } from '@/hooks'
+import ProcessDelivery from '@/sections/seller-panel/delivery-servis/ProcessDelivery'
+import CancelDelivery from '@/sections/seller-panel/delivery-servis/CancelDelivery'
+import InputResi from '@/sections/seller-panel/delivery-servis/InputResi'
 
 function ListOrderDeliveryService() {
   const router = useRouter()
+
   const [orderStatusID, setOrderStatusID] = useState('')
   const sellerOrders = useSellerOrders(orderStatusID)
   const orderStatuses = orderStatusData
+  const modal = useModal()
+
+  function confirmationModal(orderID: string, orderStatus: number) {
+    modal.info({
+      title: 'Confirm Status Order Change',
+      content: <ProcessDelivery orderID={orderID} orderStatus={orderStatus} />,
+      closeButton: false,
+    })
+  }
+
+  function cancelModal(orderID: string) {
+    modal.error({
+      title: 'Cancel Order',
+      content: <CancelDelivery orderID={orderID} />,
+      closeButton: false,
+    })
+  }
+
+  function inputResiModal(orderID: string, orderStatus: number) {
+    modal.edit({
+      title: 'Input Modal',
+      content: <InputResi orderID={orderID} orderStatus={orderStatus} />,
+      closeButton: false,
+    })
+  }
 
   const formatSub = (pagination?: PaginationData<OrderData>) => {
     if (pagination) {
@@ -88,10 +118,20 @@ function ListOrderDeliveryService() {
                 </Button>
                 {data.order_status === 2 ? (
                   <>
-                    <Button buttonType="primary" size="sm" className="rounded">
+                    <Button
+                      onClick={() => {
+                        confirmationModal(data.order_id, data.order_status + 1)
+                      }}
+                      buttonType="primary"
+                      size="sm"
+                      className="rounded"
+                    >
                       Confirm
                     </Button>
                     <Button
+                      onClick={() => {
+                        cancelModal(data.order_id)
+                      }}
                       buttonType="primary"
                       outlined
                       size="sm"
@@ -101,7 +141,14 @@ function ListOrderDeliveryService() {
                     </Button>
                   </>
                 ) : data.order_status === 3 ? (
-                  <Button buttonType="primary" size="sm" className="rounded">
+                  <Button
+                    buttonType="primary"
+                    size="sm"
+                    className="rounded"
+                    onClick={() => {
+                      inputResiModal(data.order_id, data.order_status + 1)
+                    }}
+                  >
                     Create Package
                   </Button>
                 ) : (
@@ -153,7 +200,7 @@ function ListOrderDeliveryService() {
       <SellerPanelLayout selectedPage="order">
         <H2>Order</H2>
         <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
-          <div className="my-4 flex h-fit w-fit max-w-full space-x-10 overflow-x-auto whitespace-nowrap border-b-[2px]">
+          <div className="my-4 flex h-fit w-fit max-w-full space-x-10 overflow-x-auto overflow-y-hidden whitespace-nowrap border-b-[2px]">
             <button
               onClick={(e) => ChangeOrderStatusPage(e)}
               className={cx(

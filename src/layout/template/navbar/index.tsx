@@ -282,7 +282,9 @@ const Navbar: React.FC = () => {
               type="submit"
               className="absolute top-0 right-0 h-full px-1 text-xl"
               onClick={() => {
-                router.push(`/search/${keyword}`)
+                if (keyword) {
+                  router.push(`/search/${keyword}`)
+                }
               }}
             >
               <HiSearch color="white" />

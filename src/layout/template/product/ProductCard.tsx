@@ -1,25 +1,56 @@
 /* eslint-disable @next/next/no-img-element */
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Chip, P } from '@/components'
 import formatMoney from '@/helper/formatMoney'
 import { HiStar } from 'react-icons/hi'
 import type { BriefProduct } from '@/types/api/product'
-import { useHover } from '@/hooks'
+import { useHover, useModal } from '@/hooks'
 import { Transition } from '@headlessui/react'
 import { useRouter } from 'next/router'
 import cx from '@/helper/cx'
+import { useDeleteFavProduct } from '@/api/product/favorite'
+import toast from 'react-hot-toast'
+import type { AxiosError } from 'axios'
+import type { APIResponse } from '@/types/api/response'
+import { useDispatch } from 'react-redux'
+import { closeModal } from '@/redux/reducer/modalReducer'
 
 type ProductCardProps = LoadingDataWrapper<BriefProduct> & {
   hoverable?: boolean
+  forFavPage?: boolean
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
   data,
   isLoading,
   hoverable,
+  forFavPage,
 }) => {
   const [cartRef, isHover] = useHover()
   const router = useRouter()
+  const dispatch = useDispatch()
+  const useDeleteFavoriteProduct = useDeleteFavProduct()
+
+  const modal = useModal()
+
+  useEffect(() => {
+    if (useDeleteFavoriteProduct.isSuccess) {
+      toast.success('Success Delete Favorite Product')
+      dispatch(closeModal())
+    }
+  }, [useDeleteFavoriteProduct.isSuccess])
+
+  useEffect(() => {
+    if (useDeleteFavoriteProduct.isError) {
+      const errmsg = useDeleteFavoriteProduct.error as AxiosError<
+        APIResponse<null>
+      >
+      toast.error(
+        errmsg.response ? errmsg.response.data.message : errmsg.message
+      )
+      dispatch(closeModal())
+    }
+  }, [useDeleteFavoriteProduct.isError])
 
   return (
     <div
@@ -28,12 +59,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
         'border-grey-200 group z-0 h-full w-full scale-100 cursor-pointer rounded-t-lg rounded-b-lg border-[1px] border-solid transition-all hover:border-primary',
         hoverable ? 'hover:z-40 hover:rounded-b-none hover:shadow-xl' : ''
       )}
-      onClick={() => {
-        // TODO: Add router to ID
-        router.push('/p/1')
-      }}
     >
-      <div className="min-h-full">
+      <div
+        className="min-h-full"
+        onClick={() => {
+          // TODO: Add router to ID
+          router.push('/p/1')
+        }}
+      >
         {isLoading ? (
           <div className="aspect-square animate-pulse rounded-t-lg bg-base-200 object-cover" />
         ) : (
@@ -127,34 +160,114 @@ const ProductCard: React.FC<ProductCardProps> = ({
             width: `calc(100% + 2px)`,
           }}
         >
-          <div className="grid grid-cols-2 gap-1 rounded-b-lg bg-primary p-2">
-            <div>
-              <Button
-                size="xs"
-                buttonType="ghost"
-                className="w-full text-white"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  // TODO: Add OnClick
-                }}
-              >
-                See Details
-              </Button>
-            </div>
-            <div>
-              <Button
-                size="xs"
-                buttonType="white"
-                className="w-full"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  // TODO: Add OnClick
-                }}
-              >
-                Buy Now
-              </Button>
-            </div>
-          </div>
+          {forFavPage ? (
+            <>
+              <div className="grid grid-cols-2 gap-1  bg-primary p-2">
+                <div>
+                  <Button
+                    size="xs"
+                    buttonType="ghost"
+                    className="w-full text-white"
+                    onClick={() => {
+                      modal.edit({
+                        title: 'Delete Favorite',
+                        content: (
+                          <>
+                            <P>
+                              Do you really want to delete this favorite
+                              product?
+                            </P>
+                            <div className="mt-4 flex justify-end gap-2">
+                              <Button
+                                type="button"
+                                buttonType="primary"
+                                onClick={() => {
+                                  dispatch(closeModal())
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                type="button"
+                                buttonType="gray"
+                                onClick={() => {
+                                  useDeleteFavoriteProduct.mutate(data.id)
+                                }}
+                              >
+                                Delete
+                              </Button>
+                            </div>
+                          </>
+                        ),
+                        closeButton: false,
+                      })
+                    }}
+                  >
+                    Delete <br></br>Favorite
+                  </Button>
+                </div>
+                <div>
+                  <Button
+                    size="xs"
+                    buttonType="ghost"
+                    className="w-full text-white"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      // TODO: Add OnClick
+                    }}
+                  >
+                    Detail<br></br>Product
+                  </Button>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-1 rounded-b-lg bg-primary p-2">
+                <div>
+                  <Button
+                    size="xs"
+                    className="w-full text-white"
+                    buttonType="white"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      // TODO: Add OnClick
+                    }}
+                  >
+                    Buy Now
+                  </Button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-1 rounded-b-lg bg-primary p-2">
+                <div>
+                  <Button
+                    size="xs"
+                    buttonType="ghost"
+                    className="w-full text-white"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      // TODO: Add OnClick
+                    }}
+                  >
+                    See Details
+                  </Button>
+                </div>
+                <div>
+                  <Button
+                    size="xs"
+                    buttonType="white"
+                    className="w-full"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      // TODO: Add OnClick
+                    }}
+                  >
+                    Buy Now
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
         </Transition>
       ) : (
         <></>

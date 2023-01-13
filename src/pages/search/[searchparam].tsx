@@ -86,14 +86,7 @@ const SearchPage: NextPage = () => {
   }, [filterLocation])
 
   useEffect(() => {
-    let queryCategory = ''
-    filterCategory.map((category) => {
-      if (queryCategory === '') {
-        queryCategory = category
-      } else {
-        queryCategory = queryCategory + ',' + category
-      }
-    })
+    const queryCategory = filterCategory
     if (queryCategory === '') {
       setCategoryState('')
       queryParam.delete('category')

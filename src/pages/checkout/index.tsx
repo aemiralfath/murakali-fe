@@ -79,6 +79,7 @@ function Checkout() {
   return (
     <>
       <Navbar />
+      <title>Checkout</title>
       <TitlePageExtend title="Checkout" />
       <div className="container my-8 mx-auto mb-10 min-h-screen w-full px-2">
         <div className="grid grid-cols-1 gap-2 xl:grid-cols-4">
@@ -195,12 +196,8 @@ function Checkout() {
                     tabIndex={0}
                     className="dropdown-content menu rounded-box z-50 w-52 bg-base-100 p-2 shadow"
                   >
-                    <li>
-                      <a>Item 1</a>
-                    </li>
-                    <li>
-                      <a>Item 2</a>
-                    </li>
+                    <li></li>
+                    <li></li>
                   </ul>
                 </div>
               </div>

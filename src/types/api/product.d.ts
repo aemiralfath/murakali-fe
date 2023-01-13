@@ -32,6 +32,7 @@ export interface Product {
 }
 
 export interface BriefProduct {
+  id: string
   title: string
   unit_sold: number
   rating_avg: number

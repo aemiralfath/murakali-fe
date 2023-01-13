@@ -1,32 +1,17 @@
-import { useGetAllProvince } from '@/api/user/address/extra'
-import { A, Divider, H4, P, PaginationNav } from '@/components'
-import productListingCategory from '@/dummy/productListingCategory'
-import LocationFilter from '@/sections/productslisting/LocationFilter'
+import { A, H4, P, PaginationNav } from '@/components'
+
 import React, { useEffect, useState } from 'react'
 import { HiArrowDown, HiArrowUp, HiFilter, HiX } from 'react-icons/hi'
-import PriceFilter from '@/sections/productslisting/PriceFilter'
-import RatingFilter from '@/sections/productslisting/RatingFilter'
 import CategoryFilter from '@/sections/productslisting/CategoryFilter'
-import formatMoney from '@/helper/formatMoney'
 import cx from '@/helper/cx'
 import { useMediaQuery } from '@/hooks'
 import { Transition } from '@headlessui/react'
-import ProductCard from './template/product/ProductCard'
 import Image from 'next/image'
 
-import type { FilterPrice } from '@/sections/productslisting/PriceFilter'
-import type { ProvinceDetail } from '@/types/api/address'
 import type { SortBy } from '@/types/helper/sort'
 import type { BriefProduct } from '@/types/api/product'
+import ProductCard from '@/layout/template/product/ProductCard'
 import { useGetAllCategory } from '@/api/category'
-
-const defaultShownProvince = [
-  'DKI Jakarta',
-  'Jawa Barat',
-  'DI Yogyakarta',
-  'Jawa Timur',
-  'Sumatera Selatan',
-]
 
 const FilterChip: React.FC<{ value: string; onClose: () => void }> = ({
   value,
@@ -54,12 +39,9 @@ const ButtonSortData = [
   { name: 'view', sort_by: 'view_count' },
 ]
 
-const useProductListing = () => {
+const useFavoriteProductListing = () => {
   const [sortBy, setSortBy] = useState<SortBy>({ sort_by: '', direction: '' })
 
-  const [filterLocation, setFilterLocation] = useState<ProvinceDetail[]>([])
-  const [filterPrice, setFilterPrice] = useState<FilterPrice>()
-  const [filterRating, setFilterRating] = useState<number>(-1)
   const [filterCategory, setFilterCategory] = useState<string>('')
 
   const [page, setPage] = useState(1)
@@ -67,12 +49,6 @@ const useProductListing = () => {
   return {
     sortBy,
     setSortBy,
-    filterLocation,
-    setFilterLocation,
-    filterPrice,
-    setFilterPrice,
-    filterRating,
-    setFilterRating,
     filterCategory,
     setFilterCategory,
     page,
@@ -80,14 +56,14 @@ const useProductListing = () => {
   }
 }
 
-export type ProductListingHook = ReturnType<typeof useProductListing>
+export type ProductListingHook = ReturnType<typeof useFavoriteProductListing>
 
-type ProductListingLayoutProps = LoadingDataWrapper<BriefProduct[]> & {
+type ProductFavoriteLayoutProps = LoadingDataWrapper<BriefProduct[]> & {
   controller: ProductListingHook
   totalPage?: number
 }
 
-const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
+const ProductFavoriteLayout: React.FC<ProductFavoriteLayoutProps> = ({
   data,
   isLoading,
   controller,
@@ -96,12 +72,6 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   const {
     sortBy,
     setSortBy,
-    filterLocation,
-    setFilterLocation,
-    filterPrice,
-    setFilterPrice,
-    filterRating,
-    setFilterRating,
     filterCategory,
     setFilterCategory,
     page,
@@ -109,17 +79,18 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   } = controller
 
   const lg = useMediaQuery('lg')
-  const allProvince = useGetAllProvince()
-  const [shownProvince, setShownProvince] = useState(defaultShownProvince)
+
   const [openMenu, setOpenMenu] = useState(false)
+
   const [categoryName, setCategoryName] = useState<string[]>([])
+
   const useCategory = useGetAllCategory()
+
   useEffect(() => {
     if (useCategory.isSuccess) {
       const temp: string[] = useCategory.data.data.map(
         (category) => category.name
       )
-
       setCategoryName(temp)
     }
   }, [useCategory.isSuccess])
@@ -137,22 +108,6 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
         className="absolute origin-top-left lg:relative"
       >
         <div className="absolute z-40 flex w-[14rem] flex-col gap-3 rounded border bg-white py-2 px-3 shadow-xl lg:relative lg:z-0 lg:shadow-none">
-          <LocationFilter
-            provinces={allProvince}
-            defaultShownProvince={defaultShownProvince}
-            shownProvince={shownProvince}
-            setShownProvince={setShownProvince}
-            filterLocation={filterLocation}
-            setFilterLocation={setFilterLocation}
-          />
-          <Divider />
-          <PriceFilter setFilterPrice={setFilterPrice} />
-          <Divider />
-          <RatingFilter
-            filterRating={filterRating}
-            setFilterRating={setFilterRating}
-          />
-          <Divider />
           <CategoryFilter
             categories={categoryName}
             filterCategory={filterCategory}
@@ -245,51 +200,12 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                 <H4>Filter</H4>
                 <div className="ml-2 h-[1px] w-8 bg-base-300" />
                 <div className=" flex flex-wrap items-center gap-1 rounded-full py-1 pl-2 pr-1">
-                  {filterLocation.length === 0 &&
-                  filterPrice === undefined &&
-                  filterRating === -1 &&
-                  filterCategory === '' ? (
+                  {filterCategory.length === 0 ? (
                     <span className="h-[1.5rem] italic text-gray-400">
                       No Filter
                     </span>
                   ) : (
                     <>
-                      {filterLocation.map((location) => {
-                        return (
-                          <FilterChip
-                            key={`location-${location.province}`}
-                            value={location.province}
-                            onClose={() => {
-                              setFilterLocation(
-                                filterLocation.filter(
-                                  (l) => l.province_id !== location.province_id
-                                )
-                              )
-                            }}
-                          />
-                        )
-                      })}
-                      {filterPrice ? (
-                        <FilterChip
-                          key={'price'}
-                          value={`Rp${formatMoney(
-                            filterPrice.min
-                          )} - Rp${formatMoney(filterPrice.max)}`}
-                          onClose={() => setFilterPrice(undefined)}
-                        />
-                      ) : (
-                        <></>
-                      )}
-                      {filterRating !== -1 ? (
-                        <FilterChip
-                          key={'rating'}
-                          value={`Rating ${filterRating}+`}
-                          onClose={() => setFilterRating(-1)}
-                        />
-                      ) : (
-                        <></>
-                      )}
-
                       <FilterChip
                         key={`category-${filterCategory}`}
                         value={filterCategory}
@@ -318,7 +234,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
             size="sm"
           />
         </div>
-        <div className="min-h-[80vh] w-full">
+        <div className="min-h-[30vh] w-full">
           <div className="-z-10 grid w-full grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
             {isLoading ? (
               Array(5)
@@ -342,6 +258,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
               data.map((product, idx) => {
                 return (
                   <ProductCard
+                    forFavPage={true}
                     key={`${product.title} ${idx}`}
                     data={product}
                     isLoading={false}
@@ -369,5 +286,5 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   )
 }
 
-export default ProductListingLayout
-export { useProductListing }
+export default ProductFavoriteLayout
+export { useFavoriteProductListing }

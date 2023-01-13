@@ -30,7 +30,6 @@ function FormChangeEmail() {
         ),
         closeButton: true,
       })
-      // dispatch(closeModal())
     }
   }, [userSendVerificationEmail.isSuccess])
 
