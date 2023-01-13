@@ -1,7 +1,6 @@
-import { H3, H4, Chip, P, TextInput } from '@/components'
+import { H3, H4, P } from '@/components'
 import { RadioGroup } from '@headlessui/react'
 import React, { useState } from 'react'
-import { HiX } from 'react-icons/hi'
 
 const ProductShipping = () => {
   const [dg, setDg] = useState('no')
@@ -12,46 +11,6 @@ const ProductShipping = () => {
       <div className="mt-6 flex gap-3">
         <div className="w-[30%]">
           <div className="flex items-center gap-3">
-            <H4>Volume</H4>
-            <Chip type={'gray'}>Required</Chip>
-          </div>
-          <P className="mt-2 max-w-[20rem] text-sm">
-            Input the volume of product <b>after packaging</b> to calculate
-            shipping volume weight.
-          </P>
-        </div>
-        <div className="flex items-end gap-2">
-          <div className="max-w-[8rem]">
-            <TextInput
-              label="Width (cm)"
-              placeholder="20"
-              full
-              type={'number'}
-            />
-          </div>
-          <HiX className="mb-4" />
-          <div className="max-w-[8rem]">
-            <TextInput
-              label="Length (cm)"
-              placeholder="10"
-              full
-              type={'number'}
-            />
-          </div>{' '}
-          <HiX className="mb-4" />
-          <div className="max-w-[8rem]">
-            <TextInput
-              label="Height (cm)"
-              placeholder="15"
-              full
-              type={'number'}
-            />
-          </div>{' '}
-        </div>
-      </div>
-      <div className="mt-6 flex gap-3">
-        <div className="w-[30%]">
-          <div className="flex items-center gap-3">
             <H4>Dangerous Goods</H4>
           </div>
           <P className="mt-2 max-w-[20rem] text-sm">
@@ -59,13 +18,18 @@ const ProductShipping = () => {
             shipping fee or failed delivery.
           </P>
         </div>
-        <RadioGroup value={dg} onChange={setDg} className="flex gap-2">
+        <RadioGroup
+          value={dg}
+          onChange={setDg}
+          className="flex gap-2"
+          id="dangerous-good"
+        >
           <RadioGroup.Option value="no">
             {({ checked }) => (
               <label className="label flex cursor-pointer gap-1">
                 <input
                   type="radio"
-                  name="radio-10"
+                  name="radio-dg-no"
                   className="radio checked:bg-primary"
                   checked={checked}
                 />
@@ -78,7 +42,7 @@ const ProductShipping = () => {
               <label className="label flex cursor-pointer gap-1">
                 <input
                   type="radio"
-                  name="radio-10"
+                  name="radio-dg-yes"
                   className="radio checked:bg-primary"
                   checked={checked}
                 />

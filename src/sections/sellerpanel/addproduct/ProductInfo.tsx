@@ -56,13 +56,14 @@ const ProductInfo = () => {
           value={condition}
           onChange={setCondition}
           className="flex gap-2"
+          id="condition"
         >
           <RadioGroup.Option value="new">
             {({ checked }) => (
               <label className="label flex cursor-pointer gap-1">
                 <input
                   type="radio"
-                  name="radio-10"
+                  name="radio-condition-new"
                   className="radio checked:bg-primary"
                   checked={checked}
                 />
@@ -75,7 +76,7 @@ const ProductInfo = () => {
               <label className="label flex cursor-pointer gap-1">
                 <input
                   type="radio"
-                  name="radio-10"
+                  name="radio-condition-used"
                   className="radio checked:bg-primary"
                   checked={checked}
                 />

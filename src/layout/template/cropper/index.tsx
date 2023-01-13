@@ -140,12 +140,14 @@ const CropperComponent: React.FC<{
           buttonType="primary"
           isLoading={isLoading}
           onClick={async () => {
-            if (area) {
-              setIsLoading(true)
-              const croppedImg = await getCroppedImg(src, area)
-              setImage(croppedImg)
-              dispatch(closeModal())
-              setIsLoading(false)
+            if (typeof document !== 'undefined') {
+              if (area) {
+                setIsLoading(true)
+                const croppedImg = await getCroppedImg(src, area)
+                setImage(croppedImg)
+                dispatch(closeModal())
+                setIsLoading(false)
+              }
             }
           }}
         >

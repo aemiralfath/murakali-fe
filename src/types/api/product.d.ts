@@ -49,3 +49,28 @@ export interface BriefProduct {
   shop_name: string
   category_name: string
 }
+
+export interface VariantDetailReq {
+  type: string
+  name: string
+}
+
+export interface ProductDetailReq {
+  price: number
+  stock: number
+  weight: number
+  size: number
+  hazardous: boolean
+  condition: 'new' | 'used'
+  bulk_price: boolean
+  photo: string[]
+  variant_detail: VariantDetailReq[]
+}
+
+export interface CreateProductReq {
+  title: string
+  description: string
+  thumbnail: string
+  category_id: string
+  products_detail: ProductDetailReq[]
+}
