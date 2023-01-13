@@ -4,17 +4,15 @@ import { HiChevronUp, HiChevronDown } from 'react-icons/hi'
 
 const CategoryFilter: React.FC<{
   categories: string[]
-  filterCategory: string[]
-  setFilterCategory: (p: string[]) => void
+  filterCategory: string
+  setFilterCategory: (p: string) => void
 }> = ({ categories, filterCategory, setFilterCategory }) => {
   const [showAllCategory, setShowAllCategory] = useState(false)
   const addSelectedCategory = (c: string) => {
-    setFilterCategory([...filterCategory, c])
+    setFilterCategory(c)
   }
-  const removeSelectedCategory = (c: string) => {
-    setFilterCategory(filterCategory.filter((cs) => cs !== c))
-  }
-  const isSelected = (c: string) => filterCategory.includes(c)
+
+  const isSelected = (c: string) => filterCategory == c
 
   return (
     <div>
@@ -23,19 +21,19 @@ const CategoryFilter: React.FC<{
         {categories.slice(0, showAllCategory ? 10 : 4).map((data, idx) => {
           return (
             <label
-              className="flex cursor-pointer items-center gap-2 text-sm"
+              className="my-1 flex cursor-pointer items-center gap-2 text-sm"
               key={idx}
             >
               <input
-                type="checkbox"
-                className="checkbox-primary checkbox checkbox-xs border-gray-300"
+                type="radio"
+                className="radio-primary radio-xs border-gray-300"
                 defaultChecked={isSelected(data)}
                 checked={isSelected(data)}
                 onChange={() => {
-                  if (isSelected(data)) {
-                    removeSelectedCategory(data)
-                  } else {
+                  if (!isSelected(data)) {
                     addSelectedCategory(data)
+                  } else {
+                    setFilterCategory('')
                   }
                 }}
               />
@@ -45,7 +43,7 @@ const CategoryFilter: React.FC<{
         })}
         {categories.length > 4 ? (
           <button
-            className="btn btn-ghost btn-sm flex w-full items-center gap-2 rounded bg-white text-primary"
+            className="btn-ghost btn-sm btn flex w-full items-center gap-2 rounded bg-white text-primary"
             onClick={() => setShowAllCategory(!showAllCategory)}
           >
             {showAllCategory ? (
