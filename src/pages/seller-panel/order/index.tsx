@@ -32,13 +32,23 @@ function ListOrderDeliveryService() {
                     return (
                       <div key={index} className="flex justify-between">
                         <div className="mr-5 flex-none">
-                          <Image
-                            width={60}
-                            height={60}
-                            src={productDetail.product_detail_url}
-                            alt={productDetail.product_title}
-                            className={'aspect-square h-[4.5rem] w-[4.5rem]'}
-                          />
+                          {productDetail.product_detail_url !== null ? (
+                            <Image
+                              width={96}
+                              height={96}
+                              src={productDetail.product_detail_url}
+                              alt={productDetail.product_title}
+                              className={'aspect-square h-24 w-24'}
+                            />
+                          ) : (
+                            <Image
+                              width={96}
+                              height={96}
+                              src={'/asset/image-empty.jpg'}
+                              alt={productDetail.product_title}
+                              className={'aspect-square h-24 w-24'}
+                            />
+                          )}
                         </div>
                         <div className="w-[30rem] flex-auto whitespace-pre-wrap line-clamp-3">
                           {productDetail.product_title}
@@ -64,7 +74,16 @@ function ListOrderDeliveryService() {
             ),
             Action: (
               <div className="flex w-fit flex-col gap-1">
-                <Button buttonType="ghost" size="sm" className="rounded">
+                <Button
+                  buttonType="ghost"
+                  size="sm"
+                  className="rounded"
+                  onClick={() => {
+                    router.push({
+                      pathname: '/seller-panel/order/' + data.order_id,
+                    })
+                  }}
+                >
                   Look Detail
                 </Button>
                 {data.order_status === 2 ? (
