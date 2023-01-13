@@ -24,6 +24,20 @@ export const useSellerOrders = (orderStatusID: string) => {
   )
 }
 
+const getSellerOrderDetail = async (orderID: string) => {
+  const response = await authorizedClient.get<APIResponse<OrderData>>(
+    '/seller/order/' + orderID
+  )
+  return response.data
+}
+
+export const useSellerOrderDetail = (orderID: string) => {
+  return useQuery(
+    [profileKey, orderID],
+    async () => await getSellerOrderDetail(orderID)
+  )
+}
+
 export const useUpdateOrderStatus = () => {
   const queryClient = useQueryClient()
 

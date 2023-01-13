@@ -1,3 +1,4 @@
+import type { AddressDetail } from '@/types/api/address'
 export interface OrderData {
   order_id: string
   order_status: number
@@ -8,6 +9,15 @@ export interface OrderData {
   shop_name: string
   voucher_code: string
   created_at: string
+  invoice: string
+  courier_name: string
+  courier_code: string
+  courier_service: string
+  courier_description: string
+  buyer_username: string
+  buyer_phone_number: string
+  buyer_address: AddressDetail
+  seller_address: AddressDetail
   detail: OrderProductDetail[]
 }
 

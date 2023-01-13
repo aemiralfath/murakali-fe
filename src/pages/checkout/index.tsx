@@ -43,7 +43,7 @@ function Checkout() {
 
   const [checkoutItems, setCheckoutItems] = useState<PostCheckout>()
   useEffect(() => {
-    if (cartList.data?.data.rows) {
+    if (cartList.data?.data.rows && idShops) {
       const tempCheckoutItem: CartPostCheckout[] = cartList.data.data.rows
         .filter((item) => idShops.includes(item.shop.id))
         .map((cartDetail) => {
@@ -74,7 +74,7 @@ function Checkout() {
         cart_items: tempCheckoutItem,
       })
     }
-  }, [cartList.data?.data])
+  }, [cartList.data?.data, idShops])
 
   return (
     <>
@@ -130,7 +130,7 @@ function Checkout() {
             </div>
             {!cartList.isLoading ? (
               <>
-                {cartList.data?.data ? (
+                {cartList.data?.data && idShops ? (
                   cartList.data.data.rows
                     .filter((item) => idShops.includes(item.shop.id))
                     .map((cart, index) => (
@@ -201,7 +201,7 @@ function Checkout() {
                   </ul>
                 </div>
               </div>
-              {!userWallet.isLoading && !userSLP.isLoading ? (
+              {!userWallet.isLoading && !userSLP.isLoading && checkoutItems ? (
                 <CheckoutSummary
                   mapPriceQuantity={mapPriceQuantitys}
                   postCheckout={checkoutItems}
