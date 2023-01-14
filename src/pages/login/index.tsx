@@ -11,6 +11,7 @@ import type { APIResponse } from '@/types/api/response'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { getGoogleUrl } from '@/helper/googleoauth'
+import Link from 'next/link'
 
 YupPassword(Yup)
 
@@ -62,7 +63,9 @@ const Login = () => {
       <div className="flex min-h-screen">
         <div className="sm:flex-0 z-10 w-screen flex-1 px-6 shadow-2xl sm:max-w-md">
           <div className="max-w-[8rem] py-6">
-            <Icon color="primary" />
+            <Link href={'/'}>
+              <Icon color="primary" />
+            </Link>
           </div>
           <H1 className="my-12">Welcome Back!</H1>
           <div className="">

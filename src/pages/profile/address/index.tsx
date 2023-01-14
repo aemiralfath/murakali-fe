@@ -59,26 +59,22 @@ function ManageAddress() {
         <>
           <div className="flex justify-between">
             <H1 className="text-primary">Manage Address</H1>
-            {userAllAddress.data?.data?.total_rows !== 0 ? (
-              <Button
-                buttonType="primary"
-                onClick={() => {
-                  modal.edit({
-                    title: 'Add Address',
-                    content: (
-                      <>
-                        <FormManageAddress isEdit={false} />
-                      </>
-                    ),
-                    closeButton: false,
-                  })
-                }}
-              >
-                + Add Address
-              </Button>
-            ) : (
-              <></>
-            )}
+            <Button
+              buttonType="primary"
+              onClick={() => {
+                modal.edit({
+                  title: 'Add Address',
+                  content: (
+                    <>
+                      <FormManageAddress isEdit={false} />
+                    </>
+                  ),
+                  closeButton: false,
+                })
+              }}
+            >
+              + Add Address
+            </Button>
           </div>
           <div className="my-4">
             <Divider />
@@ -158,7 +154,6 @@ function ManageAddress() {
                                       >
                                         Cancel
                                       </Button>
-                                      <P>Loading</P>{' '}
                                       <Button
                                         type="button"
                                         buttonType="primary"
@@ -224,7 +219,7 @@ function ManageAddress() {
         {userAllAddress.data?.data?.total_pages === 0 ? (
           <div className="border-grey-200 z-10 flex h-full items-center rounded-lg border-[1px] border-solid py-7 px-8">
             <P className="flex w-full items-center justify-center font-extrabold">
-              Cart is Empty!
+              Address is Empty!
             </P>
           </div>
         ) : (

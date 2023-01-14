@@ -185,7 +185,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
                   <div className=" my-4 mx-2 grid grid-cols-1 gap-2 md:grid-cols-4">
                     <div className="col-span-3 flex flex-col gap-y-2 ">
                       <H4>{paymentOption.name}</H4>
-                      {paymentOption.balance ? (
+                      {paymentOption.name === 'Wallet' ? (
                         <P>Rp. {ConvertShowMoney(paymentOption.balance)}</P>
                       ) : (
                         <P>{paymentOption.id}</P>
