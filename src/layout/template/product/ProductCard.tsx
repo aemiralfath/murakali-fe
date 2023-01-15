@@ -24,10 +24,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   const [src, setSrc] = useState('/asset/no-image.png')
   useEffect(() => {
-    if (data.thumbnail_url) {
+    if (data?.thumbnail_url) {
       setSrc(data.thumbnail_url)
     }
-  }, [data.thumbnail_url])
+  }, [data])
 
   return (
     <div
