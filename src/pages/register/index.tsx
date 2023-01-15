@@ -13,7 +13,7 @@ import {
   useRegistrationFull,
 } from '@/api/auth/registration'
 import { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
@@ -24,6 +24,7 @@ YupPassword(Yup)
 const RegistrationPage = () => {
   const router = useRouter()
   const modalOtp = useModal()
+  const [email, setEmail] = useState('')
   const registration = useRegistrationCheckEmail()
   const [isOtpValid, setIsOtpValid] = React.useState(false)
 
@@ -45,6 +46,7 @@ const RegistrationPage = () => {
         .required('This field is required'),
     }),
     onSubmit: (values) => {
+      setEmail(values.email)
       registration.mutate(values)
     },
   })
@@ -129,6 +131,13 @@ const RegistrationPage = () => {
       toast.error(
         reason.response ? reason.response.data.message : reason.message
       )
+
+      if (
+        (reason.response ? reason.response.data.message : reason.message) ===
+        'User already registered.'
+      ) {
+        router.push('/login?email=' + email)
+      }
     }
   }, [registration.isError])
 

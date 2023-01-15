@@ -20,14 +20,17 @@ import FormManageAddress from '@/layout/template/profile/FormManageAddress'
 import Head from 'next/head'
 import ProfileLayout from '@/layout/ProfileLayout'
 import { HiPencilAlt, HiTrash } from 'react-icons/hi'
+import { useGetUserProfile } from '@/api/user/profile'
 
 // TODO: Fix Address Combobox behavior
 
 function ManageAddress() {
   const modal = useModal()
   const [page, setPage] = useState<number>(1)
+  const [role, setRole] = useState<number>(1)
   const userAllAddress = useGetAllAddress(page)
   const deleteAddress = useDeleteAddress()
+  const userProfile = useGetUserProfile()
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -45,6 +48,12 @@ function ManageAddress() {
       toast.error(errmsg.response?.data.message as string)
     }
   }, [deleteAddress.isError])
+
+  useEffect(() => {
+    if (userProfile.isSuccess) {
+      setRole(userProfile.data.data.role)
+    }
+  }, [userProfile.isSuccess])
 
   return (
     <>
@@ -66,7 +75,7 @@ function ManageAddress() {
                   title: 'Add Address',
                   content: (
                     <>
-                      <FormManageAddress isEdit={false} />
+                      <FormManageAddress isEdit={false} role={role} />
                     </>
                   ),
                   closeButton: false,
@@ -122,6 +131,7 @@ function ManageAddress() {
                                     <FormManageAddress
                                       isEdit={true}
                                       editData={address}
+                                      role={role}
                                     />
                                   </>
                                 ),

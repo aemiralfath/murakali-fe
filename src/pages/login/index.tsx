@@ -2,7 +2,7 @@ import { TextInput, Button, Icon, H1, Divider, A } from '@/components'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import YupPassword from 'yup-password'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaGoogle } from 'react-icons/fa'
 import { useLogin } from '@/api/auth/login'
 import toast from 'react-hot-toast'
@@ -17,6 +17,11 @@ YupPassword(Yup)
 
 const Login = () => {
   const router = useRouter()
+  const { email } = router.query
+  const [formValues, setFormValues] = useState({
+    email: '',
+    password: '',
+  })
 
   const login = useLogin()
   useEffect(() => {
@@ -35,10 +40,8 @@ const Login = () => {
   }, [login.isError])
 
   const loginForm = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-    },
+    initialValues: formValues,
+    enableReinitialize: true,
     validationSchema: Yup.object({
       email: Yup.string()
         .email('Invalid email address')
@@ -54,6 +57,13 @@ const Login = () => {
       login.mutate(values)
     },
   })
+
+  useEffect(() => {
+    setFormValues({
+      email: email as string,
+      password: '',
+    })
+  }, [router.query])
 
   return (
     <>

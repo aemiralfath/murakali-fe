@@ -12,6 +12,7 @@ import toast from 'react-hot-toast'
 
 import type { APIResponse } from '@/types/api/response'
 import type { AxiosError } from 'axios'
+import PinInput from 'react-pin-input'
 
 interface FormOTPProps extends React.InputHTMLAttributes<HTMLSelectElement> {
   OTPType: string
@@ -21,6 +22,7 @@ interface FormOTPProps extends React.InputHTMLAttributes<HTMLSelectElement> {
 
 const FormOTP: React.FC<FormOTPProps> = ({ OTPType, email, setState }) => {
   const modal = useModal()
+  let pinInputRef: PinInput | null
   const userVerifyOTPChangePassword = useVerifyOTPChangePassword()
   const userSendEmailChangePassword = useSendEmailChangePassword()
 
@@ -78,12 +80,14 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType, email, setState }) => {
   useEffect(() => {
     if (registrationOtp.isSuccess) {
       toast.success('OTP is valid')
+      pinInputRef.clear()
       setState?.(true)
       handleClose()
     }
   }, [registrationOtp.isSuccess])
   useEffect(() => {
     if (registrationOtp.isError) {
+      pinInputRef.clear()
       const reason = registrationOtp.failureReason as AxiosError<
         APIResponse<null>
       >
@@ -92,13 +96,6 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType, email, setState }) => {
       )
     }
   }, [registrationOtp.isError])
-
-  const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const inputName = event.currentTarget.name
-    const value = event.currentTarget.value
-
-    setInput((prev) => ({ ...prev, [inputName]: value }))
-  }
 
   const handleOTP = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -127,16 +124,32 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType, email, setState }) => {
         return false
       }}
     >
-      <TextInput
-        className="input-bordered input w-full border-white bg-transparent text-center text-black "
-        type="number"
-        name="otp"
-        min={0}
-        placeholder="XXXXXX"
-        onChange={handleChange}
-        value={input.otp}
-        required
-        full
+      <PinInput
+        length={6}
+        onChange={() => {
+          setInput({
+            otp: '',
+          })
+        }}
+        onComplete={(value) => {
+          if (value.length === 6) {
+            setInput({
+              otp: value,
+            })
+          }
+        }}
+        type="numeric"
+        inputMode="number"
+        style={{
+          padding: '10px',
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+        inputStyle={{ borderColor: 'grey' }}
+        inputFocusStyle={{ borderColor: 'blue' }}
+        autoSelect={true}
+        ref={(n) => (pinInputRef = n)}
       />
 
       <div className="mt-2">
@@ -162,7 +175,12 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType, email, setState }) => {
         </span>
       </div>
 
-      <Button buttonType="primary" type="submit" className="w-full">
+      <Button
+        buttonType="primary"
+        type="submit"
+        className="w-full"
+        disabled={input.otp.length !== 6}
+      >
         Confirm
       </Button>
     </form>
