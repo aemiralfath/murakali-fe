@@ -1,9 +1,33 @@
-import { H3, H4, Chip, P, TextInput, Button, TextArea } from '@/components'
+import { H3, H4, Chip, P, TextInput, TextArea } from '@/components'
+import toTitleCase from '@/helper/toTitleCase'
+import type { CategoryData } from '@/types/api/category'
 import { RadioGroup } from '@headlessui/react'
 import React, { useState } from 'react'
+import CategorySelector from './subsections/CategorySelector'
 
-const ProductInfo = () => {
+const ProductInfo: React.FC<{ categoryData?: CategoryData[] }> = ({
+  categoryData,
+}) => {
   const [condition, setCondition] = useState('new')
+  const [selectedCategory, setSelectedCategory] = useState<CategoryData[]>([])
+  const getSelectedCategoryStr = () => {
+    if (selectedCategory[0]?.name) {
+      let val = ''
+      if (selectedCategory[0]) {
+        val = val + `${toTitleCase(selectedCategory[0].name)}`
+      }
+      if (selectedCategory[1]) {
+        val = val + ` > ${toTitleCase(selectedCategory[1].name)}`
+      }
+      if (selectedCategory[2]) {
+        val = val + ` > ${toTitleCase(selectedCategory[2].name)}`
+      }
+
+      return val
+    } else {
+      return undefined
+    }
+  }
 
   return (
     <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
@@ -42,9 +66,18 @@ const ProductInfo = () => {
           </P>
         </div>
         <div className="flex-1">
-          <TextInput full placeholder={`Click "Choose Category"`} />
+          <TextInput
+            full
+            placeholder={`Click "Choose Category"`}
+            readOnly
+            value={getSelectedCategoryStr()}
+          />
         </div>
-        <Button buttonType="ghost">Choose Category</Button>
+        <CategorySelector
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          categoryData={categoryData}
+        />
       </div>
       <div className="mt-6 flex gap-3">
         <div className="w-[30%]">
@@ -97,7 +130,7 @@ const ProductInfo = () => {
             about your product so that buyers can easily understand and find it.
           </P>
         </div>
-        <div className="flex-1">
+        <div className="-z-0 flex-1">
           <TextArea
             rows={8}
             full

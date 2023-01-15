@@ -1,3 +1,4 @@
+import { useGetAllCategory } from '@/api/category'
 import { H2 } from '@/components'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
 import ProductInfo from '@/sections/sellerpanel/addproduct/ProductInfo'
@@ -8,6 +9,8 @@ import Head from 'next/head'
 import React from 'react'
 
 const AddProduct = () => {
+  const allCategory = useGetAllCategory()
+
   return (
     <div>
       <Head>
@@ -18,7 +21,7 @@ const AddProduct = () => {
           <H2>Add Product</H2>
         </div>
         <UploadPhoto />
-        <ProductInfo />
+        <ProductInfo categoryData={allCategory.data?.data} />
         <ProductVariants />
         <ProductShipping />
       </SellerPanelLayout>
