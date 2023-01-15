@@ -9,7 +9,6 @@ import type { AxiosError } from 'axios'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import Button from '../button'
-import TextInput from '../textinput'
 import PinInput from 'react-pin-input'
 
 interface FormOTPProps extends React.InputHTMLAttributes<HTMLSelectElement> {
