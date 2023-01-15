@@ -9,9 +9,9 @@ import VariantSelectionDropdown from './subsections/VariantSelectionDropdown'
 import getKey from '@/helper/getKey'
 import VariationSelector from './subsections/VariationSelector'
 import VariantChip from './subsections/VariantChip'
-import Uploader from './subsections/Uploader'
 import EmptyData from './subsections/EmptyData'
 import { toast } from 'react-hot-toast'
+import Uploader from '@/components/uploader'
 
 const ProductVariants = () => {
   const [variantType, setVariantType] = useState<string[]>(['', ''])
@@ -452,6 +452,7 @@ const ProductVariants = () => {
                             <Uploader
                               id={getKey(vname1, vname2)}
                               title={'Photo'}
+                              onChange={(s) => console.log(s)}
                             />
                             <div className="mt-2 min-w-[12rem] pl-2 text-sm ">
                               <div className="flex items-baseline gap-2">
@@ -559,7 +560,11 @@ const ProductVariants = () => {
                     />
                   </div>
                   <div className="w-[8.5rem]">
-                    <Uploader id={`id-ab`} title={'Photo'} />
+                    <Uploader
+                      id={`id-ab`}
+                      title={'Photo'}
+                      onChange={(s) => console.log(s)}
+                    />
                     <div className="mt-2 min-w-[12rem] pl-2 text-sm ">
                       <div className="flex items-baseline gap-2">
                         <span className="font-semibold">{variantType[0]}:</span>
