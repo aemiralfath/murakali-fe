@@ -1,6 +1,5 @@
 import { useGetAllProvince } from '@/api/user/address/extra'
 import { A, Divider, H4, P, PaginationNav } from '@/components'
-import productListingCategory from '@/dummy/productListingCategory'
 import LocationFilter from '@/sections/productslisting/LocationFilter'
 import React, { useEffect, useState } from 'react'
 import { HiArrowDown, HiArrowUp, HiFilter, HiX } from 'react-icons/hi'

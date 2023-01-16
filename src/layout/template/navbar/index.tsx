@@ -202,6 +202,20 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
                     ? 'bg-primary bg-opacity-10 text-primary'
                     : 'text-gray-900'
                 } group flex w-full items-center rounded-md px-2 py-2 text-sm font-semibold`}
+                onClick={() => router.push('/wallet')}
+              >
+                My Wallet
+              </button>
+            )}
+          </Menu.Item>
+          <Menu.Item>
+            {({ active }) => (
+              <button
+                className={`${
+                  active
+                    ? 'bg-primary bg-opacity-10 text-primary'
+                    : 'text-gray-900'
+                } group flex w-full items-center rounded-md px-2 py-2 text-sm font-semibold`}
                 onClick={() => router.push('/transaction-history')}
               >
                 My Transactions

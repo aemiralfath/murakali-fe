@@ -141,8 +141,9 @@ const FormEditProfile: React.FC = () => {
               label="Phone Number"
               type="number"
               name="phone_number"
+              leftIcon={'+62'}
               onChange={handleChange}
-              placeholder="628xxxxxxxx"
+              placeholder="8xxxxxxxx"
               value={input.phone_number}
               full
               required

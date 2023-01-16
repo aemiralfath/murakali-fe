@@ -73,7 +73,7 @@ function Favorite() {
       <Navbar />
       <TitlePageExtend title="Favorite Product" />
 
-      <div className=" max-w-96 mx-5 my-5  md:mx-20 lg:mx-40">
+      <div className="  container mx-auto my-5  h-screen md:mx-20 lg:mx-40">
         <div className="my-4">
           <Breadcrumbs data={dummyBreadcrumbs} />
         </div>
