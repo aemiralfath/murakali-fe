@@ -66,7 +66,7 @@ const SLPPayment = () => {
                 src={paymentURL.data.data.redirect_url}
                 title="payment"
                 onLoad={onLoad}
-              ></iframe>
+              />
             </>
           ) : (
             <></>
