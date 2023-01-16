@@ -2,7 +2,7 @@ import { Button, Chip, Divider, H3, H4, P, TextInput } from '@/components'
 import cx from '@/helper/cx'
 import toTitleCase from '@/helper/toTitleCase'
 import React, { useEffect, useState } from 'react'
-import { useImmer } from 'use-immer'
+import type { Updater } from 'use-immer'
 import { HiOutlineLightBulb, HiPlus, HiTrash } from 'react-icons/hi'
 import type { ProductDetailReq } from '@/types/api/product'
 import VariantSelectionDropdown from './subsections/VariantSelectionDropdown'
@@ -13,7 +13,14 @@ import EmptyData from './subsections/EmptyData'
 import { toast } from 'react-hot-toast'
 import Uploader from '@/components/uploader'
 
-const ProductVariants = () => {
+const ProductVariants: React.FC<{
+  productDetailData: {
+    [key: string]: ProductDetailReq
+  }
+  updateProductDetailData: Updater<{
+    [key: string]: ProductDetailReq
+  }>
+}> = ({ productDetailData, updateProductDetailData }) => {
   const [variantType, setVariantType] = useState<string[]>(['', ''])
   const [variantNames, setVariantNames] = useState<string[][]>([[], []])
   const [openVariantTwo, setOpenVariantTwo] = useState(false)
@@ -85,10 +92,6 @@ const ProductVariants = () => {
     )
   }
 
-  const [productDetailData, updateProductDetailData] = useImmer<{
-    [key: string]: ProductDetailReq
-  }>({})
-
   const handleChangePrice = (key: string, newVal: number) => {
     updateProductDetailData((draft) => {
       draft[key].price = newVal
@@ -110,6 +113,14 @@ const ProductVariants = () => {
   const handleChangeVolume = (key: string, newVal: number) => {
     updateProductDetailData((draft) => {
       draft[key].size = newVal
+    })
+  }
+
+  const handleChangeImage = (key: string, newVal: string) => {
+    updateProductDetailData((draft) => {
+      if (draft[key]) {
+        draft[key].photo = [newVal]
+      }
     })
   }
 
@@ -452,7 +463,7 @@ const ProductVariants = () => {
                             <Uploader
                               id={getKey(vname1, vname2)}
                               title={'Photo'}
-                              onChange={(s) => console.log(s)}
+                              onChange={(s) => handleChangeImage(key, s)}
                             />
                             <div className="mt-2 min-w-[12rem] pl-2 text-sm ">
                               <div className="flex items-baseline gap-2">
@@ -563,7 +574,7 @@ const ProductVariants = () => {
                     <Uploader
                       id={`id-ab`}
                       title={'Photo'}
-                      onChange={(s) => console.log(s)}
+                      onChange={(s) => handleChangeImage(key, s)}
                     />
                     <div className="mt-2 min-w-[12rem] pl-2 text-sm ">
                       <div className="flex items-baseline gap-2">

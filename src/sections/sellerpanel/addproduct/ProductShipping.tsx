@@ -1,9 +1,15 @@
 import { H3, H4, P } from '@/components'
 import { RadioGroup } from '@headlessui/react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-const ProductShipping = () => {
-  const [dg, setDg] = useState('no')
+const ProductShipping: React.FC<{
+  hazardous: boolean
+  setHazardous: (b: boolean) => void
+}> = ({ hazardous, setHazardous }) => {
+  const [dg, setDg] = useState(hazardous ? 'yes' : 'no')
+  useEffect(() => {
+    setHazardous(dg === 'yes')
+  }, [dg])
 
   return (
     <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">

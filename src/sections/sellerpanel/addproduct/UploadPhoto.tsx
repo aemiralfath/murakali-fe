@@ -4,7 +4,9 @@ import { HiOutlineLightBulb } from 'react-icons/hi'
 
 import Uploader from '@/components/uploader'
 
-const UploadPhoto = () => {
+const UploadPhoto: React.FC<{ setThumbnail: (s: string) => void }> = ({
+  setThumbnail,
+}) => {
   return (
     <div className="mt-3 flex h-full flex-col rounded border bg-white px-6 pt-6 pb-12 ">
       <H3>Upload Product</H3>
@@ -31,7 +33,7 @@ const UploadPhoto = () => {
             id={'thumbnail'}
             title={'Thumbnail Photo'}
             size="lg"
-            onChange={(s) => console.log(s)}
+            onChange={(s) => setThumbnail(s)}
           />
         </div>
       </div>

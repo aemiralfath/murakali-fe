@@ -67,11 +67,15 @@ export interface ProductDetailReq {
   variant_detail: VariantDetailReq[]
 }
 
-export interface CreateProductReq {
+export interface ProductInfoReq {
   title: string
   description: string
   thumbnail: string
   category_id: string
+}
+
+export interface CreateProductReq {
+  products_info: ProductInfoReq
   products_detail: ProductDetailReq[]
 }
 

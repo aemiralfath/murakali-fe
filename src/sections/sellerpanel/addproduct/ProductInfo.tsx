@@ -2,13 +2,28 @@ import { H3, H4, Chip, P, TextInput, TextArea } from '@/components'
 import toTitleCase from '@/helper/toTitleCase'
 import type { CategoryData } from '@/types/api/category'
 import { RadioGroup } from '@headlessui/react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import CategorySelector from './subsections/CategorySelector'
 
-const ProductInfo: React.FC<{ categoryData?: CategoryData[] }> = ({
+const ProductInfo: React.FC<{
+  nameValue: string
+  setName: (s: string) => void
+  setCategoryID: (id: string) => void
+  conditionValue: string
+  setCondition: (s: 'new' | 'used') => void
+  descriptionValue: string
+  setDescription: (s: string) => void
+  categoryData?: CategoryData[]
+}> = ({
+  nameValue,
+  setName,
+  setCategoryID,
+  conditionValue,
+  setCondition,
+  descriptionValue,
+  setDescription,
   categoryData,
 }) => {
-  const [condition, setCondition] = useState('new')
   const [selectedCategory, setSelectedCategory] = useState<CategoryData[]>([])
   const getSelectedCategoryStr = () => {
     if (selectedCategory[0]?.name) {
@@ -28,6 +43,11 @@ const ProductInfo: React.FC<{ categoryData?: CategoryData[] }> = ({
       return undefined
     }
   }
+  useEffect(() => {
+    if (selectedCategory.length > 0) {
+      setCategoryID(selectedCategory.at(-1)?.id)
+    }
+  }, [selectedCategory])
 
   return (
     <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
@@ -50,6 +70,8 @@ const ProductInfo: React.FC<{ categoryData?: CategoryData[] }> = ({
         <div className="flex-1">
           <TextInput
             full
+            value={nameValue}
+            onChange={(e) => setName(e.target.value)}
             placeholder="Example: Vens (Brand) + Authentic Casual Shoe (Type) + Canvas (Material)"
           />
         </div>
@@ -86,7 +108,7 @@ const ProductInfo: React.FC<{ categoryData?: CategoryData[] }> = ({
           </div>
         </div>
         <RadioGroup
-          value={condition}
+          value={conditionValue}
           onChange={setCondition}
           className="flex gap-2"
           id="condition"
@@ -134,6 +156,8 @@ const ProductInfo: React.FC<{ categoryData?: CategoryData[] }> = ({
           <TextArea
             rows={8}
             full
+            value={descriptionValue}
+            onChange={(e) => setDescription(e.target.value)}
             placeholder={`Vens Authentic Casual Shoe Black Canvas Series C28B
 
 - Simple model
