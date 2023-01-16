@@ -1,17 +1,19 @@
 import { useDeleteCart, useGetCart } from '@/api/user/cart'
 import { Button, H2, H4, P } from '@/components'
 import ProductCart from '@/components/card/ProductCart'
-import { useModal } from '@/hooks'
+import { useModal, useUser } from '@/hooks'
 import { Navbar } from '@/layout/template'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import SummaryCart from '@/sections/cart/SummaryCart'
 import type { APIResponse } from '@/types/api/response'
 import type { AxiosError } from 'axios'
+import Router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 function Cart() {
+  const { user, isLoading } = useUser()
   const cartList = useGetCart()
   const [checkAll, setCheckAll] = useState<boolean>(false)
   const [selectedProducts, setSelectedProduct] = useState<string[]>([])
@@ -33,6 +35,12 @@ function Cart() {
       toast.error(errmsg.response?.data.message as string)
     }
   }, [deleteCart.isError])
+
+  useEffect(() => {
+    if (!isLoading && !(user ? true : false)) {
+      Router.push('/login')
+    }
+  }, [user, isLoading])
 
   useEffect(() => {
     let countQuantity = 0
