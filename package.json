@@ -25,6 +25,7 @@
     "n-krypta": "^1.0.6",
     "next": "13.0.2",
     "nextjs-progressbar": "^0.0.16",
+    "qs": "^6.11.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-easy-crop": "^4.6.3",
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
+    "@types/qs": "^6.9.7",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
     "@typescript-eslint/eslint-plugin": "^5.33.0",

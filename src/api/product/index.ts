@@ -1,10 +1,25 @@
 import { unauthorizedClient } from '@/api/apiClient'
 import { useQuery } from '@tanstack/react-query'
+import qs from 'qs'
 
 import type { APIResponse, PaginationData } from '@/types/api/response'
-import type { BriefProduct, ProductDetail } from '@/types/api/product'
+import type { BriefProduct } from '@/types/api/product'
 
 const profileKey = 'seller'
+export type ProductPaginationParams = {
+  page?: number
+  limit?: number
+  search?: string
+  category?: string
+  shop_id?: string
+  sort_by?: string
+  sort?: string
+  min_price?: number
+  max_price?: number
+  min_rating?: number
+  max_rating?: number
+  listed_status?: 0 | 1 | 2
+}
 
 const getSellerProduct = async (
   page: number,
@@ -91,4 +106,23 @@ export const useGetSellerProduct = (
         max_rating
       )
   )
+}
+
+const getAllProduct = async (params: ProductPaginationParams) => {
+  const query = qs.stringify(params)
+  const response = await unauthorizedClient.get<
+    APIResponse<PaginationData<BriefProduct>>
+  >('/product/?' + query)
+  return response.data
+}
+
+export const useGetAllProduct = (
+  params: ProductPaginationParams,
+  enabled?: boolean
+) => {
+  return useQuery({
+    queryKey: ['product', params],
+    queryFn: async () => await getAllProduct(params),
+    enabled: enabled === undefined ? true : enabled,
+  })
 }

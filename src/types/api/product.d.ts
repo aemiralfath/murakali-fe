@@ -1,4 +1,5 @@
 import type { Promotion } from './promotion'
+import type { NullableTime } from './time'
 
 export interface ProductInfo {
   id: string
@@ -32,12 +33,14 @@ export interface Product {
 }
 
 export interface BriefProduct {
+  id: string
   title: string
   unit_sold: number
   rating_avg: number
   thumbnail_url: string
   min_price: number
   max_price: number
+  view_count: number
   sub_price: number
   promo_discount_percentage?: number
   promo_discount_fix_price?: number
@@ -48,6 +51,9 @@ export interface BriefProduct {
   voucher_discount_fix_price?: number
   shop_name: string
   category_name: string
+  province: string
+  created_at: string
+  updated_at: NullableTime
 }
 
 export interface VariantDetailReq {
