@@ -15,18 +15,25 @@ export interface ProductInfo {
   max_price: number
   category_name: string
   category_url: string
+  shop_id: string
 }
 
 export interface ProductDetail {
   id: string
-  price: number
+  normal_price: number
   stock: number
+  discount_price: number
+  weight: number
+  size: number
+  hazardous: boolean
+  condition: string
+  bulk_price: boolean
   variant: {
     [key: string]: string
   }
 }
 export interface Product {
-  product_info: ProductInfo
+  products_info: ProductInfo
   promotions_info: Promotion
   products_detail: ProductDetail[]
 }
@@ -51,6 +58,10 @@ export interface BriefProduct {
   category_name: string
 }
 
+export interface ProductImages {
+  product_detail_id?: string
+  url: string
+}
 export interface ProductQuery {
   search: string
   category: string

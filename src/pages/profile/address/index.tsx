@@ -215,7 +215,7 @@ function ManageAddress() {
                       onClick={() => {
                         setPage(index + 1)
                       }}
-                      className={index + 1 === page ? 'btn-active btn' : 'btn'}
+                      className={index + 1 === page ? 'btn btn-active' : 'btn'}
                     >
                       {index + 1}
                     </button>

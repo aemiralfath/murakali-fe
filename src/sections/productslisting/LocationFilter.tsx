@@ -23,7 +23,7 @@ const ProvinceBtnMenu: React.FC<{
 
   return (
     <Menu as="div" className="relative w-full">
-      <Menu.Button className="btn-ghost btn-sm btn flex w-full items-center gap-2 rounded bg-white text-primary">
+      <Menu.Button className="btn btn-ghost btn-sm flex w-full items-center gap-2 rounded bg-white text-primary">
         Show All <HiChevronDown />
       </Menu.Button>
       <Transition
