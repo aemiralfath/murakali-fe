@@ -13,8 +13,7 @@ const getUserWallet = async () => {
   return response.data
 }
 
-export const useGetUserWallet = () =>
-  useQuery([profileKey, 'wallet'], getUserWallet)
+export const useGetUserWallet = () => useQuery([profileKey, 'w'], getUserWallet)
 
 const getUserWalletHistory = async (page: number, sort: string) => {
   const response = await authorizedClient.get<
@@ -78,6 +77,25 @@ export const usePasswordVerification = () => {
     async (password: string) => {
       return await authorizedClient.post<APIResponse<null>>('/user/password', {
         password: password,
+      })
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+      onError: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+    }
+  )
+}
+
+export const useActivatePin = () => {
+  const queryClient = useQueryClient()
+  return useMutation(
+    async (pin: string) => {
+      return await authorizedClient.post<APIResponse<null>>('/user/wallet', {
+        pin: pin,
       })
     },
     {
