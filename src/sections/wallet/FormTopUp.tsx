@@ -47,9 +47,18 @@ const FormTopUp: React.FC = () => {
   useEffect(() => {
     if (useSlpPayment.isError) {
       const errmsg = useSlpPayment.error as AxiosError<APIResponse<null>>
-      toast.error(
-        errmsg.response ? errmsg.response.data.message : errmsg.message
-      )
+      const paymentReason = errmsg.response
+        ? errmsg.response.data.message
+        : errmsg.message
+      if (paymentReason === 'invalid input on card_number, ') {
+        toast.error(
+          'Invalid SeaLabs Pay account, please change payment method!'
+        )
+      }
+
+      if (paymentReason === 'insufficient fund to create transaction') {
+        toast.error('Insufficient balance, please top up first!')
+      }
     }
   }, [useSlpPayment.isError])
 
@@ -136,6 +145,11 @@ const FormTopUp: React.FC = () => {
               ) : (
                 <></>
               )
+            ) : (
+              <></>
+            )}
+            {useSlp.isError ? (
+              <P className="text-center">You Dont Have Sealabs Pay</P>
             ) : (
               <></>
             )}
