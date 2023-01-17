@@ -3,6 +3,7 @@ import { Button, H2, H4, P } from '@/components'
 import ProductCart from '@/components/card/ProductCart'
 import { useModal, useUser } from '@/hooks'
 import { Navbar } from '@/layout/template'
+import Footer from '@/layout/template/footer'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import SummaryCart from '@/sections/cart/SummaryCart'
@@ -67,7 +68,7 @@ function Cart() {
       <title>Cart</title>
       <TitlePageExtend title="Cart" />
 
-      <div className="container my-8 mx-auto mb-10 min-h-screen w-full px-2">
+      <div className="container my-8 mx-auto mb-10 h-screen min-h-screen w-full px-2">
         <div className="grid grid-cols-1 gap-2 xl:grid-cols-4">
           <div className="col-span-3  flex flex-col gap-5">
             <div className="flex justify-between rounded-lg border-[1px] border-solid border-gray-300 py-5 px-8">
@@ -306,6 +307,7 @@ function Cart() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   )
 }
