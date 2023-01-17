@@ -12,7 +12,7 @@ const SellerPanelLayout: React.FC<{
       <SectionOneSideBar />
       <div className="flex w-full bg-primary bg-opacity-5">
         <SectionTwoSideBar selectedPage={selectedPage} />
-        <div className="min-h-full w-full max-w-full overflow-auto">
+        <div className="w-full max-w-full overflow-auto">
           <div className="container p-6">{children}</div>
         </div>
       </div>

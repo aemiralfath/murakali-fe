@@ -19,8 +19,12 @@ import { useCreateProduct } from '@/api/product/manage'
 import { useLoadingModal } from '@/hooks'
 import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
+import { useRouter } from 'next/router'
 
 const AddProduct = () => {
+  const router = useRouter()
+  const { intent, product_id } = router.query
+
   const setLoadingModal = useLoadingModal()
 
   const allCategory = useGetAllCategory()
@@ -136,7 +140,7 @@ const AddProduct = () => {
       </Head>
       <SellerPanelLayout selectedPage="product">
         <div className="flex w-full items-center justify-between">
-          <H2>Add Product</H2>
+          {intent === 'edit' ? <H2>Edit Product</H2> : <H2>Add Product</H2>}
         </div>
         <UploadPhoto
           setThumbnail={(s) => {

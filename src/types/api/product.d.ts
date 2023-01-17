@@ -54,6 +54,7 @@ export interface BriefProduct {
   province: string
   created_at: string
   updated_at: NullableTime
+  listed_status: boolean
 }
 
 export interface VariantDetailReq {

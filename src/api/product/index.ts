@@ -120,8 +120,27 @@ export const useGetAllProduct = (
   params: ProductPaginationParams,
   enabled?: boolean
 ) => {
+  let tempParams: ProductPaginationParams = {
+    page: 1,
+    limit: 1,
+    search: '',
+    category: '',
+    shop_id: '',
+    sort_by: '',
+    sort: '',
+    min_price: 0,
+    max_price: 1000000,
+    min_rating: 0,
+    max_rating: 5,
+    listed_status: 0,
+  }
+
+  tempParams = { ...tempParams, ...params }
   return useQuery({
-    queryKey: ['product', params],
+    queryKey: [
+      'products',
+      ...Object.keys(tempParams).map((key) => tempParams[key]),
+    ],
     queryFn: async () => await getAllProduct(params),
     enabled: enabled === undefined ? true : enabled,
   })

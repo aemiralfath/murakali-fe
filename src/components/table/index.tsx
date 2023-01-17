@@ -1,6 +1,7 @@
 import cx from '@/helper/cx'
 import Image from 'next/image'
 import React from 'react'
+import Spinner from '../spinner'
 import { P } from '../typography'
 
 interface TableProps {
@@ -69,13 +70,19 @@ const Table: React.FC<TableProps> = ({
           <tr className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
             <td colSpan={columnNames.length}>
               <div className="flex w-full flex-col items-center justify-center py-6">
-                <Image
-                  src={'/asset/empty.png'}
-                  alt={'No data'}
-                  height={300}
-                  width={200}
-                />
-                <P className="mt-6 italic text-gray-400">Data not found</P>
+                {isLoading ? (
+                  <Spinner color="gray" />
+                ) : (
+                  <>
+                    <Image
+                      src={'/asset/empty.png'}
+                      alt={'No data'}
+                      height={300}
+                      width={200}
+                    />
+                    <P className="mt-6 italic text-gray-400">Data not found</P>
+                  </>
+                )}
               </div>
             </td>
           </tr>
