@@ -5,9 +5,10 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { useSwipeable } from 'react-swipeable'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
+import type { ProductImages } from '@/types/api/product'
 
 type ProductImageCarouselProps = LoadingDataWrapper<{
-  images?: string[]
+  images?: ProductImages[]
   alt?: string
 }> & {
   selectedImageUrl?: string
@@ -57,9 +58,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   isLoading,
 }) => {
   const [mainID, setMainID] = useState(0)
-  const [mainImage, setMainImage] = useState(
-    selectedImageUrl ?? data?.images[mainID]
-  )
+  const [mainImage, setMainImage] = useState(selectedImageUrl)
 
   const [ref, isHovered] = useHover()
 
@@ -77,13 +76,13 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
 
   useEffect(() => {
     if (data?.images) {
-      setMainImage(selectedImageUrl ?? data.images[mainID])
+      setMainImage(selectedImageUrl)
     }
   }, [selectedImageUrl, data])
 
   useEffect(() => {
     if (data.images) {
-      setMainImage(data.images[mainID])
+      setMainImage(data.images[mainID].url)
     }
   }, [mainID])
 
@@ -96,15 +95,15 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
             <div className="aspect-square h-[50px] animate-pulse rounded bg-base-300 md:h-[2.8rem] xl:h-[4rem]" />
             <div className="aspect-square h-[50px] animate-pulse rounded bg-base-300 md:h-[2.8rem] xl:h-[4rem]" />
           </>
-        ) : (
-          data.images.map((url, idx) => {
+        ) : data?.images ? (
+          data.images.map((img, idx) => {
             return (
               <div key={idx}>
                 <SubImage
                   id={idx}
                   alt={data.alt}
-                  isSelected={url === mainImage}
-                  url={url}
+                  isSelected={img.product_detail_id === mainImage}
+                  url={img.url}
                   mainImage={mainImage}
                   setMainID={setMainID}
                   setMainImage={setMainImage}
@@ -112,6 +111,8 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
               </div>
             )
           })
+        ) : (
+          <></>
         )}
       </div>
       <div

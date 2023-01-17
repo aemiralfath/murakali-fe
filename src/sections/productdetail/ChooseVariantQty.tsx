@@ -4,10 +4,11 @@ import { HiTag, HiPlus } from 'react-icons/hi'
 import type { ProductDetail } from '@/types/api/product'
 import { useAddToCart } from '@/api/user/cart'
 import toast from 'react-hot-toast'
-import { AxiosError } from 'axios'
-import { APIResponse } from '@/types/api/response'
+import type { AxiosError } from 'axios'
+import type { APIResponse } from '@/types/api/response'
 import { useUser } from '@/hooks'
 import { useRouter } from 'next/router'
+import formatMoney from '@/helper/formatMoney'
 
 interface ChooseVariantQtyProps {
   variantNamesState: string[]
@@ -51,7 +52,11 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
             {variantNamesState.map((variantName, idx) => {
               return (
                 <span key={idx}>
-                  {selectVariant.variant[variantName] + (idx === 0 ? ', ' : '')}
+                  {selectVariant.variant[variantName] +
+                    (idx === 0 &&
+                    idx === Object.keys(selectVariant.variant).length
+                      ? ', '
+                      : '')}
                 </span>
               )
             })}
@@ -79,12 +84,46 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
       <div className="flex flex-1 flex-col gap-2">
         <H4>Subtotal</H4>
         <div className="flex items-center justify-between">
-          <P className="text-sm line-through opacity-50">Rp.22.088</P>
-          <P className="flex-1 text-right text-lg font-bold">Rp.22.088</P>
+          {selectVariant !== undefined ? (
+            selectVariant?.discount_price ? (
+              <>
+                <P className="text-sm line-through opacity-50">
+                  Rp.{formatMoney(selectVariant?.normal_price * qty)}
+                </P>
+                <P className="flex-1 text-right text-lg font-bold">
+                  Rp.{formatMoney(selectVariant?.discount_price * qty)}
+                </P>
+              </>
+            ) : (
+              <>
+                <P className="flex-1 text-right text-lg font-bold">
+                  Rp.{formatMoney(selectVariant?.normal_price * qty)}
+                </P>
+              </>
+            )
+          ) : null}
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        <Button buttonType="primary" className="rounded">
+        <Button
+          buttonType="primary"
+          className="rounded"
+          onClick={() => {
+            if (!user && !isLoading) {
+              router.push('/login')
+            } else {
+              if (selectVariant) {
+                addToCart.mutate({
+                  id: selectVariant.id,
+                  quantity: qty,
+                })
+                router.push('/cart')
+              } else {
+                toast.error('Please select variant!')
+              }
+            }
+          }}
+        >
           <HiTag /> Buy Now
         </Button>
         <Button

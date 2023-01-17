@@ -1,8 +1,10 @@
 import { unauthorizedClient } from '@/api/apiClient'
 import { useQuery } from '@tanstack/react-query'
 
+import type { Product, ProductImages } from '@/types/api/product'
+import type { TotalRating } from '@/types/api/review'
 import type { APIResponse, PaginationData } from '@/types/api/response'
-import type { BriefProduct, ProductDetail } from '@/types/api/product'
+import type { BriefProduct } from '@/types/api/product'
 
 const profileKey = 'seller'
 
@@ -91,4 +93,40 @@ export const useGetSellerProduct = (
         max_rating
       )
   )
+}
+
+export const useGetProductById = (id: string) => {
+  return useQuery([profileKey, id], async () => await getProductById(id))
+}
+
+const getProductById = async (id: string) => {
+  const response = await unauthorizedClient.get<APIResponse<Product>>(
+    '/product/' + id
+  )
+  return response.data
+}
+
+export const useGetTotalReview = (id: string) => {
+  return useQuery(['review', id], async () => await getTotalReview(id))
+}
+
+const getTotalReview = async (id: string) => {
+  const response = await unauthorizedClient.get<APIResponse<TotalRating>>(
+    `/product/${id}/review/rating`
+  )
+  return response.data
+}
+
+export const useGetProductImagesByProductID = (id: string) => {
+  return useQuery(
+    ['productImage', id],
+    async () => await getProductImagesByProductID(id)
+  )
+}
+
+const getProductImagesByProductID = async (id: string) => {
+  const response = await unauthorizedClient.get<APIResponse<ProductImages[]>>(
+    `/product/${id}/picture`
+  )
+  return response.data
 }
