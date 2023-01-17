@@ -28,10 +28,10 @@ function Wallet() {
       <TitlePageExtend title="My Wallet" />
 
       <div className=" container mx-auto my-5  grid h-fit grid-cols-1 gap-3 px-20  lg:grid-cols-3">
-        <div className=" h-fit rounded-lg border-[1px] border-solid border-gray-300 py-7 px-5">
+        <div className=" h-96 rounded-lg border-[1px] border-solid border-gray-300 py-7 px-5">
           {userWallet.isLoading ? (
             <></>
-          ) : userWallet.data.data ? (
+          ) : userWallet.data?.data ? (
             <>
               {' '}
               <div className="flex justify-start">
@@ -96,14 +96,19 @@ function Wallet() {
               </div>
             </>
           ) : (
+            <></>
+          )}
+
+          {userWallet.isError ? (
             <>
+              {' '}
               <P>You Dont Have Wallet, please activate your wallet</P>
               <div className="flex justify-around py-4">
                 <Button
                   buttonType="primary"
                   onClick={() => {
                     modal.edit({
-                      title: 'Change Pin',
+                      title: 'Activate Wallet',
                       content: <></>,
                       closeButton: false,
                     })
@@ -113,6 +118,8 @@ function Wallet() {
                 </Button>
               </div>
             </>
+          ) : (
+            <></>
           )}
         </div>
         <div className="h-min-[100vh] col-span-2 rounded-lg border-[1px] border-solid border-gray-300 py-5 ">
@@ -146,7 +153,7 @@ function Wallet() {
 
           {userWalletHistory.isLoading ? (
             <></>
-          ) : userWalletHistory.data.data.rows ? (
+          ) : userWalletHistory.data?.data ? (
             userWalletHistory.data.data.rows.map((data, index) => (
               <div
                 key={index}
@@ -192,7 +199,15 @@ function Wallet() {
             <></>
           )}
 
-          {!userWalletHistory.isLoading && userWalletHistory.data.data ? (
+          {userWalletHistory.isError && !userWalletHistory.isLoading ? (
+            <>
+              <P className="text-center">History is Empty</P>
+            </>
+          ) : (
+            <></>
+          )}
+
+          {!userWalletHistory.isLoading && userWalletHistory.data?.data ? (
             userWalletHistory.data.data.total_rows !== 0 ? (
               <div className="mt-4 flex w-full justify-center">
                 <PaginationNav
