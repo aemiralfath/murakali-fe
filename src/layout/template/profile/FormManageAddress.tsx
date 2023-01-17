@@ -18,11 +18,13 @@ import toast from 'react-hot-toast'
 interface FormManageAddressProps {
   isEdit: boolean
   editData?: AddressDetail
+  role: number
 }
 
 const FormManageAddress: React.FC<FormManageAddressProps> = ({
   isEdit,
   editData,
+  role,
 }) => {
   const addressInit: AddressDetail = {
     id: '',
@@ -204,7 +206,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
       zip_code: input.zip_code,
       address_detail: input.address_detail,
       is_default: selected[0],
-      is_shop_default: input.is_shop_default,
+      is_shop_default: selected[1],
     }
 
     if (!isEdit) {
@@ -234,9 +236,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
           }}
         >
           <div>
-            <label className=" block text-sm font-medium text-gray-900 dark:text-white">
-              Name
-            </label>
+            <label className="text-sm font-medium text-gray-900">Name</label>
             <TextInput
               inputSize="md"
               type="text"
@@ -249,7 +249,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
             />
           </div>
           <div>
-            <label className=" block text-sm font-medium text-gray-900 dark:text-white">
+            <label className="text-sm font-medium text-gray-900">
               Province
             </label>
 
@@ -282,9 +282,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
           </div>
 
           <div>
-            <label className=" block text-sm font-medium text-gray-900 dark:text-white">
-              City
-            </label>
+            <label className="text-sm font-medium text-gray-900">City</label>
             <SelectComboBox
               isLoading={allCity.isLoading ? true : undefined}
               isEdit={isEdit}
@@ -311,7 +309,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
           </div>
 
           <div>
-            <label className=" block text-sm font-medium text-gray-900 dark:text-white">
+            <label className="text-sm font-medium text-gray-900">
               District
             </label>
 
@@ -339,7 +337,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
             />
           </div>
           <div>
-            <label className=" block text-sm font-medium text-gray-900 dark:text-white">
+            <label className="text-sm font-medium text-gray-900">
               Sub District
             </label>
 
@@ -387,20 +385,7 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-900 dark:text-white">
-              Address Detail
-            </label>
-            <TextArea
-              name="address_detail"
-              placeholder="address_detail"
-              onChange={handleChange}
-              value={input.address_detail}
-              full
-              required
-            />
-          </div>
-          <div>
-            <label className=" block text-sm font-medium text-gray-900 dark:text-white">
+            <label className="text-sm font-medium text-gray-900">
               Zip Code
             </label>
             <TextInput
@@ -414,9 +399,21 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
               required
             />
           </div>
-
           <div>
-            <label className=" flex gap-2 text-sm font-medium text-gray-900 dark:text-white">
+            <label className="text-sm font-medium text-gray-900">
+              Address Detail
+            </label>
+            <TextArea
+              name="address_detail"
+              placeholder="address_detail"
+              onChange={handleChange}
+              value={input.address_detail}
+              full
+              required
+            />
+          </div>
+          <div>
+            <label className="flex gap-2 text-sm font-medium text-gray-900">
               <input
                 type="checkbox"
                 name={'shippingaddress'}
@@ -426,16 +423,20 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
               />
               Choose as Shipping Address
             </label>
-            {/* <label className=" flex gap-2 text-sm font-medium text-gray-900 dark:text-white">
-              <input
-                type="checkbox"
-                name={'shopaddress'}
-                value={1}
-                checked={selected[1]}
-                onChange={handleChangeCheckbox}
-              />
-              Choose as Shop Address
-            </label> */}
+            {role === 2 ? (
+              <label className="flex gap-2 text-sm font-medium text-gray-900">
+                <input
+                  type="checkbox"
+                  name={'shopaddress'}
+                  value={1}
+                  checked={selected[1]}
+                  onChange={handleChangeCheckbox}
+                />
+                Choose as Shop Address
+              </label>
+            ) : (
+              <></>
+            )}
           </div>
 
           <div className="flex justify-end gap-2">

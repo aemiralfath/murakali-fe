@@ -1,8 +1,7 @@
 import { useGetAllProvince } from '@/api/user/address/extra'
 import { A, Divider, H4, P, PaginationNav } from '@/components'
-import productListingCategory from '@/dummy/productListingCategory'
 import LocationFilter from '@/sections/productslisting/LocationFilter'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { HiArrowDown, HiArrowUp, HiFilter, HiX } from 'react-icons/hi'
 import PriceFilter from '@/sections/productslisting/PriceFilter'
 import RatingFilter from '@/sections/productslisting/RatingFilter'
@@ -18,6 +17,8 @@ import type { FilterPrice } from '@/sections/productslisting/PriceFilter'
 import type { ProvinceDetail } from '@/types/api/address'
 import type { SortBy } from '@/types/helper/sort'
 import type { BriefProduct } from '@/types/api/product'
+import { useGetAllCategory } from '@/api/category'
+import { useRouter } from 'next/router'
 
 const defaultShownProvince = [
   'DKI Jakarta',
@@ -59,7 +60,7 @@ const useProductListing = () => {
   const [filterLocation, setFilterLocation] = useState<ProvinceDetail[]>([])
   const [filterPrice, setFilterPrice] = useState<FilterPrice>()
   const [filterRating, setFilterRating] = useState<number>(-1)
-  const [filterCategory, setFilterCategory] = useState<string[]>([])
+  const [filterCategory, setFilterCategory] = useState<string>('')
 
   const [page, setPage] = useState(1)
 
@@ -111,6 +112,25 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   const allProvince = useGetAllProvince()
   const [shownProvince, setShownProvince] = useState(defaultShownProvince)
   const [openMenu, setOpenMenu] = useState(false)
+  const [categoryName, setCategoryName] = useState<string[]>([])
+  const useCategory = useGetAllCategory()
+
+  const router = useRouter()
+  const { catName } = router.query
+
+  useEffect(() => {
+    setFilterCategory(String(catName))
+  }, [catName])
+
+  useEffect(() => {
+    if (useCategory.isSuccess) {
+      const temp: string[] = useCategory.data.data.map(
+        (category) => category.name
+      )
+
+      setCategoryName(temp)
+    }
+  }, [useCategory.isSuccess])
 
   return (
     <div className="flex gap-3">
@@ -142,7 +162,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
           />
           <Divider />
           <CategoryFilter
-            categories={productListingCategory}
+            categories={categoryName}
             filterCategory={filterCategory}
             setFilterCategory={setFilterCategory}
           />
@@ -236,7 +256,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                   {filterLocation.length === 0 &&
                   filterPrice === undefined &&
                   filterRating === -1 &&
-                  filterCategory.length === 0 ? (
+                  filterCategory === '' ? (
                     <span className="h-[1.5rem] italic text-gray-400">
                       No Filter
                     </span>
@@ -277,19 +297,14 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                       ) : (
                         <></>
                       )}
-                      {filterCategory.map((category) => {
-                        return (
-                          <FilterChip
-                            key={`category-${category}`}
-                            value={category}
-                            onClose={() => {
-                              setFilterCategory(
-                                filterCategory.filter((c) => c !== category)
-                              )
-                            }}
-                          />
-                        )
-                      })}
+
+                      <FilterChip
+                        key={`category-${filterCategory}`}
+                        value={filterCategory}
+                        onClose={() => {
+                          setFilterCategory('')
+                        }}
+                      />
                     </>
                   )}
                 </div>

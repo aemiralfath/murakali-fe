@@ -15,7 +15,7 @@ const CategoryItem: React.FC<{
 
   return (
     <div className="carousel-item z-0 flex w-[8rem] flex-col items-center justify-center sm:w-[10rem]">
-      <Link href="/subCategory" className="flex flex-col items-center">
+      <Link href={`/cat/${name}`} className="flex flex-col items-center">
         <Image
           src={photo_url}
           alt="Image Category"

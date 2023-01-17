@@ -1,17 +1,20 @@
 import { useDeleteCart, useGetCart } from '@/api/user/cart'
 import { Button, H2, H4, P } from '@/components'
 import ProductCart from '@/components/card/ProductCart'
-import { useModal } from '@/hooks'
+import { useModal, useUser } from '@/hooks'
 import { Navbar } from '@/layout/template'
+import Footer from '@/layout/template/footer'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import SummaryCart from '@/sections/cart/SummaryCart'
 import type { APIResponse } from '@/types/api/response'
 import type { AxiosError } from 'axios'
+import Router from 'next/router'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 function Cart() {
+  const { user, isLoading } = useUser()
   const cartList = useGetCart()
   const [checkAll, setCheckAll] = useState<boolean>(false)
   const [selectedProducts, setSelectedProduct] = useState<string[]>([])
@@ -35,6 +38,12 @@ function Cart() {
   }, [deleteCart.isError])
 
   useEffect(() => {
+    if (!isLoading && !(user ? true : false)) {
+      Router.push('/login')
+    }
+  }, [user, isLoading])
+
+  useEffect(() => {
     let countQuantity = 0
     if (cartList.data?.data?.rows) {
       cartList.data.data.rows.forEach(function (shop) {
@@ -56,9 +65,10 @@ function Cart() {
   return (
     <>
       <Navbar />
+      <title>Cart</title>
       <TitlePageExtend title="Cart" />
 
-      <div className="container my-8 mx-auto mb-10 min-h-screen w-full px-2">
+      <div className="container my-8 mx-auto mb-10 h-screen min-h-screen w-full px-2">
         <div className="grid grid-cols-1 gap-2 xl:grid-cols-4">
           <div className="col-span-3  flex flex-col gap-5">
             <div className="flex justify-between rounded-lg border-[1px] border-solid border-gray-300 py-5 px-8">
@@ -297,6 +307,7 @@ function Cart() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   )
 }

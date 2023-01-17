@@ -8,3 +8,13 @@ export interface SellerInfo {
   photo_url: string
   created_at: Date
 }
+
+export interface SellerOrderStatus {
+  order_id: string
+  order_status_id: number
+}
+
+export interface UpdateNoResiSellerOrder {
+  order_id: string
+  resi_no: string
+}

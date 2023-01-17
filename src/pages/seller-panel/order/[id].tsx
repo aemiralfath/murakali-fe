@@ -134,7 +134,7 @@ function OrderDetailPage() {
                       title={'alamat pengiriman'}
                       username={getSellerOrderDetail.data.data.shop_name}
                       phone_number={
-                        getSellerOrderDetail.data.data.buyer_phone_number
+                        getSellerOrderDetail.data.data.shop_phone_number
                       }
                       address={getSellerOrderDetail.data.data.seller_address}
                     />

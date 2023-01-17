@@ -2,7 +2,7 @@ import { TextInput, Button, Icon, H1, Divider, A } from '@/components'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import YupPassword from 'yup-password'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaGoogle } from 'react-icons/fa'
 import { useLogin } from '@/api/auth/login'
 import toast from 'react-hot-toast'
@@ -10,11 +10,18 @@ import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+import { getGoogleUrl } from '@/helper/googleoauth'
+import Link from 'next/link'
 
 YupPassword(Yup)
 
 const Login = () => {
   const router = useRouter()
+  const { email } = router.query
+  const [formValues, setFormValues] = useState({
+    email: '',
+    password: '',
+  })
 
   const login = useLogin()
   useEffect(() => {
@@ -33,10 +40,8 @@ const Login = () => {
   }, [login.isError])
 
   const loginForm = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-    },
+    initialValues: formValues,
+    enableReinitialize: true,
     validationSchema: Yup.object({
       email: Yup.string()
         .email('Invalid email address')
@@ -53,6 +58,13 @@ const Login = () => {
     },
   })
 
+  useEffect(() => {
+    setFormValues({
+      email: email as string,
+      password: '',
+    })
+  }, [router.query])
+
   return (
     <>
       <Head>
@@ -61,7 +73,9 @@ const Login = () => {
       <div className="flex min-h-screen">
         <div className="sm:flex-0 z-10 w-screen flex-1 px-6 shadow-2xl sm:max-w-md">
           <div className="max-w-[8rem] py-6">
-            <Icon color="primary" />
+            <Link href={'/'}>
+              <Icon color="primary" />
+            </Link>
           </div>
           <H1 className="my-12">Welcome Back!</H1>
           <div className="">
@@ -120,7 +134,14 @@ const Login = () => {
                   Login with Email
                 </Button>
                 <Divider>OR</Divider>
-                <Button type="button" buttonType="ghost" outlined disabled>
+                <Button
+                  type="button"
+                  buttonType="ghost"
+                  outlined
+                  onClick={() => {
+                    router.push(getGoogleUrl(router.pathname))
+                  }}
+                >
                   <FaGoogle /> Login with Google
                 </Button>
               </div>

@@ -1,6 +1,7 @@
-import { Chip, H1, H2, H4, P, RatingStars, Spinner } from '@/components'
+import { H1, H2, H4, P, RatingStars, Spinner } from '@/components'
 import cx from '@/helper/cx'
-import type { ProductDetail } from '@/types/api/product'
+import formatMoney from '@/helper/formatMoney'
+import type { ProductDetail, ProductInfo } from '@/types/api/product'
 import React from 'react'
 
 // TODO: Add interface to Rating, Sold Count, Title, Prices
@@ -12,6 +13,8 @@ interface MainProductDetailProps {
   selectMap: number[]
   setSelectMap: (p: number[]) => void
   selectVariant: ProductDetail | undefined
+  productInfo: ProductInfo | undefined
+  totalReview: number
 }
 
 const MainProductDetail = ({
@@ -22,6 +25,8 @@ const MainProductDetail = ({
   selectMap,
   setSelectMap,
   selectVariant,
+  productInfo,
+  totalReview,
 }: MainProductDetailProps) => {
   const getDisabledStatus = (
     variantNameIdx: number,
@@ -68,29 +73,37 @@ const MainProductDetail = ({
         <div className="h-[1.25rem] w-[16rem] animate-pulse rounded bg-base-300" />
       ) : (
         <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-4 md:justify-start">
-          <div className="flex items-center gap-1">
-            <RatingStars rating={4.8} />
-            <P className="text-sm">4.8</P>
-          </div>
+          {productInfo ? (
+            <div className="flex items-center gap-1">
+              <RatingStars rating={productInfo.rating_avg} />
+              <P className="text-sm">{productInfo.rating_avg}</P>
+            </div>
+          ) : (
+            <></>
+          )}
           <div className="h-[1.5rem] w-[1px] bg-gray-200" />
           <div className="flex items-center gap-1">
-            <P className="font-bold">307</P>
+            <P className="font-bold">{totalReview}</P>
             <P className="text-sm">Rating</P>
           </div>
           <div className="h-[1.5rem] w-[1px] bg-gray-200" />
-          <div className="flex items-center gap-1">
-            <P className="font-bold">2K+</P>
-            <P className="text-sm">Sold</P>
-          </div>
+          {productInfo ? (
+            <div className="flex items-center gap-1">
+              <P className="font-bold">{productInfo.unit_sold}</P>
+              <P className="text-sm">Sold</P>
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       )}
 
       {isLoading ? (
         <div className="h-[2rem] w-[100%] animate-pulse rounded bg-base-300" />
       ) : (
-        <H2>Kantong Sampah Bagus Trash Bag Roll 45 x 50 cm 24s 24 L - Hitam</H2>
+        <H2>{productInfo?.title}</H2>
       )}
-      <div className="flex flex-col gap-2 rounded border p-4">
+      <div className="flex flex-col gap-2 rounded border p-4 ">
         {isLoading ? (
           <div className="h-[8rem] w-full animate-pulse rounded bg-base-300" />
         ) : (
@@ -98,20 +111,34 @@ const MainProductDetail = ({
             <H1 className="text-primary">
               {selectVariant ? (
                 <>
-                  <span className="text-lg xl:text-xl">Rp</span>
-                  {selectVariant.price}
+                  <span className="text-lg xl:text-xl">Rp</span>{' '}
+                  {selectVariant.discount_price
+                    ? formatMoney(selectVariant.discount_price)
+                    : formatMoney(selectVariant.normal_price)}
                 </>
               ) : (
                 <>
-                  <span className="text-lg xl:text-xl">Rp</span>22.088-
-                  <span className="text-lg xl:text-xl">Rp</span>35.594
+                  {productInfo?.max_price === productInfo?.min_price ? (
+                    <>
+                      <span className="text-lg xl:text-xl">Rp</span>{' '}
+                      {formatMoney(productInfo?.max_price)}
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-lg xl:text-xl">Rp</span>{' '}
+                      {formatMoney(productInfo?.min_price)}-
+                      <span className="text-lg xl:text-xl">Rp</span>{' '}
+                      {formatMoney(productInfo?.max_price)}
+                    </>
+                  )}
                 </>
               )}
             </H1>
-            <P className="line-through opacity-60">Rp85.000</P>
-            <Chip className="font-bold" type="error">
-              75% Off
-            </Chip>
+            {selectVariant?.discount_price ? (
+              <P className="line-through opacity-60">
+                Rp{formatMoney(selectVariant.normal_price)}
+              </P>
+            ) : null}
           </>
         )}
       </div>

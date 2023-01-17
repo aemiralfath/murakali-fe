@@ -1,4 +1,4 @@
-import { A, Breadcrumbs, Divider, H3, P, Spinner } from '@/components'
+import { A, Divider, H3, P, Spinner } from '@/components'
 import { useModal } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
 import ProductImageCarousel from '@/layout/template/product/ProductImageCarousel'
@@ -9,24 +9,31 @@ import React, { useEffect, useState } from 'react'
 import { HiHeart, HiShare } from 'react-icons/hi'
 import ShareModal from '@/sections/productdetail/ShareModal'
 import MainProductDetail from '@/sections/productdetail/MainProductDetail'
-import product, {
-  dummyBreadcrumbs,
-  dummyProductImages,
-} from '@/dummy/productDetailData'
 import type { ProductDetail } from '@/types/api/product'
 import ChooseVariantQty from '@/sections/productdetail/ChooseVariantQty'
 import ProductDescription from '@/sections/productdetail/ProductDescription'
 import ProductReview from '@/sections/productdetail/ProductReview'
+import { useRouter } from 'next/router'
+import {
+  useGetProductById,
+  useGetProductImagesByProductID,
+  useGetTotalReview,
+} from '@/api/product'
+import { useGetSellerInfo } from '@/api/seller'
 import { useGetSellerProduct } from '@/api/product'
 import ProductCarousel from '@/sections/home/ProductCarousel'
+import ProductCard from '@/layout/template/product/ProductCard'
 
 const ProductPage: NextPage = () => {
-  const dummyProduct = product
+  // const dummyProduct = product
 
-  // const router = useRouter()
-  // const { pid } = router.query
+  const router = useRouter()
+  const { pid } = router.query
+
+  const product = useGetProductById(pid as string)
+
   const modal = useModal()
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading] = useState(false)
   const [qty, setQty] = useState(1)
   const sellerProduct = useGetSellerProduct(
     1,
@@ -34,6 +41,20 @@ const ProductPage: NextPage = () => {
     '',
     '',
     '', //isi seller id
+    '',
+    '',
+    0,
+    0,
+    0,
+    0
+  )
+
+  const similiarProduct = useGetSellerProduct(
+    1,
+    24,
+    '',
+    '', // isi category product
+    '',
     '',
     '',
     0,
@@ -55,9 +76,13 @@ const ProductPage: NextPage = () => {
     ProductDetail | undefined
   >()
 
+  // const [productPromotion, setProductPromotion] = useState<Promotion>()
+
   useEffect(() => {
-    if (dummyProduct) {
-      const variantNames = Object.keys(dummyProduct.products_detail[0].variant)
+    if (product.isSuccess) {
+      const variantNames = Object.keys(
+        product.data.data.products_detail[0].variant
+      )
       setVariantNames(variantNames)
       setSelectMap(Array(variantNames.length).fill(-1))
 
@@ -66,7 +91,7 @@ const ProductPage: NextPage = () => {
 
       variantNames.forEach((name) => {
         const types = []
-        dummyProduct.products_detail.forEach((variant) => {
+        product.data.data.products_detail.forEach((variant) => {
           const varName = variant.variant[name]
           if (!types.includes(varName)) {
             types.push(varName)
@@ -79,12 +104,14 @@ const ProductPage: NextPage = () => {
         const variantTypeNameMap = []
         if (variantNames.length > 1) {
           variantTypes[variantNames[1]].forEach((typeNameOne) => {
-            const filtered = dummyProduct.products_detail.filter((variant) => {
-              return (
-                variant.variant[variantNames[0]] === typeNameZero &&
-                variant.variant[variantNames[1]] === typeNameOne
-              )
-            })
+            const filtered = product.data.data.products_detail.filter(
+              (variant) => {
+                return (
+                  variant.variant[variantNames[0]] === typeNameZero &&
+                  variant.variant[variantNames[1]] === typeNameOne
+                )
+              }
+            )
             if (filtered.length > 0) {
               variantTypeNameMap.push(filtered[0])
             } else {
@@ -92,9 +119,11 @@ const ProductPage: NextPage = () => {
             }
           })
         } else {
-          const filtered = dummyProduct.products_detail.filter((variant) => {
-            return variant.variant[variantNames[0]] === typeNameZero
-          })
+          const filtered = product.data.data.products_detail.filter(
+            (variant) => {
+              return variant.variant[variantNames[0]] === typeNameZero
+            }
+          )
           if (filtered.length > 0) {
             variantTypeNameMap.push(filtered[0])
           } else {
@@ -107,7 +136,7 @@ const ProductPage: NextPage = () => {
       setVariantTypes(variantTypes)
       setVariantMap(variantMap)
     }
-  }, [])
+  }, [product.isLoading])
 
   useEffect(() => {
     if (!selectMap.includes(-1)) {
@@ -123,19 +152,23 @@ const ProductPage: NextPage = () => {
     }
   }, [selectMap])
 
+  const totalReview = useGetTotalReview(pid as string)
+  const seller = useGetSellerInfo(product.data?.data.products_info.shop_id)
+  const productImage = useGetProductImagesByProductID(pid as string)
+
   return (
     <>
       <Head>
         {/* TODO: Change Page title */}
-        <title>Nama Produk - Murakali</title>
+        <title>{product.data?.data.products_info.title} - Murakali</title>
         <meta name="description" content="Murakali E-Commerce Application" />
       </Head>
       <MainLayout>
-        {isLoading ? (
+        {/* {isLoading ? (
           <div className="h-[1.25rem] w-[16rem] animate-pulse rounded bg-base-300" />
         ) : (
           <Breadcrumbs data={dummyBreadcrumbs} />
-        )}
+        )} */}
         <div className="grid grid-cols-12">
           <div className="col-span-12 flex flex-col md:flex-row lg:col-span-9">
             {isLoading ? (
@@ -144,8 +177,18 @@ const ProductPage: NextPage = () => {
               <div>
                 <ProductImageCarousel
                   // TODO: Change image when selectVariant is not undefined
-                  data={{ images: dummyProductImages, alt: 'Product Name' }}
+                  data={{
+                    images: productImage.data?.data,
+                    alt: product.data?.data.products_info.title,
+                  }}
                   isLoading={false}
+                  selectedImageUrl={
+                    selectVariant !== undefined
+                      ? productImage.data?.data.filter((image) => {
+                          return image.product_detail_id === selectVariant?.id
+                        })[0].url
+                      : productImage.data?.data[0].url
+                  }
                 />
                 <div className="mt-4 md:pl-[2.8rem] xl:pl-[4rem]">
                   <div className="flex items-center gap-3 text-gray-500 md:pl-2">
@@ -171,13 +214,15 @@ const ProductPage: NextPage = () => {
               </div>
             )}
             <MainProductDetail
-              isLoading={isLoading}
+              isLoading={product.isLoading}
               variantNamesState={variantNamesState}
               variantTypesState={variantTypesState}
               variantMapState={variantMapState}
               selectMap={selectMap}
               setSelectMap={setSelectMap}
               selectVariant={selectVariant}
+              productInfo={product.data?.data.products_info}
+              totalReview={totalReview.data?.data?.total_rating ?? 0}
             />
           </div>
           <div className="col-span-12 mt-6 flex h-fit flex-col gap-4 rounded border p-4 lg:col-span-3 lg:mt-0">
@@ -197,7 +242,14 @@ const ProductPage: NextPage = () => {
         <Divider />
         <div className="grid lg:grid-cols-2 lg:divide-x-[1px] xl:grid-cols-5">
           <div className="lg:pr-6 xl:col-span-3">
-            <ProductDescription />
+            {seller.data?.data && product.data?.data ? (
+              <ProductDescription
+                seller={seller.data.data}
+                productInfo={product.data.data.products_info}
+              />
+            ) : (
+              <></>
+            )}
           </div>
           <div className="mt-8 lg:mt-0 lg:pl-6 xl:col-span-2">
             <ProductReview />
@@ -206,6 +258,30 @@ const ProductPage: NextPage = () => {
         <Divider />
         <H3>Another Products from Seller</H3>
         <ProductCarousel product={sellerProduct.data?.data.rows} />
+        <Divider />
+        <H3>Similiar Products</H3>
+        <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {similiarProduct.isLoading ? (
+            Array(3)
+              .fill('')
+              .map((_, idx) => {
+                return <ProductCard key={`${idx}`} data={undefined} isLoading />
+              })
+          ) : similiarProduct.isSuccess ? (
+            similiarProduct.data.data.rows.map((product, idx) => {
+              return (
+                <ProductCard
+                  key={`${product.title} ${idx}`}
+                  data={product}
+                  isLoading={false}
+                  hoverable
+                />
+              )
+            })
+          ) : (
+            <div>{'Error'}</div>
+          )}
+        </div>
       </MainLayout>
     </>
   )
