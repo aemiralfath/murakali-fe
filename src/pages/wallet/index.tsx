@@ -107,7 +107,8 @@ function Wallet() {
           {userWallet.isError ? (
             <div className="flex flex-col items-center justify-center">
               <P className="text-center font-bold text-gray-500">
-                You Dont Have Wallet, please activate your wallet
+                You Dont Have Wallet, Click Button Bellow and input your pin to
+                activated wallet
               </P>
               <div className="flex justify-around py-4">
                 <Button
@@ -209,7 +210,8 @@ function Wallet() {
             <></>
           )}
 
-          {userWalletHistory.isError && !userWalletHistory.isLoading ? (
+          {(userWalletHistory.isError && !userWalletHistory.isLoading) ||
+          userWalletHistory.data?.data?.rows.length <= 0 ? (
             <>
               <P className="text-center font-bold text-gray-500">
                 History is Empty
