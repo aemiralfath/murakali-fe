@@ -1,5 +1,5 @@
 import { useGetUserWallet, useGetUserWalletHistory } from '@/api/user/wallet'
-import { Button, H1, H2, P, PaginationNav } from '@/components'
+import { Button, H1, H2, P, PaginationNav, Spinner } from '@/components'
 import formatMoney from '@/helper/formatMoney'
 import { useModal } from '@/hooks'
 import { Navbar } from '@/layout/template'
@@ -13,6 +13,7 @@ import React, { useState } from 'react'
 import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
 import { FaAngleDoubleRight, FaAngleDoubleLeft } from 'react-icons/fa'
 import cx from '@/helper/cx'
+import FormPINWallet from '@/sections/wallet/FormPinWallet'
 
 function Wallet() {
   const userWallet = useGetUserWallet()
@@ -27,10 +28,12 @@ function Wallet() {
       <Navbar />
       <TitlePageExtend title="My Wallet" />
 
-      <div className=" container mx-auto my-5  grid h-fit grid-cols-1 gap-3 px-20  lg:grid-cols-3">
-        <div className=" h-96 rounded-lg border-[1px] border-solid border-gray-300 py-7 px-5">
+      <div className=" container mx-auto my-5  grid h-fit grid-cols-1 gap-3  px-5 lg:px-20  xl:grid-cols-3 ">
+        <div className=" h-96  rounded-lg border-[1px] border-solid border-gray-300 py-7 px-5">
           {userWallet.isLoading ? (
-            <></>
+            <div className="flex justify-center">
+              <Spinner color="gray" />
+            </div>
           ) : userWallet.data?.data ? (
             <>
               {' '}
@@ -42,29 +45,31 @@ function Wallet() {
                   </P>
                 </div>
               </div>
-              <div className="flex items-center justify-between py-7 ">
+              <div className="flex flex-row flex-wrap items-center justify-between py-7 ">
                 <div>
                   <P className="font-bold">Ballance</P>
                   <H1 className="text-primary">
                     Rp. {formatMoney(userWallet.data.data.balance)}
                   </H1>
                 </div>
-                <Button
-                  buttonType="primary"
-                  onClick={() => {
-                    modal.edit({
-                      title: 'Top Up',
-                      content: (
-                        <>
-                          <FormTopUp />
-                        </>
-                      ),
-                      closeButton: false,
-                    })
-                  }}
-                >
-                  Top Up
-                </Button>
+                <div>
+                  <Button
+                    buttonType="primary"
+                    onClick={() => {
+                      modal.edit({
+                        title: 'Top Up',
+                        content: (
+                          <>
+                            <FormTopUp />
+                          </>
+                        ),
+                        closeButton: false,
+                      })
+                    }}
+                  >
+                    Top Up
+                  </Button>
+                </div>
               </div>
               <hr></hr>
               <div className="flex justify-around py-4">
@@ -100,16 +105,17 @@ function Wallet() {
           )}
 
           {userWallet.isError ? (
-            <>
-              {' '}
-              <P>You Dont Have Wallet, please activate your wallet</P>
+            <div className="flex flex-col items-center justify-center">
+              <P className="text-center font-bold text-gray-500">
+                You Dont Have Wallet, please activate your wallet
+              </P>
               <div className="flex justify-around py-4">
                 <Button
                   buttonType="primary"
                   onClick={() => {
                     modal.edit({
                       title: 'Activate Wallet',
-                      content: <></>,
+                      content: <FormPINWallet />,
                       closeButton: false,
                     })
                   }}
@@ -117,7 +123,7 @@ function Wallet() {
                   Active Wallet
                 </Button>
               </div>
-            </>
+            </div>
           ) : (
             <></>
           )}
@@ -152,7 +158,9 @@ function Wallet() {
           </div>
 
           {userWalletHistory.isLoading ? (
-            <></>
+            <div className="flex justify-center">
+              <Spinner color="gray" />
+            </div>
           ) : userWalletHistory.data?.data ? (
             userWalletHistory.data.data.rows.map((data, index) => (
               <div
@@ -177,7 +185,9 @@ function Wallet() {
                     <div className="flex flex-col">
                       <P className="font-bold">{data.description}</P>
                       <P className="text-sm text-gray-500">
-                        {moment(data.created_at).format('DD-MM-YYYY HH:mm')}
+                        {moment(data.created_at).format(
+                          'dddd, DD-MM-YYYY HH:mm'
+                        )}
                       </P>
                     </div>
                   </div>
@@ -201,7 +211,9 @@ function Wallet() {
 
           {userWalletHistory.isError && !userWalletHistory.isLoading ? (
             <>
-              <P className="text-center">History is Empty</P>
+              <P className="text-center font-bold text-gray-500">
+                History is Empty
+              </P>
             </>
           ) : (
             <></>

@@ -18,6 +18,7 @@ import type { ProvinceDetail } from '@/types/api/address'
 import type { SortBy } from '@/types/helper/sort'
 import type { BriefProduct } from '@/types/api/product'
 import { useGetAllCategory } from '@/api/category'
+import { useRouter } from 'next/router'
 
 const defaultShownProvince = [
   'DKI Jakarta',
@@ -113,6 +114,14 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   const [openMenu, setOpenMenu] = useState(false)
   const [categoryName, setCategoryName] = useState<string[]>([])
   const useCategory = useGetAllCategory()
+
+  const router = useRouter()
+  const { catName } = router.query
+
+  useEffect(() => {
+    setFilterCategory(String(catName))
+  }, [catName])
+
   useEffect(() => {
     if (useCategory.isSuccess) {
       const temp: string[] = useCategory.data.data.map(

@@ -20,14 +20,17 @@ import FormManageAddress from '@/layout/template/profile/FormManageAddress'
 import Head from 'next/head'
 import ProfileLayout from '@/layout/ProfileLayout'
 import { HiPencilAlt, HiTrash } from 'react-icons/hi'
+import { useGetUserProfile } from '@/api/user/profile'
 
 // TODO: Fix Address Combobox behavior
 
 function ManageAddress() {
   const modal = useModal()
   const [page, setPage] = useState<number>(1)
+  const [role, setRole] = useState<number>(1)
   const userAllAddress = useGetAllAddress(page)
   const deleteAddress = useDeleteAddress()
+  const userProfile = useGetUserProfile()
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -46,6 +49,12 @@ function ManageAddress() {
     }
   }, [deleteAddress.isError])
 
+  useEffect(() => {
+    if (userProfile.isSuccess) {
+      setRole(userProfile.data.data.role)
+    }
+  }, [userProfile.isSuccess])
+
   return (
     <>
       <Head>
@@ -59,26 +68,22 @@ function ManageAddress() {
         <>
           <div className="flex justify-between">
             <H1 className="text-primary">Manage Address</H1>
-            {userAllAddress.data?.data?.total_rows !== 0 ? (
-              <Button
-                buttonType="primary"
-                onClick={() => {
-                  modal.edit({
-                    title: 'Add Address',
-                    content: (
-                      <>
-                        <FormManageAddress isEdit={false} />
-                      </>
-                    ),
-                    closeButton: false,
-                  })
-                }}
-              >
-                + Add Address
-              </Button>
-            ) : (
-              <></>
-            )}
+            <Button
+              buttonType="primary"
+              onClick={() => {
+                modal.edit({
+                  title: 'Add Address',
+                  content: (
+                    <>
+                      <FormManageAddress isEdit={false} role={role} />
+                    </>
+                  ),
+                  closeButton: false,
+                })
+              }}
+            >
+              + Add Address
+            </Button>
           </div>
           <div className="my-4">
             <Divider />
@@ -126,6 +131,7 @@ function ManageAddress() {
                                     <FormManageAddress
                                       isEdit={true}
                                       editData={address}
+                                      role={role}
                                     />
                                   </>
                                 ),
@@ -158,7 +164,6 @@ function ManageAddress() {
                                       >
                                         Cancel
                                       </Button>
-                                      <P>Loading</P>{' '}
                                       <Button
                                         type="button"
                                         buttonType="primary"
@@ -224,7 +229,7 @@ function ManageAddress() {
         {userAllAddress.data?.data?.total_pages === 0 ? (
           <div className="border-grey-200 z-10 flex h-full items-center rounded-lg border-[1px] border-solid py-7 px-8">
             <P className="flex w-full items-center justify-center font-extrabold">
-              Cart is Empty!
+              Address is Empty!
             </P>
           </div>
         ) : (
