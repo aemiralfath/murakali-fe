@@ -235,6 +235,7 @@ const RegistrationPage = () => {
                   <TextInput
                     type="text"
                     name="phoneNumber"
+                    leftIcon={'+62'}
                     placeholder="81XXXXXXXXX"
                     required
                     full
