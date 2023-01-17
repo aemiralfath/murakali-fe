@@ -19,6 +19,8 @@ import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import { useModal } from '@/hooks'
 import FormPin from './FormPin'
 import moment from 'moment'
+import FormRegisterSealabsPay from './FormRegisterSealabsPay'
+import { useGetUserSLP } from '@/api/user/slp'
 
 interface CheckoutSummaryProps {
   postCheckout: PostCheckout
@@ -33,6 +35,10 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   userSLP,
   totalOrder,
 }) => {
+  const modal = useModal()
+  const getUserSLP = useGetUserSLP()
+  const [userSLPs, seUserSLPs] = useState<SLPUser[]>([])
+
   const [selected, setSelected] = useState('')
   const dispatch = useDispatch()
   const modalPIN = useModal()
@@ -41,6 +47,12 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   const [second, setSecond] = useState(0)
   const [minute, setMinute] = useState(0)
   const [blocked, setBlocked] = useState(false)
+
+  useEffect(() => {
+    if (!getUserSLP.isLoading) {
+      seUserSLPs(getUserSLP.data.data)
+    }
+  }, [getUserSLP])
 
   useEffect(() => {
     if (userWallet.unlocked_at.Valid) {
@@ -81,7 +93,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
     image: walletImage.src,
   })
 
-  userSLP.forEach((slp) => {
+  userSLPs.forEach((slp) => {
     paymentOption.push({
       id: slp.card_number,
       name: slp.name,
@@ -214,7 +226,47 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
               </div>
             </label>
           ))}
-
+        <div className="col-span-3 my-2 h-fit rounded-lg border-2 border-solid border-slate-600 p-2">
+          <Button
+            type="button"
+            className="h-full w-full whitespace-pre-line align-middle"
+            buttonType="ghost"
+            onClick={() => {
+              modal.edit({
+                title: 'Add Sealabs Pay Account',
+                content: (
+                  <>
+                    <FormRegisterSealabsPay
+                      postCheckout={postCheckout}
+                      userWallet={userWallet}
+                      userSLP={userSLP}
+                      totalOrder={totalOrder}
+                    />
+                  </>
+                ),
+                closeButton: false,
+              })
+            }}
+          >
+            <P className="flex flex-col place-items-center content-center gap-y-2 align-middle">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                className="h-9 w-9 items-center"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              Add Sealabs Pay Account
+            </P>
+          </Button>
+        </div>
         <hr></hr>
         <div className="my-2 flex justify-end gap-2">
           <Button
