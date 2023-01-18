@@ -14,6 +14,7 @@ import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
 import { FaAngleDoubleRight, FaAngleDoubleLeft } from 'react-icons/fa'
 import cx from '@/helper/cx'
 import FormPINWallet from '@/sections/wallet/FormPinWallet'
+import { HiLockClosed, HiSave, HiStatusOnline, HiLogout } from 'react-icons/hi'
 
 function Wallet() {
   const userWallet = useGetUserWallet()
@@ -67,6 +68,7 @@ function Wallet() {
                       })
                     }}
                   >
+                    <HiSave />
                     Top Up
                   </Button>
                 </div>
@@ -74,6 +76,7 @@ function Wallet() {
               <hr></hr>
               <div className="flex justify-around py-4">
                 <Button
+                  wide
                   buttonType="primary"
                   onClick={() => {
                     modal.edit({
@@ -83,20 +86,7 @@ function Wallet() {
                     })
                   }}
                 >
-                  Change Pin
-                </Button>
-
-                <Button
-                  buttonType="primary"
-                  onClick={() => {
-                    modal.edit({
-                      title: 'Withdraw',
-                      content: <></>,
-                      closeButton: false,
-                    })
-                  }}
-                >
-                  Withdraw
+                  <HiLockClosed /> Change Pin
                 </Button>
               </div>
             </>
@@ -116,12 +106,12 @@ function Wallet() {
                   onClick={() => {
                     modal.edit({
                       title: 'Activate Wallet',
-                      content: <FormPINWallet />,
+                      content: <FormPINWallet createPin={true} />,
                       closeButton: false,
                     })
                   }}
                 >
-                  Active Wallet
+                  <HiStatusOnline /> Active Wallet
                 </Button>
               </div>
             </div>
@@ -177,10 +167,10 @@ function Wallet() {
               >
                 <div className="mx-6 grid grid-cols-1 border-b-[0.5px] border-gray-400 pb-3 md:grid-cols-2">
                   <div className="flex gap-1">
-                    {data.amount.toString().includes('-') ? (
-                      <FaAngleDoubleLeft className="my-[2.5px] text-red-600" />
-                    ) : (
+                    {data.to === userWallet.data.data.id ? (
                       <FaAngleDoubleRight className="my-[2.5px] text-green-600" />
+                    ) : (
+                      <FaAngleDoubleLeft className="my-[2.5px] text-red-600" />
                     )}
 
                     <div className="flex flex-col">
@@ -193,14 +183,19 @@ function Wallet() {
                     </div>
                   </div>
                   <div className="flex justify-end">
-                    {data.amount.toString().includes('-') ? (
-                      <P className="font-bold text-red-600">
-                        Rp. {formatMoney(data.amount)}
-                      </P>
-                    ) : (
+                    {data.to === userWallet.data.data.id ? (
                       <P className="font-bold text-green-600">
                         + Rp. {formatMoney(data.amount)}
                       </P>
+                    ) : (
+                      <></>
+                    )}
+                    {data.from === userWallet.data.data.id ? (
+                      <P className="font-bold text-red-600">
+                        - Rp. {formatMoney(data.amount)}
+                      </P>
+                    ) : (
+                      <></>
                     )}
                   </div>
                 </div>

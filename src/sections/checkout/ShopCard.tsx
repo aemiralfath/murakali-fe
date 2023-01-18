@@ -60,7 +60,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
       <div className="flex flex-wrap items-center justify-center gap-y-2 md:justify-end">
         <div className="block">
           <Menu>
-            <Menu.Button className="btn-outline btn btn-primary  m-1 w-44 gap-4">
+            <Menu.Button className="btn-outline btn-primary btn  m-1 w-44 gap-4">
               {delivery.name ? (
                 <div className="flex-start flex items-center gap-2">
                   <FaShippingFast />
@@ -92,14 +92,16 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                   etd: shipping.etd,
                                 })
                               }}
-                              className="btn m-1 h-24  w-40  gap-4 border-gray-300 bg-white text-primary outline hover:border-white hover:bg-primary hover:text-white"
+                              className="btn m-2 h-24  w-40  gap-4 border-gray-300 bg-white text-primary outline hover:border-white hover:bg-primary hover:text-white"
                             >
                               <a className="flex flex-col gap-3">
                                 <span className="text-start font-bold">
                                   {shipping.courier.name}
                                 </span>
                                 <span className="">Rp. {shipping.fee}</span>
-                                <span>{shipping.etd}</span>
+                                <span>
+                                  {shipping.etd.replace(/\D/g, '')} Days
+                                </span>
                               </a>
                             </Button>
                           )}
@@ -130,7 +132,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
         <div className="dropdown">
           <label
             tabIndex={0}
-            className="btn-outline btn btn-primary  w-40 gap-2"
+            className="btn-outline btn-primary btn  w-40 gap-2"
           >
             <FaTicketAlt /> Voucher Shop
           </label>

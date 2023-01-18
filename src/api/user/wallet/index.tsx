@@ -71,25 +71,6 @@ export const useTopUpWallet = () => {
   )
 }
 
-export const usePasswordVerification = () => {
-  const queryClient = useQueryClient()
-  return useMutation(
-    async (password: string) => {
-      return await authorizedClient.post<APIResponse<null>>('/user/password', {
-        password: password,
-      })
-    },
-    {
-      onSuccess: () => {
-        void queryClient.invalidateQueries([profileKey])
-      },
-      onError: () => {
-        void queryClient.invalidateQueries([profileKey])
-      },
-    }
-  )
-}
-
 export const useActivatePin = () => {
   const queryClient = useQueryClient()
   return useMutation(
@@ -117,6 +98,50 @@ export const useInputNewPinWallet = () => {
         '/user/wallet/step-up/pin',
         {
           user_id: userId,
+          pin: pin,
+        }
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+      onError: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+    }
+  )
+}
+
+export const usePasswordConfirmToUpdateWallet = () => {
+  const queryClient = useQueryClient()
+  return useMutation(
+    async (password: string) => {
+      return await authorizedClient.post<APIResponse<null>>(
+        '/user/wallet/step-up/password',
+        {
+          password: password,
+        }
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+      onError: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+    }
+  )
+}
+
+export const useUpdatePinWallet = () => {
+  const queryClient = useQueryClient()
+  return useMutation(
+    async (pin: string) => {
+      return await authorizedClient.patch<APIResponse<null>>(
+        '/user/wallet/pin',
+        {
           pin: pin,
         }
       )
