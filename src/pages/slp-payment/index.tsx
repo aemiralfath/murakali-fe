@@ -42,7 +42,10 @@ const SLPPayment = () => {
   }, [paymentURL.isError])
 
   useEffect(() => {
-    if (paymentReason === 'invalid input on card_number, ') {
+    if (
+      paymentReason === 'invalid input on card_number, ' ||
+      paymentReason === 'user not found'
+    ) {
       toast.error('Invalid SeaLabs Pay account, please change payment method!')
       router.push('/profile/transaction-history')
     }
