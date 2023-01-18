@@ -12,6 +12,7 @@ export interface OrderData {
   created_at: string
   invoice: string
   courier_name: string
+  courier_etd: string
   courier_code: string
   courier_service: string
   courier_description: string
@@ -30,6 +31,7 @@ export interface OrderProductDetail {
   order_quantity: number
   order_item_price: number
   order_total_price: number
+  product_weight: number
   variant: {
     [key: string]: string
   }

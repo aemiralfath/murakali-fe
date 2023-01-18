@@ -1,40 +1,41 @@
-import {
-  useUpdateOrderStatus,
-  useUpdateResiSellerOrder,
-} from '@/api/seller/order'
-import { Button, TextInput } from '@/components'
+import { useUpdateResiSellerOrder } from '@/api/seller/order'
+import { Button, P, TextInput } from '@/components'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { APIResponse } from '@/types/api/response'
 import type { AxiosError } from 'axios'
+import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 interface InputResiProps {
   orderID: string
-  orderStatus: number
+  courierETD: string
 }
 
-const InputResi: React.FC<InputResiProps> = ({ orderID, orderStatus }) => {
+const InputResi: React.FC<InputResiProps> = ({ orderID, courierETD }) => {
   const updateResiNumber = useUpdateResiSellerOrder()
-  const updateOrderStatus = useUpdateOrderStatus()
+
   const dispatch = useDispatch()
 
   const [input, setInput] = useState({
     resi_no: '',
+    courier_etd: '',
   })
 
   const handleUpdateResiNumber = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault()
-    updateResiNumber.mutate({ order_id: orderID, resi_no: input.resi_no })
+    updateResiNumber.mutate({
+      order_id: orderID,
+      resi_no: input.resi_no,
+      courier_etd: input.courier_etd,
+    })
   }
   useEffect(() => {
     if (updateResiNumber.isSuccess) {
-      updateOrderStatus.mutate({
-        order_id: orderID,
-        order_status_id: orderStatus,
-      })
+      toast.success('Input Resi Number is Success')
+      dispatch(closeModal())
     }
   }, [updateResiNumber.isSuccess])
   useEffect(() => {
@@ -45,22 +46,6 @@ const InputResi: React.FC<InputResiProps> = ({ orderID, orderStatus }) => {
       toast.error(errmsg.response?.data.message as string)
     }
   }, [updateResiNumber.isError])
-
-  useEffect(() => {
-    if (updateOrderStatus.isSuccess) {
-      toast.success('Input Resi Number and Change Status is Success')
-      dispatch(closeModal())
-    }
-  }, [updateOrderStatus.isSuccess])
-
-  useEffect(() => {
-    if (updateOrderStatus.isError) {
-      const errmsg = updateOrderStatus.failureReason as AxiosError<
-        APIResponse<null>
-      >
-      toast.error(errmsg.response?.data.message as string)
-    }
-  }, [updateOrderStatus.isError])
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     const inputName = event.currentTarget.name
@@ -79,7 +64,7 @@ const InputResi: React.FC<InputResiProps> = ({ orderID, orderStatus }) => {
         }}
       >
         <TextInput
-          className="input-bordered input w-full border-white bg-transparent text-center text-black "
+          label="Resi Number"
           type="number"
           name="resi_no"
           min={0}
@@ -89,11 +74,29 @@ const InputResi: React.FC<InputResiProps> = ({ orderID, orderStatus }) => {
           required
           full
         />
+
+        <TextInput
+          label="Estimated Arrival Date"
+          type="date"
+          name="courier_etd"
+          onChange={handleChange}
+          min={moment(Date.now()).format('YYYY-MM-DD')}
+          placeholder={String(Date.now())}
+          value={moment(input.courier_etd).format('YYYY-MM-DD')}
+          full
+          required
+        />
+
+        <P className="text-xs text-gray-600">
+          Estimate Delivery Time : {courierETD} Days
+        </P>
+
         <div className="flex justify-end gap-x-2">
           <Button
             outlined
             buttonType="primary"
             size="md"
+            type="button"
             onClick={() => dispatch(closeModal())}
           >
             Cancel

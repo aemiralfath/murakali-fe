@@ -1,4 +1,4 @@
-import { H2, H4, P } from '@/components'
+import { H3, H4, P } from '@/components'
 import type { AddressDetail } from '@/types/api/address'
 import React from 'react'
 
@@ -17,8 +17,8 @@ const OrderAddressDetail: React.FC<OrderAddressDetailProps> = ({
 }) => {
   return (
     <>
-      <H2>{title}</H2>
-      <H4 className="mt-4 py-3">{username}</H4>
+      <H3>{title}</H3>
+      <H4 className="mt-1 py-2">{username}</H4>
       <H4>(+62) {phone_number}</H4>
       <P>
         {address.address_detail}, {address.sub_district}, {address.district},{' '}
