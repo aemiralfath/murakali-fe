@@ -9,17 +9,24 @@ import * as Yup from 'yup'
 import { useDispatch } from 'react-redux'
 import { closeModal } from '@/redux/reducer/modalReducer'
 
-import { usePasswordVerification } from '@/api/user/wallet'
+import { usePasswordConfirmToUpdateWallet } from '@/api/user/wallet'
+import { useModal } from '@/hooks'
+import FormPINWallet from './FormPinWallet'
 
 YupPassword(Yup)
 
 function FormPasswordVerification() {
   const dispatch = useDispatch()
-  const userPasswordVerification = usePasswordVerification()
-
+  const userPasswordVerification = usePasswordConfirmToUpdateWallet()
+  const modal = useModal()
   useEffect(() => {
     if (userPasswordVerification.isSuccess) {
       toast.success('Password Verification Success')
+      modal.edit({
+        title: 'Update Wallet',
+        content: <FormPINWallet createPin={false} />,
+        closeButton: false,
+      })
     }
   }, [userPasswordVerification.isSuccess])
 

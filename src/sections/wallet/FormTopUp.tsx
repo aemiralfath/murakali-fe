@@ -1,7 +1,7 @@
 import { useGetUserSLP } from '@/api/user/slp'
 import { useSLPPayment } from '@/api/user/transaction'
 import { useTopUpWallet } from '@/api/user/wallet'
-import { Button, H4, P, TextInput } from '@/components'
+import { Button, H4, P, Spinner, TextInput } from '@/components'
 
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { APIResponse } from '@/types/api/response'
@@ -82,6 +82,7 @@ const FormTopUp: React.FC = () => {
 
     if (selected === '') {
       toast.error('You must choose one Sea Labs Pay')
+      return
     }
     if (input.amount < 10000) {
       toast.error('Minumum Top Up 10.000')
@@ -148,8 +149,11 @@ const FormTopUp: React.FC = () => {
             ) : (
               <></>
             )}
-            {useSlp.isError ? (
-              <P className="text-center">You Dont Have Sealabs Pay</P>
+            {useSlp.isLoading ? <Spinner /> : <></>}
+            {useSlp.data?.data.length <= 0 && !useSlp.isLoading ? (
+              <P className="text-center text-xs font-bold text-gray-500">
+                You Dont Have Sealabs Pay
+              </P>
             ) : (
               <></>
             )}
