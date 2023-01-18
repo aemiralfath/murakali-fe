@@ -63,8 +63,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div
         className="min-h-full"
         onClick={() => {
-          // TODO: Add router to ID
-          router.push('/p/1')
+          router.push('/p/' + data.id)
         }}
       >
         {isLoading ? (
