@@ -37,9 +37,9 @@ const FilterCategoryName: NextPage = () => {
       queryParam.delete('sort_by')
     }
 
-    if (sortBy.direction !== '') {
-      queryParam.set('sort', sortBy.direction)
-    } else if (sortBy.direction === '') {
+    if (sortBy.sort !== '') {
+      queryParam.set('sort', sortBy.sort)
+    } else if (sortBy.sort === '') {
       queryParam.delete('sort')
     }
     setFlag(true)
@@ -108,7 +108,7 @@ const FilterCategoryName: NextPage = () => {
     limit: 30,
     page: page,
     sort_by: sortBy.sort_by,
-    sort: sortBy.direction,
+    sort: sortBy.sort,
     min_price: filterPrice !== undefined ? filterPrice.min : 0,
     max_price: filterPrice !== undefined ? filterPrice.max : INF,
     min_rating: filterRating,

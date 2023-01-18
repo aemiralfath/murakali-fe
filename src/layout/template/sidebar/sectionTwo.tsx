@@ -26,7 +26,7 @@ interface SellerSideBarProps {
 interface SideBarMenuProps {
   icon: React.ReactNode
   title: string
-  link: ValidPage
+  link: string
   active: boolean
 }
 
@@ -80,7 +80,7 @@ const SectionTwoSideBar: React.FC<SellerSideBarProps> = ({ selectedPage }) => {
       active: selectedPage === 'shop',
     },
     {
-      link: 'product',
+      link: 'products',
       title: 'Product',
       icon: <HiInbox />,
       active: selectedPage === 'product',
@@ -102,7 +102,7 @@ const SectionTwoSideBar: React.FC<SellerSideBarProps> = ({ selectedPage }) => {
   return (
     <>
       <div className="flex">
-        <div className="flex h-screen w-64 bg-primary py-5">
+        <div className="flex min-h-screen w-64 bg-primary py-5">
           <div className="mr-4 flex w-full flex-col gap-2 py-4">
             {items.map((item, idx) => (
               <SideBarMenu key={idx} {...item} />
