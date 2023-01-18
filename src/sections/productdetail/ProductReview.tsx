@@ -1,3 +1,4 @@
+import { useGetProductReview } from '@/api/product'
 import {
   H3,
   RatingStars,
@@ -6,12 +7,26 @@ import {
   Divider,
   PaginationNav,
 } from '@/components'
+import { ProductReview } from '@/types/api/review'
+import router from 'next/router'
 import React, { useState } from 'react'
+import Image from 'next/image'
+import { useModal } from '@/hooks'
+import moment from 'moment'
 
 type ProgressBarProps = React.HTMLAttributes<HTMLProgressElement> & {
   index: number
   value: number
 }
+
+interface ProductReviewProps {
+  productID: string
+}
+
+interface ReviewProps {
+  item: ProductReview
+}
+
 const ProgressBar: React.FC<ProgressBarProps> = ({ index, value, ...rest }) => {
   return (
     <div className="group flex items-center gap-2 text-xs hover:cursor-pointer">
@@ -29,32 +44,49 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ index, value, ...rest }) => {
   )
 }
 
-const ReviewCard = () => {
+const ReviewCard: React.FC<ReviewProps> = ({ item }) => {
+  const modal = useModal()
+
   return (
     <>
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <Avatar />
-          <P>Person</P>
-        </div>
-        <div className="flex">
-          <P className="-mt-1 font-semibold leading-5 line-clamp-2">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis aut,
-            exercitationem asperiores perferendis laboriosam quas.
-          </P>
+          <Avatar url={item.photo_url} />
+          <P>{item.username}</P>
         </div>
         <div className="flex flex-col gap-2 text-sm text-gray-400 sm:flex-row">
-          <RatingStars rating={5} />
+          <RatingStars rating={item.rating} />
           <div className="flex gap-2">
-            <P className="whitespace-nowrap">2 December 2022</P>
+            <P className="whitespace-nowrap">
+              {moment(item.created_at).format('D MMMM YYYY')}
+            </P>
           </div>
         </div>
         <div>
-          <P className="text-sm leading-5">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti,
-            ad? Voluptatibus molestias in, exercitationem sint asperiores
-            repellat iste eveniet autem.
-          </P>
+          <P className="text-sm leading-5">{item.comment}</P>
+        </div>
+        <div>
+          <Image
+            src={item.image_url}
+            width={100}
+            height={100}
+            alt={'Sorry'}
+            onClick={() => {
+              modal.info({
+                title: '',
+                content: (
+                  <div>
+                    <Image
+                      src={item.image_url}
+                      width={500}
+                      height={500}
+                      alt={'Sorry'}
+                    />
+                  </div>
+                ),
+              })
+            }}
+          />
         </div>
       </div>
       <Divider />
@@ -62,9 +94,11 @@ const ReviewCard = () => {
   )
 }
 
-const ProductReview = () => {
+const ProductReview: React.FC<ProductReviewProps> = ({ productID }) => {
   const [withImage, setWithImage] = useState(false)
   const [withComment, setWithComment] = useState(false)
+  const [page, setPage] = useState(1)
+  const review = useGetProductReview(productID, 0, true, true, 'asc', 6, page)
 
   return (
     <>
@@ -117,16 +151,26 @@ const ProductReview = () => {
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          <ReviewCard />
-          <ReviewCard />
-          <ReviewCard />
-          <ReviewCard />
-          <ReviewCard />
-          <ReviewCard />
-          <div className="flex justify-center pt-4">
-            {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
-            <PaginationNav page={3} total={12} onChange={() => {}} />
-          </div>
+          <>
+            {review.data?.data.rows?.map((item, index) => {
+              return (
+                <div key={index}>
+                  <ReviewCard item={item} />
+                </div>
+              )
+            })}
+
+            <div className="flex justify-center pt-4">
+              {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
+              <PaginationNav
+                page={page}
+                total={review.data?.data.total_pages}
+                onChange={(n) => {
+                  setPage(n)
+                }}
+              />
+            </div>
+          </>
         </div>
       </div>
     </>
