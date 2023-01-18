@@ -8,6 +8,8 @@ import CategorySelector from './subsections/CategorySelector'
 const ProductInfo: React.FC<{
   nameValue: string
   setName: (s: string) => void
+  listedStatus: boolean
+  setListedStatus: (s: boolean) => void
   setCategoryID: (id: string) => void
   conditionValue: string
   setCondition: (s: 'new' | 'used') => void
@@ -19,6 +21,8 @@ const ProductInfo: React.FC<{
 }> = ({
   nameValue,
   setName,
+  listedStatus,
+  setListedStatus,
   setCategoryID,
   conditionValue,
   setCondition,
@@ -77,6 +81,29 @@ const ProductInfo: React.FC<{
             value={nameValue}
             onChange={(e) => setName(e.target.value)}
             placeholder="Example: Vens (Brand) + Authentic Casual Shoe (Type) + Canvas (Material)"
+          />
+        </div>
+      </div>
+      <div className="mt-6 flex justify-between gap-3">
+        <div className="w-[30%]">
+          <div className="flex items-center gap-3">
+            <H4>Product Status</H4>
+            <Chip type={'gray'}>Required</Chip>
+          </div>
+          <P className="mt-2 max-w-[20rem] text-sm">
+            Make sure you list your product for buyer to be able to discover you
+            product. Unlisted product will not be shown to the buyer.
+          </P>
+        </div>
+        <div className="flex-1">
+          <input
+            type={'checkbox'}
+            className={'toggle-primary toggle'}
+            checked={listedStatus}
+            readOnly
+            onChange={() => {
+              setListedStatus(!listedStatus)
+            }}
           />
         </div>
       </div>

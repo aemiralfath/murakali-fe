@@ -396,9 +396,7 @@ const ProductVariants: React.FC<{
                 )
               })}
               <input
-                disabled={
-                  !Boolean(variantType[1]) || Boolean(productDetailData)
-                }
+                disabled={!Boolean(variantType[1]) || isEditing}
                 className="focus-visible:outline-none"
                 placeholder="Enter Variant Name"
                 value={tempVariantNameTwo}

@@ -10,12 +10,13 @@ import * as Yup from 'yup'
 import React, { useEffect, useState } from 'react'
 import type {
   CreateProductReq,
+  EditProductReq,
   ProductDetailReq,
   ProductInfoReq,
 } from '@/types/api/product'
 import { useImmer } from 'use-immer'
 import { toast } from 'react-hot-toast'
-import { useCreateProduct } from '@/api/product/manage'
+import { useCreateProduct, useEditProduct } from '@/api/product/manage'
 import { useLoadingModal } from '@/hooks'
 import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
@@ -37,6 +38,8 @@ const AddProduct = () => {
 
   const allCategory = useGetAllCategory()
   const createProduct = useCreateProduct()
+  const editProduct = useEditProduct()
+
   const productDetail = useGetProductById(id)
 
   useEffect(() => {
@@ -46,20 +49,13 @@ const AddProduct = () => {
   }, [productDetail.isLoading, intent])
 
   useEffect(() => {
-    if (productDetail.isSuccess) {
-      if (intent === 'add' && typeof product_id === 'string') {
-        toast.success('Data has been filled!')
-      }
-    }
-  }, [productDetail.isSuccess])
-
-  useEffect(() => {
     setLoadingModal(createProduct.isLoading)
   }, [createProduct.isLoading])
 
   useEffect(() => {
     if (createProduct.isSuccess) {
       toast.success('Product Created!')
+      router.push('/seller-panel/products')
     }
   }, [createProduct.isSuccess])
 
@@ -72,11 +68,30 @@ const AddProduct = () => {
     }
   }, [createProduct.isError])
 
+  useEffect(() => {
+    setLoadingModal(editProduct.isLoading)
+  }, [editProduct.isLoading])
+
+  useEffect(() => {
+    if (editProduct.isSuccess) {
+      toast.success('Product Edited!')
+      router.push('/seller-panel/products')
+    }
+  }, [editProduct.isSuccess])
+
+  useEffect(() => {
+    if (editProduct.isError) {
+      const errmsg = editProduct.failureReason as AxiosError<APIResponse<null>>
+      toast.error(errmsg.response?.data.message as string)
+    }
+  }, [editProduct.isError])
+
   const [data, updateData] = useImmer<ProductInfoReq>({
     title: '',
     description: '',
     thumbnail: '',
     category_id: '',
+    listed_status: true,
   })
 
   const [condition, setCondition] = useState<'new' | 'used'>('new')
@@ -129,10 +144,12 @@ const AddProduct = () => {
         })
       ),
     })
+
     const reqBody: CreateProductReq = {
       products_info: data,
       products_detail: [],
     }
+
     const tempProductDetail = []
     Object.keys(productDetailData).forEach((key) => {
       const data = productDetailData[key]
@@ -149,7 +166,24 @@ const AddProduct = () => {
     yupObject
       .validate(reqBody)
       .then(() => {
-        createProduct.mutate(reqBody)
+        if (intent === 'edit') {
+          const reqEditBody: EditProductReq = {
+            products_info_update: reqBody.products_info,
+            products_detail_update: reqBody.products_detail.map((r, idx) => {
+              return {
+                ...r,
+                product_detail_id:
+                  productDetail.data.data.products_detail[idx].id,
+                variant_id_remove: [],
+                variant_info_update: [],
+              }
+            }),
+            products_detail_id_remove: [],
+          }
+          editProduct.mutate({ id: id, data: reqEditBody })
+        } else {
+          createProduct.mutate(reqBody)
+        }
       })
       .catch((err) => {
         if (err instanceof Yup.ValidationError) {
@@ -160,6 +194,10 @@ const AddProduct = () => {
 
   useEffect(() => {
     if (productDetail.isSuccess) {
+      if (intent === 'add' && typeof product_id === 'string') {
+        toast.success('Data has been filled!')
+      }
+
       const data = productDetail.data.data
       updateData((draft) => {
         draft.title = data.products_info.title
@@ -207,6 +245,12 @@ const AddProduct = () => {
               draft.title = s
             })
           }
+          listedStatus={data.listed_status}
+          setListedStatus={(s) =>
+            updateData((draft) => {
+              draft.listed_status = s
+            })
+          }
           setCategoryID={(id) =>
             updateData((draft) => {
               draft.category_id = id
@@ -235,9 +279,9 @@ const AddProduct = () => {
         <ProductShipping hazardous={hazardous} setHazardous={setHazardous} />
         <div className="mt-6 flex justify-end gap-3">
           <Button onClick={handleSubmit} buttonType="primary">
-            Save
+            {intent === 'edit' ? 'Edit' : 'Save'}
           </Button>
-          <Button onClick={handleSubmit} buttonType="primary" outlined>
+          <Button onClick={() => router.back()} buttonType="primary" outlined>
             Cancel
           </Button>
         </div>

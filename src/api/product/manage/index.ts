@@ -1,7 +1,7 @@
 import { authorizedClient } from '@/api/apiClient'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 
-import type { CreateProductReq } from '@/types/api/product'
+import type { CreateProductReq, EditProductReq } from '@/types/api/product'
 import type { APIResponse } from '@/types/api/response'
 
 const productKey = 'product'
@@ -14,6 +14,26 @@ export const useCreateProduct = () => {
       return await authorizedClient.post<APIResponse<null>>('/product/', {
         ...data,
       })
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([productKey])
+      },
+    }
+  )
+}
+
+export const useEditProduct = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (data: { id: string; data: EditProductReq }) => {
+      return await authorizedClient.put<APIResponse<null>>(
+        '/product/' + data.id,
+        {
+          ...data.data,
+        }
+      )
     },
     {
       onSuccess: () => {

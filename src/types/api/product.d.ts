@@ -87,11 +87,24 @@ export interface ProductInfoReq {
   description: string
   thumbnail: string
   category_id: string
+  listed_status: boolean
 }
 
 export interface CreateProductReq {
   products_info: ProductInfoReq
   products_detail: ProductDetailReq[]
+}
+
+export interface EditProductReq {
+  products_info_update: ProductInfoReq
+  products_detail_update: Array<
+    ProductDetailReq & {
+      product_detail_id: string
+      variant_info_update: []
+      variant_id_remove: []
+    }
+  >
+  products_detail_id_remove: []
 }
 
 export interface ProductImages {
