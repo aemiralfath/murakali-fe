@@ -18,6 +18,7 @@ import { closeModal } from '@/redux/reducer/modalReducer'
 type ProductCardProps = LoadingDataWrapper<BriefProduct> & {
   hoverable?: boolean
   forFavPage?: boolean
+  productID?: string
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -25,6 +26,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   isLoading,
   hoverable,
   forFavPage,
+  productID,
 }) => {
   const [cartRef, isHover] = useHover()
   const router = useRouter()
@@ -63,8 +65,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div
         className="min-h-full"
         onClick={() => {
-          // TODO: Add router to ID
-          router.push('/p/1')
+          router.push('/p/' + productID)
         }}
       >
         {isLoading ? (

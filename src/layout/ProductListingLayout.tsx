@@ -367,6 +367,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                     data={product}
                     isLoading={false}
                     hoverable
+                    productID={product.id}
                   />
                 )
               })

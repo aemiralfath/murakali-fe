@@ -6,9 +6,9 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React from 'react'
 import orderStatusData, { sellerOrderStatusData } from '@/dummy/orderStatusData'
-import OrderDetailProduct from '@/sections/seller/orderDetailProduct'
-import SummaryOrderDetailProduct from '@/sections/seller/summaryOrderDetailProduct'
-import OrderAddressDetail from '@/sections/seller/orderAddressDetail'
+import OrderDetailProduct from '@/sections/seller/order/orderDetailProduct'
+import SummaryOrderDetailProduct from '@/sections/seller/order/summaryOrderDetailProduct'
+import OrderAddressDetail from '@/sections/seller/order/orderAddressDetail'
 
 function OrderDetailPage() {
   const router = useRouter()
@@ -69,6 +69,13 @@ function OrderDetailPage() {
                     <P className="text-xs font-bold">
                       {getSellerOrderDetail.data.data.courier_description}
                     </P>
+                    <P className="text-sm font-bold">
+                      {getSellerOrderDetail.data.data.courier_etd.replace(
+                        /\D/g,
+                        ''
+                      )}{' '}
+                      Days
+                    </P>
                   </div>
                 </div>
                 <div className="flex flex-auto flex-col gap-6">
@@ -125,13 +132,14 @@ function OrderDetailPage() {
                     total_price={getSellerOrderDetail.data.data.total_price}
                     delivery_fee={getSellerOrderDetail.data.data.delivery_fee}
                     order_status={getSellerOrderDetail.data.data.order_status}
+                    order_id={getSellerOrderDetail.data.data.order_id}
+                    allData={getSellerOrderDetail.data.data}
                   />
                 </div>
-
                 <div className="mt-3 grid h-full grid-cols-1 gap-6 rounded border bg-white p-6 md:grid-cols-2 md:gap-6">
                   <div className="border-b-2 border-r-0 p-5 md:border-r-2 md:border-b-0">
                     <OrderAddressDetail
-                      title={'alamat pengiriman'}
+                      title={'From'}
                       username={getSellerOrderDetail.data.data.shop_name}
                       phone_number={
                         getSellerOrderDetail.data.data.shop_phone_number
@@ -141,7 +149,7 @@ function OrderDetailPage() {
                   </div>
                   <div className="p-5">
                     <OrderAddressDetail
-                      title={'alamat tujuan'}
+                      title={'Destination'}
                       username={getSellerOrderDetail.data.data.buyer_username}
                       phone_number={
                         getSellerOrderDetail.data.data.buyer_phone_number
