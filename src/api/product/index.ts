@@ -5,9 +5,10 @@ import qs from 'qs'
 import type { Product, ProductImages } from '@/types/api/product'
 import type { TotalRating } from '@/types/api/review'
 import type { APIResponse, PaginationData } from '@/types/api/response'
-import type { BriefProduct, ProductDetail } from '@/types/api/product'
+import type { BriefProduct } from '@/types/api/product'
 
 const profileKey = 'seller'
+const productKey = 'product'
 export type ProductPaginationParams = {
   page?: number
   limit?: number
@@ -134,25 +135,29 @@ export const useGetAllProduct = (
     max_price: 1000000,
     min_rating: 0,
     max_rating: 5,
-    listed_status: 0,
+    listed_status: 1,
   }
 
   tempParams = { ...tempParams, ...params }
   return useQuery({
     queryKey: [
-      'products',
+      productKey,
       ...Object.keys(tempParams).map((key) => tempParams[key]),
     ],
     queryFn: async () => await getAllProduct(params),
-    enabled: enabled === undefined ? true : enabled,
+    enabled: enabled,
   })
 }
 
-export const useGetProductById = (id: string) => {
-  return useQuery([profileKey, id], async () => await getProductById(id))
+export const useGetProductById = (id?: string) => {
+  return useQuery({
+    queryKey: [productKey, id],
+    queryFn: async () => await getProductById(id),
+    enabled: Boolean(id),
+  })
 }
 
-const getProductById = async (id: string) => {
+const getProductById = async (id?: string) => {
   const response = await unauthorizedClient.get<APIResponse<Product>>(
     '/product/' + id
   )

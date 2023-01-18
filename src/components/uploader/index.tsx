@@ -13,7 +13,8 @@ const Uploader: React.FC<{
   title: string
   onChange: (s: string) => void
   size?: 'md' | 'lg'
-}> = ({ id, title, onChange, size = 'md' }) => {
+  defaultImage?: string
+}> = ({ id, title, onChange, size = 'md', defaultImage }) => {
   const modal = useModal()
   const [image, setImage] = useState<string>()
   const [option, setOption] = useState(-1)
@@ -21,6 +22,12 @@ const Uploader: React.FC<{
   useEffect(() => {
     onChange(image)
   }, [image])
+
+  useEffect(() => {
+    if (defaultImage) {
+      setImage(defaultImage)
+    }
+  }, [defaultImage])
 
   const onImageChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {

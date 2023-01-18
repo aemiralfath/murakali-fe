@@ -20,15 +20,38 @@ import { useLoadingModal } from '@/hooks'
 import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
 import { useRouter } from 'next/router'
+import { useGetProductById } from '@/api/product'
+import { HiArrowLeft } from 'react-icons/hi'
 
 const AddProduct = () => {
   const router = useRouter()
   const { intent, product_id } = router.query
+  const [id, setId] = useState<string>()
+  useEffect(() => {
+    if (typeof product_id === 'string') {
+      setId(product_id)
+    }
+  }, [intent, product_id])
 
   const setLoadingModal = useLoadingModal()
 
   const allCategory = useGetAllCategory()
   const createProduct = useCreateProduct()
+  const productDetail = useGetProductById(id)
+
+  useEffect(() => {
+    if (typeof product_id === 'string') {
+      setLoadingModal(productDetail.isLoading)
+    }
+  }, [productDetail.isLoading, intent])
+
+  useEffect(() => {
+    if (productDetail.isSuccess) {
+      if (intent === 'add' && typeof product_id === 'string') {
+        toast.success('Data has been filled!')
+      }
+    }
+  }, [productDetail.isSuccess])
 
   useEffect(() => {
     setLoadingModal(createProduct.isLoading)
@@ -95,12 +118,14 @@ const AddProduct = () => {
           condition: Yup.string().required('Condition is required'),
           bulk_price: Yup.boolean(),
           photo: Yup.array().of(Yup.string()).min(1),
-          variant_detail: Yup.array().of(
-            Yup.object().shape({
-              type: Yup.string(),
-              name: Yup.string(),
-            })
-          ),
+          variant_detail: Yup.array()
+            .of(
+              Yup.object().shape({
+                type: Yup.string(),
+                name: Yup.string(),
+              })
+            )
+            .min(1, 'Variant detail is invalid'),
         })
       ),
     })
@@ -133,6 +158,18 @@ const AddProduct = () => {
       })
   }
 
+  useEffect(() => {
+    if (productDetail.isSuccess) {
+      const data = productDetail.data.data
+      updateData((draft) => {
+        draft.title = data.products_info.title
+        draft.description = data.products_info.description
+      })
+      setCondition(data.products_detail[0]?.condition)
+      setHazardous(data.products_detail[0]?.hazardous)
+    }
+  }, [productDetail.isSuccess])
+
   return (
     <div>
       <Head>
@@ -141,6 +178,16 @@ const AddProduct = () => {
       <SellerPanelLayout selectedPage="product">
         <div className="flex w-full items-center justify-between">
           {intent === 'edit' ? <H2>Edit Product</H2> : <H2>Add Product</H2>}
+          <Button
+            size={'sm'}
+            buttonType="primary"
+            outlined
+            onClick={() => {
+              router.back()
+            }}
+          >
+            <HiArrowLeft /> Back
+          </Button>
         </div>
         <UploadPhoto
           setThumbnail={(s) => {
@@ -148,7 +195,11 @@ const AddProduct = () => {
               draft.thumbnail = s
             })
           }}
+          defaultThumbnail={
+            productDetail.data?.data?.products_info?.thumbnail_url
+          }
         />
+
         <ProductInfo
           nameValue={data.title}
           setName={(s) =>
@@ -170,13 +221,26 @@ const AddProduct = () => {
             })
           }
           categoryData={allCategory.data?.data}
+          defaultCategory={
+            productDetail.data?.data.products_info?.category_name
+          }
+          isEditing={intent === 'edit'}
         />
         <ProductVariants
           productDetailData={productDetailData}
           updateProductDetailData={updateProductDetailData}
+          defaultProductDetail={productDetail.data?.data.products_detail}
+          isEditing={intent === 'edit'}
         />
         <ProductShipping hazardous={hazardous} setHazardous={setHazardous} />
-        <Button onClick={handleSubmit}>Test</Button>
+        <div className="mt-6 flex justify-end gap-3">
+          <Button onClick={handleSubmit} buttonType="primary">
+            Save
+          </Button>
+          <Button onClick={handleSubmit} buttonType="primary" outlined>
+            Cancel
+          </Button>
+        </div>
       </SellerPanelLayout>
     </div>
   )

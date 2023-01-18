@@ -2,25 +2,35 @@ import { Divider, TextInput, Button } from '@/components'
 import cx from '@/helper/cx'
 import toTitleCase from '@/helper/toTitleCase'
 import { Popover, Transition } from '@headlessui/react'
-import { useState, Fragment } from 'react'
+import { useState, Fragment, useEffect } from 'react'
 import { HiChevronDown, HiPlus } from 'react-icons/hi'
 
 const VariationSelector: React.FC<{
   disabledKeyword: string
   onChange: (s: string) => void
-}> = ({ disabledKeyword, onChange }) => {
+  defaultVariation?: string
+  isEditing?: boolean
+}> = ({ disabledKeyword, onChange, defaultVariation, isEditing }) => {
   const predefinedVariation = ['Color', 'Size', 'Material']
 
   const [customVariant, setCustomVariant] = useState('')
   const [selected, setSelected] = useState('')
+
+  useEffect(() => {
+    if (defaultVariation) {
+      setSelected(defaultVariation)
+    }
+  }, [defaultVariation])
 
   return (
     <Popover className="relative w-full">
       {({ open }) => (
         <>
           <Popover.Button
+            disabled={isEditing}
             className={cx(
-              'input-bordered input flex w-full items-center justify-between gap-2'
+              'input-bordered input flex w-full items-center justify-between gap-2',
+              isEditing ? 'input-disabled' : ''
             )}
           >
             <span

@@ -3,8 +3,13 @@ import cx from '@/helper/cx'
 import toTitleCase from '@/helper/toTitleCase'
 import React, { useEffect, useState } from 'react'
 import type { Updater } from 'use-immer'
-import { HiOutlineLightBulb, HiPlus, HiTrash } from 'react-icons/hi'
-import type { ProductDetailReq } from '@/types/api/product'
+import {
+  HiExclamationCircle,
+  HiOutlineLightBulb,
+  HiPlus,
+  HiTrash,
+} from 'react-icons/hi'
+import type { ProductDetail, ProductDetailReq } from '@/types/api/product'
 import VariantSelectionDropdown from './subsections/VariantSelectionDropdown'
 import getKey from '@/helper/getKey'
 import VariationSelector from './subsections/VariationSelector'
@@ -20,7 +25,14 @@ const ProductVariants: React.FC<{
   updateProductDetailData: Updater<{
     [key: string]: ProductDetailReq
   }>
-}> = ({ productDetailData, updateProductDetailData }) => {
+  defaultProductDetail?: ProductDetail[]
+  isEditing?: boolean
+}> = ({
+  productDetailData,
+  updateProductDetailData,
+  defaultProductDetail,
+  isEditing,
+}) => {
   const [variantType, setVariantType] = useState<string[]>(['', ''])
   const [variantNames, setVariantNames] = useState<string[][]>([[], []])
   const [openVariantTwo, setOpenVariantTwo] = useState(false)
@@ -184,6 +196,59 @@ const ProductVariants: React.FC<{
     })
   }, [variantType, variantNames])
 
+  useEffect(() => {
+    if (defaultProductDetail) {
+      if (defaultProductDetail.length > 0) {
+        setOpenVariantTwo(defaultProductDetail.length > 1)
+
+        const tempVariantType = Object.keys(defaultProductDetail[0].variant)
+        if (tempVariantType.length < 2) {
+          tempVariantType.push('')
+        }
+
+        const tempVariantNames: string[][] = [[], []]
+        defaultProductDetail.forEach((detail) => {
+          const key = getKey(
+            detail.variant[tempVariantType[0]],
+            tempVariantType[1] ? detail.variant[tempVariantType[1]] : undefined
+          )
+          const tempVariantDetail = []
+          tempVariantType.forEach((type) => {
+            if (type !== '') {
+              tempVariantDetail.push({
+                name: type,
+                type: detail.variant[type],
+              })
+            }
+          })
+
+          updateProductDetailData((draft) => {
+            draft[key] = {
+              price: detail.normal_price,
+              stock: detail.stock,
+              weight: detail.weight,
+              size: detail.size,
+              hazardous: false,
+              condition: 'new',
+              bulk_price: false,
+              photo: detail.product_url,
+              variant_detail: tempVariantDetail,
+            }
+          })
+
+          tempVariantType.map((type, idx) => {
+            if (!tempVariantNames[idx].includes(detail.variant[type])) {
+              tempVariantNames[idx].push(detail.variant[type])
+            }
+          })
+        })
+
+        setVariantType(tempVariantType)
+        setVariantNames(tempVariantNames)
+      }
+    }
+  }, [defaultProductDetail])
+
   const handleChangeOnClick = () => {
     selectKey.forEach((k) => {
       if (tempChangePrice !== null) {
@@ -222,6 +287,9 @@ const ProductVariants: React.FC<{
         <div className="mt-2 flex gap-3">
           <div className="flex w-[30%]">
             <VariationSelector
+              defaultVariation={
+                defaultProductDetail ? variantType[0] : undefined
+              }
               disabledKeyword={variantType[1]}
               onChange={(s) => {
                 setVariantType(
@@ -234,17 +302,20 @@ const ProductVariants: React.FC<{
                   })
                 )
               }}
+              isEditing={isEditing}
             />
           </div>
           <div
             className={cx(
               'input-bordered input flex h-fit min-h-[3rem] w-full flex-wrap items-center gap-3 py-2',
-              Boolean(variantType[0]) ? '' : 'input-disabled'
+              Boolean(variantType[0]) ? '' : 'input-disabled',
+              isEditing ? 'input-disabled' : ''
             )}
           >
             {variantNames[0].map((varNames, idx) => {
               return (
                 <VariantChip
+                  isDefault={isEditing}
                   key={`${varNames}-${idx}-0`}
                   content={varNames}
                   onClose={(n) => {
@@ -254,7 +325,7 @@ const ProductVariants: React.FC<{
               )
             })}
             <input
-              disabled={!Boolean(variantType[0])}
+              disabled={!Boolean(variantType[0]) || isEditing}
               className="focus-visible:outline-none"
               placeholder="Enter Variant Name"
               value={tempVariantNameOne}
@@ -283,6 +354,9 @@ const ProductVariants: React.FC<{
           <div className="mt-2 flex gap-3">
             <div className="flex w-[30%]">
               <VariationSelector
+                defaultVariation={
+                  defaultProductDetail ? variantType[1] : undefined
+                }
                 disabledKeyword={variantType[0]}
                 onChange={(s) => {
                   if (variantType.length === 1) {
@@ -299,17 +373,20 @@ const ProductVariants: React.FC<{
                     )
                   }
                 }}
+                isEditing={isEditing}
               />
             </div>
             <div
               className={cx(
                 'input-bordered input flex h-fit min-h-[3rem] w-full flex-wrap items-center gap-3 py-2',
-                Boolean(variantType[1]) ? '' : 'input-disabled'
+                Boolean(variantType[1]) ? '' : 'input-disabled',
+                isEditing ? 'input-disabled' : ''
               )}
             >
               {variantNames[1].map((varNames, idx) => {
                 return (
                   <VariantChip
+                    isDefault={isEditing}
                     key={`${varNames}-${idx}-0`}
                     content={varNames}
                     onClose={(n) => {
@@ -319,7 +396,9 @@ const ProductVariants: React.FC<{
                 )
               })}
               <input
-                disabled={!Boolean(variantType[1])}
+                disabled={
+                  !Boolean(variantType[1]) || Boolean(productDetailData)
+                }
                 className="focus-visible:outline-none"
                 placeholder="Enter Variant Name"
                 value={tempVariantNameTwo}
@@ -338,10 +417,16 @@ const ProductVariants: React.FC<{
         </div>
       ) : (
         <div className="mt-6">
-          <Button buttonType="ghost" onClick={handleOpenVariantTwo}>
-            <HiPlus />
-            Add Variant Type
-          </Button>
+          {!isEditing ? (
+            <Button buttonType="ghost" onClick={handleOpenVariantTwo}>
+              <HiPlus />
+              Add Variant Type
+            </Button>
+          ) : (
+            <P className="flex w-fit items-center gap-2 rounded-full bg-error bg-opacity-10 py-1 px-2 text-error">
+              <HiExclamationCircle /> You cannot edit Product Variation
+            </P>
+          )}
         </div>
       )}
       <div className="py-6">
@@ -461,9 +546,14 @@ const ProductVariants: React.FC<{
                           </div>
                           <div className="w-[8.5rem]">
                             <Uploader
-                              id={getKey(vname1, vname2)}
+                              id={key}
                               title={'Photo'}
                               onChange={(s) => handleChangeImage(key, s)}
+                              defaultImage={
+                                productDetailData[key]
+                                  ? productDetailData[key].photo[0]
+                                  : undefined
+                              }
                             />
                             <div className="mt-2 min-w-[12rem] pl-2 text-sm ">
                               <div className="flex items-baseline gap-2">
@@ -572,9 +662,14 @@ const ProductVariants: React.FC<{
                   </div>
                   <div className="w-[8.5rem]">
                     <Uploader
-                      id={`id-ab`}
+                      id={key}
                       title={'Photo'}
                       onChange={(s) => handleChangeImage(key, s)}
+                      defaultImage={
+                        productDetailData[key]
+                          ? productDetailData[key].photo[0]
+                          : undefined
+                      }
                     />
                     <div className="mt-2 min-w-[12rem] pl-2 text-sm ">
                       <div className="flex items-baseline gap-2">

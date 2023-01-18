@@ -21,13 +21,14 @@ export interface ProductInfo {
 
 export interface ProductDetail {
   id: string
+  product_url: string[]
   normal_price: number
   stock: number
   discount_price: number
   weight: number
   size: number
   hazardous: boolean
-  condition: string
+  condition: 'new' | 'used'
   bulk_price: boolean
   variant: {
     [key: string]: string

@@ -22,3 +22,40 @@ export const useCreateProduct = () => {
     }
   )
 }
+
+export const useEditStatus = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (product_id: string) => {
+      return await authorizedClient.put<APIResponse<null>>(
+        '/product/status/' + product_id
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([productKey])
+      },
+    }
+  )
+}
+
+export const useBulkEditStatus = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (data: { products_ids: string[]; listed_status: boolean }) => {
+      return await authorizedClient.patch<APIResponse<null>>(
+        '/product/bulk-status',
+        {
+          ...data,
+        }
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([productKey])
+      },
+    }
+  )
+}

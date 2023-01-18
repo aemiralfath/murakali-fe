@@ -14,6 +14,8 @@ const ProductInfo: React.FC<{
   descriptionValue: string
   setDescription: (s: string) => void
   categoryData?: CategoryData[]
+  defaultCategory?: string
+  isEditing?: boolean
 }> = ({
   nameValue,
   setName,
@@ -23,6 +25,8 @@ const ProductInfo: React.FC<{
   descriptionValue,
   setDescription,
   categoryData,
+  defaultCategory,
+  isEditing,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<CategoryData[]>([])
   const getSelectedCategoryStr = () => {
@@ -92,13 +96,21 @@ const ProductInfo: React.FC<{
             full
             placeholder={`Click "Choose Category"`}
             readOnly
-            value={getSelectedCategoryStr()}
+            errorMsg={isEditing ? 'Category cannot be edited' : ''}
+            value={
+              isEditing
+                ? defaultCategory
+                  ? toTitleCase(defaultCategory)
+                  : getSelectedCategoryStr()
+                : getSelectedCategoryStr()
+            }
           />
         </div>
         <CategorySelector
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
           categoryData={categoryData}
+          disabled={isEditing}
         />
       </div>
       <div className="mt-6 flex gap-3">

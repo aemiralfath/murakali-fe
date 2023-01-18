@@ -9,7 +9,8 @@ const CategorySelector: React.FC<{
   selectedCategory: CategoryData[]
   setSelectedCategory: (s: CategoryData[]) => void
   categoryData?: CategoryData[]
-}> = ({ selectedCategory, setSelectedCategory, categoryData }) => {
+  disabled?: boolean
+}> = ({ selectedCategory, setSelectedCategory, categoryData, disabled }) => {
   const handleSelect = (c: CategoryData, idx: number) => {
     if (selectedCategory[idx]) {
       setSelectedCategory(
@@ -30,7 +31,10 @@ const CategorySelector: React.FC<{
 
   return (
     <Popover className="relative z-20">
-      <Popover.Button className={cx('btn-ghost btn')}>
+      <Popover.Button
+        disabled={disabled}
+        className={cx('btn-ghost btn', disabled ? 'btn-disabled' : '')}
+      >
         Choose Category
       </Popover.Button>
       <Transition
