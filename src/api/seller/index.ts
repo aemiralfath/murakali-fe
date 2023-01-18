@@ -1,4 +1,4 @@
-import { unauthorizedClient } from '@/api/apiClient'
+import { authorizedClient, unauthorizedClient } from '@/api/apiClient'
 import { useQuery } from '@tanstack/react-query'
 
 import type { APIResponse } from '@/types/api/response'
@@ -15,4 +15,19 @@ const getSellerInfo = async (shopID: string) => {
 
 export const useGetSellerInfo = (shopID: string) => {
   return useQuery([profileKey, shopID], async () => await getSellerInfo(shopID))
+}
+
+const getSellerInfoByUserID = async (userID: string) => {
+  const response = await authorizedClient.get<APIResponse<SellerInfo>>(
+    '/seller/user/' + userID
+  )
+  return response.data
+}
+
+export const useGetSellerInfoByUserID = (userID?: string) => {
+  return useQuery({
+    queryKey: [profileKey, userID],
+    queryFn: async () => await getSellerInfoByUserID(userID),
+    enabled: !!userID,
+  })
 }

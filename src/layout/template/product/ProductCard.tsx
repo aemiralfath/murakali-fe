@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Chip, P } from '@/components'
 import formatMoney from '@/helper/formatMoney'
 import { HiStar } from 'react-icons/hi'
@@ -14,6 +14,7 @@ import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
 import { useDispatch } from 'react-redux'
 import { closeModal } from '@/redux/reducer/modalReducer'
+import Image from 'next/image'
 
 type ProductCardProps = LoadingDataWrapper<BriefProduct> & {
   hoverable?: boolean
@@ -54,6 +55,13 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   }, [useDeleteFavoriteProduct.isError])
 
+  const [src, setSrc] = useState('/asset/no-image.png')
+  useEffect(() => {
+    if (data?.thumbnail_url) {
+      setSrc(data.thumbnail_url)
+    }
+  }, [data])
+
   return (
     <div
       ref={cartRef}
@@ -71,10 +79,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
         {isLoading ? (
           <div className="aspect-square animate-pulse rounded-t-lg bg-base-200 object-cover" />
         ) : (
-          <img
+          <Image
             className="aspect-square rounded-t-lg object-cover"
-            src={data.thumbnail_url}
+            src={src}
             alt={data.title}
+            height={300}
+            width={300}
+            loading={'lazy'}
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null
+              setSrc('/asset/no-image.png')
+            }}
           />
         )}
         <div className="my-1 flex min-h-full flex-col px-3">
