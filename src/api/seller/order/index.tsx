@@ -7,6 +7,7 @@ import type {
   SellerOrderStatus,
   UpdateNoResiSellerOrder,
 } from '@/types/api/seller'
+import moment from 'moment'
 
 const profileKey = 'order'
 
@@ -68,6 +69,10 @@ export const useUpdateResiSellerOrder = () => {
         '/seller/order-resi/' + data.order_id,
         {
           resi_no: data.resi_no,
+          estimate_arrive_at:
+            moment(data.courier_etd).format('DD-MM-YYYY').toString() +
+            ' ' +
+            moment(Date.now()).format('HH:mm:ss').toString(),
         }
       )
     },

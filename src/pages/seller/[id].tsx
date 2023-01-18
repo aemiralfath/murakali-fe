@@ -1,15 +1,22 @@
 import { useGetSellerInfo } from '@/api/seller'
 import { useGetSellerCategory } from '@/api/seller/category'
-import { H2, P } from '@/components'
+import { Divider, H2, H3, H4, P } from '@/components'
 import cx from '@/helper/cx'
 import { useMediaQuery } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AiFillStar } from 'react-icons/ai'
 import type { CategoryData } from '@/types/api/category'
+import { useGetSellerProduct } from '@/api/product'
+import ProductCarousel from '@/sections/home/ProductCarousel'
+import type { ProductQuery } from '@/types/api/product'
+import ProductListingLayout, {
+  useProductListing,
+} from '@/layout/ProductListingLayout'
+import { useSearchQueryProduct } from '@/api/product/search'
 
 const CategoryTab: React.FC<{
   categories: CategoryData[]
@@ -164,26 +171,138 @@ const CategoryTab: React.FC<{
 
 function Seller() {
   const [selectedTab, setSelectedTab] = useState('')
+  const [flag, setFlag] = useState(true)
   const param = useRouter()
-
-  // const product = useGetSellerProduct(
-  //   1,
-  //   10,
-  //   '',
-  //   selectedTab,
-  //   param.query.id as string,
-  //   '',
-  //   '',
-  //   0,
-  //   0,
-  //   0,
-  //   0
-  // )
+  const controller = useProductListing()
+  const [locationState, setLocationState] = useState('')
+  const [categoryState, setCategoryState] = useState('')
+  const INF = 1000000000
 
   const md = useMediaQuery('md')
-
+  const [queryParam] = useState<Map<string, string>>(new Map<string, string>())
   const sellerProfile = useGetSellerInfo(param.query.id as string)
   const sellerCategory = useGetSellerCategory(param.query.id as string)
+  const product = useGetSellerProduct(
+    1,
+    6,
+    '',
+    '',
+    param.query.id as string,
+    'unit_sold',
+    'desc',
+    0,
+    0,
+    0,
+    0
+  )
+
+  const {
+    sortBy,
+    setSortBy,
+    filterPrice,
+    filterRating,
+    filterLocation,
+    filterCategory,
+    page,
+    setPage,
+  } = controller
+
+  useEffect(() => {
+    setPage(1)
+  }, [selectedTab])
+
+  useEffect(() => {
+    setSortBy({ sort: 'DESC', sort_by: 'unit_sold' })
+  }, [])
+
+  useEffect(() => {
+    if (sortBy.sort_by !== '') {
+      queryParam.set('sort_by', sortBy.sort_by)
+    } else if (sortBy.sort_by === '') {
+      queryParam.delete('sort_by')
+    }
+
+    if (sortBy.sort !== '') {
+      queryParam.set('sort', sortBy.sort)
+    } else if (sortBy.sort === '') {
+      queryParam.delete('sort')
+    }
+    setFlag(true)
+  }, [sortBy])
+
+  useEffect(() => {
+    if (filterPrice === undefined) {
+      queryParam.delete('min_price')
+      queryParam.delete('max_price')
+    } else {
+      queryParam.set('min_price', String(filterPrice.min))
+      queryParam.set('max_price', String(filterPrice.max))
+    }
+
+    setFlag(true)
+  }, [filterPrice])
+
+  useEffect(() => {
+    if (filterRating === -1) {
+      queryParam.delete('rating')
+    } else {
+      queryParam.set('rating', String(filterRating))
+    }
+    setFlag(true)
+  }, [filterRating])
+
+  useEffect(() => {
+    let locationQuery = ''
+    filterLocation.map((provinceDetail) => {
+      if (locationQuery === '') {
+        locationQuery = provinceDetail.province_id
+      } else {
+        locationQuery = locationQuery + ',' + provinceDetail.province_id
+      }
+    })
+    if (locationQuery === '') {
+      setLocationState('')
+      queryParam.delete('location')
+    } else {
+      setLocationState(locationQuery)
+      queryParam.set('location', locationQuery)
+    }
+    setFlag(true)
+  }, [filterLocation])
+
+  useEffect(() => {
+    const queryCategory = filterCategory
+    if (queryCategory === '') {
+      setCategoryState('')
+      queryParam.delete('category')
+    } else {
+      setCategoryState(queryCategory)
+      queryParam.set('category', queryCategory)
+    }
+    setFlag(true)
+  }, [filterCategory])
+
+  useEffect(() => {
+    queryParam.set('page', String(page))
+    setFlag(true)
+  }, [page])
+
+  const productQuery: ProductQuery = {
+    search: '',
+    category: selectedTab,
+    limit: 20,
+    page: page,
+    sort_by: sortBy.sort_by,
+    sort: sortBy.sort,
+    min_price: filterPrice !== undefined ? filterPrice.min : 0,
+    max_price: filterPrice !== undefined ? filterPrice.max : INF,
+    min_rating: filterRating,
+    max_rating: 5,
+    shop_id: param.query.id as string,
+    province_ids: locationState,
+  }
+
+  const SearchProductList = useSearchQueryProduct(productQuery)
 
   return (
     <>
@@ -265,6 +384,29 @@ function Seller() {
             )
           ) : (
             <></>
+          )}
+          <div className="flex justify-between ">
+            <H3>Most Purchased Products</H3>
+            <H4 className="self-end">
+              <a href="#allproducts">See All</a>
+            </H4>
+          </div>
+          <ProductCarousel product={product.data?.data.rows} />
+          <div id="allproducts"></div>
+          <Divider />
+          <H3>Seller Products</H3>
+          {SearchProductList.isLoading ? (
+            <ProductListingLayout controller={controller} isLoading={true} />
+          ) : SearchProductList.data.data.rows ? (
+            <ProductListingLayout
+              controller={controller}
+              isLoading={false}
+              data={SearchProductList.data.data.rows}
+              totalPage={SearchProductList.data.data.total_pages}
+              noCategory={true}
+            />
+          ) : (
+            <div>handle error</div>
           )}
         </MainLayout>
       </div>

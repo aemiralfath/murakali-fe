@@ -1,17 +1,50 @@
 import { Button } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
+import { useModal } from '@/hooks'
+import type { OrderData } from '@/types/api/order'
+
+import InputResi from '../../seller-panel/delivery-servis/InputResi'
+import LabelDelivery from './LabelDelivery'
 
 interface SummaryOrderDetailProductProps {
   total_price: number
   delivery_fee: number
   order_status: number
+  order_id: string
+  allData: OrderData
 }
 
 const SummaryOrderDetailProduct: React.FC<SummaryOrderDetailProductProps> = ({
   total_price,
   delivery_fee,
   order_status,
+  order_id,
+  allData,
 }) => {
+  const modal = useModal()
+  function inputResiModal() {
+    modal.edit({
+      title: 'Input Modal',
+      content: (
+        <InputResi
+          orderID={order_id}
+          courierETD={allData.courier_etd.replace(/\D/g, '')}
+        />
+      ),
+      closeButton: false,
+    })
+  }
+  function labelDelivery() {
+    modal.info({
+      title: 'Label Delivery',
+      content: (
+        <>
+          <LabelDelivery allData={allData} />
+        </>
+      ),
+      closeButton: false,
+    })
+  }
   return (
     <div className="max-w-full flex-none overflow-x-auto p-4">
       <div className=" overflow-x-auto whitespace-nowrap border-solid border-gray-300">
@@ -49,8 +82,28 @@ const SummaryOrderDetailProduct: React.FC<SummaryOrderDetailProductProps> = ({
             </Button>
           </>
         ) : order_status === 3 ? (
-          <Button buttonType="primary" size="sm" className="rounded">
+          <Button
+            buttonType="primary"
+            size="sm"
+            className="rounded"
+            wide
+            onClick={() => {
+              inputResiModal()
+            }}
+          >
             Create Package
+          </Button>
+        ) : order_status === 4 || order_status === 5 ? (
+          <Button
+            buttonType="primary"
+            size="sm"
+            className="rounded"
+            wide
+            onClick={() => {
+              labelDelivery()
+            }}
+          >
+            Label Delivery
           </Button>
         ) : (
           <></>

@@ -85,6 +85,7 @@ export type ProductListingHook = ReturnType<typeof useProductListing>
 type ProductListingLayoutProps = LoadingDataWrapper<BriefProduct[]> & {
   controller: ProductListingHook
   totalPage?: number
+  noCategory?: boolean
 }
 
 const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
@@ -92,6 +93,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   isLoading,
   controller,
   totalPage,
+  noCategory,
 }) => {
   const {
     sortBy,
@@ -119,7 +121,11 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   const { catName } = router.query
 
   useEffect(() => {
-    setFilterCategory(String(catName))
+    if (catName === undefined) {
+      setFilterCategory('')
+    } else {
+      setFilterCategory(String(catName))
+    }
   }, [catName])
 
   useEffect(() => {
@@ -160,12 +166,19 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
             filterRating={filterRating}
             setFilterRating={setFilterRating}
           />
-          <Divider />
-          <CategoryFilter
-            categories={categoryName}
-            filterCategory={filterCategory}
-            setFilterCategory={setFilterCategory}
-          />
+          {noCategory ? (
+            <></>
+          ) : (
+            <>
+              <Divider />
+
+              <CategoryFilter
+                categories={categoryName}
+                filterCategory={filterCategory}
+                setFilterCategory={setFilterCategory}
+              />
+            </>
+          )}
         </div>
         <div
           className="absolute h-screen w-screen"
@@ -354,6 +367,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                     data={product}
                     isLoading={false}
                     hoverable
+                    productID={product.id}
                   />
                 )
               })
