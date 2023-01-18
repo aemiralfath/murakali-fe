@@ -119,7 +119,11 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   const { catName } = router.query
 
   useEffect(() => {
-    setFilterCategory(String(catName))
+    if (catName === undefined) {
+      setFilterCategory('')
+    } else {
+      setFilterCategory(String(catName))
+    }
   }, [catName])
 
   useEffect(() => {
@@ -354,6 +358,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                     data={product}
                     isLoading={false}
                     hoverable
+                    productID={product.id}
                   />
                 )
               })

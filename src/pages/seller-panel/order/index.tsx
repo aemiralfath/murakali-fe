@@ -16,7 +16,6 @@ import formatMoney from '@/helper/formatMoney'
 import { useModal } from '@/hooks'
 import ProcessDelivery from '@/sections/seller-panel/delivery-servis/ProcessDelivery'
 import CancelDelivery from '@/sections/seller-panel/delivery-servis/CancelDelivery'
-import InputResi from '@/sections/seller-panel/delivery-servis/InputResi'
 
 function ListOrderDeliveryService() {
   const router = useRouter()
@@ -38,14 +37,6 @@ function ListOrderDeliveryService() {
     modal.error({
       title: 'Cancel Order',
       content: <CancelDelivery orderID={orderID} />,
-      closeButton: false,
-    })
-  }
-
-  function inputResiModal(orderID: string, orderStatus: number) {
-    modal.edit({
-      title: 'Input Modal',
-      content: <InputResi orderID={orderID} orderStatus={orderStatus} />,
       closeButton: false,
     })
   }
@@ -105,7 +96,7 @@ function ListOrderDeliveryService() {
             Action: (
               <div className="flex w-fit flex-col gap-1">
                 <Button
-                  buttonType="ghost"
+                  buttonType="gray"
                   size="sm"
                   className="rounded"
                   onClick={() => {
@@ -140,17 +131,6 @@ function ListOrderDeliveryService() {
                       Cancel
                     </Button>
                   </>
-                ) : data.order_status === 3 ? (
-                  <Button
-                    buttonType="primary"
-                    size="sm"
-                    className="rounded"
-                    onClick={() => {
-                      inputResiModal(data.order_id, data.order_status + 1)
-                    }}
-                  >
-                    Create Package
-                  </Button>
                 ) : (
                   <></>
                 )}

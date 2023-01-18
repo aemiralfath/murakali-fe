@@ -17,4 +17,5 @@ export interface SellerOrderStatus {
 export interface UpdateNoResiSellerOrder {
   order_id: string
   resi_no: string
+  courier_etd: string
 }
