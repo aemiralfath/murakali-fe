@@ -130,7 +130,12 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
             )}
 
             <div>
-              <span className="text-xl font-bold">{rating?.avg_rating}</span>{' '}
+              {rating?.avg_rating === null ||
+              rating?.avg_rating === undefined ? (
+                <span className="text-xl font-bold">0</span>
+              ) : (
+                <span className="text-xl font-bold">{rating?.avg_rating}</span>
+              )}
               out of 5
             </div>
             <div>
@@ -139,37 +144,54 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
           </div>
           <div className="flex-1">
             <div className="flex flex-col gap-1">
-              {/* 68 + 20 + 9 + 1 + 2 */}
-              <ProgressBar
-                index={5}
-                value={
-                  (rating?.rating_product[4].count / rating?.total_rating) * 100
-                }
-              />
-              <ProgressBar
-                index={4}
-                value={
-                  (rating?.rating_product[3].count / rating?.total_rating) * 100
-                }
-              />
-              <ProgressBar
-                index={3}
-                value={
-                  (rating?.rating_product[2].count / rating?.total_rating) * 100
-                }
-              />
-              <ProgressBar
-                index={2}
-                value={
-                  (rating?.rating_product[1].count / rating?.total_rating) * 100
-                }
-              />
-              <ProgressBar
-                index={1}
-                value={
-                  (rating?.rating_product[0].count / rating?.total_rating) * 100
-                }
-              />
+              {rating?.avg_rating === null ||
+              rating?.avg_rating === undefined ? (
+                <>
+                  <ProgressBar index={5} value={0} />
+                  <ProgressBar index={4} value={0} />
+                  <ProgressBar index={3} value={0} />
+                  <ProgressBar index={2} value={0} />
+                  <ProgressBar index={1} value={0} />
+                </>
+              ) : (
+                <>
+                  <ProgressBar
+                    index={5}
+                    value={
+                      (rating?.rating_product[4].count / rating?.total_rating) *
+                      100
+                    }
+                  />
+                  <ProgressBar
+                    index={4}
+                    value={
+                      (rating?.rating_product[3].count / rating?.total_rating) *
+                      100
+                    }
+                  />
+                  <ProgressBar
+                    index={3}
+                    value={
+                      (rating?.rating_product[2].count / rating?.total_rating) *
+                      100
+                    }
+                  />
+                  <ProgressBar
+                    index={2}
+                    value={
+                      (rating?.rating_product[1].count / rating?.total_rating) *
+                      100
+                    }
+                  />
+                  <ProgressBar
+                    index={1}
+                    value={
+                      (rating?.rating_product[0].count / rating?.total_rating) *
+                      100
+                    }
+                  />
+                </>
+              )}
             </div>
           </div>
           <div className="">
