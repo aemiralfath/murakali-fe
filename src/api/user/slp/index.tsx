@@ -42,9 +42,9 @@ export const useDeleteSealabsPay = () => {
   const queryClient = useQueryClient()
 
   return useMutation(
-    async (id: number) => {
+    async (card_number: string) => {
       return await authorizedClient.delete<APIResponse<null>>(
-        `/user/sealab-pay/${id}`
+        `/user/sealab-pay/${card_number}`
       )
     },
     {
@@ -59,9 +59,9 @@ export const useSetDefaultSealabsPay = () => {
   const queryClient = useQueryClient()
 
   return useMutation(
-    async (data: SLPUser) => {
+    async (card_number: string) => {
       return await authorizedClient.patch<APIResponse<null>>(
-        `/user/sealab-pay/${data.card_number}`
+        `/user/sealab-pay/${card_number}`
       )
     },
     {
