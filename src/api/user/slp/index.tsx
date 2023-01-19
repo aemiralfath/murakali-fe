@@ -37,3 +37,37 @@ export const useRegisterSealabsPay = () => {
     }
   )
 }
+
+export const useDeleteSealabsPay = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (id: number) => {
+      return await authorizedClient.delete<APIResponse<null>>(
+        `/user/sealab-pay/${id}`
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([slpKey, 'delete'])
+      },
+    }
+  )
+}
+
+export const useSetDefaultSealabsPay = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (data: SLPUser) => {
+      return await authorizedClient.patch<APIResponse<null>>(
+        `/user/sealab-pay/${data.card_number}`
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([slpKey, 'update'])
+      },
+    }
+  )
+}
