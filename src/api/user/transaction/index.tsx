@@ -4,7 +4,7 @@ import { useQueryClient, useMutation } from '@tanstack/react-query'
 import type { APIResponse } from '@/types/api/response'
 
 import type { PostCheckout } from '@/types/api/checkout'
-import type { Transaction } from '@/types/api/transaction'
+import type { TransactionID } from '@/types/api/transaction'
 import type { SLPPayment } from '@/types/api/slp'
 
 const transactionKey = 'transaction'
@@ -14,7 +14,7 @@ export const useCreateTransaction = () => {
 
   return useMutation(
     async (data: PostCheckout) => {
-      const response = await authorizedClient.post<APIResponse<Transaction>>(
+      const response = await authorizedClient.post<APIResponse<TransactionID>>(
         '/user/transaction',
         data
       )

@@ -1,4 +1,5 @@
 import type { AddressDetail } from '@/types/api/address'
+import type { NullableTime } from './time'
 export interface OrderData {
   order_id: string
   order_status: number
@@ -35,4 +36,19 @@ export interface OrderProductDetail {
   variant: {
     [key: string]: string
   }
+}
+
+export interface OrderModel {
+  id: string
+  transaction_id: string
+  shop_id: string
+  user_id: string
+  courier_id: string
+  voucher_shop_id?: string
+  order_status_id: number
+  total_price: number
+  delivery_fee: number
+  resi_no?: string
+  created_at: string
+  arrived_at: NullableTime
 }

@@ -1,6 +1,6 @@
 import { authorizedClient } from '@/api/apiClient'
 import type { APIResponse, PaginationData } from '@/types/api/response'
-import type { Transaction } from '@/types/api/transaction'
+import type { TransactionID } from '@/types/api/transaction'
 import type { TopUpWallet, WalletHistory, WalletUser } from '@/types/api/wallet'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
@@ -55,7 +55,7 @@ export const useTopUpWallet = () => {
   const queryClient = useQueryClient()
   return useMutation(
     async (data: TopUpWallet) => {
-      return await authorizedClient.patch<APIResponse<Transaction>>(
+      return await authorizedClient.patch<APIResponse<TransactionID>>(
         '/user/wallet',
         data
       )
