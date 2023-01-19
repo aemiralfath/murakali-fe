@@ -37,9 +37,9 @@ const FilterCategoryName: NextPage = () => {
       queryParam.delete('sort_by')
     }
 
-    if (sortBy.direction !== '') {
-      queryParam.set('sort', sortBy.direction)
-    } else if (sortBy.direction === '') {
+    if (sortBy.sort !== '') {
+      queryParam.set('sort', sortBy.sort)
+    } else if (sortBy.sort === '') {
       queryParam.delete('sort')
     }
     setFlag(true)
@@ -108,7 +108,7 @@ const FilterCategoryName: NextPage = () => {
     limit: 30,
     page: page,
     sort_by: sortBy.sort_by,
-    sort: sortBy.direction,
+    sort: sortBy.sort,
     min_price: filterPrice !== undefined ? filterPrice.min : 0,
     max_price: filterPrice !== undefined ? filterPrice.max : INF,
     min_rating: filterRating,
@@ -146,18 +146,20 @@ const FilterCategoryName: NextPage = () => {
       </Head>
       <Navbar />
       <TitlePageExtend title="Category" />
-      {SearchProductList.isLoading ? (
-        <ProductListingLayout controller={controller} isLoading={true} />
-      ) : SearchProductList.data.data.rows ? (
-        <ProductListingLayout
-          controller={controller}
-          isLoading={false}
-          data={SearchProductList.data.data.rows}
-          totalPage={SearchProductList.data.data.total_pages}
-        />
-      ) : (
-        <div>handle error</div>
-      )}
+      <div className="container mx-auto mt-3">
+        {SearchProductList.isLoading ? (
+          <ProductListingLayout controller={controller} isLoading={true} />
+        ) : SearchProductList.data.data.rows ? (
+          <ProductListingLayout
+            controller={controller}
+            isLoading={false}
+            data={SearchProductList.data.data.rows}
+            totalPage={SearchProductList.data.data.total_pages}
+          />
+        ) : (
+          <div>handle error</div>
+        )}
+      </div>
     </>
   )
 }

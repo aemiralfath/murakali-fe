@@ -167,7 +167,7 @@ function Wallet() {
               >
                 <div className="mx-6 grid grid-cols-1 border-b-[0.5px] border-gray-400 pb-3 md:grid-cols-2">
                   <div className="flex gap-1">
-                    {data.to === userWallet.data.data.id ? (
+                    {data.to === userWallet.data?.data?.id ? (
                       <FaAngleDoubleRight className="my-[2.5px] text-green-600" />
                     ) : (
                       <FaAngleDoubleLeft className="my-[2.5px] text-red-600" />
@@ -183,14 +183,14 @@ function Wallet() {
                     </div>
                   </div>
                   <div className="flex justify-end">
-                    {data.to === userWallet.data.data.id ? (
+                    {data.to === userWallet.data?.data?.id ? (
                       <P className="font-bold text-green-600">
                         + Rp. {formatMoney(data.amount)}
                       </P>
                     ) : (
                       <></>
                     )}
-                    {data.from === userWallet.data.data.id ? (
+                    {data.from === userWallet.data?.data?.id ? (
                       <P className="font-bold text-red-600">
                         - Rp. {formatMoney(data.amount)}
                       </P>

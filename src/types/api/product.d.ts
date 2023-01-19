@@ -1,4 +1,5 @@
 import type { Promotion } from './promotion'
+import type { NullableTime } from './time'
 
 export interface ProductInfo {
   id: string
@@ -20,13 +21,14 @@ export interface ProductInfo {
 
 export interface ProductDetail {
   id: string
+  product_url: string[]
   normal_price: number
   stock: number
   discount_price: number
   weight: number
   size: number
   hazardous: boolean
-  condition: string
+  condition: 'new' | 'used'
   bulk_price: boolean
   variant: {
     [key: string]: string
@@ -46,6 +48,7 @@ export interface BriefProduct {
   thumbnail_url: string
   min_price: number
   max_price: number
+  view_count: number
   sub_price: number
   promo_discount_percentage?: number
   promo_discount_fix_price?: number
@@ -56,6 +59,52 @@ export interface BriefProduct {
   voucher_discount_fix_price?: number
   shop_name: string
   category_name: string
+  province: string
+  created_at: string
+  updated_at: NullableTime
+  listed_status: boolean
+}
+
+export interface VariantDetailReq {
+  type: string
+  name: string
+}
+
+export interface ProductDetailReq {
+  price: number
+  stock: number
+  weight: number
+  size: number
+  hazardous: boolean
+  condition: 'new' | 'used'
+  bulk_price: boolean
+  photo: string[]
+  variant_detail: VariantDetailReq[]
+}
+
+export interface ProductInfoReq {
+  title: string
+  description: string
+  thumbnail: string
+  category_id: string
+  listed_status: boolean
+}
+
+export interface CreateProductReq {
+  products_info: ProductInfoReq
+  products_detail: ProductDetailReq[]
+}
+
+export interface EditProductReq {
+  products_info_update: ProductInfoReq
+  products_detail_update: Array<
+    ProductDetailReq & {
+      product_detail_id: string
+      variant_info_update: []
+      variant_id_remove: []
+    }
+  >
+  products_detail_id_remove: []
 }
 
 export interface ProductImages {

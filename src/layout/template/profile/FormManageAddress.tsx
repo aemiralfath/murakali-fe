@@ -404,7 +404,6 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
               Address Detail
             </label>
             <TextArea
-              type="text"
               name="address_detail"
               placeholder="address_detail"
               onChange={handleChange}
