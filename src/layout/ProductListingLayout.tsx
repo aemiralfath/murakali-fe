@@ -55,7 +55,7 @@ const ButtonSortData = [
 ]
 
 const useProductListing = () => {
-  const [sortBy, setSortBy] = useState<SortBy>({ sort_by: '', direction: '' })
+  const [sortBy, setSortBy] = useState<SortBy>({ sort_by: '', sort: '' })
 
   const [filterLocation, setFilterLocation] = useState<ProvinceDetail[]>([])
   const [filterPrice, setFilterPrice] = useState<FilterPrice>()
@@ -207,21 +207,21 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                       className={cx(
                         'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
                         sortBy.sort_by === sorting.sort_by &&
-                          sortBy.direction === 'ASC'
+                          sortBy.sort === 'ASC'
                           ? 'bg-primary text-xs text-white'
                           : ''
                       )}
                       onClick={() => {
                         if (
                           sortBy.sort_by === sorting.sort_by &&
-                          sortBy.direction === 'ASC'
+                          sortBy.sort === 'ASC'
                         ) {
-                          setSortBy({ ...sortBy, sort_by: '', direction: '' })
+                          setSortBy({ ...sortBy, sort_by: '', sort: '' })
                         } else {
                           setSortBy({
                             ...sortBy,
                             sort_by: sorting.sort_by,
-                            direction: 'ASC',
+                            sort: 'ASC',
                           })
                         }
                       }}
@@ -232,21 +232,21 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                       className={cx(
                         'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
                         sortBy.sort_by === sorting.sort_by &&
-                          sortBy.direction === 'DESC'
+                          sortBy.sort === 'DESC'
                           ? 'bg-primary text-xs text-white'
                           : ''
                       )}
                       onClick={() => {
                         if (
                           sortBy.sort_by === sorting.sort_by &&
-                          sortBy.direction === 'DESC'
+                          sortBy.sort === 'DESC'
                         ) {
-                          setSortBy({ ...sortBy, sort_by: '', direction: '' })
+                          setSortBy({ ...sortBy, sort_by: '', sort: '' })
                         } else {
                           setSortBy({
                             ...sortBy,
                             sort_by: sorting.sort_by,
-                            direction: 'DESC',
+                            sort: 'DESC',
                           })
                         }
                       }}

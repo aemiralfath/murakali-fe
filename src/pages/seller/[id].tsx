@@ -1,19 +1,18 @@
 import { useGetSellerInfo } from '@/api/seller'
 import { useGetSellerCategory } from '@/api/seller/category'
-import { Divider, H1, H2, H3, H4, P } from '@/components'
+import { Divider, H2, H3, H4, P } from '@/components'
 import cx from '@/helper/cx'
 import { useMediaQuery } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
 import Head from 'next/head'
 import Image from 'next/image'
-import router, { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { AiFillStar } from 'react-icons/ai'
 import type { CategoryData } from '@/types/api/category'
 import { useGetSellerProduct } from '@/api/product'
 import ProductCarousel from '@/sections/home/ProductCarousel'
-import Link from 'next/link'
-import { ProductQuery } from '@/types/api/product'
+import type { ProductQuery } from '@/types/api/product'
 import ProductListingLayout, {
   useProductListing,
 } from '@/layout/ProductListingLayout'
@@ -90,7 +89,7 @@ const CategoryTab: React.FC<{
       <>
         {sm ? (
           categories.length > 4 ? (
-            <div className="dropdown-hover dropdown-end dropdown mx-auto w-full">
+            <div className="dropdown dropdown-end dropdown-hover mx-auto w-full">
               <label
                 tabIndex={0}
                 className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
@@ -105,7 +104,7 @@ const CategoryTab: React.FC<{
 
               <ul
                 tabIndex={0}
-                className="dropdown-end dropdown-hover dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
+                className="dropdown-content dropdown-end dropdown-hover menu rounded-box w-52 bg-base-100 p-2 shadow"
               >
                 {categories.slice(3, 999).map((item, index) => {
                   return (
@@ -129,7 +128,7 @@ const CategoryTab: React.FC<{
           )
         ) : (
           <>
-            <div className="dropdown-end dropdown-hover dropdown mx-auto w-full">
+            <div className="dropdown dropdown-end dropdown-hover mx-auto w-full">
               <label
                 tabIndex={0}
                 className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
@@ -144,7 +143,7 @@ const CategoryTab: React.FC<{
 
               <ul
                 tabIndex={0}
-                className="dropdown-end dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
+                className="dropdown-content dropdown-end menu rounded-box w-52 bg-base-100 p-2 shadow"
               >
                 {categories.slice(0, 999).map((item, index) => {
                   return (
@@ -213,7 +212,7 @@ function Seller() {
   }, [selectedTab])
 
   useEffect(() => {
-    setSortBy({ direction: 'DESC', sort_by: 'unit_sold' })
+    setSortBy({ sort: 'DESC', sort_by: 'unit_sold' })
   }, [])
 
   useEffect(() => {
@@ -223,9 +222,9 @@ function Seller() {
       queryParam.delete('sort_by')
     }
 
-    if (sortBy.direction !== '') {
-      queryParam.set('sort', sortBy.direction)
-    } else if (sortBy.direction === '') {
+    if (sortBy.sort !== '') {
+      queryParam.set('sort', sortBy.sort)
+    } else if (sortBy.sort === '') {
       queryParam.delete('sort')
     }
     setFlag(true)
@@ -294,7 +293,7 @@ function Seller() {
     limit: 20,
     page: page,
     sort_by: sortBy.sort_by,
-    sort: sortBy.direction,
+    sort: sortBy.sort,
     min_price: filterPrice !== undefined ? filterPrice.min : 0,
     max_price: filterPrice !== undefined ? filterPrice.max : INF,
     min_rating: filterRating,

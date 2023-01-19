@@ -184,7 +184,7 @@ function ListOrderDeliveryService() {
             <button
               onClick={(e) => ChangeOrderStatusPage(e)}
               className={cx(
-                '-mb-[2px] h-fit border-b-[3px] py-1 transition-all',
+                'h-full border-b-[3px] transition-all',
                 orderStatusID === '' ? 'border-primary' : 'border-transparent'
               )}
             >
@@ -197,7 +197,7 @@ function ListOrderDeliveryService() {
                   onClick={(e) => ChangeOrderStatusPage(e)}
                   value={status.id}
                   className={cx(
-                    '-mb-[2px] h-full whitespace-nowrap border-b-[3px] py-1 transition-all',
+                    'h-full whitespace-nowrap border-b-[3px] transition-all',
                     orderStatusID === status.id
                       ? 'border-primary'
                       : 'border-transparent'
@@ -215,6 +215,7 @@ function ListOrderDeliveryService() {
               <Table
                 data={formatSub(sellerOrders.data.data)}
                 isLoading={false}
+                empty={sellerOrders.data.data.rows.length === 0}
               />
             ) : (
               <div>{'Error'}</div>

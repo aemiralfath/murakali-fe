@@ -9,12 +9,11 @@ import { closeModal } from '@/redux/reducer/modalReducer'
 import type { ProductCartDetail } from '@/types/api/cart'
 import type { APIResponse } from '@/types/api/response'
 import type { AxiosError } from 'axios'
+import Image from 'next/image'
 
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
-
-import imageEmpty from '../../../public/asset/image-empty.jpg'
 
 interface ProductCartProps extends React.InputHTMLAttributes<HTMLInputElement> {
   listProduct: ProductCartDetail
@@ -76,23 +75,18 @@ const ProductCart: React.FC<ProductCartProps> = ({
             ) : (
               <></>
             )}
-            {listProduct.thumbnail_url ? (
-              <>
-                <img
-                  className="h-24 w-24 rounded-t-lg object-contain "
-                  src={listProduct.thumbnail_url}
-                  alt={'product image'}
-                />
-              </>
-            ) : (
-              <>
-                <img
-                  className="h-24 w-24 rounded-t-lg object-contain "
-                  src={imageEmpty.src}
-                  alt={'product image'}
-                />
-              </>
-            )}
+            <Image
+              className="h-24 w-24 rounded-t-lg object-contain "
+              width={100}
+              height={100}
+              alt={listProduct.title + ' photo'}
+              src={listProduct.thumbnail_url}
+              loading="lazy"
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null
+                currentTarget.src = '/asset/no-image.png'
+              }}
+            />
           </div>
           <div
             className={

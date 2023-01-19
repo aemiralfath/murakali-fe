@@ -1,12 +1,36 @@
+import { useLogout } from '@/api/auth/logout'
 import { Avatar, Icon } from '@/components'
 
 import { useMediaQuery, useUser } from '@/hooks'
+import type { APIResponse } from '@/types/api/response'
 import { Menu, Transition } from '@headlessui/react'
+import type { AxiosError } from 'axios'
+import { useRouter } from 'next/router'
 
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 import { HiMenu } from 'react-icons/hi'
 
 const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
+  const router = useRouter()
+
+  const logout = useLogout()
+
+  useEffect(() => {
+    if (logout.isSuccess) {
+      toast.success('Logout Success')
+      router.push('/')
+    }
+  }, [logout.isSuccess])
+  useEffect(() => {
+    if (logout.isError) {
+      const reason = logout.failureReason as AxiosError<APIResponse<null>>
+      toast.error(
+        reason.response ? reason.response.data.message : reason.message
+      )
+    }
+  }, [logout.isError])
+
   return (
     <Menu as="div" className="relative h-full">
       <Menu.Button className="inline-flex h-full items-center">
@@ -25,13 +49,14 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
           <Menu.Item>
             {({ active }) => (
               <button
+                onClick={() => router.push('/profile')}
                 className={`${
                   active
                     ? 'bg-primary bg-opacity-10 text-primary'
                     : 'text-gray-900'
                 } group flex w-full items-center rounded-md px-2 py-2 text-sm font-semibold`}
               >
-                My Account
+                My Profile
               </button>
             )}
           </Menu.Item>
@@ -56,6 +81,7 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
                     ? 'bg-primary bg-opacity-10 text-primary'
                     : 'text-gray-900'
                 } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                onClick={() => logout.mutate()}
               >
                 Logout
               </button>
