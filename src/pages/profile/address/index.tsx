@@ -22,8 +22,6 @@ import ProfileLayout from '@/layout/ProfileLayout'
 import { HiPencilAlt, HiTrash } from 'react-icons/hi'
 import { useGetUserProfile } from '@/api/user/profile'
 
-// TODO: Fix Address Combobox behavior
-
 function ManageAddress() {
   const modal = useModal()
   const [page, setPage] = useState<number>(1)
@@ -215,7 +213,7 @@ function ManageAddress() {
                       onClick={() => {
                         setPage(index + 1)
                       }}
-                      className={index + 1 === page ? 'btn btn-active' : 'btn'}
+                      className={index + 1 === page ? 'btn-active btn' : 'btn'}
                     >
                       {index + 1}
                     </button>

@@ -74,6 +74,7 @@ const Home: NextPage = () => {
                     data={product}
                     isLoading={false}
                     hoverable
+                    productID={product.id}
                   />
                 )
               })
