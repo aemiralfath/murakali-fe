@@ -22,6 +22,7 @@ export type ValidPage =
   | 'transaction-history'
   | 'address'
   | 'wallet'
+  | 'sealabs-pay'
   | 'digiwallet'
   | 'merchant'
   | 'logout'
@@ -68,7 +69,7 @@ const MenuItems: React.FC<MenuItemsProps> = ({ icon, title, link, active }) => {
         if (link === 'logout') {
           logout.mutate()
         } else if (link === 'merchant') {
-          router.push('/merchant')
+          router.push('/seller-panel/order')
         } else if (!active) {
           router.push('/profile' + (link === 'profile' ? '' : `/${link}`))
         }
@@ -115,10 +116,10 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ selectedPage }) => {
       active: selectedPage === 'wallet',
     },
     {
-      link: 'digiwallet',
-      title: 'Digiwallet',
+      link: 'sealabs-pay',
+      title: 'Sealabs Pay',
       icon: <HiLibrary />,
-      active: selectedPage === 'digiwallet',
+      active: selectedPage === 'sealabs-pay',
     },
     {
       link: 'merchant',

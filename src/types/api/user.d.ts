@@ -40,3 +40,11 @@ export interface IUserDetail {
 export interface IUserUploadPhotoProfile {
   photo_url: File | undefined
 }
+
+export interface Jwt {
+  id: string
+  role_id: number
+  iss: string
+  exp: number
+  iat: number
+}
