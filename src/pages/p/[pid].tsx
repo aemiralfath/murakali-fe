@@ -67,7 +67,6 @@ const ProductPage: NextPage = () => {
     0
   )
 
-  const review = useGetProductReview(pid as string, 0, true, true, 'asc', 6, 1)
   const [variantNamesState, setVariantNames] = useState<string[]>([])
   const [variantTypesState, setVariantTypes] = useState<{
     [key: string]: string[]
@@ -253,7 +252,10 @@ const ProductPage: NextPage = () => {
             )}
           </div>
           <div className="mt-8 lg:mt-0 lg:pl-6 xl:col-span-2">
-            <ProductReview productID={pid as string} />
+            <ProductReview
+              productID={pid as string}
+              rating={totalReview.data?.data}
+            />
           </div>
         </div>
         <Divider />
