@@ -229,9 +229,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     size="xs"
                     buttonType="ghost"
                     className="w-full text-white"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      // TODO: Add OnClick
+                    onClick={() => {
+                      router.push('/p/' + productID)
                     }}
                   >
                     Detail<br></br>Product
@@ -262,9 +261,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     size="xs"
                     buttonType="ghost"
                     className="w-full text-white"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      // TODO: Add OnClick
+                    onClick={() => {
+                      router.push('/p/' + productID)
                     }}
                   >
                     See Details
