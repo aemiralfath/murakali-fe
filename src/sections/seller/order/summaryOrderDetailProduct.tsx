@@ -3,7 +3,7 @@ import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import { useModal } from '@/hooks'
 import type { OrderData } from '@/types/api/order'
 
-import InputResi from '../../seller-panel/delivery-servis/InputResi'
+import InputResi from '../../seller-panel/delivery-servise/InputResi'
 import LabelDelivery from './LabelDelivery'
 
 interface SummaryOrderDetailProductProps {
