@@ -188,7 +188,7 @@ function ManageAddress() {
                 <div className="mt-4 flex justify-end">
                   <PaginationNav
                     page={page}
-                    total={userAllAddress.data.data.total_pages}
+                    total={userAllAddress.data?.data?.total_pages}
                     onChange={(p) => {
                       setPage(p)
                     }}

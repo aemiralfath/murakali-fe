@@ -19,8 +19,12 @@ import { useDispatch } from 'react-redux'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import { HiTrash } from 'react-icons/hi'
 import toast from 'react-hot-toast'
-import { AxiosError } from 'axios'
+import type { AxiosError } from 'axios'
+import { HiPlus, HiPencilAlt } from 'react-icons/hi'
+import { useRouter } from 'next/router'
+
 function Vouchers() {
+  const router = useRouter()
   const [voucherStatus, setVoucherStatus] = useState('')
 
   const sellerVoucher = useSellerVouchers(voucherStatus)
@@ -86,9 +90,15 @@ function Vouchers() {
             ),
             'Active Date': (
               <div>
-                <P>{moment(data.actived_date).format('DD MMMM YYYY')}</P>
+                <P>
+                  {moment(data.actived_date).utc().format('DD MMMM YYYY HH:mm')}
+                </P>
                 <P className="font-bold">until</P>
-                <P>{moment(data.expired_date).format('DD MMMM YYYY')}</P>
+                <P>
+                  {moment(data.expired_date)
+                    .utc()
+                    .format('DD MMMM YYYY  HH:mm')}
+                </P>
               </div>
             ),
             Discount: (
@@ -155,6 +165,20 @@ function Vouchers() {
                 ) : (
                   <></>
                 )}
+
+                {Date.now() < Date.parse(data.expired_date) ? (
+                  <Button
+                    buttonType="primary"
+                    outlined
+                    onClick={() => {
+                      router.push('/seller-panel/vouchers/manage')
+                    }}
+                  >
+                    <HiPencilAlt /> Update
+                  </Button>
+                ) : (
+                  <></>
+                )}
               </div>
             ),
           }
@@ -172,13 +196,26 @@ function Vouchers() {
       },
     ]
   }
+
   return (
     <div>
       <Head>
         <title>Murakali | Voucher Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="voucher">
-        <H2>Vouchers</H2>
+        <div className="flex w-full items-center justify-between">
+          <H2>Voucher List</H2>
+          <Button
+            size={'sm'}
+            buttonType="primary"
+            outlined
+            onClick={() => {
+              router.push('/seller-panel/vouchers/manage')
+            }}
+          >
+            <HiPlus /> Add Vouchers
+          </Button>
+        </div>
         <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
           <div className="my-4 flex h-fit w-fit max-w-full space-x-10 overflow-x-auto overflow-y-hidden whitespace-nowrap border-b-[2px]">
             <button
