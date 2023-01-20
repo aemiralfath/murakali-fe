@@ -189,7 +189,7 @@ function PromotionSeller() {
       <Head>
         <title>Murakali | Seller Panel</title>
       </Head>
-      <SellerPanelLayout selectedPage="product">
+      <SellerPanelLayout selectedPage="promotion">
         <div className="flex w-full items-center justify-between">
           <H2>Promotion List</H2>
           <Button
