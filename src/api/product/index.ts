@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import qs from 'qs'
 
 import type { Product, ProductImages } from '@/types/api/product'
-import type { TotalRating } from '@/types/api/review'
+import type { ProductReview, TotalRating } from '@/types/api/review'
 import type { APIResponse, PaginationData } from '@/types/api/response'
 import type { BriefProduct } from '@/types/api/product'
 
@@ -109,6 +109,58 @@ export const useGetSellerProduct = (
         max_rating
       )
   )
+}
+
+export const useGetProductReview = (
+  id: string,
+  rating: number,
+  show_comment: boolean,
+  show_image: boolean,
+  sort: string,
+  limit: number,
+  page: number
+) => {
+  return useQuery(
+    ['review', id, rating, show_comment, show_image, sort, limit, page],
+    async () =>
+      await getProductReview(
+        id,
+        rating,
+        show_comment,
+        show_image,
+        sort,
+        limit,
+        page
+      )
+  )
+}
+
+const getProductReview = async (
+  id: string,
+  rating: number,
+  show_comment: boolean,
+  show_image: boolean,
+  sort: string,
+  limit: number,
+  page: number
+) => {
+  const response = await unauthorizedClient.get<
+    APIResponse<PaginationData<ProductReview>>
+  >(
+    `/product/${id}/review?rating=` +
+      rating +
+      '&show_comment=' +
+      show_comment +
+      '&show_image=' +
+      show_image +
+      '&sort=' +
+      sort +
+      '&limit=' +
+      limit +
+      '&page=' +
+      page
+  )
+  return response.data
 }
 
 const getAllProduct = async (params: ProductPaginationParams) => {
