@@ -2,7 +2,7 @@ import { authorizedClient, unauthorizedClient } from '@/api/apiClient'
 import { useQuery } from '@tanstack/react-query'
 
 import type { APIResponse } from '@/types/api/response'
-import type { SellerInfo } from '@/types/api/seller'
+import type { SellerDetailInfomation, SellerInfo } from '@/types/api/seller'
 
 const profileKey = 'sellerinfo'
 
@@ -29,5 +29,19 @@ export const useGetSellerInfoByUserID = (userID?: string) => {
     queryKey: [profileKey, userID],
     queryFn: async () => await getSellerInfoByUserID(userID),
     enabled: !!userID,
+  })
+}
+
+const getSellerDetailInformation = async () => {
+  const response = await authorizedClient.get<
+    APIResponse<SellerDetailInfomation>
+  >('/seller/information')
+  return response.data
+}
+
+export const useGetSellerDetailInformation = () => {
+  return useQuery({
+    queryKey: [profileKey],
+    queryFn: async () => await getSellerDetailInformation(),
   })
 }

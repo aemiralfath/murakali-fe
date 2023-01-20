@@ -1,3 +1,4 @@
+import { useGetSellerDetailInformation } from '@/api/seller'
 import { useCreateVouchers } from '@/api/seller/voucher'
 import { Button, Chip, H2, H4, P, TextInput } from '@/components'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
@@ -15,6 +16,8 @@ import { useDispatch } from 'react-redux'
 function ManageVouchers() {
   const createVoucher = useCreateVouchers()
   //   const updateVoucher = useUpdateVouchers()
+
+  const useSellerDetailInformation = useGetSellerDetailInformation()
   const dispatch = useDispatch()
   const router = useRouter()
   const [input, setInput] = useState<CreateUpdateVoucher>({
@@ -29,6 +32,15 @@ function ManageVouchers() {
   })
 
   const [selected, setSelected] = useState<'P' | 'F'>('P')
+
+  const [SellerName, setSellerName] = useState('')
+  useEffect(() => {
+    if (useSellerDetailInformation.isSuccess) {
+      setSellerName(
+        (useSellerDetailInformation.data?.data?.name).replace(' ', '-')
+      )
+    }
+  }, [useSellerDetailInformation.isSuccess])
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     const inputName = event.currentTarget.name
@@ -75,20 +87,37 @@ function ManageVouchers() {
       return
     }
 
-    createVoucher.mutate({
-      code: input.code,
-      actived_date: moment(input.actived_date)
-        .format('DD-MM-YYYY HH:mm:ss')
-        .toString(),
-      discount_fix_price: Number(input.discount_fix_price),
-      discount_percentage: Number(input.discount_percentage),
-      expired_date: moment(input.expired_date)
-        .format('DD-MM-YYYY HH:mm:ss')
-        .toString(),
-      max_discount_price: Number(input.max_discount_price),
-      min_product_price: Number(input.min_product_price),
-      quota: Number(input.quota),
-    })
+    if (selected === 'F') {
+      createVoucher.mutate({
+        code: SellerName + '-' + input.code.toUpperCase(),
+        actived_date: moment(input.actived_date)
+          .format('DD-MM-YYYY HH:mm:ss')
+          .toString(),
+        discount_fix_price: Number(input.discount_fix_price),
+        discount_percentage: 0,
+        expired_date: moment(input.expired_date)
+          .format('DD-MM-YYYY HH:mm:ss')
+          .toString(),
+        max_discount_price: Number(input.discount_fix_price),
+        min_product_price: Number(input.min_product_price),
+        quota: Number(input.quota),
+      })
+    } else {
+      createVoucher.mutate({
+        code: SellerName + '-' + input.code.toUpperCase(),
+        actived_date: moment(input.actived_date)
+          .format('DD-MM-YYYY HH:mm:ss')
+          .toString(),
+        discount_fix_price: 0,
+        discount_percentage: Number(input.discount_percentage),
+        expired_date: moment(input.expired_date)
+          .format('DD-MM-YYYY HH:mm:ss')
+          .toString(),
+        max_discount_price: Number(input.max_discount_price),
+        min_product_price: Number(input.min_product_price),
+        quota: Number(input.quota),
+      })
+    }
   }
   return (
     <div>
@@ -119,12 +148,12 @@ function ManageVouchers() {
                 </P>
               </div>
               <div className="flex flex-1 items-center">
-                <P className="w-32 font-bold">Seller Name</P>
+                <P className="w-32 font-bold">{SellerName}</P>
                 <TextInput
                   type="text"
                   name="code"
                   onChange={handleChange}
-                  value={input.code}
+                  value={input.code.toUpperCase()}
                   full
                   maxLength={5}
                   required
@@ -143,8 +172,8 @@ function ManageVouchers() {
               <div className="flex flex-1 items-center">
                 <TextInput
                   type="number"
-                  name="qouta"
-                  placeholder="qouta"
+                  name="quota"
+                  placeholder="quota"
                   onChange={handleChange}
                   value={input.quota}
                   full
@@ -185,6 +214,14 @@ function ManageVouchers() {
                 </div>
                 <P className="mt-2 max-w-[20rem] text-sm">
                   Expired Voucher Date
+                  {input.actived_date === '' ? (
+                    <P className="font-bold">
+                      Please input active date first, before input exporired
+                      date
+                    </P>
+                  ) : (
+                    <></>
+                  )}
                 </P>
               </div>
               <div className="flex flex-1 items-center">
@@ -192,16 +229,17 @@ function ManageVouchers() {
                   type="datetime-local"
                   name="expired_date"
                   onChange={handleChange}
-                  min={moment(Date.now()).format('YYYY-MM-DD HH:mm')}
+                  min={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
                   placeholder={String(Date.now())}
                   value={moment(input.expired_date).format('YYYY-MM-DD HH:mm')}
                   full
+                  disabled={input.actived_date === ''}
                   required
                 />
               </div>
             </div>
             <div className="label-text mt-5 block">
-              <H4>Discount Persentage/Fix Price</H4>
+              <H4>Select Voucher Type (Discount Persentage/Fix Price)</H4>
             </div>
             <div className="mx-5 flex flex-row flex-wrap gap-2">
               <div>
@@ -254,6 +292,8 @@ function ManageVouchers() {
                       placeholder="persentage"
                       value={input.discount_percentage}
                       full
+                      min={1}
+                      max={100}
                       required
                     />
                     <P className="w-20 text-center text-lg font-bold">%</P>
@@ -280,6 +320,7 @@ function ManageVouchers() {
                       onChange={handleChange}
                       placeholder="x.xxx"
                       value={input.discount_fix_price}
+                      min={1}
                       full
                       required
                     />
@@ -287,6 +328,35 @@ function ManageVouchers() {
                 </div>
               </>
             )}
+            <div className="mt-6 flex flex-wrap justify-between gap-3">
+              <div className="w-[30%]">
+                <div className="flex items-center gap-3">
+                  <H4>Max Discount Price</H4>
+                  <Chip type={'gray'}>Required</Chip>
+                </div>
+                <P className="mt-2 max-w-[20rem] text-sm">
+                  Please input Max Discount
+                </P>
+              </div>
+              <div className="flex flex-1 items-center">
+                <TextInput
+                  type="number"
+                  name="max_discount_price"
+                  leftIcon={'Rp. '}
+                  onChange={handleChange}
+                  placeholder="x.xxx"
+                  value={
+                    selected === 'F'
+                      ? input.discount_fix_price
+                      : input.max_discount_price
+                  }
+                  disabled={selected === 'F'}
+                  full
+                  min={1}
+                  required
+                />
+              </div>
+            </div>
 
             <div className="mt-6 flex flex-wrap justify-between gap-3">
               <div className="w-[30%]">
@@ -307,30 +377,7 @@ function ManageVouchers() {
                   placeholder="x.xxx"
                   value={input.min_product_price}
                   full
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="mt-6 flex flex-wrap justify-between gap-3">
-              <div className="w-[30%]">
-                <div className="flex items-center gap-3">
-                  <H4>Max Product Price</H4>
-                  <Chip type={'gray'}>Required</Chip>
-                </div>
-                <P className="mt-2 max-w-[20rem] text-sm">
-                  Please input Max Product Price
-                </P>
-              </div>
-              <div className="flex flex-1 items-center">
-                <TextInput
-                  type="number"
-                  name="max_discount_price"
-                  leftIcon={'Rp. '}
-                  onChange={handleChange}
-                  placeholder="x.xxx"
-                  value={input.max_discount_price}
-                  full
+                  min={0}
                   required
                 />
               </div>
