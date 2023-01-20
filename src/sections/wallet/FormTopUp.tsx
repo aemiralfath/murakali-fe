@@ -59,6 +59,9 @@ const FormTopUp: React.FC = () => {
       if (paymentReason === 'insufficient fund to create transaction') {
         toast.error('Insufficient balance, please top up first!')
       }
+      if (paymentReason === 'user not found') {
+        toast.error('User Not Found!')
+      }
     }
   }, [useSlpPayment.isError])
 
