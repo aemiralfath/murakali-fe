@@ -167,7 +167,7 @@ const MainProductDetail = ({
                                 variantTypeIdx
                               )}
                               className={cx(
-                                'btn btn-sm rounded-sm',
+                                'btn-sm btn rounded-sm',
                                 selectMap[variantNameIdx] === variantTypeIdx
                                   ? 'btn-primary'
                                   : 'btn-outline border-gray-200'

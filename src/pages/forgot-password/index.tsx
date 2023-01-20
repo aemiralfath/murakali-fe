@@ -4,7 +4,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useModal } from '@/hooks'
 import React, { useEffect } from 'react'
-import toast from 'react-hot-toast'
+
 import { HiPaperAirplane } from 'react-icons/hi'
 
 import type { APIResponse } from '@/types/api/response'
@@ -20,10 +20,16 @@ function ForgotPassword() {
   const userResetPassword = useResetPassword()
   useEffect(() => {
     if (userResetPassword.isError) {
-      const errmsg = userResetPassword.error as AxiosError<APIResponse<null>>
-      toast.error(
-        errmsg.response ? errmsg.response.data.message : errmsg.message
-      )
+      modal.info({
+        title: 'Info',
+        content: (
+          <P>
+            An OTP has been sent to your registered email address. Please use
+            the code to verify your account.
+          </P>
+        ),
+        closeButton: true,
+      })
     }
   }, [userResetPassword.isError])
   useEffect(() => {
@@ -32,9 +38,8 @@ function ForgotPassword() {
         title: 'Info',
         content: (
           <P>
-            Please check your email for a reset password link. If you don&apos;t
-            see the email in your inbox, be sure to check your spam or junk
-            folder.
+            An OTP has been sent to your registered email address. Please use
+            the code to verify your account.
           </P>
         ),
         closeButton: true,
