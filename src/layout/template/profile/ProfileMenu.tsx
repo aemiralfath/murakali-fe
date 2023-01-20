@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import {
-  HiCreditCard,
   HiHome,
   HiIdentification,
   HiLibrary,

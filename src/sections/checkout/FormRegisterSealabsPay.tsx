@@ -11,17 +11,19 @@ import { useDispatch } from 'react-redux'
 import PaymentOption from './PaymentOption'
 
 interface FormRegisterSealabsPayProps {
-  postCheckout: PostCheckout
-  userWallet: WalletUser
-  userSLP: SLPUser[]
-  totalOrder: number
+  postCheckout: PostCheckout | undefined
+  userWallet: WalletUser | undefined
+  userSLP: SLPUser[] | undefined
+  totalOrder: number | undefined
+  isCheckout: boolean
 }
 
 const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
-  postCheckout,
-  userWallet,
-  userSLP,
-  totalOrder,
+  postCheckout = undefined,
+  userWallet = undefined,
+  userSLP = undefined,
+  totalOrder = undefined,
+  isCheckout,
 }) => {
   const modal = useModal()
   const dispatch = useDispatch()
@@ -112,18 +114,22 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
             type="button"
             buttonType="gray"
             onClick={() => {
-              modal.edit({
-                title: 'Choose Payment Option',
-                content: (
-                  <PaymentOption
-                    postCheckout={postCheckout}
-                    userWallet={userWallet}
-                    userSLP={userSLP}
-                    totalOrder={totalOrder}
-                  />
-                ),
-                closeButton: false,
-              })
+              if (!isCheckout) {
+                dispatch(closeModal())
+              } else {
+                modal.edit({
+                  title: 'Choose Payment Option',
+                  content: (
+                    <PaymentOption
+                      postCheckout={postCheckout}
+                      userWallet={userWallet}
+                      userSLP={userSLP}
+                      totalOrder={totalOrder}
+                    />
+                  ),
+                  closeButton: false,
+                })
+              }
             }}
           >
             cancel

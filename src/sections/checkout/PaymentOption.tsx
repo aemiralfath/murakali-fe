@@ -241,6 +241,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
                       userWallet={userWallet}
                       userSLP={userSLP}
                       totalOrder={totalOrder}
+                      isCheckout={true}
                     />
                   </>
                 ),
