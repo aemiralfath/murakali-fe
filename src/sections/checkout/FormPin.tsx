@@ -65,11 +65,19 @@ const FormPIN: React.FC<FormPINProps> = ({ postCheckout, amount }) => {
 
   useEffect(() => {
     if (createTransaction.isError) {
-      dispatch(closeModal())
       const errMsg = createTransaction.error as AxiosError<APIResponse<null>>
       toast.error(
         errMsg.response ? errMsg.response.data.message : errMsg.message
       )
+
+      if (
+        (errMsg.response ? errMsg.response.data.message : errMsg.message) ===
+        'Product quantity not available.'
+      ) {
+        router.push('/cart')
+      }
+
+      dispatch(closeModal())
     }
   }, [createTransaction.isError])
 
