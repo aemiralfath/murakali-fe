@@ -14,8 +14,8 @@ import SellerPanelLayout from '@/layout/SellerPanelLayout'
 import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
 import { useModal } from '@/hooks'
-import ProcessDelivery from '@/sections/seller-panel/delivery-servis/ProcessDelivery'
-import CancelDelivery from '@/sections/seller-panel/delivery-servis/CancelDelivery'
+import ProcessDelivery from '@/sections/seller-panel/delivery-servise/ProcessDelivery'
+import CancelDelivery from '@/sections/seller-panel/delivery-servise/CancelDelivery'
 
 function ListOrderDeliveryService() {
   const router = useRouter()

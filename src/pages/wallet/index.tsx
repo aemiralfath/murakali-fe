@@ -160,7 +160,12 @@ function Wallet() {
                 onClick={() => {
                   modal.info({
                     title: 'Transaction Detail',
-                    content: <TransactionDetail transactionId={data.id} />,
+                    content: (
+                      <TransactionDetail
+                        walletID={userWallet.data?.data?.id}
+                        walletHistoryID={data.id}
+                      />
+                    ),
                     closeButton: true,
                   })
                 }}

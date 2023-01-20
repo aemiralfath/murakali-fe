@@ -5,7 +5,7 @@ import CancelDelivery from '@/sections/seller-panel/delivery-servis/CancelDelive
 import ProcessDelivery from '@/sections/seller-panel/delivery-servis/ProcessDelivery'
 import type { OrderData } from '@/types/api/order'
 
-import InputResi from '../../seller-panel/delivery-servis/InputResi'
+import InputResi from '../../seller-panel/delivery-servise/InputResi'
 import LabelDelivery from './LabelDelivery'
 
 interface SummaryOrderDetailProductProps {
