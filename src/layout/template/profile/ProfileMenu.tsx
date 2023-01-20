@@ -110,12 +110,6 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({ selectedPage }) => {
       active: selectedPage === 'address',
     },
     {
-      link: 'wallet',
-      title: 'Wallet',
-      icon: <HiCreditCard />,
-      active: selectedPage === 'wallet',
-    },
-    {
       link: 'sealabs-pay',
       title: 'Sealabs Pay',
       icon: <HiLibrary />,
