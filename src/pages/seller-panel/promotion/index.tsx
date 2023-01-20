@@ -13,6 +13,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import type { MouseEvent } from 'react'
 import { HiDuplicate, HiPencil, HiPlus } from 'react-icons/hi'
+import formatMoney from '@/helper/formatMoney'
 
 function PromotionSeller() {
   const router = useRouter()
@@ -49,7 +50,7 @@ function PromotionSeller() {
               )}
             </div>
             <div className="flex flex-1 flex-col gap-2 p-1">
-              <P className="w-[30rem] font-semibold line-clamp-2">
+              <P className="w-[15rem] font-semibold line-clamp-2">
                 {row.product_name}
               </P>
             </div>
@@ -91,6 +92,24 @@ function PromotionSeller() {
             <P>{moment(row.expired_date).format('DD MMM YYYY HH:mm:ss')}</P>
           </div>
         ),
+        Discount: (
+          <div>
+            {row.discount_percentage > 0 && row.discount_fix_price <= 0 ? (
+              <>{row.discount_percentage}%</>
+            ) : (
+              <></>
+            )}
+            {row.discount_percentage <= 0 && row.discount_fix_price > 0 ? (
+              <>
+                Rp
+                {formatMoney(row.discount_fix_price)}
+              </>
+            ) : (
+              <></>
+            )}
+          </div>
+        ),
+
         Action: (
           <div className="flex flex-col gap-2">
             <Button
@@ -142,6 +161,7 @@ function PromotionSeller() {
         Quantity: '',
         Status: '',
         Period: '',
+        Discount: '',
         Action: '',
       },
     ]
