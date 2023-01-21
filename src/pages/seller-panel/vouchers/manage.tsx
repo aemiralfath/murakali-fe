@@ -19,14 +19,18 @@ import toast from 'react-hot-toast'
 
 function ManageVouchers() {
   const router = useRouter()
-  const voucherId = router.query.voucher
+
   const [id, setId] = useState<string>()
   const [edit, setEdit] = useState<boolean>(false)
+  const [duplicate, setDuplicate] = useState<boolean>(false)
   const sellerVoucher = useSellerVoucherDetail(id)
   const createVoucher = useCreateVouchers()
   const updateVoucher = useUpdateVouchers(id)
   const [selected, setSelected] = useState<'P' | 'F'>('P')
   const [SellerName, setSellerName] = useState('')
+
+  const voucherId = router.query.voucher
+  const typeManage = router.query.type
   useEffect(() => {
     if (typeof voucherId === 'string') {
       setId(voucherId)
@@ -35,17 +39,39 @@ function ManageVouchers() {
 
   useEffect(() => {
     if (sellerVoucher.isSuccess) {
-      setInput({
-        code: (sellerVoucher.data?.data?.code).replace(SellerName, ''),
-        quota: sellerVoucher.data?.data?.quota,
-        actived_date: sellerVoucher.data?.data?.actived_date,
-        expired_date: sellerVoucher.data?.data?.expired_date,
-        discount_percentage: sellerVoucher.data?.data?.discount_percentage,
-        discount_fix_price: sellerVoucher.data?.data?.discount_fix_price,
-        min_product_price: sellerVoucher.data?.data?.min_product_price,
-        max_discount_price: sellerVoucher.data?.data?.max_discount_price,
-      })
-      setEdit(true)
+      if (typeManage === 'update') {
+        setInput({
+          code: (sellerVoucher.data?.data?.code).replace(SellerName, ''),
+          quota: sellerVoucher.data?.data?.quota,
+          actived_date: moment(sellerVoucher.data?.data?.actived_date)
+            .utc()
+            .format('YYYY-MM-DD HH:mm'),
+          expired_date: moment(sellerVoucher.data?.data?.expired_date)
+            .utc()
+            .format('YYYY-MM-DD HH:mm'),
+          discount_percentage: sellerVoucher.data?.data?.discount_percentage,
+          discount_fix_price: sellerVoucher.data?.data?.discount_fix_price,
+          min_product_price: sellerVoucher.data?.data?.min_product_price,
+          max_discount_price: sellerVoucher.data?.data?.max_discount_price,
+        })
+        setEdit(true)
+      } else if (typeManage === 'duplicate') {
+        setInput({
+          code: '',
+          quota: sellerVoucher.data?.data?.quota,
+          actived_date: moment(sellerVoucher.data?.data?.actived_date)
+            .utc()
+            .format('YYYY-MM-DD HH:mm'),
+          expired_date: moment(sellerVoucher.data?.data?.expired_date)
+            .utc()
+            .format('YYYY-MM-DD HH:mm'),
+          discount_percentage: sellerVoucher.data?.data?.discount_percentage,
+          discount_fix_price: sellerVoucher.data?.data?.discount_fix_price,
+          min_product_price: sellerVoucher.data?.data?.min_product_price,
+          max_discount_price: sellerVoucher.data?.data?.max_discount_price,
+        })
+        setDuplicate(true)
+      }
 
       if (sellerVoucher.data?.data?.discount_fix_price > 0) {
         setSelected('F')
@@ -83,7 +109,11 @@ function ManageVouchers() {
 
   useEffect(() => {
     if (createVoucher.isSuccess) {
-      toast.success('Successfully Create Voucher')
+      if (duplicate) {
+        toast.success('Successfully Duplicate Voucher')
+      } else {
+        toast.success('Successfully Create Voucher')
+      }
       router.push('/seller-panel/vouchers')
 
       setInput({
@@ -96,6 +126,8 @@ function ManageVouchers() {
         min_product_price: 0,
         max_discount_price: 0,
       })
+      setDuplicate(false)
+      setEdit(false)
     }
     if (updateVoucher.isSuccess) {
       toast.success('Successfully Update Voucher')
@@ -186,7 +218,7 @@ function ManageVouchers() {
       </Head>
       <SellerPanelLayout selectedPage="voucher">
         <div className="flex  w-full items-center justify-start">
-          <H2>{edit ? 'Edit' : 'Add'} Voucher</H2>
+          <H2>{edit ? 'Edit' : duplicate ? 'Duplicate' : 'Add'} Voucher</H2>
         </div>
 
         <div className="md:px-18 mt-3 flex h-full flex-col rounded border bg-white p-6 px-5 lg:px-52 ">
@@ -351,6 +383,7 @@ function ManageVouchers() {
                       placeholder="persentage"
                       value={input.discount_percentage}
                       full
+                      maxLength={3}
                       min={1}
                       max={100}
                       required
