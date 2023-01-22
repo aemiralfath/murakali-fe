@@ -133,6 +133,7 @@ function Vouchers() {
                         pathname: '/seller-panel/vouchers/manage',
                         query: {
                           voucher: data.id,
+                          type: 'update',
                         },
                       })
                     }}
@@ -142,6 +143,21 @@ function Vouchers() {
                 ) : (
                   <></>
                 )}
+                <Button
+                  buttonType="primary"
+                  outlined
+                  onClick={() => {
+                    router.push({
+                      pathname: '/seller-panel/vouchers/manage',
+                      query: {
+                        voucher: data.id,
+                        type: 'duplicate',
+                      },
+                    })
+                  }}
+                >
+                  <HiPencilAlt /> Duplicate
+                </Button>
                 {Date.now() < Date.parse(data.actived_date) ? (
                   <Button
                     buttonType="primary"
@@ -219,6 +235,7 @@ function Vouchers() {
                 pathname: '/seller-panel/vouchers/manage',
                 query: {
                   voucher: '',
+                  type: '',
                 },
               })
             }}
