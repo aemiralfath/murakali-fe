@@ -188,7 +188,7 @@ function ManageAddress() {
                 <div className="mt-4 flex justify-end">
                   <PaginationNav
                     page={page}
-                    total={userAllAddress.data.data.total_pages}
+                    total={userAllAddress.data?.data?.total_pages}
                     onChange={(p) => {
                       setPage(p)
                     }}
@@ -213,7 +213,7 @@ function ManageAddress() {
                       onClick={() => {
                         setPage(index + 1)
                       }}
-                      className={index + 1 === page ? 'btn-active btn' : 'btn'}
+                      className={index + 1 === page ? 'btn btn-active' : 'btn'}
                     >
                       {index + 1}
                     </button>

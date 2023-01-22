@@ -20,3 +20,14 @@ export interface VoucherData {
     Valid: boolean
   }
 }
+
+export interface CreateUpdateVoucher {
+  code: string
+  quota: number
+  actived_date: string
+  expired_date: string
+  discount_percentage: number
+  discount_fix_price: number
+  min_product_price: number
+  max_discount_price: number
+}

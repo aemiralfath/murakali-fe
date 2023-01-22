@@ -1,9 +1,11 @@
 import { Button } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import { useModal } from '@/hooks'
+import CancelDelivery from '@/sections/seller-panel/delivery-servise/CancelDelivery'
+import ProcessDelivery from '@/sections/seller-panel/delivery-servise/ProcessDelivery'
 import type { OrderData } from '@/types/api/order'
 
-import InputResi from '../../seller-panel/delivery-servis/InputResi'
+import InputResi from '../../seller-panel/delivery-servise/InputResi'
 import LabelDelivery from './LabelDelivery'
 
 interface SummaryOrderDetailProductProps {
@@ -45,6 +47,22 @@ const SummaryOrderDetailProduct: React.FC<SummaryOrderDetailProductProps> = ({
       closeButton: false,
     })
   }
+
+  function confirmationModal(orderID: string, orderStatus: number) {
+    modal.info({
+      title: 'Confirm Status Order Change',
+      content: <ProcessDelivery orderID={orderID} orderStatus={orderStatus} />,
+      closeButton: false,
+    })
+  }
+
+  function cancelModal(orderID: string) {
+    modal.error({
+      title: 'Cancel Order',
+      content: <CancelDelivery orderID={orderID} />,
+      closeButton: false,
+    })
+  }
   return (
     <div className="max-w-full flex-none overflow-x-auto p-4">
       <div className=" overflow-x-auto whitespace-nowrap border-solid border-gray-300">
@@ -73,14 +91,29 @@ const SummaryOrderDetailProduct: React.FC<SummaryOrderDetailProductProps> = ({
 
       <div>
         {order_status === 2 ? (
-          <>
-            <Button buttonType="primary" size="sm" className="rounded">
+          <div className="flex justify-between">
+            <Button
+              onClick={() => {
+                confirmationModal(order_id, order_status + 1)
+              }}
+              buttonType="primary"
+              size="sm"
+              className="rounded"
+            >
               Confirm
             </Button>
-            <Button buttonType="primary" outlined size="sm" className="rounded">
+            <Button
+              onClick={() => {
+                cancelModal(order_id)
+              }}
+              buttonType="primary"
+              outlined
+              size="sm"
+              className="rounded"
+            >
               Cancel
             </Button>
-          </>
+          </div>
         ) : order_status === 3 ? (
           <Button
             buttonType="primary"

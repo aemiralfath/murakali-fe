@@ -25,10 +25,14 @@ const orderStatusData = [
   },
   {
     id: '7',
-    name: 'Cancelled',
+    name: 'Completed',
   },
   {
     id: '8',
+    name: 'Canceled',
+  },
+  {
+    id: '9',
     name: 'Refunded',
   },
 ]

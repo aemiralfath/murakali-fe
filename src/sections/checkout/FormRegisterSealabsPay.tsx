@@ -3,10 +3,13 @@ import { Button, TextInput } from '@/components'
 import { useModal } from '@/hooks'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { PostCheckout } from '@/types/api/checkout'
+import type { APIResponse } from '@/types/api/response'
 import type { SLPUser } from '@/types/api/slp'
 import type { WalletUser } from '@/types/api/wallet'
+import type { AxiosError } from 'axios'
 import moment from 'moment'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import PaymentOption from './PaymentOption'
 
@@ -41,6 +44,22 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
     setInput((prev) => ({ ...prev, [inputName]: value }))
   }
 
+  useEffect(() => {
+    if (registerSealabsPay.isError) {
+      const errMsg = registerSealabsPay.failureReason as AxiosError<
+        APIResponse<null>
+      >
+      toast.error(errMsg.response.data.message as string)
+    }
+  }, [registerSealabsPay.isError])
+
+  useEffect(() => {
+    if (registerSealabsPay.isSuccess) {
+      toast.success('Add sealabs pay card success.')
+      dispatch(closeModal())
+    }
+  }, [registerSealabsPay.isSuccess])
+
   const handleRegisterSealabsPay = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
@@ -50,7 +69,7 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
     setInput({
       card_number: '',
       name: '',
-      is_default: false,
+      is_default: true,
       active_date: '',
     })
   }
@@ -60,7 +79,6 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
         className="mt-1 flex flex-col gap-y-3"
         onSubmit={(e) => {
           void handleRegisterSealabsPay(e)
-          dispatch(closeModal())
           return false
         }}
       >
