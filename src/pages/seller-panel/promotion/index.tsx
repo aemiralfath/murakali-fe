@@ -130,7 +130,7 @@ function PromotionSeller() {
               outlined
               onClick={() => {
                 router.push(
-                  '/seller-panel/products/manage?intent=edit&product_id=' +
+                  '/seller-panel/promotion/manage?intent=edit&product_id=' +
                     row.id
                 )
               }}
@@ -142,7 +142,7 @@ function PromotionSeller() {
               buttonType="ghost"
               onClick={() => {
                 router.push(
-                  '/seller-panel/products/manage?intent=add&product_id=' +
+                  '/seller-panel/promotion/manage?intent=add&product_id=' +
                     row.id
                 )
               }}
