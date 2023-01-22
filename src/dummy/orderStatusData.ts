@@ -1,15 +1,15 @@
 const orderStatusData = [
   {
     id: '1',
-    name: 'Waiting for payment',
+    name: 'Waiting for Payment',
   },
   {
     id: '2',
-    name: 'Paid',
+    name: 'Waiting for Seller Confirmation',
   },
   {
     id: '3',
-    name: 'Packaging',
+    name: 'On Process',
   },
   {
     id: '4',
@@ -26,6 +26,10 @@ const orderStatusData = [
   {
     id: '7',
     name: 'Cancelled',
+  },
+  {
+    id: '8',
+    name: 'Refunded',
   },
 ]
 

@@ -226,7 +226,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     buttonType="ghost"
                     className="w-full text-white"
                     onClick={() => {
-                      router.push('/p/' + productID)
+                      router.push('/p/' + data.id)
                     }}
                   >
                     Detail<br></br>Product
@@ -258,7 +258,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     buttonType="ghost"
                     className="w-full text-white"
                     onClick={() => {
-                      router.push('/p/' + productID)
+                      router.push('/p/' + data.id)
                     }}
                   >
                     See Details

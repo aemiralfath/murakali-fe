@@ -1,4 +1,4 @@
-import type { OrderModel } from './order'
+import type { BuyerOrder } from './order'
 import type { NullableTime } from './time'
 import type { Voucher } from './Voucher'
 
@@ -14,5 +14,5 @@ export interface Transaction {
   invoice?: string
   total_price: number
   expired_at: NullableTime
-  orders: OrderModel[]
+  orders: BuyerOrder[]
 }

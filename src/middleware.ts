@@ -10,7 +10,9 @@ export async function middleware(req: NextRequest) {
     return response
   }
 
-  const res = await fetch(env.NEXT_PUBLIC_BE_URL + '/auth/refresh')
+  const res = await fetch(env.NEXT_PUBLIC_BE_URL + '/auth/refresh', {
+    credentials: 'include',
+  })
   if (res.ok) {
     const data = (await res.json()) as APIResponse<AccessTokenData>
     if (data?.data) {
