@@ -45,7 +45,7 @@ const OrderCard: React.FC<
   const order = data
 
   return (
-    <div className={'flex flex-col gap-2.5 rounded border p-3'}>
+    <div className={'flex flex-col gap-2.5 rounded border bg-white p-3'}>
       {isLoading ? (
         <div className="h-[1.5rem] w-[6rem] animate-pulse rounded bg-base-300" />
       ) : (
@@ -166,7 +166,12 @@ const OrderCard: React.FC<
       {insideTransaction ? (
         <></>
       ) : (
-        <Button buttonType="ghost">
+        <Button
+          buttonType="ghost"
+          onClick={() => {
+            router.push('/order/detail?id=' + order.order_id)
+          }}
+        >
           Order Detail <HiArrowRight />
         </Button>
       )}
@@ -241,7 +246,9 @@ function TransactionHistory() {
                       return (
                         <div
                           key={row.id}
-                          className={'flex flex-col gap-2.5 rounded border p-3'}
+                          className={
+                            'flex flex-col gap-2.5 rounded border bg-gray-50 p-3'
+                          }
                         >
                           {row.orders.map((order) => {
                             return (

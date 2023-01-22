@@ -20,3 +20,18 @@ const getOrders = async (params: GetOrderParams) => {
 export const useGetOrders = (params: GetOrderParams) => {
   return useQuery([key, params], async () => await getOrders(params))
 }
+
+const getOrderByID = async (id: string) => {
+  const response = await authorizedClient.get<APIResponse<BuyerOrder>>(
+    '/user/order/' + id
+  )
+  return response.data
+}
+
+export const useGetOrderByID = (id: string) => {
+  return useQuery({
+    queryKey: [key, id],
+    queryFn: async () => await getOrderByID(id),
+    enabled: Boolean(id),
+  })
+}

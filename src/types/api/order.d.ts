@@ -86,7 +86,7 @@ export interface BuyerOrder {
   courier_description: string
   buyer_username: string
   buyer_phone_number: number | null
-  buyer_address: null
-  seller_address: null
+  buyer_address: null | AddressDetail
+  seller_address: null | AddressDetail
   detail: BuyerOrderDetail[]
 }
