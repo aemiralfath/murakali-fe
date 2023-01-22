@@ -2,9 +2,8 @@ import { A, Divider, H3, P, Spinner } from '@/components'
 import { useModal } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
 import ProductImageCarousel from '@/layout/template/product/ProductImageCarousel'
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
-// import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { HiHeart, HiShare } from 'react-icons/hi'
 import ShareModal from '@/sections/productdetail/ShareModal'
@@ -15,23 +14,46 @@ import ProductDescription from '@/sections/productdetail/ProductDescription'
 import ProductReview from '@/sections/productdetail/ProductReview'
 import { useRouter } from 'next/router'
 import {
+  getProductById,
   useGetProductById,
   useGetProductImagesByProductID,
-  useGetProductReview,
   useGetTotalReview,
 } from '@/api/product'
 import { useGetSellerInfo } from '@/api/seller'
 import { useGetSellerProduct } from '@/api/product'
 import ProductCarousel from '@/sections/home/ProductCarousel'
 import ProductCard from '@/layout/template/product/ProductCard'
+import { dehydrate, QueryClient } from '@tanstack/react-query'
+import cx from '@/helper/cx'
+import { useAddFavProduct } from '@/api/product/favorite'
+import { toast } from 'react-hot-toast'
+import type { AxiosError } from 'axios'
+import type { APIResponse } from '@/types/api/response'
 
 const ProductPage: NextPage = () => {
-  // const dummyProduct = product
-
   const router = useRouter()
   const { pid } = router.query
 
   const product = useGetProductById(pid as string)
+  const addFavorite = useAddFavProduct()
+  const [addedFav, setAddedFav] = useState(false)
+  useEffect(() => {
+    if (addFavorite.isError) {
+      const errmsg = addFavorite.failureReason as AxiosError<APIResponse<null>>
+      if (errmsg.response?.data.message === 'Product already in favorite.') {
+        toast.success('Product already in favorite')
+        setAddedFav(true)
+      } else {
+        toast.error(errmsg.response?.data.message as string)
+      }
+    }
+  }, [addFavorite.isError])
+  useEffect(() => {
+    if (addFavorite.isSuccess) {
+      toast.success('Added to Favorite')
+      setAddedFav(true)
+    }
+  }, [addFavorite.isSuccess])
 
   const totalReview = useGetTotalReview(pid as string)
   const seller = useGetSellerInfo(product.data?.data.products_info.shop_id)
@@ -79,8 +101,6 @@ const ProductPage: NextPage = () => {
   const [selectVariant, setSelectVariant] = useState<
     ProductDetail | undefined
   >()
-
-  // const [productPromotion, setProductPromotion] = useState<Promotion>()
 
   useEffect(() => {
     if (product.isSuccess) {
@@ -159,9 +179,10 @@ const ProductPage: NextPage = () => {
   return (
     <>
       <Head>
-        {/* TODO: Change Page title */}
-        <title>{product.data?.data.products_info.title} - Murakali</title>
-        <meta name="description" content="Murakali E-Commerce Application" />
+        <>
+          <title>Products - Murakali</title>
+          <meta name="description" content="Murakali E-Commerce Application" />
+        </>
       </Head>
       <MainLayout>
         {/* {isLoading ? (
@@ -172,11 +193,10 @@ const ProductPage: NextPage = () => {
         <div className="grid grid-cols-12">
           <div className="col-span-12 flex flex-col md:flex-row lg:col-span-9">
             {isLoading ? (
-              <ProductImageCarousel isLoading={isLoading} data={undefined} />
+              <ProductImageCarousel isLoading data={undefined} />
             ) : (
               <div>
                 <ProductImageCarousel
-                  // TODO: Change image when selectVariant is not undefined
                   data={{
                     images: productImage.data?.data,
                     alt: product.data?.data.products_info.title,
@@ -192,7 +212,17 @@ const ProductPage: NextPage = () => {
                 />
                 <div className="mt-4 md:pl-[2.8rem] xl:pl-[4rem]">
                   <div className="flex items-center gap-3 text-gray-500 md:pl-2">
-                    <A className="flex items-center gap-1 font-semibold">
+                    <A
+                      className={cx(
+                        'flex items-center gap-1 font-semibold',
+                        addedFav ? 'text-red-400' : ''
+                      )}
+                      onClick={() => {
+                        if (product.data?.data) {
+                          addFavorite.mutate(product.data.data.products_info.id)
+                        }
+                      }}
+                    >
                       <HiHeart className="text-xl" />
                       <P>Favorite</P>
                     </A>
@@ -213,17 +243,29 @@ const ProductPage: NextPage = () => {
                 </div>
               </div>
             )}
-            <MainProductDetail
-              isLoading={product.isLoading}
-              variantNamesState={variantNamesState}
-              variantTypesState={variantTypesState}
-              variantMapState={variantMapState}
-              selectMap={selectMap}
-              setSelectMap={setSelectMap}
-              selectVariant={selectVariant}
-              productInfo={product.data?.data.products_info}
-              totalReview={totalReview.data?.data?.total_rating ?? 0}
-            />
+            <div>
+              <MainProductDetail
+                isLoading={product.isLoading}
+                variantNamesState={variantNamesState}
+                variantTypesState={variantTypesState}
+                variantMapState={variantMapState}
+                selectMap={selectMap}
+                setSelectMap={setSelectMap}
+                selectVariant={selectVariant}
+                productInfo={product.data?.data.products_info}
+                totalReview={totalReview.data?.data?.total_rating ?? 0}
+              />
+              <div className="mt-4 md:mx-4 xl:col-span-3">
+                {seller.data?.data && product.data?.data ? (
+                  <ProductDescription
+                    seller={seller.data.data}
+                    productInfo={product.data.data.products_info}
+                  />
+                ) : (
+                  <></>
+                )}
+              </div>
+            </div>
           </div>
           <div className="col-span-12 mt-6 flex h-fit flex-col gap-4 rounded border p-4 lg:col-span-3 lg:mt-0">
             {isLoading ? (
@@ -240,17 +282,7 @@ const ProductPage: NextPage = () => {
           </div>
         </div>
         <Divider />
-        <div className="grid lg:grid-cols-2 lg:divide-x-[1px] xl:grid-cols-5">
-          <div className="lg:pr-6 xl:col-span-3">
-            {seller.data?.data && product.data?.data ? (
-              <ProductDescription
-                seller={seller.data.data}
-                productInfo={product.data.data.products_info}
-              />
-            ) : (
-              <></>
-            )}
-          </div>
+        <div className="">
           <div className="mt-8 lg:mt-0 lg:pl-6 xl:col-span-2">
             <ProductReview
               productID={pid as string}
@@ -291,3 +323,24 @@ const ProductPage: NextPage = () => {
 }
 
 export default ProductPage
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { pid } = context.params
+  const queryClient = new QueryClient()
+  let isError = false
+
+  try {
+    await queryClient.fetchQuery({
+      queryFn: () => getProductById(pid as string),
+      queryKey: ['product', pid],
+    })
+  } catch (error) {
+    isError = true
+  }
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+    notFound: isError,
+  }
+}
