@@ -21,7 +21,7 @@ function ListOrderDeliveryService() {
   const router = useRouter()
 
   const [orderStatusID, setOrderStatusID] = useState('')
-  const sellerOrders = useSellerOrders(orderStatusID)
+  const sellerOrders = useSellerOrders(orderStatusID, '')
   const orderStatuses = orderStatusData
   const modal = useModal()
 

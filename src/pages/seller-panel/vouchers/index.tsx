@@ -20,7 +20,12 @@ import { closeModal } from '@/redux/reducer/modalReducer'
 import { HiTrash } from 'react-icons/hi'
 import toast from 'react-hot-toast'
 import type { AxiosError } from 'axios'
-import { HiPlus, HiPencilAlt } from 'react-icons/hi'
+import {
+  HiPlus,
+  HiPencilAlt,
+  HiDocumentDuplicate,
+  HiInformationCircle,
+} from 'react-icons/hi'
 import { useRouter } from 'next/router'
 
 function Vouchers() {
@@ -124,6 +129,20 @@ function Vouchers() {
 
             Action: (
               <div className="flex w-fit flex-col gap-1">
+                {Date.now() > Date.parse(data.expired_date) ? (
+                  <Button
+                    buttonType="gray"
+                    onClick={() => {
+                      router.push({
+                        pathname: '/seller-panel/vouchers/' + data.id,
+                      })
+                    }}
+                  >
+                    <HiInformationCircle /> Detail
+                  </Button>
+                ) : (
+                  <></>
+                )}
                 {Date.now() < Date.parse(data.expired_date) ? (
                   <Button
                     buttonType="primary"
@@ -156,7 +175,7 @@ function Vouchers() {
                     })
                   }}
                 >
-                  <HiPencilAlt /> Duplicate
+                  <HiDocumentDuplicate /> Duplicate
                 </Button>
                 {Date.now() < Date.parse(data.actived_date) ? (
                   <Button
