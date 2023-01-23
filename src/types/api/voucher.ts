@@ -9,7 +9,7 @@ export interface VoucherData {
   discount_fix_price: number
   min_product_price: number
   max_discount_price: number
-  max_quantity: number
+
   created_at: string
   updated_at: {
     Time: string

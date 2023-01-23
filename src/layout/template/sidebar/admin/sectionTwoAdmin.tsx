@@ -2,26 +2,11 @@ import cx from '@/helper/cx'
 
 import { useRouter } from 'next/router'
 import React from 'react'
-import {
-  HiArchive,
-  HiInbox,
-  HiNewspaper,
-  HiReceiptTax,
-  HiShoppingBag,
-  HiTruck,
-  HiTag,
-} from 'react-icons/hi'
+import { HiTag } from 'react-icons/hi'
 
-export type ValidPage =
-  | 'order'
-  | 'promotion'
-  | 'voucher'
-  | 'shop'
-  | 'product'
-  | 'delivery-service'
-  | 'wallet'
+export type ValidPage = 'voucher'
 
-interface SellerSideBarProps {
+interface AdminSideBarProps {
   selectedPage: ValidPage
 }
 
@@ -61,49 +46,15 @@ const SideBarMenu: React.FC<SideBarMenuProps> = ({
   )
 }
 
-const SectionTwoSideBar: React.FC<SellerSideBarProps> = ({ selectedPage }) => {
+const SectionTwoSideBarAdmin: React.FC<AdminSideBarProps> = ({
+  selectedPage,
+}) => {
   const items: Array<SideBarMenuProps> = [
-    {
-      link: 'order',
-      title: 'Order',
-      icon: <HiArchive />,
-      active: selectedPage === 'order',
-    },
     {
       link: 'vouchers',
       title: 'Voucher',
       icon: <HiTag />,
       active: selectedPage === 'voucher',
-    },
-    {
-      link: 'promotion',
-      title: 'Promotion',
-      icon: <HiReceiptTax />,
-      active: selectedPage === 'promotion',
-    },
-    {
-      link: 'shop',
-      title: 'Shop',
-      icon: <HiShoppingBag />,
-      active: selectedPage === 'shop',
-    },
-    {
-      link: 'products',
-      title: 'Product',
-      icon: <HiInbox />,
-      active: selectedPage === 'product',
-    },
-    {
-      link: 'delivery-service',
-      title: 'Delivery Service',
-      icon: <HiTruck />,
-      active: selectedPage === 'delivery-service',
-    },
-    {
-      link: 'wallet',
-      title: 'Wallet',
-      icon: <HiNewspaper className="-rotate-90" />,
-      active: selectedPage === 'wallet',
     },
   ]
 
@@ -122,4 +73,4 @@ const SectionTwoSideBar: React.FC<SellerSideBarProps> = ({ selectedPage }) => {
   )
 }
 
-export default SectionTwoSideBar
+export default SectionTwoSideBarAdmin

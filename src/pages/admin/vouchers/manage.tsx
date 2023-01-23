@@ -1,12 +1,11 @@
-import { useGetSellerDetailInformation } from '@/api/seller'
 import {
-  useCreateVouchers,
-  useSellerVoucherDetail,
-  useUpdateVouchers,
-} from '@/api/seller/voucher'
-import { Button, Chip, H2, H4, P, TextInput } from '@/components'
+  useAdminVoucherDetail,
+  useCreateAdminVouchers,
+  useUpdateAdminVouchers,
+} from '@/api/admin/voucher'
 
-import SellerPanelLayout from '@/layout/SellerPanelLayout'
+import { Button, Chip, H2, H4, P, TextInput } from '@/components'
+import AdminPanelLayout from '@/layout/AdminPanelLayout'
 
 import type { APIResponse } from '@/types/api/response'
 import type { CreateUpdateVoucher } from '@/types/api/voucher'
@@ -17,17 +16,16 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
-function ManageVouchers() {
+function ManageVouchersAdmin() {
   const router = useRouter()
 
   const [id, setId] = useState<string>()
   const [edit, setEdit] = useState<boolean>(false)
   const [duplicate, setDuplicate] = useState<boolean>(false)
-  const sellerVoucher = useSellerVoucherDetail(id)
-  const createVoucher = useCreateVouchers()
-  const updateVoucher = useUpdateVouchers(id)
+  const adminVoucher = useAdminVoucherDetail(id)
+  const createVoucher = useCreateAdminVouchers()
+  const updateVoucher = useUpdateAdminVouchers(id)
   const [selected, setSelected] = useState<'P' | 'F'>('P')
-  const [SellerName, setSellerName] = useState('')
 
   const voucherId = router.query.voucher
   const typeManage = router.query.type
@@ -38,48 +36,46 @@ function ManageVouchers() {
   }, [voucherId])
 
   useEffect(() => {
-    if (sellerVoucher.isSuccess) {
+    if (adminVoucher.isSuccess) {
       if (typeManage === 'update') {
         setInput({
-          code: (sellerVoucher.data?.data?.code).replace(SellerName, ''),
-          quota: sellerVoucher.data?.data?.quota,
-          actived_date: moment(sellerVoucher.data?.data?.actived_date).format(
+          code: adminVoucher.data?.data?.code,
+          quota: adminVoucher.data?.data?.quota,
+          actived_date: moment(adminVoucher.data?.data?.actived_date).format(
             'YYYY-MM-DD HH:mm'
           ),
-          expired_date: moment(sellerVoucher.data?.data?.expired_date).format(
+          expired_date: moment(adminVoucher.data?.data?.expired_date).format(
             'YYYY-MM-DD HH:mm'
           ),
-          discount_percentage: sellerVoucher.data?.data?.discount_percentage,
-          discount_fix_price: sellerVoucher.data?.data?.discount_fix_price,
-          min_product_price: sellerVoucher.data?.data?.min_product_price,
-          max_discount_price: sellerVoucher.data?.data?.max_discount_price,
+          discount_percentage: adminVoucher.data?.data?.discount_percentage,
+          discount_fix_price: adminVoucher.data?.data?.discount_fix_price,
+          min_product_price: adminVoucher.data?.data?.min_product_price,
+          max_discount_price: adminVoucher.data?.data?.max_discount_price,
         })
         setEdit(true)
       } else if (typeManage === 'duplicate') {
         setInput({
           code: '',
-          quota: sellerVoucher.data?.data?.quota,
-          actived_date: moment(sellerVoucher.data?.data?.actived_date).format(
+          quota: adminVoucher.data?.data?.quota,
+          actived_date: moment(adminVoucher.data?.data?.actived_date).format(
             'YYYY-MM-DD HH:mm'
           ),
-          expired_date: moment(sellerVoucher.data?.data?.expired_date).format(
+          expired_date: moment(adminVoucher.data?.data?.expired_date).format(
             'YYYY-MM-DD HH:mm'
           ),
-          discount_percentage: sellerVoucher.data?.data?.discount_percentage,
-          discount_fix_price: sellerVoucher.data?.data?.discount_fix_price,
-          min_product_price: sellerVoucher.data?.data?.min_product_price,
-          max_discount_price: sellerVoucher.data?.data?.max_discount_price,
+          discount_percentage: adminVoucher.data?.data?.discount_percentage,
+          discount_fix_price: adminVoucher.data?.data?.discount_fix_price,
+          min_product_price: adminVoucher.data?.data?.min_product_price,
+          max_discount_price: adminVoucher.data?.data?.max_discount_price,
         })
         setDuplicate(true)
       }
 
-      if (sellerVoucher.data?.data?.discount_fix_price > 0) {
+      if (adminVoucher.data?.data?.discount_fix_price > 0) {
         setSelected('F')
       }
     }
-  }, [sellerVoucher.isSuccess])
-
-  const useSellerDetailInformation = useGetSellerDetailInformation()
+  }, [adminVoucher.isSuccess])
 
   const [input, setInput] = useState<CreateUpdateVoucher>({
     code: '',
@@ -91,14 +87,6 @@ function ManageVouchers() {
     min_product_price: 0,
     max_discount_price: 0,
   })
-
-  useEffect(() => {
-    if (useSellerDetailInformation.isSuccess) {
-      setSellerName(
-        (useSellerDetailInformation.data?.data?.name).replace(' ', '-') + '-'
-      )
-    }
-  }, [useSellerDetailInformation.isSuccess])
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     const inputName = event.currentTarget.name
@@ -114,7 +102,7 @@ function ManageVouchers() {
       } else {
         toast.success('Successfully Create Voucher')
       }
-      router.push('/seller-panel/vouchers')
+      router.push('/admin/vouchers')
 
       setInput({
         code: '',
@@ -131,7 +119,7 @@ function ManageVouchers() {
     }
     if (updateVoucher.isSuccess) {
       toast.success('Successfully Update Voucher')
-      router.push('/seller-panel/vouchers')
+      router.push('/admin/vouchers')
       setInput({
         code: '',
         quota: 0,
@@ -175,7 +163,7 @@ function ManageVouchers() {
 
     if (selected === 'F') {
       bodyInput = {
-        code: SellerName + input.code.toUpperCase(),
+        code: input.code.toUpperCase(),
         actived_date: moment(input.actived_date)
           .utc()
           .format('DD-MM-YYYY HH:mm:ss')
@@ -192,7 +180,7 @@ function ManageVouchers() {
       }
     } else {
       bodyInput = {
-        code: SellerName + input.code.toUpperCase(),
+        code: input.code.toUpperCase(),
         actived_date: moment(input.actived_date)
           .utc()
           .format('DD-MM-YYYY HH:mm:ss')
@@ -218,9 +206,10 @@ function ManageVouchers() {
   return (
     <div>
       <Head>
-        <title>Murakali | Voucher Panel</title>
+        <title>Admin | Murakali</title>
+        <meta name="admin" content="Admin | Murakali E-Commerce Application" />
       </Head>
-      <SellerPanelLayout selectedPage="voucher">
+      <AdminPanelLayout selectedPage="voucher">
         <div className="flex  w-full items-center justify-start">
           <H2>{edit ? 'Edit' : duplicate ? 'Duplicate' : 'Add'} Voucher</H2>
         </div>
@@ -244,14 +233,13 @@ function ManageVouchers() {
                 </P>
               </div>
               <div className="flex flex-1 items-center">
-                <P className="w-36 font-bold">{SellerName}</P>
                 <TextInput
                   type="text"
                   name="code"
                   onChange={handleChange}
                   value={input.code.toUpperCase()}
                   full
-                  maxLength={5}
+                  maxLength={10}
                   required
                   disabled={edit}
                 />
@@ -511,9 +499,9 @@ function ManageVouchers() {
             </div>
           </form>
         </div>
-      </SellerPanelLayout>
+      </AdminPanelLayout>
     </div>
   )
 }
 
-export default ManageVouchers
+export default ManageVouchersAdmin

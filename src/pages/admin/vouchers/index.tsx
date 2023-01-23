@@ -1,14 +1,8 @@
-import { Button, Chip, H2, P, PaginationNav } from '@/components'
-import voucherData from '@/dummy/voucherData'
-import cx from '@/helper/cx'
-import SellerPanelLayout from '@/layout/SellerPanelLayout'
+import AdminPanelLayout from '@/layout/AdminPanelLayout'
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 import type { MouseEvent } from 'react'
-import {
-  useDeleteSellerVouchers,
-  useSellerVouchers,
-} from '@/api/seller/voucher'
+
 import Table from '@/components/table'
 import type { VoucherData } from '@/types/api/voucher'
 import type { APIResponse, PaginationData } from '@/types/api/response'
@@ -20,24 +14,23 @@ import { closeModal } from '@/redux/reducer/modalReducer'
 import { HiTrash, HiArrowDown, HiArrowUp } from 'react-icons/hi'
 import toast from 'react-hot-toast'
 import type { AxiosError } from 'axios'
-import {
-  HiPlus,
-  HiPencilAlt,
-  HiDocumentDuplicate,
-  HiInformationCircle,
-} from 'react-icons/hi'
+import { HiPlus, HiPencilAlt, HiDocumentDuplicate } from 'react-icons/hi'
 import { useRouter } from 'next/router'
+import { Button, Chip, H2, P, PaginationNav } from '@/components'
+import { useAdminVouchers, useDeleteAdminVouchers } from '@/api/admin/voucher'
+import cx from '@/helper/cx'
+import voucherData from '@/dummy/voucherData'
 
-function Vouchers() {
+function VouchersAdmin() {
   const router = useRouter()
   const [voucherStatus, setVoucherStatus] = useState('')
   const [sorts, setSorts] = useState('DESC')
   const [page, setPage] = useState<number>(1)
-  const sellerVoucher = useSellerVouchers(voucherStatus, page, sorts)
+  const adminVoucher = useAdminVouchers(voucherStatus, page, sorts)
 
   const modal = useModal()
   const dispatch = useDispatch()
-  const deleteSellerVoucher = useDeleteSellerVouchers()
+  const deleteAdminVoucher = useDeleteAdminVouchers()
 
   const ChangeVoucherStatusPage = (
     e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
@@ -46,24 +39,25 @@ function Vouchers() {
   }
 
   function deleteVoucher(id: string) {
-    deleteSellerVoucher.mutate(id)
+    deleteAdminVoucher.mutate(id)
   }
 
   useEffect(() => {
-    if (deleteSellerVoucher.isSuccess) {
+    if (deleteAdminVoucher.isSuccess) {
       toast.success('Successfully delete voucher')
       dispatch(closeModal())
     }
-  }, [deleteSellerVoucher.isSuccess])
+  }, [deleteAdminVoucher.isSuccess])
 
   useEffect(() => {
-    if (deleteSellerVoucher.isError) {
-      const errmsg = deleteSellerVoucher.failureReason as AxiosError<
+    if (deleteAdminVoucher.isError) {
+      const errmsg = deleteAdminVoucher.failureReason as AxiosError<
         APIResponse<null>
       >
       toast.error(errmsg.response?.data.message as string)
     }
-  }, [deleteSellerVoucher.isError])
+  }, [deleteAdminVoucher.isError])
+
   const formatSub = (pagination?: PaginationData<VoucherData>) => {
     if (pagination) {
       if (pagination.rows?.length) {
@@ -103,6 +97,7 @@ function Vouchers() {
                 <P>{moment(data.expired_date).format('DD MMM YYYY  HH:mm')}</P>
               </div>
             ),
+
             Discount: (
               <div>
                 {data.discount_percentage > 0 &&
@@ -122,30 +117,28 @@ function Vouchers() {
                 )}
               </div>
             ),
+            'Min Product Price': (
+              <div>
+                Rp
+                {formatMoney(data.min_product_price)}
+              </div>
+            ),
+            'Max Discount Price': (
+              <div>
+                Rp
+                {formatMoney(data.max_discount_price)}
+              </div>
+            ),
 
             Action: (
               <div className="flex w-fit flex-col gap-1">
-                {Date.now() > Date.parse(data.expired_date) ? (
-                  <Button
-                    buttonType="gray"
-                    onClick={() => {
-                      router.push({
-                        pathname: '/seller-panel/vouchers/' + data.id,
-                      })
-                    }}
-                  >
-                    <HiInformationCircle /> Detail
-                  </Button>
-                ) : (
-                  <></>
-                )}
                 {Date.now() < Date.parse(data.expired_date) ? (
                   <Button
                     buttonType="primary"
                     outlined
                     onClick={() => {
                       router.push({
-                        pathname: '/seller-panel/vouchers/manage',
+                        pathname: '/admin/vouchers/manage',
                         query: {
                           voucher: data.id,
                           type: 'update',
@@ -163,7 +156,7 @@ function Vouchers() {
                   outlined
                   onClick={() => {
                     router.push({
-                      pathname: '/seller-panel/vouchers/manage',
+                      pathname: '/admin/vouchers/manage',
                       query: {
                         voucher: data.id,
                         type: 'duplicate',
@@ -229,25 +222,27 @@ function Vouchers() {
         Qouta: '',
         'Active Date': '',
         'Discount ': '',
+        'Min Product Price': '',
+        'Max Discount Price': '',
       },
     ]
   }
-
   return (
     <div>
       <Head>
-        <title>Murakali | Voucher Panel</title>
+        <title>Admin | Murakali</title>
+        <meta name="admin" content="Admin | Murakali E-Commerce Application" />
       </Head>
-      <SellerPanelLayout selectedPage="voucher">
+      <AdminPanelLayout selectedPage="voucher">
         <div className="flex w-full items-center justify-between">
-          <H2>Voucher Shop List</H2>
+          <H2>Voucher Marketplace List</H2>
           <Button
             size={'sm'}
             buttonType="primary"
             outlined
             onClick={() => {
               router.push({
-                pathname: '/seller-panel/vouchers/manage',
+                pathname: '/admin/vouchers/manage',
                 query: {
                   voucher: '',
                   type: '',
@@ -313,24 +308,24 @@ function Vouchers() {
             })}
           </div>
           <div className="max-w-full overflow-auto">
-            {sellerVoucher.isLoading ? (
+            {adminVoucher.isLoading ? (
               <Table data={formatSub()} isLoading />
-            ) : sellerVoucher.isSuccess ? (
+            ) : adminVoucher.isSuccess ? (
               <Table
-                data={formatSub(sellerVoucher.data?.data)}
+                data={formatSub(adminVoucher.data?.data)}
                 isLoading={false}
-                empty={sellerVoucher.data?.data?.rows?.length === 0}
+                empty={adminVoucher.data?.data?.rows?.length === 0}
               />
             ) : (
               <div>{'Error'}</div>
             )}
           </div>
           <div>
-            {sellerVoucher.data?.data ? (
+            {adminVoucher.data?.data ? (
               <div className="mt-4 flex h-[8rem] w-full justify-center">
                 <PaginationNav
                   page={page}
-                  total={sellerVoucher.data.data.total_pages}
+                  total={adminVoucher.data.data.total_pages}
                   onChange={(p) => setPage(p)}
                 />
               </div>
@@ -339,9 +334,9 @@ function Vouchers() {
             )}
           </div>
         </div>
-      </SellerPanelLayout>
+      </AdminPanelLayout>
     </div>
   )
 }
 
-export default Vouchers
+export default VouchersAdmin
