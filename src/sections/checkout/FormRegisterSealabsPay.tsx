@@ -5,6 +5,7 @@ import { closeModal } from '@/redux/reducer/modalReducer'
 import type { PostCheckout } from '@/types/api/checkout'
 import type { APIResponse } from '@/types/api/response'
 import type { SLPUser } from '@/types/api/slp'
+import type { Transaction } from '@/types/api/transaction'
 import type { WalletUser } from '@/types/api/wallet'
 import type { AxiosError } from 'axios'
 import moment from 'moment'
@@ -14,10 +15,11 @@ import { useDispatch } from 'react-redux'
 import PaymentOption from './PaymentOption'
 
 interface FormRegisterSealabsPayProps {
-  postCheckout: PostCheckout
   userWallet: WalletUser
   userSLP: SLPUser[]
-  totalOrder: number
+  totalOrder?: number
+  postCheckout?: PostCheckout
+  transaction?: Transaction
 }
 
 const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
@@ -25,6 +27,7 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
   userWallet,
   userSLP,
   totalOrder,
+  transaction,
 }) => {
   const modal = useModal()
   const dispatch = useDispatch()
@@ -134,6 +137,7 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
                 title: 'Choose Payment Option',
                 content: (
                   <PaymentOption
+                    transaction={transaction}
                     postCheckout={postCheckout}
                     userWallet={userWallet}
                     userSLP={userSLP}
@@ -146,7 +150,11 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
           >
             cancel
           </Button>
-          <Button type="submit" buttonType="primary">
+          <Button
+            type="submit"
+            buttonType="primary"
+            isLoading={registerSealabsPay.isLoading}
+          >
             Save
           </Button>
         </div>

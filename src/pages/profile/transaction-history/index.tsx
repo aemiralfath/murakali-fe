@@ -1,11 +1,14 @@
 import { useGetOrders } from '@/api/order'
 import { useGetTransactions } from '@/api/transaction'
+import { useGetUserSLP } from '@/api/user/slp'
+import { useGetUserWallet } from '@/api/user/wallet'
 import { A, Button, Chip, Divider, H1, P } from '@/components'
 import { orderStatus } from '@/constants/status'
 import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
 import { useModal } from '@/hooks'
 import ProfileLayout from '@/layout/ProfileLayout'
+import PaymentOption from '@/sections/checkout/PaymentOption'
 import type { BuyerOrder } from '@/types/api/order'
 import type { Transaction } from '@/types/api/transaction'
 import moment from 'moment'
@@ -19,7 +22,6 @@ import {
   HiArrowRight,
   HiInformationCircle,
   HiOutlineShieldCheck,
-  HiPencilAlt,
   HiShoppingCart,
 } from 'react-icons/hi'
 
@@ -166,7 +168,11 @@ const OrderCard: React.FC<
               </div>
               <div className="px-2 text-right">
                 <P className="text-xs opacity-60">
-                  Rp{formatMoney(detail.order_item_price)} / pcs
+                  Rp
+                  {formatMoney(
+                    detail.order_total_price / detail.order_quantity
+                  )}{' '}
+                  / pcs
                 </P>
                 <P className="font-semibold">
                   Rp{formatMoney(detail.order_total_price)}
@@ -275,6 +281,8 @@ function TransactionHistory() {
     order_status: qryStatus === 0 ? undefined : qryStatus,
   })
   const transactions = useGetTransactions()
+  const userWallet = useGetUserWallet()
+  const userSLP = useGetUserSLP()
 
   return (
     <>
@@ -309,7 +317,7 @@ function TransactionHistory() {
                     })
                   }}
                 >
-                  {idx === 1 && transactions.data?.data.total_rows > 0 ? (
+                  {idx === 1 && transactions.data?.data.rows.length > 0 ? (
                     <span className="indicator-item border-none bg-transparent">
                       <div className=" relative mt-2 mr-9">
                         <div
@@ -382,25 +390,6 @@ function TransactionHistory() {
                               <Chip type="white" className="border">
                                 {row.card_number ?? row.wallet_id}
                               </Chip>
-                              {row.card_number ? (
-                                <div
-                                  className="tooltip"
-                                  data-tip="Change Payment Method"
-                                >
-                                  <A
-                                    onClick={() => {
-                                      modal.edit({
-                                        title: '',
-                                        content: '',
-                                      })
-                                    }}
-                                  >
-                                    <HiPencilAlt />
-                                  </A>
-                                </div>
-                              ) : (
-                                <></>
-                              )}
                             </div>
                           </div>
 
@@ -418,7 +407,28 @@ function TransactionHistory() {
                               <></>
                             )}
                             <div className="flex items-center gap-2.5">
-                              <Button size="sm" buttonType="primary">
+                              <Button
+                                size="sm"
+                                buttonType="primary"
+                                onClick={() => {
+                                  if (
+                                    userWallet.data?.data &&
+                                    userSLP.data?.data
+                                  ) {
+                                    modal.edit({
+                                      title: 'Choose Payment Option',
+                                      content: (
+                                        <PaymentOption
+                                          transaction={row}
+                                          userWallet={userWallet.data.data}
+                                          userSLP={userSLP.data.data}
+                                        />
+                                      ),
+                                      closeButton: false,
+                                    })
+                                  }
+                                }}
+                              >
                                 Pay Now
                               </Button>
                               <Button

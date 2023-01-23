@@ -23,12 +23,15 @@ import FormRegisterSealabsPay from './FormRegisterSealabsPay'
 import { useGetUserSLP } from '@/api/user/slp'
 import cx from '@/helper/cx'
 import { HiPlus } from 'react-icons/hi'
+import type { Transaction } from '@/types/api/transaction'
+import { useChangeTransactionPaymentMethod } from '@/api/transaction'
 
 interface CheckoutSummaryProps {
-  postCheckout: PostCheckout
   userWallet: WalletUser
   userSLP: SLPUser[]
-  totalOrder: number
+  postCheckout?: PostCheckout
+  totalOrder?: number
+  transaction?: Transaction
 }
 
 const PaymentOption: React.FC<CheckoutSummaryProps> = ({
@@ -36,6 +39,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   userWallet,
   userSLP,
   totalOrder,
+  transaction,
 }) => {
   const modal = useModal()
   const getUserSLP = useGetUserSLP()
@@ -49,6 +53,14 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   const [second, setSecond] = useState(0)
   const [minute, setMinute] = useState(0)
   const [blocked, setBlocked] = useState(false)
+  const [paymentOption, setPaymentOption] = useState<
+    Array<{
+      id: string
+      name: string
+      balance?: number
+      image: string
+    }>
+  >([])
 
   useEffect(() => {
     if (!getUserSLP.isLoading) {
@@ -87,26 +99,28 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
     }
   }, [second])
 
-  const paymentOption: Array<{
-    id: string
-    name: string
-    balance?: number
-    image: string
-  }> = []
-  paymentOption.push({
-    id: userWallet.id,
-    name: 'Wallet',
-    balance: userWallet.balance,
-    image: walletImage.src,
-  })
+  useEffect(() => {
+    const tempPaymentOption = transaction
+      ? []
+      : [
+          {
+            id: userWallet.id,
+            name: 'Wallet',
+            balance: userWallet.balance,
+            image: walletImage.src,
+          },
+        ]
+    setPaymentOption([])
 
-  userSLPs.forEach((slp) => {
-    paymentOption.push({
-      id: slp.card_number,
-      name: slp.name,
-      image: sealabsImage.src,
+    const slps = userSLPs.map((slp) => {
+      return {
+        id: slp.card_number,
+        name: slp.name,
+        image: sealabsImage.src,
+      }
     })
-  })
+    setPaymentOption([...tempPaymentOption, ...slps])
+  }, [userSLPs])
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value
@@ -120,22 +134,53 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   }
 
   const createTransaction = useCreateTransaction()
+  const changeTransactionPaymentMethod = useChangeTransactionPaymentMethod()
 
   function handleTransaction() {
-    if (validateUUID(selected)) {
-      postCheckout.card_number = ''
-      postCheckout.wallet_id = selected
-      modalPIN.info({
-        title: 'Input PIN',
-        content: <FormPin amount={totalOrder} postCheckout={postCheckout} />,
-        closeButton: false,
-      })
-    } else {
-      postCheckout.wallet_id = ''
-      postCheckout.card_number = selected
-      createTransaction.mutate(postCheckout)
+    if (postCheckout) {
+      if (validateUUID(selected)) {
+        postCheckout.card_number = ''
+        postCheckout.wallet_id = selected
+        modalPIN.info({
+          title: 'Input PIN',
+          content: <FormPin amount={totalOrder} postCheckout={postCheckout} />,
+          closeButton: false,
+        })
+      } else {
+        postCheckout.wallet_id = ''
+        postCheckout.card_number = selected
+        createTransaction.mutate(postCheckout)
+      }
+    } else if (transaction) {
+      if (transaction.card_number === parseInt(selected)) {
+        router.push({
+          pathname: '/slp-payment',
+          query: { id: transaction.id },
+        })
+      } else {
+        changeTransactionPaymentMethod.mutate({
+          transaction_id: transaction.id,
+          card_number: selected,
+        })
+      }
     }
   }
+
+  useEffect(() => {
+    if (changeTransactionPaymentMethod.isSuccess) {
+      router.push({
+        pathname: '/slp-payment',
+        query: { id: transaction.id },
+      })
+      dispatch(closeModal())
+    }
+  }, [changeTransactionPaymentMethod.isSuccess])
+
+  useEffect(() => {
+    if (transaction) {
+      setSelected(`${transaction.card_number}`)
+    }
+  }, [transaction])
 
   useEffect(() => {
     if (userWallet.balance - totalOrder >= 0 && !blocked) {
@@ -164,14 +209,12 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
       toast.error(
         errMsg.response ? errMsg.response.data.message : errMsg.message
       )
-
       if (
         (errMsg.response ? errMsg.response.data.message : errMsg.message) ===
         'Product quantity not available.'
       ) {
         router.push('/cart')
       }
-
       dispatch(closeModal())
     }
   }, [createTransaction.isError])
@@ -266,6 +309,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
                       userWallet={userWallet}
                       userSLP={userSLP}
                       totalOrder={totalOrder}
+                      transaction={transaction}
                     />
                   </>
                 ),
@@ -293,6 +337,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
             buttonType="primary"
             onClick={handleTransaction}
             disabled={!selected}
+            isLoading={changeTransactionPaymentMethod.isLoading}
           >
             Checkout
           </Button>
