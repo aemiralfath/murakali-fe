@@ -7,8 +7,8 @@ import {
   Divider,
   PaginationNav,
 } from '@/components'
-import { ProductReview, TotalRating } from '@/types/api/review'
-import router from 'next/router'
+import type { TotalRating } from '@/types/api/review'
+import { ProductReview } from '@/types/api/review'
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { useModal } from '@/hooks'
@@ -121,7 +121,7 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
     <>
       <H3>Reviews</H3>
       <div className="mt-4 flex flex-col gap-4">
-        <div className="flex h-fit flex-col gap-4 rounded bg-base-200 p-4 sm:flex-row">
+        <div className="flex h-fit max-w-lg flex-col gap-4 rounded bg-base-200 p-4 sm:flex-row">
           <div>
             {rating ? (
               <RatingStars size="lg" rating={rating?.avg_rating} />
@@ -129,7 +129,7 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
               <></>
             )}
 
-            <div>
+            <div className="flex items-baseline gap-1">
               {rating?.avg_rating === null ||
               rating?.avg_rating === undefined ? (
                 <span className="text-xl font-bold">0</span>
@@ -221,26 +221,32 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          <>
-            {review.data?.data.rows?.map((item, index) => {
-              return (
-                <div key={index}>
-                  <ReviewCard item={item} />
-                </div>
-              )
-            })}
+          {review.data?.data.rows.length > 0 ? (
+            <>
+              {review.data?.data.rows?.map((item, index) => {
+                return (
+                  <div key={index}>
+                    <ReviewCard item={item} />
+                  </div>
+                )
+              })}
 
-            <div className="flex justify-center pt-4">
-              {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
-              <PaginationNav
-                page={page}
-                total={review.data?.data.total_pages}
-                onChange={(n) => {
-                  setPage(n)
-                }}
-              />
-            </div>
-          </>
+              <div className="flex justify-center pt-4">
+                {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
+                <PaginationNav
+                  page={page}
+                  total={review.data?.data.total_pages}
+                  onChange={(n) => {
+                    setPage(n)
+                  }}
+                />
+              </div>
+            </>
+          ) : (
+            <P className="italic text-gray-400">
+              There are no reviews for this product, yet.
+            </P>
+          )}
         </div>
       </div>
     </>

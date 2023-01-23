@@ -1,8 +1,8 @@
 import { Button } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import { useModal } from '@/hooks'
-import CancelDelivery from '@/sections/seller-panel/delivery-servis/CancelDelivery'
-import ProcessDelivery from '@/sections/seller-panel/delivery-servis/ProcessDelivery'
+import CancelDelivery from '@/sections/seller-panel/delivery-servise/CancelDelivery'
+import ProcessDelivery from '@/sections/seller-panel/delivery-servise/ProcessDelivery'
 import type { OrderData } from '@/types/api/order'
 
 import InputResi from '../../seller-panel/delivery-servise/InputResi'
