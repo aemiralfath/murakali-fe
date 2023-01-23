@@ -108,13 +108,6 @@ function ManageAddress() {
                             ) : (
                               <></>
                             )}
-                            {address.is_shop_default ? (
-                              <>
-                                <Chip>Shop Address</Chip>
-                              </>
-                            ) : (
-                              <></>
-                            )}
                           </div>
                         </div>
 

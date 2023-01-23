@@ -1,5 +1,5 @@
 import { authorizedClient, unauthorizedClient } from '@/api/apiClient'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 
 import type { APIResponse } from '@/types/api/response'
 import type { SellerDetailInfomation, SellerInfo } from '@/types/api/seller'
@@ -44,4 +44,24 @@ export const useGetSellerDetailInformation = () => {
     queryKey: [profileKey],
     queryFn: async () => await getSellerDetailInformation(),
   })
+}
+
+export const useEditSellerDetailInformation = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (shop_name: string) => {
+      return await authorizedClient.patch<APIResponse<null>>(
+        '/seller/information',
+        {
+          shop_name: shop_name,
+        }
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+    }
+  )
 }
