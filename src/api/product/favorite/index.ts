@@ -50,3 +50,23 @@ export const useDeleteFavProduct = () => {
     }
   )
 }
+
+export const useAddFavProduct = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (id: string) => {
+      return await authorizedClient.post<APIResponse<null>>(
+        '/product/favorite',
+        {
+          product_id: id,
+        }
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+    }
+  )
+}
