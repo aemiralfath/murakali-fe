@@ -43,6 +43,9 @@ const ProductPage: NextPage = () => {
       if (errmsg.response?.data.message === 'Product already in favorite.') {
         toast.success('Product already in favorite')
         setAddedFav(true)
+      } else if (errmsg.response?.data.message === 'Forbidden') {
+        toast.error('You must login first')
+        router.push('/login')
       } else {
         toast.error(errmsg.response?.data.message as string)
       }
