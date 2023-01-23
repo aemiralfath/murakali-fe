@@ -108,13 +108,6 @@ function ManageAddress() {
                             ) : (
                               <></>
                             )}
-                            {address.is_shop_default ? (
-                              <>
-                                <Chip>Shop Address</Chip>
-                              </>
-                            ) : (
-                              <></>
-                            )}
                           </div>
                         </div>
 
@@ -213,7 +206,7 @@ function ManageAddress() {
                       onClick={() => {
                         setPage(index + 1)
                       }}
-                      className={index + 1 === page ? 'btn btn-active' : 'btn'}
+                      className={index + 1 === page ? 'btn-active btn' : 'btn'}
                     >
                       {index + 1}
                     </button>

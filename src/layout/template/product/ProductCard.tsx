@@ -253,7 +253,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </>
           ) : (
             <>
-              <div className="grid grid-cols-2 gap-1 rounded-b-lg bg-primary p-2">
+              <div className="grid grid-cols-1 gap-1 rounded-b-lg bg-primary p-2">
                 <div>
                   <Button
                     size="xs"
@@ -267,7 +267,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   </Button>
                 </div>
                 <div>
-                  <Button
+                  {/* <Button
                     size="xs"
                     buttonType="white"
                     className="w-full"
@@ -277,7 +277,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     }}
                   >
                     Buy Now
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             </>

@@ -67,7 +67,7 @@ const TextInput: React.FC<TextInputProps> = ({
               : inputSize === 'lg'
               ? 'input-lg'
               : 'input-md',
-            leftIcon ? 'pl-9' : ''
+            leftIcon ? 'pl-10' : ''
           )}
           type={
             type === 'password' ? (showPassword ? 'text' : 'password') : type

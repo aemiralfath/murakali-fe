@@ -60,19 +60,7 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
               </button>
             )}
           </Menu.Item>
-          <Menu.Item>
-            {({ active }) => (
-              <button
-                className={`${
-                  active
-                    ? 'bg-primary bg-opacity-10 text-primary'
-                    : 'text-gray-900'
-                } group flex w-full items-center rounded-md px-2 py-2 text-sm font-semibold`}
-              >
-                My Transactions
-              </button>
-            )}
-          </Menu.Item>
+
           <Menu.Item>
             {({ active }) => (
               <button
@@ -93,7 +81,7 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
   )
 }
 
-const SectionOneSideBar: React.FC = ({}) => {
+const SectionOneSideBarSellerPanel: React.FC = ({}) => {
   const [navbarOpen, setNavbarOpen] = useState(false)
 
   const { user } = useUser()
@@ -164,4 +152,4 @@ const SectionOneSideBar: React.FC = ({}) => {
   )
 }
 
-export default SectionOneSideBar
+export default SectionOneSideBarSellerPanel
