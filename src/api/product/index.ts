@@ -209,7 +209,7 @@ export const useGetProductById = (id?: string) => {
   })
 }
 
-const getProductById = async (id?: string) => {
+export const getProductById = async (id?: string) => {
   const response = await unauthorizedClient.get<APIResponse<Product>>(
     '/product/' + id
   )

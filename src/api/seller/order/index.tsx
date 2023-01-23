@@ -11,17 +11,22 @@ import moment from 'moment'
 
 const profileKey = 'order'
 
-const getSellerOrders = async (orderStatusID: string) => {
+const getSellerOrders = async (orderStatusID: string, voucherShop: string) => {
   const response = await authorizedClient.get<
     APIResponse<PaginationData<OrderData>>
-  >('/seller/order?order_status=' + orderStatusID)
+  >(
+    '/seller/order?order_status=' +
+      orderStatusID +
+      '&voucher_shop=' +
+      voucherShop
+  )
   return response.data
 }
 
-export const useSellerOrders = (orderStatusID: string) => {
+export const useSellerOrders = (orderStatusID: string, voucherShop: string) => {
   return useQuery(
-    [profileKey, orderStatusID],
-    async () => await getSellerOrders(orderStatusID)
+    [profileKey, orderStatusID, voucherShop],
+    async () => await getSellerOrders(orderStatusID, voucherShop)
   )
 }
 

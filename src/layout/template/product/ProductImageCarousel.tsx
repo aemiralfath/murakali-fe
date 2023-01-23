@@ -123,7 +123,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
         ref={ref}
       >
         {isLoading ? (
-          <></>
+          <div className="aspect-square h-full w-full animate-pulse bg-base-300" />
         ) : (
           <>
             <Transition
@@ -160,6 +160,10 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
               height={400}
               alt={data.alt}
               className={'w-full rounded'}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null
+                currentTarget.src = '/asset/no-image.png'
+              }}
             />
           </>
         )}

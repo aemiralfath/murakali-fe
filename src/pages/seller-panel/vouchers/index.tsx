@@ -1,4 +1,4 @@
-import { Button, Chip, H2, P } from '@/components'
+import { Button, Chip, H2, P, PaginationNav } from '@/components'
 import voucherData from '@/dummy/voucherData'
 import cx from '@/helper/cx'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
@@ -20,14 +20,20 @@ import { closeModal } from '@/redux/reducer/modalReducer'
 import { HiTrash } from 'react-icons/hi'
 import toast from 'react-hot-toast'
 import type { AxiosError } from 'axios'
-import { HiPlus, HiPencilAlt } from 'react-icons/hi'
+import {
+  HiPlus,
+  HiPencilAlt,
+  HiDocumentDuplicate,
+  HiInformationCircle,
+} from 'react-icons/hi'
 import { useRouter } from 'next/router'
 
 function Vouchers() {
   const router = useRouter()
   const [voucherStatus, setVoucherStatus] = useState('')
 
-  const sellerVoucher = useSellerVouchers(voucherStatus)
+  const [page, setPage] = useState<number>(1)
+  const sellerVoucher = useSellerVouchers(voucherStatus, page)
 
   const modal = useModal()
   const dispatch = useDispatch()
@@ -123,6 +129,54 @@ function Vouchers() {
 
             Action: (
               <div className="flex w-fit flex-col gap-1">
+                {Date.now() > Date.parse(data.expired_date) ? (
+                  <Button
+                    buttonType="gray"
+                    onClick={() => {
+                      router.push({
+                        pathname: '/seller-panel/vouchers/' + data.id,
+                      })
+                    }}
+                  >
+                    <HiInformationCircle /> Detail
+                  </Button>
+                ) : (
+                  <></>
+                )}
+                {Date.now() < Date.parse(data.expired_date) ? (
+                  <Button
+                    buttonType="primary"
+                    outlined
+                    onClick={() => {
+                      router.push({
+                        pathname: '/seller-panel/vouchers/manage',
+                        query: {
+                          voucher: data.id,
+                          type: 'update',
+                        },
+                      })
+                    }}
+                  >
+                    <HiPencilAlt /> Update
+                  </Button>
+                ) : (
+                  <></>
+                )}
+                <Button
+                  buttonType="primary"
+                  outlined
+                  onClick={() => {
+                    router.push({
+                      pathname: '/seller-panel/vouchers/manage',
+                      query: {
+                        voucher: data.id,
+                        type: 'duplicate',
+                      },
+                    })
+                  }}
+                >
+                  <HiDocumentDuplicate /> Duplicate
+                </Button>
                 {Date.now() < Date.parse(data.actived_date) ? (
                   <Button
                     buttonType="primary"
@@ -165,20 +219,6 @@ function Vouchers() {
                 ) : (
                   <></>
                 )}
-
-                {Date.now() < Date.parse(data.expired_date) ? (
-                  <Button
-                    buttonType="primary"
-                    outlined
-                    onClick={() => {
-                      router.push('/seller-panel/vouchers/manage')
-                    }}
-                  >
-                    <HiPencilAlt /> Update
-                  </Button>
-                ) : (
-                  <></>
-                )}
               </div>
             ),
           }
@@ -210,16 +250,22 @@ function Vouchers() {
             buttonType="primary"
             outlined
             onClick={() => {
-              router.push('/seller-panel/vouchers/manage')
+              router.push({
+                pathname: '/seller-panel/vouchers/manage',
+                query: {
+                  voucher: '',
+                  type: '',
+                },
+              })
             }}
           >
             <HiPlus /> Add Vouchers
           </Button>
         </div>
-        <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
+        <div className="mt-3 flex h-full w-full flex-col rounded border bg-white p-6 ">
           <div className="my-4 flex h-fit w-fit max-w-full space-x-10 overflow-x-auto overflow-y-hidden whitespace-nowrap border-b-[2px]">
             <button
-              onClick={() => setVoucherStatus('')}
+              onClick={() => setVoucherStatus('1')}
               className={cx(
                 'h-full border-b-[3px] transition-all',
                 voucherStatus === '' ? 'border-primary' : 'border-transparent'
@@ -256,6 +302,19 @@ function Vouchers() {
               />
             ) : (
               <div>{'Error'}</div>
+            )}
+          </div>
+          <div>
+            {sellerVoucher.data?.data ? (
+              <div className="mt-4 flex h-[8rem] w-full justify-center">
+                <PaginationNav
+                  page={page}
+                  total={sellerVoucher.data.data.total_pages}
+                  onChange={(p) => setPage(p)}
+                />
+              </div>
+            ) : (
+              <></>
             )}
           </div>
         </div>

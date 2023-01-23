@@ -1,8 +1,13 @@
 import { useGetSellerDetailInformation } from '@/api/seller'
-import { useCreateVouchers } from '@/api/seller/voucher'
+import {
+  useCreateVouchers,
+  useSellerVoucherDetail,
+  useUpdateVouchers,
+} from '@/api/seller/voucher'
 import { Button, Chip, H2, H4, P, TextInput } from '@/components'
+
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
-import { closeModal } from '@/redux/reducer/modalReducer'
+
 import type { APIResponse } from '@/types/api/response'
 import type { CreateUpdateVoucher } from '@/types/api/voucher'
 import type { AxiosError } from 'axios'
@@ -11,15 +16,71 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
 
 function ManageVouchers() {
+  const router = useRouter()
+
+  const [id, setId] = useState<string>()
+  const [edit, setEdit] = useState<boolean>(false)
+  const [duplicate, setDuplicate] = useState<boolean>(false)
+  const sellerVoucher = useSellerVoucherDetail(id)
   const createVoucher = useCreateVouchers()
-  //   const updateVoucher = useUpdateVouchers()
+  const updateVoucher = useUpdateVouchers(id)
+  const [selected, setSelected] = useState<'P' | 'F'>('P')
+  const [SellerName, setSellerName] = useState('')
+
+  const voucherId = router.query.voucher
+  const typeManage = router.query.type
+  useEffect(() => {
+    if (typeof voucherId === 'string') {
+      setId(voucherId)
+    }
+  }, [voucherId])
+
+  useEffect(() => {
+    if (sellerVoucher.isSuccess) {
+      if (typeManage === 'update') {
+        setInput({
+          code: (sellerVoucher.data?.data?.code).replace(SellerName, ''),
+          quota: sellerVoucher.data?.data?.quota,
+          actived_date: moment(sellerVoucher.data?.data?.actived_date)
+            .utc()
+            .format('YYYY-MM-DD HH:mm'),
+          expired_date: moment(sellerVoucher.data?.data?.expired_date)
+            .utc()
+            .format('YYYY-MM-DD HH:mm'),
+          discount_percentage: sellerVoucher.data?.data?.discount_percentage,
+          discount_fix_price: sellerVoucher.data?.data?.discount_fix_price,
+          min_product_price: sellerVoucher.data?.data?.min_product_price,
+          max_discount_price: sellerVoucher.data?.data?.max_discount_price,
+        })
+        setEdit(true)
+      } else if (typeManage === 'duplicate') {
+        setInput({
+          code: '',
+          quota: sellerVoucher.data?.data?.quota,
+          actived_date: moment(sellerVoucher.data?.data?.actived_date)
+            .utc()
+            .format('YYYY-MM-DD HH:mm'),
+          expired_date: moment(sellerVoucher.data?.data?.expired_date)
+            .utc()
+            .format('YYYY-MM-DD HH:mm'),
+          discount_percentage: sellerVoucher.data?.data?.discount_percentage,
+          discount_fix_price: sellerVoucher.data?.data?.discount_fix_price,
+          min_product_price: sellerVoucher.data?.data?.min_product_price,
+          max_discount_price: sellerVoucher.data?.data?.max_discount_price,
+        })
+        setDuplicate(true)
+      }
+
+      if (sellerVoucher.data?.data?.discount_fix_price > 0) {
+        setSelected('F')
+      }
+    }
+  }, [sellerVoucher.isSuccess])
 
   const useSellerDetailInformation = useGetSellerDetailInformation()
-  const dispatch = useDispatch()
-  const router = useRouter()
+
   const [input, setInput] = useState<CreateUpdateVoucher>({
     code: '',
     quota: 0,
@@ -31,13 +92,10 @@ function ManageVouchers() {
     max_discount_price: 0,
   })
 
-  const [selected, setSelected] = useState<'P' | 'F'>('P')
-
-  const [SellerName, setSellerName] = useState('')
   useEffect(() => {
     if (useSellerDetailInformation.isSuccess) {
       setSellerName(
-        (useSellerDetailInformation.data?.data?.name).replace(' ', '-')
+        (useSellerDetailInformation.data?.data?.name).replace(' ', '-') + '-'
       )
     }
   }, [useSellerDetailInformation.isSuccess])
@@ -51,9 +109,29 @@ function ManageVouchers() {
 
   useEffect(() => {
     if (createVoucher.isSuccess) {
-      toast.success('Successfully Create Voucher')
+      if (duplicate) {
+        toast.success('Successfully Duplicate Voucher')
+      } else {
+        toast.success('Successfully Create Voucher')
+      }
       router.push('/seller-panel/vouchers')
-      void dispatch(closeModal())
+
+      setInput({
+        code: '',
+        quota: 0,
+        actived_date: '',
+        expired_date: '',
+        discount_percentage: 0,
+        discount_fix_price: 0,
+        min_product_price: 0,
+        max_discount_price: 0,
+      })
+      setDuplicate(false)
+      setEdit(false)
+    }
+    if (updateVoucher.isSuccess) {
+      toast.success('Successfully Update Voucher')
+      router.push('/seller-panel/vouchers')
       setInput({
         code: '',
         quota: 0,
@@ -65,7 +143,7 @@ function ManageVouchers() {
         max_discount_price: 0,
       })
     }
-  }, [createVoucher.isSuccess])
+  }, [createVoucher.isSuccess, updateVoucher.isSuccess])
 
   useEffect(() => {
     if (createVoucher.isError) {
@@ -74,9 +152,15 @@ function ManageVouchers() {
       >
       toast.error(errmsg.response?.data.message as string)
     }
-  }, [createVoucher.isError])
+    if (updateVoucher.isError) {
+      const errmsg = updateVoucher.failureReason as AxiosError<
+        APIResponse<null>
+      >
+      toast.error(errmsg.response?.data.message as string)
+    }
+  }, [createVoucher.isError, updateVoucher.isError])
 
-  const handleCreateVoucher = async (
+  const handleCreateUpdateVoucher = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault()
@@ -87,9 +171,11 @@ function ManageVouchers() {
       return
     }
 
+    let bodyInput: CreateUpdateVoucher
+
     if (selected === 'F') {
-      createVoucher.mutate({
-        code: SellerName + '-' + input.code.toUpperCase(),
+      bodyInput = {
+        code: SellerName + input.code.toUpperCase(),
         actived_date: moment(input.actived_date)
           .format('DD-MM-YYYY HH:mm:ss')
           .toString(),
@@ -101,10 +187,10 @@ function ManageVouchers() {
         max_discount_price: Number(input.discount_fix_price),
         min_product_price: Number(input.min_product_price),
         quota: Number(input.quota),
-      })
+      }
     } else {
-      createVoucher.mutate({
-        code: SellerName + '-' + input.code.toUpperCase(),
+      bodyInput = {
+        code: SellerName + input.code.toUpperCase(),
         actived_date: moment(input.actived_date)
           .format('DD-MM-YYYY HH:mm:ss')
           .toString(),
@@ -116,7 +202,13 @@ function ManageVouchers() {
         max_discount_price: Number(input.max_discount_price),
         min_product_price: Number(input.min_product_price),
         quota: Number(input.quota),
-      })
+      }
+    }
+
+    if (edit) {
+      updateVoucher.mutate(bodyInput)
+    } else {
+      createVoucher.mutate(bodyInput)
     }
   }
   return (
@@ -126,14 +218,14 @@ function ManageVouchers() {
       </Head>
       <SellerPanelLayout selectedPage="voucher">
         <div className="flex  w-full items-center justify-start">
-          <H2>Manage Voucher</H2>
+          <H2>{edit ? 'Edit' : duplicate ? 'Duplicate' : 'Add'} Voucher</H2>
         </div>
 
         <div className="md:px-18 mt-3 flex h-full flex-col rounded border bg-white p-6 px-5 lg:px-52 ">
           <form
             className=" mt-1 gap-y-3"
             onSubmit={(e) => {
-              void handleCreateVoucher(e)
+              void handleCreateUpdateVoucher(e)
               return false
             }}
           >
@@ -148,7 +240,7 @@ function ManageVouchers() {
                 </P>
               </div>
               <div className="flex flex-1 items-center">
-                <P className="w-32 font-bold">{SellerName}</P>
+                <P className="w-36 font-bold">{SellerName}</P>
                 <TextInput
                   type="text"
                   name="code"
@@ -157,6 +249,7 @@ function ManageVouchers() {
                   full
                   maxLength={5}
                   required
+                  disabled={edit}
                 />
               </div>
             </div>
@@ -198,7 +291,6 @@ function ManageVouchers() {
                   name="actived_date"
                   onChange={handleChange}
                   min={moment(Date.now()).format('YYYY-MM-DD HH:mm')}
-                  placeholder={String(Date.now())}
                   value={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
                   full
                   required
@@ -212,7 +304,7 @@ function ManageVouchers() {
                   <H4>Expired Date</H4>
                   <Chip type={'gray'}>Required</Chip>
                 </div>
-                <P className="mt-2 max-w-[20rem] text-sm">
+                <div className="mt-2 max-w-[20rem] text-sm">
                   Expired Voucher Date
                   {input.actived_date === '' ? (
                     <P className="font-bold">
@@ -222,7 +314,7 @@ function ManageVouchers() {
                   ) : (
                     <></>
                   )}
-                </P>
+                </div>
               </div>
               <div className="flex flex-1 items-center">
                 <TextInput
@@ -230,7 +322,6 @@ function ManageVouchers() {
                   name="expired_date"
                   onChange={handleChange}
                   min={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
-                  placeholder={String(Date.now())}
                   value={moment(input.expired_date).format('YYYY-MM-DD HH:mm')}
                   full
                   disabled={input.actived_date === ''}
@@ -292,6 +383,7 @@ function ManageVouchers() {
                       placeholder="persentage"
                       value={input.discount_percentage}
                       full
+                      maxLength={3}
                       min={1}
                       max={100}
                       required
