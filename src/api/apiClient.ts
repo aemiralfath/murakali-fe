@@ -4,7 +4,6 @@ import { getCookie, setCookie } from 'cookies-next'
 
 import type { APIResponse } from '@/types/api/response'
 import type { AccessTokenData } from '@/types/api/auth'
-import type { AxiosError } from 'axios'
 
 const baseURL = env.NEXT_PUBLIC_BE_URL
 
@@ -33,27 +32,51 @@ authorizedClient.interceptors.request.use(async (req) => {
     }
   }
 
-  unauthorizedClient
-    .get<APIResponse<AccessTokenData>>('/auth/refresh')
-    .then((res) => {
-      if (res.data.data) {
-        setCookie('access_token', res.data.data.access_token, {
-          expires: new Date(res.data.data.expired_at),
-        })
-      }
-      req.headers.Authorization = `Bearer ${res.data.message}`
-    })
-    .catch((err: Error | AxiosError) => {
-      if (axios.isAxiosError(err)) {
-        // Access to config, request, and response
-      } else {
-        // Just a stock error
-        // eslint-disable-next-line no-console
-        console.error(err)
-      }
-    })
-
   return req
 })
+
+authorizedClient.interceptors.response.use(
+  (res) => {
+    return res
+  },
+  async (err) => {
+    if (axios.isAxiosError(err)) {
+      const originalConfig = err.config
+
+      if (err.response) {
+        if (err.response.status === 403) {
+          try {
+            const res = await axios.get<APIResponse<AccessTokenData>>(
+              baseURL + '/auth/refresh',
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                withCredentials: true,
+              }
+            )
+            setCookie('access_token', res.data.data.access_token, {
+              expires: new Date(res.data.data.expired_at),
+            })
+
+            originalConfig.headers.Authorization = `Bearer ${res.data.data.access_token}`
+            return authorizedClient(originalConfig)
+          } catch (_error) {
+            if (_error.response && _error.response.data) {
+              return Promise.reject(_error.response.data)
+            }
+
+            return Promise.reject(_error)
+          }
+        }
+      }
+    } else {
+      // Just a stock error
+      // eslint-disable-next-line no-console
+      console.error(err)
+    }
+    return Promise.reject(err)
+  }
+)
 
 export { unauthorizedClient, authorizedClient }

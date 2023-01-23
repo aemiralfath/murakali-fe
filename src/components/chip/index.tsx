@@ -2,7 +2,14 @@ import cx from '@/helper/cx'
 import React from 'react'
 
 interface ChipProps extends React.HTMLAttributes<HTMLDivElement> {
-  type?: 'primary' | 'secondary' | 'accent' | 'gray' | 'success' | 'error'
+  type?:
+    | 'primary'
+    | 'secondary'
+    | 'accent'
+    | 'gray'
+    | 'success'
+    | 'error'
+    | 'white'
 }
 
 const Chip: React.FC<ChipProps> = ({
@@ -23,6 +30,8 @@ const Chip: React.FC<ChipProps> = ({
           ? 'bg-accent text-white'
           : type === 'gray'
           ? 'bg-base-200 text-base-content'
+          : type === 'white'
+          ? 'bg-white text-base-content'
           : type === 'success'
           ? 'bg-success text-success-content'
           : 'bg-error text-error-content'

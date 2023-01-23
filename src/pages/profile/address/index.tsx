@@ -194,6 +194,27 @@ function ManageAddress() {
           ) : (
             <Spinner />
           )}
+          <div className="flex justify-end">
+            <div className="btn-group">
+              {Array.from(Array(userAllAddress.data?.data?.total_pages)).map(
+                (_, index) => {
+                  return (
+                    <button
+                      key={index}
+                      defaultValue={1}
+                      value={index + 1}
+                      onClick={() => {
+                        setPage(index + 1)
+                      }}
+                      className={index + 1 === page ? 'btn-active btn' : 'btn'}
+                    >
+                      {index + 1}
+                    </button>
+                  )
+                }
+              )}
+            </div>
+          </div>
         </>
 
         {userAllAddress.data?.data?.total_pages === 0 ? (

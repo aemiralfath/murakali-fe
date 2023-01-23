@@ -92,7 +92,7 @@ const CategoryTab: React.FC<{
             <div className="dropdown dropdown-end dropdown-hover mx-auto w-full">
               <label
                 tabIndex={0}
-                className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
+                className="btn btn-outline btn-primary w-full border-0 text-base font-normal"
               >
                 Other Category
               </label>
@@ -131,7 +131,7 @@ const CategoryTab: React.FC<{
             <div className="dropdown-end dropdown-hover dropdown mx-auto w-full">
               <label
                 tabIndex={0}
-                className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
+                className="btn btn-outline btn-primary w-full border-0 text-base font-normal"
               >
                 Other Category
               </label>
