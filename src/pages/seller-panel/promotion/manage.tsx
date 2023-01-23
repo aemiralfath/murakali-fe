@@ -307,9 +307,11 @@ const ManagePromotionSeller = () => {
     const reqBody: CreatePromotionSellerRequest = {
       name: input.name,
       actived_date: moment(input.actived_date)
+        .utc()
         .format('DD-MM-YYYY HH:mm:ss')
         .toString(),
       expired_date: moment(input.expired_date)
+        .utc()
         .format('DD-MM-YYYY HH:mm:ss')
         .toString(),
       product_promotion: selectedProduct,
