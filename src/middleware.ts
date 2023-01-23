@@ -21,13 +21,14 @@ export async function middleware(req: NextRequest) {
     return response
   }
 
-  const data = (await (
-    await fetch(env.NEXT_PUBLIC_BE_URL + '/auth/refresh')
-  ).json()) as APIResponse<AccessTokenData>
-  if (data?.data) {
-    response.cookies.set('access_token', data.data.access_token, {
-      expires: new Date(data.data.expired_at),
-    })
+  const res = await fetch(env.NEXT_PUBLIC_BE_URL + '/auth/refresh')
+  if (res.ok) {
+    const data = (await res.json()) as APIResponse<AccessTokenData>
+    if (data?.data) {
+      response.cookies.set('access_token', data.data.access_token, {
+        expires: new Date(data.data.expired_at),
+      })
+    }
   }
 
   if (req.cookies.has('access_token')) {

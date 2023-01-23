@@ -14,6 +14,7 @@ import Image from 'next/image'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
+import { HiTrash } from 'react-icons/hi'
 
 interface ProductCartProps extends React.InputHTMLAttributes<HTMLInputElement> {
   listProduct: ProductCartDetail
@@ -208,6 +209,43 @@ const ProductCart: React.FC<ProductCartProps> = ({
                 className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-400"
               >
                 +
+              </button>
+
+              <button
+                onClick={() => {
+                  modal.edit({
+                    title: 'Delete Cart',
+                    content: (
+                      <>
+                        <P>Do you really want to delete this cart?</P>
+                        <div className="mt-2 flex justify-end gap-2">
+                          <Button
+                            type="button"
+                            buttonType="primary"
+                            onClick={() => {
+                              dispatch(closeModal())
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            type="button"
+                            buttonType="gray"
+                            onClick={() => {
+                              deleteCart.mutate(listProduct.id)
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </>
+                    ),
+                    closeButton: false,
+                  })
+                }}
+                className="btn-outline btn-error ml-8 flex h-8 w-8 items-center justify-center rounded-full border-2 border-error"
+              >
+                <HiTrash />
               </button>
             </div>
           ) : (

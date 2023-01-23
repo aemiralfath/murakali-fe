@@ -22,8 +22,6 @@ import ProfileLayout from '@/layout/ProfileLayout'
 import { HiPencilAlt, HiTrash } from 'react-icons/hi'
 import { useGetUserProfile } from '@/api/user/profile'
 
-// TODO: Fix Address Combobox behavior
-
 function ManageAddress() {
   const modal = useModal()
   const [page, setPage] = useState<number>(1)
@@ -190,7 +188,7 @@ function ManageAddress() {
                 <div className="mt-4 flex justify-end">
                   <PaginationNav
                     page={page}
-                    total={userAllAddress.data.data.total_pages}
+                    total={userAllAddress.data?.data?.total_pages}
                     onChange={(p) => {
                       setPage(p)
                     }}
@@ -203,27 +201,6 @@ function ManageAddress() {
           ) : (
             <Spinner />
           )}
-          <div className="flex justify-end">
-            <div className="btn-group">
-              {Array.from(Array(userAllAddress.data?.data?.total_pages)).map(
-                (_, index) => {
-                  return (
-                    <button
-                      key={index}
-                      defaultValue={1}
-                      value={index + 1}
-                      onClick={() => {
-                        setPage(index + 1)
-                      }}
-                      className={index + 1 === page ? 'btn btn-active' : 'btn'}
-                    >
-                      {index + 1}
-                    </button>
-                  )
-                }
-              )}
-            </div>
-          </div>
         </>
 
         {userAllAddress.data?.data?.total_pages === 0 ? (

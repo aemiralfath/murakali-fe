@@ -9,11 +9,13 @@ import {
   HiReceiptTax,
   HiShoppingBag,
   HiTruck,
+  HiTag,
 } from 'react-icons/hi'
 
 export type ValidPage =
   | 'order'
   | 'promotion'
+  | 'voucher'
   | 'shop'
   | 'product'
   | 'delivery-service'
@@ -67,6 +69,12 @@ const SectionTwoSideBar: React.FC<SellerSideBarProps> = ({ selectedPage }) => {
       title: 'Order',
       icon: <HiArchive />,
       active: selectedPage === 'order',
+    },
+    {
+      link: 'vouchers',
+      title: 'Voucher',
+      icon: <HiTag />,
+      active: selectedPage === 'voucher',
     },
     {
       link: 'promotion',

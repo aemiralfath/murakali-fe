@@ -3,7 +3,14 @@ import React from 'react'
 import Spinner from '../spinner'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  buttonType?: 'primary' | 'secondary' | 'accent' | 'ghost' | 'white' | 'gray'
+  buttonType?:
+    | 'primary'
+    | 'secondary'
+    | 'accent'
+    | 'ghost'
+    | 'white'
+    | 'gray'
+    | 'error'
   outlined?: boolean
   size?: 'xs' | 'sm' | 'md' | 'lg'
   wide?: boolean
@@ -37,6 +44,8 @@ const Button: React.FC<ButtonProps> = ({
           ? 'btn-accent'
           : buttonType === 'ghost'
           ? 'btn-ghost'
+          : buttonType === 'error'
+          ? 'btn-error'
           : buttonType === 'gray'
           ? 'border-none bg-gray-500'
           : buttonType === 'white'

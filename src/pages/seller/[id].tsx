@@ -89,7 +89,7 @@ const CategoryTab: React.FC<{
       <>
         {sm ? (
           categories.length > 4 ? (
-            <div className="dropdown-hover dropdown-end dropdown mx-auto w-full">
+            <div className="dropdown dropdown-end dropdown-hover mx-auto w-full">
               <label
                 tabIndex={0}
                 className="btn-outline btn-primary btn w-full border-0 text-base font-normal"

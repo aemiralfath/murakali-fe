@@ -146,18 +146,20 @@ const FilterCategoryName: NextPage = () => {
       </Head>
       <Navbar />
       <TitlePageExtend title="Category" />
-      {SearchProductList.isLoading ? (
-        <ProductListingLayout controller={controller} isLoading={true} />
-      ) : SearchProductList.data.data.rows ? (
-        <ProductListingLayout
-          controller={controller}
-          isLoading={false}
-          data={SearchProductList.data.data.rows}
-          totalPage={SearchProductList.data.data.total_pages}
-        />
-      ) : (
-        <div>handle error</div>
-      )}
+      <div className="container mx-auto mt-3">
+        {SearchProductList.isLoading ? (
+          <ProductListingLayout controller={controller} isLoading={true} />
+        ) : SearchProductList.data.data.rows ? (
+          <ProductListingLayout
+            controller={controller}
+            isLoading={false}
+            data={SearchProductList.data.data.rows}
+            totalPage={SearchProductList.data.data.total_pages}
+          />
+        ) : (
+          <div>handle error</div>
+        )}
+      </div>
     </>
   )
 }

@@ -17,6 +17,7 @@ import { useRouter } from 'next/router'
 import {
   useGetProductById,
   useGetProductImagesByProductID,
+  useGetProductReview,
   useGetTotalReview,
 } from '@/api/product'
 import { useGetSellerInfo } from '@/api/seller'
@@ -32,6 +33,9 @@ const ProductPage: NextPage = () => {
 
   const product = useGetProductById(pid as string)
 
+  const totalReview = useGetTotalReview(pid as string)
+  const seller = useGetSellerInfo(product.data?.data.products_info.shop_id)
+  const productImage = useGetProductImagesByProductID(pid as string)
   const modal = useModal()
   const [isLoading] = useState(false)
   const [qty, setQty] = useState(1)
@@ -40,7 +44,7 @@ const ProductPage: NextPage = () => {
     12,
     '',
     '',
-    '', //isi seller id
+    seller.data?.data.id,
     '',
     '',
     0,
@@ -53,7 +57,7 @@ const ProductPage: NextPage = () => {
     1,
     24,
     '',
-    '', // isi category product
+    product.data?.data.products_info.category_name,
     '',
     '',
     '',
@@ -152,10 +156,6 @@ const ProductPage: NextPage = () => {
     }
   }, [selectMap])
 
-  const totalReview = useGetTotalReview(pid as string)
-  const seller = useGetSellerInfo(product.data?.data.products_info.shop_id)
-  const productImage = useGetProductImagesByProductID(pid as string)
-
   return (
     <>
       <Head>
@@ -252,7 +252,10 @@ const ProductPage: NextPage = () => {
             )}
           </div>
           <div className="mt-8 lg:mt-0 lg:pl-6 xl:col-span-2">
-            <ProductReview />
+            <ProductReview
+              productID={pid as string}
+              rating={totalReview.data?.data}
+            />
           </div>
         </div>
         <Divider />

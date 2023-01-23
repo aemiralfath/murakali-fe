@@ -73,7 +73,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div
         className="min-h-full"
         onClick={() => {
-          router.push('/p/' + productID)
+          if (productID) {
+            router.push('/p/' + productID)
+          }
         }}
       >
         {isLoading ? (
@@ -227,9 +229,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     size="xs"
                     buttonType="ghost"
                     className="w-full text-white"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      // TODO: Add OnClick
+                    onClick={() => {
+                      router.push('/p/' + productID)
                     }}
                   >
                     Detail<br></br>Product
@@ -258,11 +259,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 <div>
                   <Button
                     size="xs"
-                    buttonType="white"
-                    className="right-0 w-full"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      // TODO: Add OnClick
+                    buttonType="ghost"
+                    className="w-full text-white"
+                    onClick={() => {
+                      router.push('/p/' + productID)
                     }}
                   >
                     See Details

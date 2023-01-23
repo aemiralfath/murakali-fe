@@ -1,7 +1,12 @@
 import { authorizedClient } from '@/api/apiClient'
 import type { APIResponse, PaginationData } from '@/types/api/response'
 import type { Transaction } from '@/types/api/transaction'
-import type { TopUpWallet, WalletHistory, WalletUser } from '@/types/api/wallet'
+import type {
+  TopUpWallet,
+  WalletHistory,
+  WalletHistoryDetail,
+  WalletUser,
+} from '@/types/api/wallet'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const profileKey = 'wallet'
@@ -27,6 +32,16 @@ export const useGetUserWalletHistory = (page: number, sort: string) =>
     [profileKey, page, sort],
     async () => await getUserWalletHistory(page, sort)
   )
+
+const getUserWalletHistoryDetail = async (id: string) => {
+  const response = await authorizedClient.get<APIResponse<WalletHistoryDetail>>(
+    '/user/wallet/history/' + id
+  )
+  return response.data
+}
+
+export const useGetUserWalletHistoryDetail = (id: string) =>
+  useQuery([profileKey, id], async () => await getUserWalletHistoryDetail(id))
 
 export const useVerifyPIN = () => {
   const queryClient = useQueryClient()
@@ -71,25 +86,6 @@ export const useTopUpWallet = () => {
   )
 }
 
-export const usePasswordVerification = () => {
-  const queryClient = useQueryClient()
-  return useMutation(
-    async (password: string) => {
-      return await authorizedClient.post<APIResponse<null>>('/user/password', {
-        password: password,
-      })
-    },
-    {
-      onSuccess: () => {
-        void queryClient.invalidateQueries([profileKey])
-      },
-      onError: () => {
-        void queryClient.invalidateQueries([profileKey])
-      },
-    }
-  )
-}
-
 export const useActivatePin = () => {
   const queryClient = useQueryClient()
   return useMutation(
@@ -117,6 +113,50 @@ export const useInputNewPinWallet = () => {
         '/user/wallet/step-up/pin',
         {
           user_id: userId,
+          pin: pin,
+        }
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+      onError: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+    }
+  )
+}
+
+export const usePasswordConfirmToUpdateWallet = () => {
+  const queryClient = useQueryClient()
+  return useMutation(
+    async (password: string) => {
+      return await authorizedClient.post<APIResponse<null>>(
+        '/user/wallet/step-up/password',
+        {
+          password: password,
+        }
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+      onError: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+    }
+  )
+}
+
+export const useUpdatePinWallet = () => {
+  const queryClient = useQueryClient()
+  return useMutation(
+    async (pin: string) => {
+      return await authorizedClient.patch<APIResponse<null>>(
+        '/user/wallet/pin',
+        {
           pin: pin,
         }
       )

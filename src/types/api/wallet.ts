@@ -1,3 +1,5 @@
+import type { OrderData } from './order'
+
 export interface WalletUser {
   id: string
   balance: number
@@ -20,4 +22,23 @@ export interface WalletHistory {
   amount: number
   description: string
   created_at: string
+}
+
+export interface WalletHistoryDetail {
+  amount: number
+  created_at: number
+  description: string
+  from: string
+  to: string
+  transaction: {
+    id: string
+    voucher_marketplace_id: string
+    invoice: string
+    total_price: number
+    paid_at: {
+      Time: string
+      Valid: true
+    }
+    orders: OrderData[]
+  }
 }
