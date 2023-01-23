@@ -73,7 +73,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div
         className="min-h-full"
         onClick={() => {
-          router.push('/p/' + data.id)
+          if (productID) {
+            router.push('/p/' + productID)
+          }
         }}
       >
         {isLoading ? (
