@@ -5,9 +5,8 @@ import {
   useUpdateVouchers,
 } from '@/api/seller/voucher'
 import { Button, Chip, H2, H4, P, TextInput } from '@/components'
-
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
-
+import { closeModal } from '@/redux/reducer/modalReducer'
 import type { APIResponse } from '@/types/api/response'
 import type { CreateUpdateVoucher } from '@/types/api/voucher'
 import type { AxiosError } from 'axios'
@@ -16,6 +15,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
 
 function ManageVouchers() {
   const router = useRouter()
@@ -80,7 +80,7 @@ function ManageVouchers() {
   }, [sellerVoucher.isSuccess])
 
   const useSellerDetailInformation = useGetSellerDetailInformation()
-
+  const dispatch = useDispatch()
   const [input, setInput] = useState<CreateUpdateVoucher>({
     code: '',
     quota: 0,
@@ -95,7 +95,7 @@ function ManageVouchers() {
   useEffect(() => {
     if (useSellerDetailInformation.isSuccess) {
       setSellerName(
-        (useSellerDetailInformation.data?.data?.name).replace(' ', '-') + '-'
+        (useSellerDetailInformation.data?.data?.name).replace(' ', '-')
       )
     }
   }, [useSellerDetailInformation.isSuccess])
@@ -109,11 +109,7 @@ function ManageVouchers() {
 
   useEffect(() => {
     if (createVoucher.isSuccess) {
-      if (duplicate) {
-        toast.success('Successfully Duplicate Voucher')
-      } else {
-        toast.success('Successfully Create Voucher')
-      }
+      toast.success('Successfully Create Voucher')
       router.push('/seller-panel/vouchers')
 
       setInput({
@@ -126,8 +122,6 @@ function ManageVouchers() {
         min_product_price: 0,
         max_discount_price: 0,
       })
-      setDuplicate(false)
-      setEdit(false)
     }
     if (updateVoucher.isSuccess) {
       toast.success('Successfully Update Voucher')
@@ -152,15 +146,9 @@ function ManageVouchers() {
       >
       toast.error(errmsg.response?.data.message as string)
     }
-    if (updateVoucher.isError) {
-      const errmsg = updateVoucher.failureReason as AxiosError<
-        APIResponse<null>
-      >
-      toast.error(errmsg.response?.data.message as string)
-    }
-  }, [createVoucher.isError, updateVoucher.isError])
+  }, [createVoucher.isError])
 
-  const handleCreateUpdateVoucher = async (
+  const handleCreateVoucher = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault()
@@ -171,11 +159,9 @@ function ManageVouchers() {
       return
     }
 
-    let bodyInput: CreateUpdateVoucher
-
     if (selected === 'F') {
-      bodyInput = {
-        code: SellerName + input.code.toUpperCase(),
+      createVoucher.mutate({
+        code: SellerName + '-' + input.code.toUpperCase(),
         actived_date: moment(input.actived_date)
           .utc()
           .format('DD-MM-YYYY HH:mm:ss')
@@ -189,10 +175,10 @@ function ManageVouchers() {
         max_discount_price: Number(input.discount_fix_price),
         min_product_price: Number(input.min_product_price),
         quota: Number(input.quota),
-      }
+      })
     } else {
-      bodyInput = {
-        code: SellerName + input.code.toUpperCase(),
+      createVoucher.mutate({
+        code: SellerName + '-' + input.code.toUpperCase(),
         actived_date: moment(input.actived_date)
           .utc()
           .format('DD-MM-YYYY HH:mm:ss')
@@ -206,13 +192,7 @@ function ManageVouchers() {
         max_discount_price: Number(input.max_discount_price),
         min_product_price: Number(input.min_product_price),
         quota: Number(input.quota),
-      }
-    }
-
-    if (edit) {
-      updateVoucher.mutate(bodyInput)
-    } else {
-      createVoucher.mutate(bodyInput)
+      })
     }
   }
   return (
@@ -222,14 +202,14 @@ function ManageVouchers() {
       </Head>
       <SellerPanelLayout selectedPage="voucher">
         <div className="flex  w-full items-center justify-start">
-          <H2>{edit ? 'Edit' : duplicate ? 'Duplicate' : 'Add'} Voucher</H2>
+          <H2>Manage Voucher</H2>
         </div>
 
         <div className="md:px-18 mt-3 flex h-full flex-col rounded border bg-white p-6 px-5 lg:px-52 ">
           <form
             className=" mt-1 gap-y-3"
             onSubmit={(e) => {
-              void handleCreateUpdateVoucher(e)
+              void handleCreateVoucher(e)
               return false
             }}
           >
@@ -244,7 +224,7 @@ function ManageVouchers() {
                 </P>
               </div>
               <div className="flex flex-1 items-center">
-                <P className="w-36 font-bold">{SellerName}</P>
+                <P className="w-32 font-bold">{SellerName}</P>
                 <TextInput
                   type="text"
                   name="code"
@@ -253,7 +233,6 @@ function ManageVouchers() {
                   full
                   maxLength={5}
                   required
-                  disabled={edit}
                 />
               </div>
             </div>
@@ -295,6 +274,7 @@ function ManageVouchers() {
                   name="actived_date"
                   onChange={handleChange}
                   min={moment(Date.now()).format('YYYY-MM-DD HH:mm')}
+                  placeholder={String(Date.now())}
                   value={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
                   full
                   required
@@ -308,7 +288,7 @@ function ManageVouchers() {
                   <H4>Expired Date</H4>
                   <Chip type={'gray'}>Required</Chip>
                 </div>
-                <div className="mt-2 max-w-[20rem] text-sm">
+                <P className="mt-2 max-w-[20rem] text-sm">
                   Expired Voucher Date
                   {input.actived_date === '' ? (
                     <P className="font-bold">
@@ -318,7 +298,7 @@ function ManageVouchers() {
                   ) : (
                     <></>
                   )}
-                </div>
+                </P>
               </div>
               <div className="flex flex-1 items-center">
                 <TextInput
@@ -326,6 +306,7 @@ function ManageVouchers() {
                   name="expired_date"
                   onChange={handleChange}
                   min={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
+                  placeholder={String(Date.now())}
                   value={moment(input.expired_date).format('YYYY-MM-DD HH:mm')}
                   full
                   disabled={input.actived_date === ''}
@@ -387,7 +368,6 @@ function ManageVouchers() {
                       placeholder="persentage"
                       value={input.discount_percentage}
                       full
-                      maxLength={3}
                       min={1}
                       max={100}
                       required
