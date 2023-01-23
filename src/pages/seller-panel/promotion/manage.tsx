@@ -16,24 +16,26 @@ import { useLoadingModal } from '@/hooks'
 import type { APIResponse, PaginationData } from '@/types/api/response'
 import { useRouter } from 'next/router'
 import { HiArrowLeft } from 'react-icons/hi'
-import { useEditProduct } from '@/api/product/manage'
 import Table from '@/components/table'
 import Image from 'next/image'
 import formatMoney from '@/helper/formatMoney'
 import type {
   CreatePromotionSellerRequest,
   ProductPromotion,
+  SellerPromotion,
 } from '@/types/api/promotion'
 import moment from 'moment'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import {
   useCreatePromotion,
   useProductNoPromotionSeller,
+  useSellerPromotionDetail,
+  useUpdatePromotion,
 } from '@/api/seller/promotion'
 import type { AxiosError } from 'axios'
 const ManagePromotionSeller = () => {
   const router = useRouter()
-  const { intent, promo_name } = router.query
+  const { intent, id } = router.query
 
   //// handling atas
   const [input, setInput] = useState<CreatePromotionSellerRequest>({
@@ -193,35 +195,80 @@ const ManagePromotionSeller = () => {
   ///////////
 
   // untuk dapetin edit dan duplicate
-  const [promoName, setPromoName] = useState<string>()
+  const [promotionId, setPromotionId] = useState<string>(String(id))
+  // going to get shop product here ///
+  useEffect(() => {
+    if (typeof id === 'string') {
+      setPromotionId(id)
+    }
+  }, [intent, id])
 
   const [page, setPage] = useState(1)
   const getProductNoPromotionSeller = useProductNoPromotionSeller(10, page)
 
   const [selectedProduct, setSelectedProduct] = useState<ProductPromotion[]>([])
 
-  // going to get shop product here ///
-  useEffect(() => {
-    if (typeof promo_name === 'string') {
-      setPromoName(promo_name)
-    }
-  }, [intent, promo_name])
-
   const setLoadingModal = useLoadingModal()
 
   // ganti jadi promotion
   const createPromotion = useCreatePromotion()
-  const editProduct = useEditProduct()
+  const updatePromotion = useUpdatePromotion()
 
+  const promotionDetail = useSellerPromotionDetail(promotionId)
   // blm buat useGetPromotionbyName
   // const productDetail = useGetProductById(id)
   // ...
 
-  // useEffect(() => {
-  //   if (typeof promo_name === 'string') {
-  //     setLoadingModal(productDetail.isLoading)
-  //   }
-  // }, [productDetail.isLoading, intent])
+  const [saveInput, setSaveInput] = useState<CreatePromotionSellerRequest>({
+    name: '',
+    actived_date: '',
+    expired_date: '',
+    product_promotion: [],
+  })
+
+  useEffect(() => {
+    if (typeof id === 'string') {
+      setLoadingModal(promotionDetail.isLoading)
+    }
+  }, [promotionDetail.isLoading, intent])
+
+  useEffect(() => {
+    if (promotionDetail.isSuccess) {
+      if (intent === 'add' && typeof id === 'string') {
+        toast.success('Data has been filled!')
+      }
+      setInput({
+        ...input,
+        name: promotionDetail.data?.data.promotion_name,
+        actived_date: promotionDetail.data?.data.actived_date,
+        expired_date: promotionDetail.data?.data.expired_date,
+      })
+
+      setSaveInput({
+        ...saveInput,
+        name: promotionDetail.data?.data.promotion_name,
+        actived_date: promotionDetail.data?.data.actived_date,
+        expired_date: promotionDetail.data?.data.expired_date,
+      })
+      const pp: ProductPromotion = {
+        product_id: promotionDetail.data?.data.product_id,
+        product_thumbnail_url: promotionDetail.data?.data.product_thumbnail_url,
+        product_name: promotionDetail.data?.data.product_name,
+        price: promotionDetail.data?.data.min_price,
+        category_name: '',
+        unit_sold: 0,
+        rating: 0,
+        product_subprice: promotionDetail.data?.data.product_sub_min_price,
+        discount_percentage: promotionDetail.data?.data.discount_percentage,
+        discount_fix_price: promotionDetail.data?.data.discount_fix_price,
+        min_product_price: promotionDetail.data?.data.min_product_price,
+        max_discount_price: promotionDetail.data?.data.max_discount_price,
+        quota: promotionDetail.data?.data.quota,
+        max_quantity: promotionDetail.data?.data.max_quantity,
+      }
+      setSelectedProduct([pp])
+    }
+  }, [promotionDetail.isSuccess])
   ///////////////////////////////////////////////////////// create promotion example //////////////////////////////////////////////////////////////////////////
   useEffect(() => {
     setLoadingModal(createPromotion.isLoading)
@@ -245,23 +292,25 @@ const ManagePromotionSeller = () => {
   ///////////////////////////////////////////////////////// /////// ///////////////////////////////////////////////////////////////////////////////////////////
 
   ///////////////////////////////////////////////////////// edit promotion example //////////////////////////////////////////////////////////////////////////
-  //   useEffect(() => {
-  //     setLoadingModal(editProduct.isLoading)
-  //   }, [editProduct.isLoading])
+  useEffect(() => {
+    setLoadingModal(updatePromotion.isLoading)
+  }, [updatePromotion.isLoading])
 
-  //   useEffect(() => {
-  //     if (editProduct.isSuccess) {
-  //       toast.success('Product Edited!')
-  //       router.push('/seller-panel/products')
-  //     }
-  //   }, [editProduct.isSuccess])
+  useEffect(() => {
+    if (updatePromotion.isSuccess) {
+      toast.success('Promotion Edited!')
+      router.push('/seller-panel/promotion')
+    }
+  }, [updatePromotion.isSuccess])
 
-  //   useEffect(() => {
-  //     if (editProduct.isError) {
-  //       const errmsg = editProduct.failureReason as AxiosError<APIResponse<null>>
-  //       toast.error(errmsg.response?.data.message as string)
-  //     }
-  //   }, [editProduct.isError])
+  useEffect(() => {
+    if (updatePromotion.isError) {
+      const errmsg = updatePromotion.failureReason as AxiosError<
+        APIResponse<null>
+      >
+      toast.error(errmsg.response?.data.message as string)
+    }
+  }, [updatePromotion.isError])
   ///////////////////////////////////////////////////////// /////// ///////////////////////////////////////////////////////////////////////////////////////////
 
   const handleSubmit = () => {
@@ -318,40 +367,43 @@ const ManagePromotionSeller = () => {
     }
 
     if (intent === 'edit') {
-      // const reqEditBody: EditProductReq = {
-      //   products_info_update: reqBody.products_info,
-      //   products_detail_update: reqBody.products_detail.map((r, idx) => {
-      //     return {
-      //       ...r,
-      //       product_detail_id:
-      //         productDetail.data.data.products_detail[idx].id,
-      //       variant_id_remove: [],
-      //       variant_info_update: [],
-      //     }
-      //   }),
-      //   products_detail_id_remove: [],
-      // }
-      // editProduct.mutate({ id: id, data: reqEditBody })
+      const pp = selectedProduct.at(0)
+      const reqEditBody: SellerPromotion = {
+        promotion_id: promotionDetail.data?.data.promotion_id,
+        promotion_name: input.name,
+        product_id: pp.product_id,
+        product_name: pp.product_name,
+        product_thumbnail_url: pp.product_thumbnail_url,
+        discount_percentage: pp.discount_percentage,
+        discount_fix_price: pp.discount_fix_price,
+        min_product_price: pp.min_product_price,
+        max_discount_price: pp.max_discount_price,
+        quota: pp.quota,
+        max_quantity: pp.max_quantity,
+        actived_date: moment(input.actived_date)
+          .utc()
+          .format('DD-MM-YYYY HH:mm:ss')
+          .toString(),
+        expired_date: moment(input.expired_date)
+          .utc()
+          .format('DD-MM-YYYY HH:mm:ss')
+          .toString(),
+        created_at: '',
+        updated_at: {
+          Time: '',
+          Valid: false,
+        },
+        deleted_at: {
+          Time: '',
+          Valid: false,
+        },
+      }
+
+      updatePromotion.mutate(reqEditBody)
     } else {
       createPromotion.mutate(reqBody)
     }
   }
-
-  // useEffect(() => {
-  //   if (productDetail.isSuccess) {
-  //     if (intent === 'add' && typeof promotion_id === 'string') {
-  //       toast.success('Data has been filled!')
-  //     }
-
-  //     const data = productDetail.data.data
-  //     updateData((draft) => {
-  //       draft.title = data.products_info.title
-  //       draft.description = data.products_info.description
-  //     })
-  //     setCondition(data.products_detail[0]?.condition)
-  //     setHazardous(data.products_detail[0]?.hazardous)
-  //   }
-  // }, [productDetail.isSuccess])
 
   const toggleSelectProduct = (id: string, tproduct: ProductPromotion) => {
     const p: ProductPromotion = {
@@ -515,6 +567,11 @@ const ManagePromotionSeller = () => {
                 min={moment(Date.now()).format('YYYY-MM-DD HH:mm')}
                 placeholder={String(Date.now())}
                 value={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
+                disabled={
+                  intent === 'edit' &&
+                  new Date() > new Date(saveInput.actived_date) &&
+                  new Date() < new Date(saveInput.expired_date)
+                }
                 full
                 required
               />
@@ -535,6 +592,13 @@ const ManagePromotionSeller = () => {
                 name="expired_date"
                 onChange={handleChangePromotion}
                 min={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
+                max={
+                  intent === 'edit' &&
+                  new Date() > new Date(saveInput.actived_date) &&
+                  new Date() < new Date(saveInput.expired_date)
+                    ? moment(input.expired_date).format('YYYY-MM-DD HH:mm')
+                    : ''
+                }
                 placeholder={String(Date.now())}
                 value={moment(input.expired_date).format('YYYY-MM-DD HH:mm')}
                 full
@@ -844,6 +908,7 @@ const ManagePromotionSeller = () => {
                           <TextInput
                             name="quota"
                             label="quota"
+                            disabled={intent === 'edit'}
                             value={sp.quota}
                             onChange={(event) =>
                               handleChange(event, sp.product_id)
@@ -879,43 +944,46 @@ const ManagePromotionSeller = () => {
         {/* ///////////////////////////////////////////////////// ///////////////////////////////////////////////////////////////////////////////// */}
 
         {/*///////////////////////////////////////////////////////////// product list  /////////////////////////////////////////////////////////////////*/}
-
-        <div className="mt-3 flex max-w-full flex-col overflow-auto rounded border bg-white px-6 pt-6">
-          <div className="flex w-full items-center justify-between py-5">
-            <H2>Select Products</H2>
-          </div>
-          <Table
-            empty={
-              getProductNoPromotionSeller.isLoading ||
-              getProductNoPromotionSeller.isError
-            }
-            data={formatData(getProductNoPromotionSeller.data?.data)}
-            isLoading={getProductNoPromotionSeller.isLoading}
-          />
-          <div className="mt-8 flex items-center gap-2">
-            <P>Showing</P>
-            <P>
-              {getProductNoPromotionSeller.data?.data?.limit *
-                (getProductNoPromotionSeller.data?.data?.page - 1) +
-                1}{' '}
-              {' - '}
-              {getProductNoPromotionSeller.data?.data?.limit *
-                getProductNoPromotionSeller.data?.data?.page}{' '}
-              of {getProductNoPromotionSeller.data?.data?.total_rows} entries
-            </P>
-          </div>
-          {getProductNoPromotionSeller.data?.data ? (
-            <div className="mt-4 mb-4 flex w-full justify-center py-5">
-              <PaginationNav
-                page={page}
-                total={getProductNoPromotionSeller.data.data.total_pages}
-                onChange={(p) => setPage(p)}
-              />
+        {intent === 'add' ? (
+          <div className="mt-3 flex max-w-full flex-col overflow-auto rounded border bg-white px-6 pt-6">
+            <div className="flex w-full items-center justify-between py-5">
+              <H2>Select Products</H2>
             </div>
-          ) : (
-            <></>
-          )}
-        </div>
+            <Table
+              empty={
+                getProductNoPromotionSeller.isLoading ||
+                getProductNoPromotionSeller.isError
+              }
+              data={formatData(getProductNoPromotionSeller.data?.data)}
+              isLoading={getProductNoPromotionSeller.isLoading}
+            />
+            <div className="mt-8 flex items-center gap-2">
+              <P>Showing</P>
+              <P>
+                {getProductNoPromotionSeller.data?.data?.limit *
+                  (getProductNoPromotionSeller.data?.data?.page - 1) +
+                  1}{' '}
+                {' - '}
+                {getProductNoPromotionSeller.data?.data?.limit *
+                  getProductNoPromotionSeller.data?.data?.page}{' '}
+                of {getProductNoPromotionSeller.data?.data?.total_rows} entries
+              </P>
+            </div>
+            {getProductNoPromotionSeller.data?.data ? (
+              <div className="mt-4 mb-4 flex w-full justify-center py-5">
+                <PaginationNav
+                  page={page}
+                  total={getProductNoPromotionSeller.data.data.total_pages}
+                  onChange={(p) => setPage(p)}
+                />
+              </div>
+            ) : (
+              <></>
+            )}
+          </div>
+        ) : (
+          <></>
+        )}
         {/* ///////////////////////////////////////////////////// ///////////////////////////////////////////////////////////////////////////////// */}
       </SellerPanelLayout>
     </div>
