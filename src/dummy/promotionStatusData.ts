@@ -5,15 +5,15 @@ const PromotionStatusData = [
   },
   {
     id: '2',
-    name: 'Ongoing',
+    name: 'Will Come',
   },
   {
     id: '3',
-    name: 'Will come',
+    name: 'Ongoing',
   },
   {
     id: '4',
-    name: 'Has ended',
+    name: 'Has Ended',
   },
 ]
 
