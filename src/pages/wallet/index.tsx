@@ -14,7 +14,7 @@ import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
 import { FaAngleDoubleRight, FaAngleDoubleLeft } from 'react-icons/fa'
 import cx from '@/helper/cx'
 import FormPINWallet from '@/sections/wallet/FormPinWallet'
-import { HiLockClosed, HiSave, HiStatusOnline, HiLogout } from 'react-icons/hi'
+import { HiLockClosed, HiSave, HiStatusOnline } from 'react-icons/hi'
 
 function Wallet() {
   const userWallet = useGetUserWallet()

@@ -5,17 +5,32 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const profileKey = 'voucher'
 
-const getSellerVouchers = async (voucherStatus: string, page: number) => {
+const getSellerVouchers = async (
+  voucherStatus: string,
+  page: number,
+  sort: string
+) => {
   const response = await authorizedClient.get<
     APIResponse<PaginationData<VoucherData>>
-  >('/seller/voucher?voucher_status=' + voucherStatus + '&limit=5&page=' + page)
+  >(
+    '/seller/voucher?voucher_status=' +
+      voucherStatus +
+      '&limit=5&page=' +
+      page +
+      '&sort=' +
+      sort
+  )
   return response.data
 }
 
-export const useSellerVouchers = (voucherStatus: string, page: number) => {
+export const useSellerVouchers = (
+  voucherStatus: string,
+  page: number,
+  sort: string
+) => {
   return useQuery(
-    [profileKey, voucherStatus, page],
-    async () => await getSellerVouchers(voucherStatus, page)
+    [profileKey, voucherStatus, page, sort],
+    async () => await getSellerVouchers(voucherStatus, page, sort)
   )
 }
 
