@@ -17,7 +17,7 @@ import formatMoney from '@/helper/formatMoney'
 import { useModal } from '@/hooks'
 import { useDispatch } from 'react-redux'
 import { closeModal } from '@/redux/reducer/modalReducer'
-import { HiTrash } from 'react-icons/hi'
+import { HiTrash, HiArrowDown, HiArrowUp } from 'react-icons/hi'
 import toast from 'react-hot-toast'
 import type { AxiosError } from 'axios'
 import {
@@ -31,9 +31,9 @@ import { useRouter } from 'next/router'
 function Vouchers() {
   const router = useRouter()
   const [voucherStatus, setVoucherStatus] = useState('')
-
+  const [sorts, setSorts] = useState('DESC')
   const [page, setPage] = useState<number>(1)
-  const sellerVoucher = useSellerVouchers(voucherStatus, page)
+  const sellerVoucher = useSellerVouchers(voucherStatus, page, sorts)
 
   const modal = useModal()
   const dispatch = useDispatch()
@@ -70,7 +70,9 @@ function Vouchers() {
         return pagination.rows.map((data) => {
           return {
             'Created Date': (
-              <div>{moment(data.created_at).format('dddd, DD MMM YYYY')}</div>
+              <div>
+                {moment(data.created_at).format('dddd, DD MMM YYYY  HH:mm')}
+              </div>
             ),
             Code: <div>{data.code}</div>,
             Qouta: <div>{data.quota}</div>,
@@ -96,15 +98,9 @@ function Vouchers() {
             ),
             'Active Date': (
               <div>
-                <P>
-                  {moment(data.actived_date).utc().format('DD MMMM YYYY HH:mm')}
-                </P>
+                <P>{moment(data.actived_date).format('DD MMM YYYY HH:mm')}</P>
                 <P className="font-bold">until</P>
-                <P>
-                  {moment(data.expired_date)
-                    .utc()
-                    .format('DD MMMM YYYY  HH:mm')}
-                </P>
+                <P>{moment(data.expired_date).format('DD MMM YYYY  HH:mm')}</P>
               </div>
             ),
             Discount: (
@@ -263,6 +259,31 @@ function Vouchers() {
           </Button>
         </div>
         <div className="mt-3 flex h-full w-full flex-col rounded border bg-white p-6 ">
+          <div className="flex items-center gap-x-2 px-5">
+            <P className="my-3  font-bold">Sort</P>
+            <button
+              className={cx(
+                'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                sorts === 'ASC' ? 'bg-primary text-xs text-white' : ''
+              )}
+              onClick={() => {
+                setSorts('ASC')
+              }}
+            >
+              <HiArrowUp />
+            </button>
+            <button
+              className={cx(
+                'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                sorts === 'DESC' ? 'bg-primary text-xs text-white' : ''
+              )}
+              onClick={() => {
+                setSorts('DESC')
+              }}
+            >
+              <HiArrowDown />
+            </button>
+          </div>
           <div className="my-4 flex h-fit w-fit max-w-full space-x-10 overflow-x-auto overflow-y-hidden whitespace-nowrap border-b-[2px]">
             <button
               onClick={() => setVoucherStatus('1')}
