@@ -4,8 +4,10 @@ import { A, Button, Chip, Divider, H1, P } from '@/components'
 import { orderStatus } from '@/constants/status'
 import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
+import { useModal } from '@/hooks'
 import ProfileLayout from '@/layout/ProfileLayout'
 import type { BuyerOrder } from '@/types/api/order'
+import type { Transaction } from '@/types/api/transaction'
 import moment from 'moment'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -16,6 +18,8 @@ import { FaStore } from 'react-icons/fa'
 import {
   HiArrowRight,
   HiInformationCircle,
+  HiOutlineShieldCheck,
+  HiPencilAlt,
   HiShoppingCart,
 } from 'react-icons/hi'
 
@@ -38,6 +42,65 @@ const EmptyLayout = () => {
   )
 }
 
+const TransactionDetailModal: React.FC<{ tx: Transaction }> = ({ tx }) => {
+  return (
+    <div className="flex flex-col">
+      <div>
+        <P className="font-semibold">Orders:</P>
+        {tx.orders.map((order) => {
+          return (
+            <div key={`order-detail-${order.order_id}`} className={'mt-2'}>
+              <P className="text-sm">{order.shop_name}</P>
+              <ul className="mt-1 flex flex-col gap-1">
+                {order.detail.map((detail) => {
+                  return (
+                    <li
+                      key={`order-detail-tx-${detail.product_id}}`}
+                      className="text-sm"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1">
+                          <p className="ml-4">{`${detail.product_title} (${detail.order_quantity} pcs)`}</p>
+                        </div>
+                        <p>Rp{formatMoney(detail.order_total_price)}</p>
+                      </div>
+                    </li>
+                  )
+                })}
+                <li key={`order-detail-tx-ongkir`} className="text-sm">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      <p className="ml-4">Delivery Fee</p>
+                    </div>
+                    <p>Rp{formatMoney(order.delivery_fee)}</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          )
+        })}
+      </div>
+      <div className="my-4">
+        <Divider />
+      </div>
+      <div className="flex justify-between text-lg font-semibold">
+        <P>Total:</P>
+        <P>Rp{formatMoney(tx.total_price)}</P>
+      </div>
+      {tx.expired_at.Valid ? (
+        <P className="flex items-center justify-between text-sm">
+          <span className="">Pay before</span>{' '}
+          <span className="font-semibold">
+            {moment(tx.expired_at.Time).format('DD MMMM YYYY, h:mm A')}
+          </span>
+        </P>
+      ) : (
+        <></>
+      )}
+    </div>
+  )
+}
+
 const OrderCard: React.FC<
   LoadingDataWrapper<BuyerOrder> & { insideTransaction?: boolean }
 > = ({ isLoading, data, insideTransaction }) => {
@@ -45,7 +108,10 @@ const OrderCard: React.FC<
   const order = data
 
   return (
-    <div className={'flex flex-col gap-2.5 rounded border bg-white p-3'}>
+    <div
+      className={'flex flex-col gap-2.5 rounded border bg-white p-3'}
+      id={'order-' + data?.order_id}
+    >
       {isLoading ? (
         <div className="h-[1.5rem] w-[6rem] animate-pulse rounded bg-base-300" />
       ) : (
@@ -165,15 +231,25 @@ const OrderCard: React.FC<
       </div>
       {insideTransaction ? (
         <></>
-      ) : (
+      ) : order ? (
         <Button
-          buttonType="ghost"
+          buttonType={order.order_status === 1 ? 'primary' : 'ghost'}
+          outlined={order.order_status === 1}
           onClick={() => {
-            router.push('/order/detail?id=' + order.order_id)
+            if (order.order_status === 1) {
+              router.push(
+                '/profile/transaction-history?status=1#order-' + order.order_id
+              )
+            } else {
+              router.push('/order/detail?id=' + order.order_id)
+            }
           }}
         >
-          Order Detail <HiArrowRight />
+          {order.order_status === 1 ? 'Pay Now' : 'Order Detail'}{' '}
+          <HiArrowRight />
         </Button>
+      ) : (
+        <></>
       )}
     </div>
   )
@@ -181,6 +257,7 @@ const OrderCard: React.FC<
 
 function TransactionHistory() {
   const router = useRouter()
+  const modal = useModal()
   const { pathname, query } = router
   const { status } = query
 
@@ -218,11 +295,11 @@ function TransactionHistory() {
             <div className="tabs mb-1 flex-nowrap">
               {['All', ...orderStatus.slice(1)].map((status, idx) => (
                 <a
+                  key={status}
                   className={cx(
-                    'tab tab-lifted whitespace-nowrap',
+                    'tab tab-lifted indicator whitespace-nowrap',
                     idx === qryStatus ? 'tab-active' : ''
                   )}
-                  key={status}
                   onClick={() => {
                     router.push({
                       pathname,
@@ -232,6 +309,21 @@ function TransactionHistory() {
                     })
                   }}
                 >
+                  {idx === 1 && transactions.data?.data.total_rows > 0 ? (
+                    <span className="indicator-item border-none bg-transparent">
+                      <div className=" relative mt-2 mr-9">
+                        <div
+                          className={cx(
+                            'absolute z-20 h-[8px] w-[8px] rounded-full',
+                            qryStatus === 1 ? 'bg-error' : 'bg-red-400'
+                          )}
+                        ></div>
+                        <div className="absolute z-10 h-[8px] w-[8px] animate-ping rounded-full bg-error"></div>
+                      </div>
+                    </span>
+                  ) : (
+                    <></>
+                  )}
                   {status}
                 </a>
               ))}
@@ -246,6 +338,7 @@ function TransactionHistory() {
                       return (
                         <div
                           key={row.id}
+                          id={'transaction-' + row.id}
                           className={
                             'flex flex-col gap-2.5 rounded border bg-gray-50 p-3'
                           }
@@ -274,7 +367,44 @@ function TransactionHistory() {
                               Rp{formatMoney(row.total_price)}
                             </P>
                           </div>
-                          <div className="flex items-center justify-end gap-2.5">
+                          <div className="flex justify-between">
+                            <P className="flex items-center gap-1">
+                              <HiOutlineShieldCheck /> Payment Method:
+                            </P>
+                            <div className="flex items-center gap-1">
+                              <P className="">
+                                {row.wallet_id
+                                  ? 'Wallet'
+                                  : row.card_number
+                                  ? 'SeaLabs Pay'
+                                  : ''}
+                              </P>
+                              <Chip type="white" className="border">
+                                {row.card_number ?? row.wallet_id}
+                              </Chip>
+                              {row.card_number ? (
+                                <div
+                                  className="tooltip"
+                                  data-tip="Change Payment Method"
+                                >
+                                  <A
+                                    onClick={() => {
+                                      modal.edit({
+                                        title: '',
+                                        content: '',
+                                      })
+                                    }}
+                                  >
+                                    <HiPencilAlt />
+                                  </A>
+                                </div>
+                              ) : (
+                                <></>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between gap-2.5">
                             {row.expired_at.Valid ? (
                               <P className="text-sm">
                                 <span className="opacity-60">Pay before:</span>{' '}
@@ -287,12 +417,26 @@ function TransactionHistory() {
                             ) : (
                               <></>
                             )}
-                            <Button size="sm" buttonType="primary">
-                              Pay Now
-                            </Button>
-                            <Button size="sm" buttonType="primary" outlined>
-                              Detail
-                            </Button>
+                            <div className="flex items-center gap-2.5">
+                              <Button size="sm" buttonType="primary">
+                                Pay Now
+                              </Button>
+                              <Button
+                                size="sm"
+                                buttonType="primary"
+                                outlined
+                                onClick={() => {
+                                  modal.info({
+                                    title: 'Payment Detail',
+                                    content: (
+                                      <TransactionDetailModal tx={row} />
+                                    ),
+                                  })
+                                }}
+                              >
+                                Detail
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       )

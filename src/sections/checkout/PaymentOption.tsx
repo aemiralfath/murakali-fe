@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { useCreateTransaction } from '@/api/user/transaction'
-import { Button, H4, P } from '@/components'
+import { Button, P } from '@/components'
 
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { PostCheckout } from '@/types/api/checkout'
@@ -21,6 +21,8 @@ import FormPin from './FormPin'
 import moment from 'moment'
 import FormRegisterSealabsPay from './FormRegisterSealabsPay'
 import { useGetUserSLP } from '@/api/user/slp'
+import cx from '@/helper/cx'
+import { HiPlus } from 'react-icons/hi'
 
 interface CheckoutSummaryProps {
   postCheckout: PostCheckout
@@ -85,7 +87,12 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
     }
   }, [second])
 
-  const paymentOption = []
+  const paymentOption: Array<{
+    id: string
+    name: string
+    balance?: number
+    image: string
+  }> = []
   paymentOption.push({
     id: userWallet.id,
     name: 'Wallet',
@@ -170,46 +177,45 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   }, [createTransaction.isError])
 
   return (
-    <div>
-      <div>
+    <div className="grid grid-cols-1 gap-2">
+      <div className="cursor-pointer">
         {paymentOption.length != 0 &&
           paymentOption.map((paymentOption, index) => (
             <label key={index}>
               <div
-                className={
+                className={cx(
+                  'col-span-3 my-2 h-fit rounded-lg border p-4',
                   selected === paymentOption.id
-                    ? 'col-span-3  my-2 h-fit rounded-lg border-4 border-solid border-primary p-2 '
-                    : 'col-span-3  my-2 h-fit rounded-lg border-2 border-solid border-slate-600 p-2 '
-                }
+                    ? 'border-primary ring-1 ring-primary'
+                    : ''
+                )}
               >
                 <div
-                  className={
+                  className={cx(
+                    'flex-start flex items-center justify-between gap-2',
                     paymentOption.balance &&
-                    (paymentOption.balance - totalOrder < 0 || blocked)
-                      ? 'flex-start flex items-center gap-2 bg-slate-200'
-                      : 'flex-start flex items-center gap-2'
-                  }
+                      (paymentOption.balance - totalOrder < 0 || blocked)
+                      ? 'bg-slate-200'
+                      : ''
+                  )}
                 >
-                  <input
-                    className="mx-3"
-                    type="radio"
-                    name={'PaymentOption' + String(paymentOption.id)}
-                    value={paymentOption.id}
-                    checked={selected === paymentOption.id}
-                    onChange={handleChange}
-                  />
-                  <img
-                    className="h-10 w-10 rounded-t-lg object-contain "
-                    src={paymentOption.image}
-                    alt={'payment option'}
-                  />
-                  <div className=" my-4 mx-2 grid grid-cols-1 gap-2 md:grid-cols-4">
-                    <div className="col-span-3 flex flex-col gap-y-2 ">
-                      <H4>{paymentOption.name}</H4>
+                  <div className="flex aspect-[4/3] h-14 items-center justify-center rounded-lg bg-base-200">
+                    <img
+                      className="h-6 w-6 rounded-t-lg"
+                      src={paymentOption.image}
+                      alt={'payment option'}
+                    />
+                  </div>
+
+                  <div className="flex-1 overflow-hidden">
+                    <div className="col-span-3 flex flex-col ">
+                      <P className="font-semibold">{paymentOption.name}</P>
                       {paymentOption.name === 'Wallet' ? (
-                        <P>Rp. {ConvertShowMoney(paymentOption.balance)}</P>
+                        <P className="text-sm">
+                          Rp{ConvertShowMoney(paymentOption.balance)}
+                        </P>
                       ) : (
-                        <P>{paymentOption.id}</P>
+                        <P className="text-sm">{paymentOption.id}</P>
                       )}
                     </div>
                   </div>
@@ -231,15 +237,25 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
                   ) : (
                     ''
                   )}
+                  <input
+                    className="radio-primary radio mx-3 border-base-300"
+                    type="radio"
+                    name={'PaymentOption-' + String(paymentOption.id)}
+                    readOnly
+                    value={paymentOption.id}
+                    checked={selected === paymentOption.id}
+                    onChange={handleChange}
+                  />
                 </div>
               </div>
             </label>
           ))}
-        <div className="col-span-3 my-2 h-fit rounded-lg border-2 border-solid border-slate-600 p-2">
+
+        <div className="mb-4 mt-4 flex justify-center">
           <Button
             type="button"
-            className="h-full w-full whitespace-pre-line align-middle"
             buttonType="ghost"
+            className="w-full"
             onClick={() => {
               modal.edit({
                 title: 'Add Sealabs Pay Account',
@@ -257,23 +273,8 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
               })
             }}
           >
-            <P className="flex flex-col place-items-center content-center gap-y-2 align-middle">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                className="h-9 w-9 items-center"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 4.5v15m7.5-7.5h-15"
-                />
-              </svg>
-              Add Sealabs Pay Account
-            </P>
+            <HiPlus />
+            Add Sealabs Pay Account
           </Button>
         </div>
         <hr></hr>
@@ -291,6 +292,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
             type="button"
             buttonType="primary"
             onClick={handleTransaction}
+            disabled={!selected}
           >
             Checkout
           </Button>
