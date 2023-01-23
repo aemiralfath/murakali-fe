@@ -37,7 +37,6 @@ const ManagePromotionSeller = () => {
   const router = useRouter()
   const { intent, id } = router.query
 
-  //// handling atas
   const [input, setInput] = useState<CreatePromotionSellerRequest>({
     name: '',
     actived_date: '',
@@ -51,9 +50,7 @@ const ManagePromotionSeller = () => {
 
     setInput((prev) => ({ ...prev, [inputName]: value }))
   }
-  //////
 
-  /// selected product
   const [tempDiscountPercentage, setTempDiscountPercentage] = useState<
     number | null
   >(null)
@@ -192,11 +189,8 @@ const ManagePromotionSeller = () => {
     }
   }
 
-  ///////////
-
-  // untuk dapetin edit dan duplicate
   const [promotionId, setPromotionId] = useState<string>(String(id))
-  // going to get shop product here ///
+
   useEffect(() => {
     if (typeof id === 'string') {
       setPromotionId(id)
@@ -210,14 +204,10 @@ const ManagePromotionSeller = () => {
 
   const setLoadingModal = useLoadingModal()
 
-  // ganti jadi promotion
   const createPromotion = useCreatePromotion()
   const updatePromotion = useUpdatePromotion()
 
   const promotionDetail = useSellerPromotionDetail(promotionId)
-  // blm buat useGetPromotionbyName
-  // const productDetail = useGetProductById(id)
-  // ...
 
   const [saveInput, setSaveInput] = useState<CreatePromotionSellerRequest>({
     name: '',
@@ -269,7 +259,7 @@ const ManagePromotionSeller = () => {
       setSelectedProduct([pp])
     }
   }, [promotionDetail.isSuccess])
-  ///////////////////////////////////////////////////////// create promotion example //////////////////////////////////////////////////////////////////////////
+
   useEffect(() => {
     setLoadingModal(createPromotion.isLoading)
   }, [createPromotion.isLoading])
@@ -289,9 +279,6 @@ const ManagePromotionSeller = () => {
     }
   }, [createPromotion.isError])
 
-  ///////////////////////////////////////////////////////// /////// ///////////////////////////////////////////////////////////////////////////////////////////
-
-  ///////////////////////////////////////////////////////// edit promotion example //////////////////////////////////////////////////////////////////////////
   useEffect(() => {
     setLoadingModal(updatePromotion.isLoading)
   }, [updatePromotion.isLoading])
@@ -311,7 +298,6 @@ const ManagePromotionSeller = () => {
       toast.error(errmsg.response?.data.message as string)
     }
   }, [updatePromotion.isError])
-  ///////////////////////////////////////////////////////// /////// ///////////////////////////////////////////////////////////////////////////////////////////
 
   const handleSubmit = () => {
     if (input.name.length <= 0) {
@@ -511,7 +497,6 @@ const ManagePromotionSeller = () => {
     ]
   }
 
-  ///////////////////////////////////// returnnya disini  /////////////////////////////////////////////////////
   return (
     <div>
       <Head>
@@ -532,7 +517,6 @@ const ManagePromotionSeller = () => {
           </Button>
         </div>
 
-        {/* ///////////////////////////////////////////////////// ini yang atas name ///////////////////////////////////////////////////////// */}
         <div className="md:px-18 mt-3  flex  h-full flex-col rounded border  bg-white p-6 px-5 lg:px-52 ">
           <div className="mt-6 flex justify-between gap-3">
             <div className="w-[30%]">
@@ -608,10 +592,6 @@ const ManagePromotionSeller = () => {
             </div>
           </div>
         </div>
-
-        {/* ///////////////////////////////////////////////////// ///////////////////////////////////////////////////////////////////////////////// */}
-
-        {/*///////////////////////////////////////////////////// ini yang diselect productnya  /////////////////////////////////////////////////////*/}
 
         <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
           <div className="flex items-center gap-3">
@@ -941,9 +921,7 @@ const ManagePromotionSeller = () => {
             Cancel
           </Button>
         </div>
-        {/* ///////////////////////////////////////////////////// ///////////////////////////////////////////////////////////////////////////////// */}
 
-        {/*///////////////////////////////////////////////////////////// product list  /////////////////////////////////////////////////////////////////*/}
         {intent === 'add' ? (
           <div className="mt-3 flex max-w-full flex-col overflow-auto rounded border bg-white px-6 pt-6">
             <div className="flex w-full items-center justify-between py-5">
@@ -984,7 +962,6 @@ const ManagePromotionSeller = () => {
         ) : (
           <></>
         )}
-        {/* ///////////////////////////////////////////////////// ///////////////////////////////////////////////////////////////////////////////// */}
       </SellerPanelLayout>
     </div>
   )
