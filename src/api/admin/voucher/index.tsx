@@ -3,9 +3,9 @@ import type { APIResponse, PaginationData } from '@/types/api/response'
 import type { CreateUpdateVoucher, VoucherData } from '@/types/api/voucher'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-const profileKey = 'voucher-seller'
+const profileKey = 'voucher-admin'
 
-const getSellerVouchers = async (
+const getAdminVouchers = async (
   voucherStatus: string,
   page: number,
   sort: string
@@ -13,7 +13,7 @@ const getSellerVouchers = async (
   const response = await authorizedClient.get<
     APIResponse<PaginationData<VoucherData>>
   >(
-    '/seller/voucher?voucher_status=' +
+    '/admin/voucher?voucher_status=' +
       voucherStatus +
       '&limit=5&page=' +
       page +
@@ -23,39 +23,39 @@ const getSellerVouchers = async (
   return response.data
 }
 
-export const useSellerVouchers = (
+export const useAdminVouchers = (
   voucherStatus: string,
   page: number,
   sort: string
 ) => {
   return useQuery(
     [profileKey, voucherStatus, page, sort],
-    async () => await getSellerVouchers(voucherStatus, page, sort)
+    async () => await getAdminVouchers(voucherStatus, page, sort)
   )
 }
 
-const getSellerVoucherDetail = async (id: string) => {
+const getAdminVoucherDetail = async (id: string) => {
   const response = await authorizedClient.get<APIResponse<VoucherData>>(
-    '/seller/voucher/' + id
+    '/admin/voucher/' + id
   )
   return response.data
 }
 
-export const useSellerVoucherDetail = (id?: string) => {
+export const useAdminVoucherDetail = (id?: string) => {
   return useQuery({
     queryKey: [profileKey, 'detail', id],
-    queryFn: async () => await getSellerVoucherDetail(id),
+    queryFn: async () => await getAdminVoucherDetail(id),
     enabled: Boolean(id),
   })
 }
 
-export const useDeleteSellerVouchers = () => {
+export const useDeleteAdminVouchers = () => {
   const queryClient = useQueryClient()
 
   return useMutation(
     async (id: string) => {
       return await authorizedClient.delete<APIResponse<null>>(
-        '/seller/voucher/' + id
+        '/admin/voucher/' + id
       )
     },
     {
@@ -66,12 +66,12 @@ export const useDeleteSellerVouchers = () => {
   )
 }
 
-export const useCreateVouchers = () => {
+export const useCreateAdminVouchers = () => {
   const queryClient = useQueryClient()
   return useMutation(
     async (data: CreateUpdateVoucher) => {
       return await authorizedClient.post<APIResponse<null>>(
-        '/seller/voucher',
+        '/admin/voucher',
         data
       )
     },
@@ -83,11 +83,11 @@ export const useCreateVouchers = () => {
   )
 }
 
-export const useUpdateVouchers = (id: string) => {
+export const useUpdateAdminVouchers = (id: string) => {
   const queryClient = useQueryClient()
   return useMutation(
     async (data: CreateUpdateVoucher) => {
-      return await authorizedClient.put<APIResponse<null>>('/seller/voucher', {
+      return await authorizedClient.put<APIResponse<null>>('/admin/voucher', {
         voucher_id: id,
         quota: data.quota,
         actived_date: data.actived_date,
