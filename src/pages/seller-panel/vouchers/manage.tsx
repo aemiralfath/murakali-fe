@@ -43,12 +43,12 @@ function ManageVouchers() {
         setInput({
           code: (sellerVoucher.data?.data?.code).replace(SellerName, ''),
           quota: sellerVoucher.data?.data?.quota,
-          actived_date: moment(sellerVoucher.data?.data?.actived_date)
-            .utc()
-            .format('YYYY-MM-DD HH:mm'),
-          expired_date: moment(sellerVoucher.data?.data?.expired_date)
-            .utc()
-            .format('YYYY-MM-DD HH:mm'),
+          actived_date: moment(sellerVoucher.data?.data?.actived_date).format(
+            'YYYY-MM-DD HH:mm'
+          ),
+          expired_date: moment(sellerVoucher.data?.data?.expired_date).format(
+            'YYYY-MM-DD HH:mm'
+          ),
           discount_percentage: sellerVoucher.data?.data?.discount_percentage,
           discount_fix_price: sellerVoucher.data?.data?.discount_fix_price,
           min_product_price: sellerVoucher.data?.data?.min_product_price,
@@ -59,12 +59,12 @@ function ManageVouchers() {
         setInput({
           code: '',
           quota: sellerVoucher.data?.data?.quota,
-          actived_date: moment(sellerVoucher.data?.data?.actived_date)
-            .utc()
-            .format('YYYY-MM-DD HH:mm'),
-          expired_date: moment(sellerVoucher.data?.data?.expired_date)
-            .utc()
-            .format('YYYY-MM-DD HH:mm'),
+          actived_date: moment(sellerVoucher.data?.data?.actived_date).format(
+            'YYYY-MM-DD HH:mm'
+          ),
+          expired_date: moment(sellerVoucher.data?.data?.expired_date).format(
+            'YYYY-MM-DD HH:mm'
+          ),
           discount_percentage: sellerVoucher.data?.data?.discount_percentage,
           discount_fix_price: sellerVoucher.data?.data?.discount_fix_price,
           min_product_price: sellerVoucher.data?.data?.min_product_price,
@@ -177,11 +177,13 @@ function ManageVouchers() {
       bodyInput = {
         code: SellerName + input.code.toUpperCase(),
         actived_date: moment(input.actived_date)
+          .utc()
           .format('DD-MM-YYYY HH:mm:ss')
           .toString(),
         discount_fix_price: Number(input.discount_fix_price),
         discount_percentage: 0,
         expired_date: moment(input.expired_date)
+          .utc()
           .format('DD-MM-YYYY HH:mm:ss')
           .toString(),
         max_discount_price: Number(input.discount_fix_price),
@@ -192,11 +194,13 @@ function ManageVouchers() {
       bodyInput = {
         code: SellerName + input.code.toUpperCase(),
         actived_date: moment(input.actived_date)
+          .utc()
           .format('DD-MM-YYYY HH:mm:ss')
           .toString(),
         discount_fix_price: 0,
         discount_percentage: Number(input.discount_percentage),
         expired_date: moment(input.expired_date)
+          .utc()
           .format('DD-MM-YYYY HH:mm:ss')
           .toString(),
         max_discount_price: Number(input.max_discount_price),
