@@ -220,7 +220,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
                             text-start text-white "
                                 >
                                   <a className="flex flex-col ">
-                                    <span className="text-md  font-bold">
+                                    <span className="text-lg  font-bold">
                                       Discount{' '}
                                       {data.discount_percentage > 0 ? (
                                         <>{data.discount_percentage}%</>
@@ -230,6 +230,9 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                           {formatMoney(data.discount_fix_price)}
                                         </>
                                       )}
+                                    </span>
+                                    <span className=" text-md ">
+                                      {data.code}
                                     </span>
                                     <span className=" text-xs ">
                                       Min. Rp.{' '}
@@ -275,7 +278,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
                             text-start text-primary hover:border-white hover:bg-primary hover:text-white"
                                 >
                                   <a className="flex flex-col ">
-                                    <span className="text-md  font-bold">
+                                    <span className="text-lg  font-bold">
                                       Discount{' '}
                                       {data.discount_percentage > 0 ? (
                                         <>{data.discount_percentage}%</>
@@ -285,6 +288,9 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                           {formatMoney(data.discount_fix_price)}
                                         </>
                                       )}
+                                    </span>
+                                    <span className=" text-md ">
+                                      {data.code}
                                     </span>
                                     <span className=" text-xs ">
                                       Min. Rp.{' '}

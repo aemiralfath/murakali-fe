@@ -268,7 +268,7 @@ function Checkout() {
                             text-start text-white "
                                         >
                                           <a className="flex flex-col ">
-                                            <span className="text-md  font-bold">
+                                            <span className="text-lg  font-bold">
                                               Discount{' '}
                                               {data.discount_percentage > 0 ? (
                                                 <>{data.discount_percentage}%</>
@@ -281,6 +281,10 @@ function Checkout() {
                                                 </>
                                               )}
                                             </span>
+                                            <span className=" text-md ">
+                                              {data.code}
+                                            </span>
+
                                             <span className=" text-xs ">
                                               Min. Rp.{' '}
                                               {formatMoney(
@@ -305,12 +309,22 @@ function Checkout() {
                                       {() => (
                                         <Button
                                           onClick={() => {
+                                            setVoucher(data)
                                             let tempVoucherPrice: number
                                             if (data.discount_percentage > 0) {
                                               tempVoucherPrice =
                                                 (data.discount_percentage /
                                                   100) *
-                                                mapPriceQuantitys.subPrice
+                                                (mapPriceQuantitys.subPrice -
+                                                  checkoutItems.cart_items.reduce(
+                                                    (
+                                                      accumulator,
+                                                      currentValue
+                                                    ) =>
+                                                      accumulator +
+                                                      currentValue.voucher_shop_total,
+                                                    0
+                                                  ))
                                             } else {
                                               tempVoucherPrice =
                                                 data.discount_fix_price
@@ -332,7 +346,7 @@ function Checkout() {
                             text-start text-primary hover:border-white hover:bg-primary hover:text-white"
                                         >
                                           <a className="flex flex-col ">
-                                            <span className="text-md  font-bold">
+                                            <span className="text-lg  font-bold">
                                               Discount{' '}
                                               {data.discount_percentage > 0 ? (
                                                 <>{data.discount_percentage}%</>
@@ -344,6 +358,9 @@ function Checkout() {
                                                   )}
                                                 </>
                                               )}
+                                            </span>
+                                            <span className=" text-md ">
+                                              {data.code}
                                             </span>
                                             <span className=" text-xs ">
                                               Min. Rp.{' '}
