@@ -1,4 +1,4 @@
-import { useGetOrders } from '@/api/order'
+import { useCompleteOrder, useGetOrders } from '@/api/order'
 import { useGetTransactions } from '@/api/transaction'
 import { useGetUserSLP } from '@/api/user/slp'
 import { useGetUserWallet } from '@/api/user/wallet'
@@ -8,15 +8,19 @@ import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
 import { useModal } from '@/hooks'
 import ProfileLayout from '@/layout/ProfileLayout'
+import ConfirmationModal from '@/layout/template/confirmation/confirmationModal'
 import PaymentOption from '@/sections/checkout/PaymentOption'
 import type { BuyerOrder } from '@/types/api/order'
+import type { APIResponse } from '@/types/api/response'
 import type { Transaction } from '@/types/api/transaction'
+import type { AxiosError } from 'axios'
 import moment from 'moment'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 
 import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
 import { FaStore } from 'react-icons/fa'
 import {
   HiArrowRight,
@@ -106,8 +110,24 @@ const TransactionDetailModal: React.FC<{ tx: Transaction }> = ({ tx }) => {
 const OrderCard: React.FC<
   LoadingDataWrapper<BuyerOrder> & { insideTransaction?: boolean }
 > = ({ isLoading, data, insideTransaction }) => {
+  const modal = useModal()
   const router = useRouter()
   const order = data
+  const completeOrder = useCompleteOrder()
+
+  useEffect(() => {
+    if (completeOrder.isSuccess) {
+      toast.success('Order completed!')
+    }
+  }, [completeOrder.isSuccess])
+  useEffect(() => {
+    if (completeOrder.isError) {
+      const errmsg = completeOrder.failureReason as AxiosError<
+        APIResponse<null>
+      >
+      toast.error(errmsg.response?.data.message as string)
+    }
+  }, [completeOrder.isError])
 
   return (
     <div
@@ -238,22 +258,63 @@ const OrderCard: React.FC<
       {insideTransaction ? (
         <></>
       ) : order ? (
-        <Button
-          buttonType={order.order_status === 1 ? 'primary' : 'ghost'}
-          outlined={order.order_status === 1}
-          onClick={() => {
-            if (order.order_status === 1) {
-              router.push(
-                '/profile/transaction-history?status=1#order-' + order.order_id
-              )
-            } else {
-              router.push('/order/detail?id=' + order.order_id)
-            }
-          }}
-        >
-          {order.order_status === 1 ? 'Pay Now' : 'Order Detail'}{' '}
-          <HiArrowRight />
-        </Button>
+        <div className="grid grid-cols-2 items-center gap-x-4">
+          {order.order_status === 5 ? (
+            <Button
+              buttonType="primary"
+              outlined
+              isLoading={completeOrder.isLoading}
+              onClick={() => {
+                modal.info({
+                  title: 'Confirmation',
+                  closeButton: false,
+                  content: (
+                    <ConfirmationModal
+                      msg={'Do you really want to complete this order?'}
+                      onConfirm={() => {
+                        completeOrder.mutate({
+                          order_id: order.order_id,
+                        })
+                      }}
+                    />
+                  ),
+                })
+              }}
+            >
+              Confirm
+            </Button>
+          ) : (
+            <></>
+          )}
+          <Button
+            className={cx(order.order_status === 5 ? '' : 'col-span-2')}
+            buttonType={order.order_status === 1 ? 'primary' : 'ghost'}
+            outlined={order.order_status === 1}
+            onClick={() => {
+              if (order.order_status === 1) {
+                router.push(
+                  '/profile/transaction-history?status=1#order-' +
+                    order.order_id
+                )
+              } else {
+                router.push('/order/detail?id=' + order.order_id)
+              }
+            }}
+          >
+            {order.order_status === 1 ? 'Pay Now' : 'Order Detail'}{' '}
+            <HiArrowRight />
+          </Button>
+          {order.order_status === 5 ? (
+            <div className="mt-2 flex items-baseline justify-center gap-1 text-center">
+              <P className="text-xs opacity-50">Or</P>
+              <A className="text-xs opacity-50 hover:opacity-100" underline>
+                File a Complaint
+              </A>
+            </div>
+          ) : (
+            <></>
+          )}
+        </div>
       ) : (
         <></>
       )}
@@ -305,7 +366,7 @@ function TransactionHistory() {
                 <a
                   key={status}
                   className={cx(
-                    'tab tab-lifted indicator whitespace-nowrap',
+                    'indicator tab tab-lifted whitespace-nowrap',
                     idx === qryStatus ? 'tab-active' : ''
                   )}
                   onClick={() => {
