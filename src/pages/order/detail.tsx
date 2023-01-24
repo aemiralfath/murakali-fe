@@ -1,15 +1,20 @@
-import { useGetOrderByID } from '@/api/order'
-import { A, Chip, Divider, H1, H3, P } from '@/components'
+import { useCompleteOrder, useGetOrderByID } from '@/api/order'
+import { A, Button, Chip, Divider, H1, H3, P } from '@/components'
 import { orderStatus } from '@/constants/status'
 import formatMoney from '@/helper/formatMoney'
+import { useLoadingModal, useModal } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
+import ConfirmationModal from '@/layout/template/confirmation/confirmationModal'
 import type { AddressDetail } from '@/types/api/address'
 import type { BuyerOrder } from '@/types/api/order'
+import type { APIResponse } from '@/types/api/response'
+import type { AxiosError } from 'axios'
 import moment from 'moment'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
 import { HiInformationCircle } from 'react-icons/hi'
 
 const OrderDetailCard: React.FC<LoadingDataWrapper<BuyerOrder>> = ({
@@ -99,7 +104,9 @@ const AddressDetailCard: React.FC<{
 }
 
 const OrderDetail = () => {
+  const modal = useModal()
   const router = useRouter()
+  const setIsLoadingModal = useLoadingModal()
   const { id } = router.query
   const [orderID, setOrderID] = useState('')
   useEffect(() => {
@@ -109,6 +116,24 @@ const OrderDetail = () => {
   }, [id])
 
   const order = useGetOrderByID(orderID)
+  const completeOrder = useCompleteOrder()
+  useEffect(() => {
+    setIsLoadingModal(completeOrder.isLoading)
+  }, [completeOrder.isLoading])
+  useEffect(() => {
+    if (completeOrder.isSuccess) {
+      order.refetch()
+      toast.success('Order completed!')
+    }
+  }, [completeOrder.isSuccess])
+  useEffect(() => {
+    if (completeOrder.isError) {
+      const errmsg = completeOrder.failureReason as AxiosError<
+        APIResponse<null>
+      >
+      toast.error(errmsg.response?.data.message as string)
+    }
+  }, [completeOrder.isError])
 
   return (
     <>
@@ -207,6 +232,47 @@ const OrderDetail = () => {
                   <Chip type="gray">
                     {orderStatus[order.data.data.order_status]}
                   </Chip>
+                  {order.data.data.order_status === 5 ? (
+                    <>
+                      <div className="indicator mt-4">
+                        <span className="badge-error badge indicator-item"></span>
+                        <Button
+                          buttonType="primary"
+                          onClick={() => {
+                            modal.info({
+                              title: 'Confirmation',
+                              closeButton: false,
+                              content: (
+                                <ConfirmationModal
+                                  msg={
+                                    'Do you really want to complete this order?'
+                                  }
+                                  onConfirm={() => {
+                                    completeOrder.mutate({
+                                      order_id: order.data.data.order_id,
+                                    })
+                                  }}
+                                />
+                              ),
+                            })
+                          }}
+                        >
+                          Complete Order
+                        </Button>
+                      </div>
+                      <div className="mt-2 flex items-baseline gap-1">
+                        <P className="text-xs opacity-50">Or</P>
+                        <A
+                          className="text-xs opacity-50 hover:opacity-100"
+                          underline
+                        >
+                          File a Complaint
+                        </A>
+                      </div>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </div>
               </div>
 

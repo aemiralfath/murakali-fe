@@ -1,6 +1,6 @@
 import type { BuyerOrder } from '@/types/api/order'
 import type { APIResponse, PaginationData } from '@/types/api/response'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { authorizedClient } from '../apiClient'
 import qs from 'qs'
 
@@ -34,4 +34,25 @@ export const useGetOrderByID = (id: string) => {
     queryFn: async () => await getOrderByID(id),
     enabled: Boolean(id),
   })
+}
+
+export const useCompleteOrder = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (data: { order_id: string }) => {
+      return await authorizedClient.patch<APIResponse<null>>(
+        '/user/order-status',
+        {
+          ...data,
+          order_status_id: 6,
+        }
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([key])
+      },
+    }
+  )
 }
