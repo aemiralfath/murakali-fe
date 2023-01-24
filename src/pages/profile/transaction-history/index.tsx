@@ -1,4 +1,4 @@
-import { useCompleteOrder, useGetOrders } from '@/api/order'
+import { useCompleteOrder, useGetOrders, useReceiveOrder } from '@/api/order'
 import { useGetTransactions } from '@/api/transaction'
 import { useGetUserSLP } from '@/api/user/slp'
 import { useGetUserWallet } from '@/api/user/wallet'
@@ -9,7 +9,7 @@ import formatMoney from '@/helper/formatMoney'
 import { useModal } from '@/hooks'
 import ProfileLayout from '@/layout/ProfileLayout'
 import ConfirmationModal from '@/layout/template/confirmation/confirmationModal'
-import PaymentOption from '@/sections/checkout/PaymentOption'
+import PaymentOption from '@/sections/checkout/option/PaymentOption'
 import type { BuyerOrder } from '@/types/api/order'
 import type { APIResponse } from '@/types/api/response'
 import type { Transaction } from '@/types/api/transaction'
@@ -24,6 +24,8 @@ import { toast } from 'react-hot-toast'
 import { FaStore } from 'react-icons/fa'
 import {
   HiArrowRight,
+  HiCheck,
+  HiInboxIn,
   HiInformationCircle,
   HiOutlineShieldCheck,
   HiShoppingCart,
@@ -112,12 +114,36 @@ const OrderCard: React.FC<
 > = ({ isLoading, data, insideTransaction }) => {
   const modal = useModal()
   const router = useRouter()
+  const { pathname } = router
+
   const order = data
+  const receiveOrder = useReceiveOrder()
   const completeOrder = useCompleteOrder()
 
   useEffect(() => {
+    if (receiveOrder.isSuccess) {
+      toast.success('Confirmation received!')
+      router.push({
+        pathname,
+        query: {
+          status: 6,
+        },
+      })
+    }
+  }, [receiveOrder.isSuccess])
+  useEffect(() => {
+    if (receiveOrder.isError) {
+      const errmsg = receiveOrder.failureReason as AxiosError<APIResponse<null>>
+      toast.error(errmsg.response?.data.message as string)
+    }
+  }, [receiveOrder.isError])
+
+  useEffect(() => {
     if (completeOrder.isSuccess) {
-      toast.success('Order completed!')
+      toast.success('Confirmation received!')
+      if (order) {
+        router.push('/order/detail?id=' + order.order_id + '#review')
+      }
     }
   }, [completeOrder.isSuccess])
   useEffect(() => {
@@ -263,14 +289,43 @@ const OrderCard: React.FC<
             <Button
               buttonType="primary"
               outlined
-              isLoading={completeOrder.isLoading}
+              isLoading={receiveOrder.isLoading}
               onClick={() => {
                 modal.info({
                   title: 'Confirmation',
                   closeButton: false,
                   content: (
                     <ConfirmationModal
-                      msg={'Do you really want to complete this order?'}
+                      msg={'Have you receive these product(s)?'}
+                      onConfirm={() => {
+                        receiveOrder.mutate({
+                          order_id: order.order_id,
+                        })
+                      }}
+                    />
+                  ),
+                })
+              }}
+            >
+              <HiInboxIn /> Confirm Order Received
+            </Button>
+          ) : (
+            <></>
+          )}
+          {order.order_status === 6 ? (
+            <Button
+              buttonType="primary"
+              outlined
+              isLoading={receiveOrder.isLoading}
+              onClick={() => {
+                modal.info({
+                  title: 'Confirmation',
+                  closeButton: false,
+                  content: (
+                    <ConfirmationModal
+                      msg={`Complete Order & Release Rp${formatMoney(
+                        order.total_price
+                      )} to the Seller?`}
                       onConfirm={() => {
                         completeOrder.mutate({
                           order_id: order.order_id,
@@ -281,13 +336,19 @@ const OrderCard: React.FC<
                 })
               }}
             >
-              Confirm
+              <HiCheck /> Complete Order
             </Button>
           ) : (
             <></>
           )}
           <Button
-            className={cx(order.order_status === 5 ? '' : 'col-span-2')}
+            className={cx(
+              order.order_status === 5 ||
+                order.order_status === 6 ||
+                order.order_status === 7
+                ? ''
+                : 'col-span-2'
+            )}
             buttonType={order.order_status === 1 ? 'primary' : 'ghost'}
             outlined={order.order_status === 1}
             onClick={() => {
@@ -304,7 +365,7 @@ const OrderCard: React.FC<
             {order.order_status === 1 ? 'Pay Now' : 'Order Detail'}{' '}
             <HiArrowRight />
           </Button>
-          {order.order_status === 5 ? (
+          {order.order_status === 6 ? (
             <div className="mt-2 flex items-baseline justify-center gap-1 text-center">
               <P className="text-xs opacity-50">Or</P>
               <A className="text-xs opacity-50 hover:opacity-100" underline>
@@ -366,7 +427,7 @@ function TransactionHistory() {
                 <a
                   key={status}
                   className={cx(
-                    'indicator tab tab-lifted whitespace-nowrap',
+                    'tab tab-lifted indicator whitespace-nowrap',
                     idx === qryStatus ? 'tab-active' : ''
                   )}
                   onClick={() => {

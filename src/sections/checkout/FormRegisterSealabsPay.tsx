@@ -12,7 +12,7 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
-import PaymentOption from './PaymentOption'
+import PaymentOption from './option/PaymentOption'
 
 interface FormRegisterSealabsPayProps {
   postCheckout?: PostCheckout

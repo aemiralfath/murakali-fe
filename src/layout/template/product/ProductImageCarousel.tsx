@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { useSwipeable } from 'react-swipeable'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import type { ProductImages } from '@/types/api/product'
+import ModalPicture from '@/sections/productdetail/ModalPicture'
 
 type ProductImageCarouselProps = LoadingDataWrapper<{
   images?: ProductImages[]
@@ -57,6 +58,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   data,
   isLoading,
 }) => {
+  const [isOpen, setIsOpen] = useState(false)
   const [mainID, setMainID] = useState(0)
   const [mainImage, setMainImage] = useState(selectedImageUrl)
 
@@ -154,6 +156,9 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
               </>
             </Transition>
             <Image
+              onClick={() => {
+                setIsOpen(true)
+              }}
               {...swipeHandler}
               src={mainImage}
               width={400}
@@ -163,6 +168,14 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
               onError={({ currentTarget }) => {
                 currentTarget.onerror = null
                 currentTarget.src = '/asset/no-image.png'
+              }}
+            />
+            <ModalPicture
+              isOpen={isOpen}
+              productImage={selectedImageUrl}
+              productTitle={data.alt}
+              closeModal={() => {
+                setIsOpen(false)
               }}
             />
           </>
