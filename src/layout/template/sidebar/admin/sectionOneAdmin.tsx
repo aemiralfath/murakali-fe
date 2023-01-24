@@ -7,7 +7,7 @@ import { Transition } from '@headlessui/react'
 import type { AxiosError } from 'axios'
 import { useRouter } from 'next/router'
 
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 
 const SectionOneSideBarAdmin: React.FC = ({}) => {

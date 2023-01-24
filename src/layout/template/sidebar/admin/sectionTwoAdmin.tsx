@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import { HiTag } from 'react-icons/hi'
 
-export type ValidPage = 'voucher'
+export type ValidPage = 'voucher' | 'refund'
 
 interface AdminSideBarProps {
   selectedPage: ValidPage
@@ -55,6 +55,12 @@ const SectionTwoSideBarAdmin: React.FC<AdminSideBarProps> = ({
       title: 'Voucher',
       icon: <HiTag />,
       active: selectedPage === 'voucher',
+    },
+    {
+      link: 'refund',
+      title: 'Refund',
+      icon: <HiTag />,
+      active: selectedPage === 'refund',
     },
   ]
 
