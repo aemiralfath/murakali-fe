@@ -244,7 +244,7 @@ function ManageVouchers() {
                 </P>
               </div>
               <div className="flex flex-1 items-center">
-                <P className="w-36 font-bold">{SellerName}</P>
+                <P className="w-fit font-bold">{SellerName}</P>
                 <TextInput
                   type="text"
                   name="code"

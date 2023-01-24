@@ -8,7 +8,7 @@ import type { WalletUser } from '@/types/api/wallet'
 import moment from 'moment'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import PaymentOption from './PaymentOption'
+import PaymentOption from './option/PaymentOption'
 
 interface FormRegisterSealabsPayProps {
   postCheckout: PostCheckout
