@@ -101,17 +101,17 @@ function OrderDetailPage() {
                       <li
                         key={index}
                         data-content={
-                          status.id === 7
+                          getSellerOrderDetail.data.data.order_status >= 8
                             ? '✕'
-                            : status.id <
+                            : status.id <=
                               getSellerOrderDetail.data.data.order_status
                             ? '✓'
                             : '●'
                         }
                         className={
-                          status.id === 7
+                          getSellerOrderDetail.data.data.order_status >= 8
                             ? 'step-error step'
-                            : status.id <
+                            : status.id <=
                               getSellerOrderDetail.data.data.order_status
                             ? 'step-primary step'
                             : 'step'
