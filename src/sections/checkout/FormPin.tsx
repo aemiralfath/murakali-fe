@@ -4,6 +4,7 @@ import { Button } from '@/components'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { PostCheckout } from '@/types/api/checkout'
 import type { APIResponse } from '@/types/api/response'
+import type { Transaction } from '@/types/api/transaction'
 import type { AxiosError } from 'axios'
 import router from 'next/router'
 import { useEffect, useState } from 'react'
@@ -12,8 +13,9 @@ import PinInput from 'react-pin-input'
 import { useDispatch } from 'react-redux'
 
 interface FormPINProps extends React.InputHTMLAttributes<HTMLSelectElement> {
-  postCheckout: PostCheckout
   amount: number
+  postCheckout?: PostCheckout
+  transaction?: Transaction
 }
 
 const FormPIN: React.FC<FormPINProps> = ({ postCheckout, amount }) => {
@@ -65,11 +67,19 @@ const FormPIN: React.FC<FormPINProps> = ({ postCheckout, amount }) => {
 
   useEffect(() => {
     if (createTransaction.isError) {
-      dispatch(closeModal())
       const errMsg = createTransaction.error as AxiosError<APIResponse<null>>
       toast.error(
         errMsg.response ? errMsg.response.data.message : errMsg.message
       )
+
+      if (
+        (errMsg.response ? errMsg.response.data.message : errMsg.message) ===
+        'Product quantity not available.'
+      ) {
+        router.push('/cart')
+      }
+
+      dispatch(closeModal())
     }
   }, [createTransaction.isError])
 

@@ -62,7 +62,7 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
             })}
           </P>
         ) : (
-          <span className="italic opacity-50">Please Select Variant</span>
+          <span className="italic opacity-50">-</span>
         )}
         <div className="flex items-center justify-between">
           <NumberInput
@@ -105,9 +105,15 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
         </div>
       </div>
       <div className="flex flex-col gap-2">
+        {selectVariant ? (
+          <></>
+        ) : (
+          <P className="text-sm italic opacity-60">Please select Variant</P>
+        )}
         <Button
           buttonType="primary"
           className="rounded"
+          disabled={!selectVariant}
           onClick={() => {
             if (!user && !isLoading) {
               router.push('/login')
@@ -129,6 +135,7 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
         <Button
           buttonType="primary"
           outlined
+          disabled={!selectVariant}
           className="rounded"
           onClick={() => {
             if (!user && !isLoading) {

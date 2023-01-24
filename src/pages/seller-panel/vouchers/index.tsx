@@ -215,6 +215,20 @@ function Vouchers() {
                 ) : (
                   <></>
                 )}
+
+                {Date.now() < Date.parse(data.expired_date) ? (
+                  <Button
+                    buttonType="primary"
+                    outlined
+                    onClick={() => {
+                      router.push('/seller-panel/vouchers/manage')
+                    }}
+                  >
+                    <HiPencilAlt /> Update
+                  </Button>
+                ) : (
+                  <></>
+                )}
               </div>
             ),
           }

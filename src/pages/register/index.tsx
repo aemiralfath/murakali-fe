@@ -235,7 +235,9 @@ const RegistrationPage = () => {
                   <TextInput
                     type="text"
                     name="phoneNumber"
-                    leftIcon={'+62'}
+                    leftIcon={
+                      <span className="text-sm font-semibold">+62</span>
+                    }
                     placeholder="81XXXXXXXXX"
                     required
                     full
@@ -293,17 +295,21 @@ const RegistrationPage = () => {
                 >
                   Next
                 </Button>
-                <Divider>OR</Divider>
-                <Button
-                  type="button"
-                  buttonType="ghost"
-                  outlined
-                  onClick={() => {
-                    router.push(getGoogleUrl(router.pathname))
-                  }}
-                >
-                  <FaGoogle /> Register with Google
-                </Button>
+                {!isOtpValid && (
+                  <>
+                    <Divider>OR</Divider>
+                    <Button
+                      type="button"
+                      buttonType="ghost"
+                      outlined
+                      onClick={() => {
+                        router.push(getGoogleUrl(router.pathname))
+                      }}
+                    >
+                      <FaGoogle /> Register with Google
+                    </Button>
+                  </>
+                )}
               </div>
               <div className="mt-8 text-center">
                 Already Have Account?{' '}

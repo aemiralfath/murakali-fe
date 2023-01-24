@@ -3,25 +3,33 @@ import { Button, TextInput } from '@/components'
 import { useModal } from '@/hooks'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { PostCheckout } from '@/types/api/checkout'
+import type { APIResponse } from '@/types/api/response'
 import type { SLPUser } from '@/types/api/slp'
+import type { Transaction } from '@/types/api/transaction'
 import type { WalletUser } from '@/types/api/wallet'
+import type { AxiosError } from 'axios'
 import moment from 'moment'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import PaymentOption from './option/PaymentOption'
 
 interface FormRegisterSealabsPayProps {
-  postCheckout: PostCheckout
-  userWallet: WalletUser
-  userSLP: SLPUser[]
-  totalOrder: number
+  postCheckout?: PostCheckout
+  userWallet?: WalletUser
+  userSLP?: SLPUser[]
+  totalOrder?: number
+  isCheckout: boolean
+  transaction?: Transaction
 }
 
 const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
-  postCheckout,
-  userWallet,
-  userSLP,
-  totalOrder,
+  postCheckout = undefined,
+  userWallet = undefined,
+  userSLP = undefined,
+  totalOrder = undefined,
+  isCheckout,
+  transaction,
 }) => {
   const modal = useModal()
   const dispatch = useDispatch()
@@ -41,6 +49,22 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
     setInput((prev) => ({ ...prev, [inputName]: value }))
   }
 
+  useEffect(() => {
+    if (registerSealabsPay.isError) {
+      const errMsg = registerSealabsPay.failureReason as AxiosError<
+        APIResponse<null>
+      >
+      toast.error(errMsg.response.data.message as string)
+    }
+  }, [registerSealabsPay.isError])
+
+  useEffect(() => {
+    if (registerSealabsPay.isSuccess) {
+      toast.success('Add sealabs pay card success.')
+      dispatch(closeModal())
+    }
+  }, [registerSealabsPay.isSuccess])
+
   const handleRegisterSealabsPay = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
@@ -50,7 +74,7 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
     setInput({
       card_number: '',
       name: '',
-      is_default: false,
+      is_default: true,
       active_date: '',
     })
   }
@@ -60,7 +84,6 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
         className="mt-1 flex flex-col gap-y-3"
         onSubmit={(e) => {
           void handleRegisterSealabsPay(e)
-          dispatch(closeModal())
           return false
         }}
       >
@@ -112,23 +135,32 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
             type="button"
             buttonType="gray"
             onClick={() => {
-              modal.edit({
-                title: 'Choose Payment Option',
-                content: (
-                  <PaymentOption
-                    postCheckout={postCheckout}
-                    userWallet={userWallet}
-                    userSLP={userSLP}
-                    totalOrder={totalOrder}
-                  />
-                ),
-                closeButton: false,
-              })
+              if (!isCheckout) {
+                dispatch(closeModal())
+              } else {
+                modal.edit({
+                  title: 'Choose Payment Option',
+                  content: (
+                    <PaymentOption
+                      transaction={transaction}
+                      postCheckout={postCheckout}
+                      userWallet={userWallet}
+                      userSLP={userSLP}
+                      totalOrder={totalOrder}
+                    />
+                  ),
+                  closeButton: false,
+                })
+              }
             }}
           >
             cancel
           </Button>
-          <Button type="submit" buttonType="primary">
+          <Button
+            type="submit"
+            buttonType="primary"
+            isLoading={registerSealabsPay.isLoading}
+          >
             Save
           </Button>
         </div>

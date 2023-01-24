@@ -4,7 +4,7 @@ import type { SLPUser } from '@/types/api/slp'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import moment from 'moment'
 
-const slpKey = ['slp']
+const slpKey = 'slp'
 
 const getUserSLP = async () => {
   const response = await authorizedClient.get<APIResponse<SLPUser[]>>(
@@ -13,7 +13,7 @@ const getUserSLP = async () => {
   return response.data
 }
 
-export const useGetUserSLP = () => useQuery(slpKey, getUserSLP)
+export const useGetUserSLP = () => useQuery([slpKey], getUserSLP)
 
 export const useRegisterSealabsPay = () => {
   const queryClient = useQueryClient()
@@ -32,7 +32,41 @@ export const useRegisterSealabsPay = () => {
     },
     {
       onSuccess: () => {
-        void queryClient.invalidateQueries([slpKey, 'register'])
+        void queryClient.invalidateQueries([slpKey])
+      },
+    }
+  )
+}
+
+export const useDeleteSealabsPay = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (card_number: string) => {
+      return await authorizedClient.delete<APIResponse<null>>(
+        `/user/sealab-pay/${card_number}`
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([slpKey])
+      },
+    }
+  )
+}
+
+export const useSetDefaultSealabsPay = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (card_number: string) => {
+      return await authorizedClient.patch<APIResponse<null>>(
+        `/user/sealab-pay/${card_number}`
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([slpKey])
       },
     }
   )

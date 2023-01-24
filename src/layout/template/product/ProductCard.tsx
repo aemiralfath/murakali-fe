@@ -19,7 +19,6 @@ import Image from 'next/image'
 type ProductCardProps = LoadingDataWrapper<BriefProduct> & {
   hoverable?: boolean
   forFavPage?: boolean
-  productID?: string
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({
@@ -27,7 +26,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   isLoading,
   hoverable,
   forFavPage,
-  productID,
 }) => {
   const [cartRef, isHover] = useHover()
   const router = useRouter()
@@ -73,7 +71,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div
         className="min-h-full"
         onClick={() => {
-          router.push('/p/' + productID)
+          if (data.id) {
+            router.push('/p/' + data.id)
+          }
         }}
       >
         {isLoading ? (
@@ -228,7 +228,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     buttonType="ghost"
                     className="w-full text-white"
                     onClick={() => {
-                      router.push('/p/' + productID)
+                      router.push('/p/' + data.id)
                     }}
                   >
                     Detail<br></br>Product
@@ -253,21 +253,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </>
           ) : (
             <>
-              <div className="grid grid-cols-2 gap-1 rounded-b-lg bg-primary p-2">
+              <div className="grid grid-cols-1 gap-1 rounded-b-lg bg-primary p-2">
                 <div>
                   <Button
                     size="xs"
                     buttonType="ghost"
                     className="w-full text-white"
                     onClick={() => {
-                      router.push('/p/' + productID)
+                      router.push('/p/' + data.id)
                     }}
                   >
                     See Details
                   </Button>
                 </div>
                 <div>
-                  <Button
+                  {/* <Button
                     size="xs"
                     buttonType="white"
                     className="w-full"
@@ -277,7 +277,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     }}
                   >
                     Buy Now
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             </>

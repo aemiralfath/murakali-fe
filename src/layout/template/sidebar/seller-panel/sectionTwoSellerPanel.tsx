@@ -19,6 +19,7 @@ export type ValidPage =
   | 'shop'
   | 'product'
   | 'delivery-service'
+  | 'sealabs-pay'
   | 'wallet'
 
 interface SellerSideBarProps {

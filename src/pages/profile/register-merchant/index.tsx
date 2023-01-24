@@ -50,7 +50,7 @@ function MerchantRegistration() {
   useEffect(() => {
     if (registerMerchant.isSuccess) {
       toast.success('Registration Merchant Success')
-      router.push('/merchant')
+      router.push('/seller-panel')
     }
   }, [registerMerchant.isSuccess])
 

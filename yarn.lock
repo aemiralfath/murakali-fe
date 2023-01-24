@@ -560,6 +560,14 @@ axe-core@^4.4.3:
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.6.1.tgz#79cccdee3e3ab61a8f42c458d4123a6768e6fbce"
   integrity sha512-lCZN5XRuOnpG4bpMq8v0khrWtUOn+i8lZSb6wHZH56ZfbIEv6XwJV84AAueh9/zi7qPVJ/E4yz6fmsiyOmXR4w==
 
+axios-retry@^3.4.0:
+  version "3.4.0"
+  resolved "https://npm.shopee.io/axios-retry/-/axios-retry-3.4.0.tgz#f464dbe9408e5aa78fa319afd38bb69b533d8854"
+  integrity sha512-VdgaP+gHH4iQYCCNUWF2pcqeciVOdGrBBAYUfTY+wPcO5Ltvp/37MLFNCmJKo7Gj3SHvCSdL8ouI1qLYJN3liA==
+  dependencies:
+    "@babel/runtime" "^7.15.4"
+    is-retry-allowed "^2.2.0"
+
 axios@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.2.1.tgz#44cf04a3c9f0c2252ebd85975361c026cb9f864a"
@@ -1661,6 +1669,11 @@ is-regex@^1.1.4:
   dependencies:
     call-bind "^1.0.2"
     has-tostringtag "^1.0.0"
+
+is-retry-allowed@^2.2.0:
+  version "2.2.0"
+  resolved "https://npm.shopee.io/is-retry-allowed/-/is-retry-allowed-2.2.0.tgz#88f34cbd236e043e71b6932d09b0c65fb7b4d71d"
+  integrity sha512-XVm7LOeLpTW4jV19QSH38vkswxoLud8sQ57YwJVTPWdiaI9I8keEhGFpBlslyVsgdQy4Opg8QOLb8YRgsyZiQg==
 
 is-shared-array-buffer@^1.0.2:
   version "1.0.2"
