@@ -4,6 +4,7 @@ const orderStatus = [
   'Need Seller Confirmation',
   'On Process',
   'On Delivery',
+  'Delivered',
   'Received',
   'Completed',
   'Canceled',

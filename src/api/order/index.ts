@@ -36,7 +36,7 @@ export const useGetOrderByID = (id: string) => {
   })
 }
 
-export const useCompleteOrder = () => {
+export const useReceiveOrder = () => {
   const queryClient = useQueryClient()
 
   return useMutation(
@@ -46,6 +46,27 @@ export const useCompleteOrder = () => {
         {
           ...data,
           order_status_id: 6,
+        }
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([key])
+      },
+    }
+  )
+}
+
+export const useCompleteOrder = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (data: { order_id: string }) => {
+      return await authorizedClient.patch<APIResponse<null>>(
+        '/user/order-status',
+        {
+          ...data,
+          order_status_id: 7,
         }
       )
     },
