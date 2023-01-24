@@ -6,7 +6,7 @@ import {
 } from '@/api/seller/voucher'
 import { Button, Chip, H2, H4, P, TextInput } from '@/components'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
-import { closeModal } from '@/redux/reducer/modalReducer'
+
 import type { APIResponse } from '@/types/api/response'
 import type { CreateUpdateVoucher } from '@/types/api/voucher'
 import type { AxiosError } from 'axios'
@@ -80,7 +80,7 @@ function ManageVouchers() {
   }, [sellerVoucher.isSuccess])
 
   const useSellerDetailInformation = useGetSellerDetailInformation()
-  const dispatch = useDispatch()
+
   const [input, setInput] = useState<CreateUpdateVoucher>({
     code: '',
     quota: 0,
@@ -224,7 +224,7 @@ function ManageVouchers() {
                 </P>
               </div>
               <div className="flex flex-1 items-center">
-                <P className="w-32 font-bold">{SellerName}</P>
+                <P className="w-fit font-bold">{SellerName}</P>
                 <TextInput
                   type="text"
                   name="code"
