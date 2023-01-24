@@ -134,6 +134,7 @@ function OrderDetailPage() {
                     order_status={getSellerOrderDetail.data.data.order_status}
                     order_id={getSellerOrderDetail.data.data.order_id}
                     allData={getSellerOrderDetail.data.data}
+                    is_withdraw={getSellerOrderDetail.data.data.is_withdraw}
                   />
                 </div>
                 <div className="mt-3 grid h-full grid-cols-1 gap-6 rounded border bg-white p-6 md:grid-cols-2 md:gap-6">

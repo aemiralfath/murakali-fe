@@ -92,7 +92,7 @@ const CategoryTab: React.FC<{
             <div className="dropdown dropdown-end dropdown-hover mx-auto w-full">
               <label
                 tabIndex={0}
-                className="btn btn-outline btn-primary w-full border-0 text-base font-normal"
+                className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
               >
                 Other Category
               </label>
@@ -131,7 +131,7 @@ const CategoryTab: React.FC<{
             <div className="dropdown-end dropdown-hover dropdown mx-auto w-full">
               <label
                 tabIndex={0}
-                className="btn btn-outline btn-primary w-full border-0 text-base font-normal"
+                className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
               >
                 Other Category
               </label>
@@ -171,11 +171,11 @@ const CategoryTab: React.FC<{
 
 function Seller() {
   const [selectedTab, setSelectedTab] = useState('')
-  const [flag, setFlag] = useState(true)
+  const [, setFlag] = useState(true)
   const param = useRouter()
   const controller = useProductListing()
   const [locationState, setLocationState] = useState('')
-  const [categoryState, setCategoryState] = useState('')
+  const [, setCategoryState] = useState('')
   const INF = 1000000000
 
   const md = useMediaQuery('md')

@@ -1,9 +1,14 @@
+import { useWithdrawOrderBalance } from '@/api/seller/order'
 import { Button } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import { useModal } from '@/hooks'
 import CancelDelivery from '@/sections/seller-panel/delivery-servise/CancelDelivery'
 import ProcessDelivery from '@/sections/seller-panel/delivery-servise/ProcessDelivery'
 import type { OrderData } from '@/types/api/order'
+import type { APIResponse } from '@/types/api/response'
+import type { AxiosError } from 'axios'
+import { useEffect } from 'react'
+import toast from 'react-hot-toast'
 
 import InputResi from '../../seller-panel/delivery-servise/InputResi'
 import LabelDelivery from './LabelDelivery'
@@ -13,6 +18,7 @@ interface SummaryOrderDetailProductProps {
   delivery_fee: number
   order_status: number
   order_id: string
+  is_withdraw: boolean
   allData: OrderData
 }
 
@@ -21,9 +27,11 @@ const SummaryOrderDetailProduct: React.FC<SummaryOrderDetailProductProps> = ({
   delivery_fee,
   order_status,
   order_id,
+  is_withdraw,
   allData,
 }) => {
   const modal = useModal()
+  const withdrawOrderBalance = useWithdrawOrderBalance()
   function inputResiModal() {
     modal.edit({
       title: 'Input Modal',
@@ -63,6 +71,21 @@ const SummaryOrderDetailProduct: React.FC<SummaryOrderDetailProductProps> = ({
       closeButton: false,
     })
   }
+
+  useEffect(() => {
+    if (withdrawOrderBalance.isSuccess) {
+      toast.success('Withdraw balance success!')
+    }
+  }, [withdrawOrderBalance.isSuccess])
+
+  useEffect(() => {
+    if (withdrawOrderBalance.isError) {
+      const errMsg = withdrawOrderBalance.failureReason as AxiosError<
+        APIResponse<null>
+      >
+      toast.error(errMsg.response?.data.message as string)
+    }
+  }, [withdrawOrderBalance.isError])
   return (
     <div className="max-w-full flex-none overflow-x-auto p-4">
       <div className=" overflow-x-auto whitespace-nowrap border-solid border-gray-300">
@@ -90,6 +113,23 @@ const SummaryOrderDetailProduct: React.FC<SummaryOrderDetailProductProps> = ({
       </div>
 
       <div>
+        {order_status === 7 ? (
+          <>
+            <Button
+              onClick={() => {
+                withdrawOrderBalance.mutate(order_id)
+              }}
+              buttonType="primary"
+              size="sm"
+              className="rounded"
+              disabled={is_withdraw}
+            >
+              Withdraw Balance
+            </Button>
+          </>
+        ) : (
+          <></>
+        )}
         {order_status === 2 ? (
           <div className="flex justify-between">
             <Button
@@ -126,7 +166,7 @@ const SummaryOrderDetailProduct: React.FC<SummaryOrderDetailProductProps> = ({
           >
             Create Package
           </Button>
-        ) : order_status === 4 || order_status === 5 ? (
+        ) : order_status === 4 || order_status === 5 || order_status === 6 ? (
           <Button
             buttonType="primary"
             size="sm"

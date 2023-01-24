@@ -9,6 +9,7 @@ export interface OrderData {
   shop_id: string
   shop_name: string
   shop_phone_number: string
+  is_withdraw: boolean
   seller_name: string
   voucher_code: string
   created_at: string
