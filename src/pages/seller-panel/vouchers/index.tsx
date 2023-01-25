@@ -10,7 +10,7 @@ import {
   useSellerVouchers,
 } from '@/api/seller/voucher'
 import Table from '@/components/table'
-import type { VoucherData } from '@/types/api/voucher'
+import type { VoucherData } from '@/types/api/Voucher'
 import type { APIResponse, PaginationData } from '@/types/api/response'
 import moment from 'moment'
 import formatMoney from '@/helper/formatMoney'

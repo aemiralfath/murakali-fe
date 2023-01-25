@@ -40,15 +40,15 @@ const orderStatusData = [
 const sellerOrderStatusData = [
   {
     id: 1,
-    name: 'Waiting for payment',
+    name: 'Waiting for Payment',
   },
   {
     id: 2,
-    name: 'Confirmation Order',
+    name: 'Waiting for Seller Confirmation',
   },
   {
     id: 3,
-    name: 'Ready for Packaging',
+    name: 'On Process',
   },
   {
     id: 4,
@@ -61,6 +61,10 @@ const sellerOrderStatusData = [
   {
     id: 6,
     name: 'Received',
+  },
+  {
+    id: 7,
+    name: 'Completed',
   },
 ]
 

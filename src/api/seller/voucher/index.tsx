@@ -1,6 +1,6 @@
 import { authorizedClient } from '@/api/apiClient'
 import type { APIResponse, PaginationData } from '@/types/api/response'
-import type { CreateUpdateVoucher, VoucherData } from '@/types/api/voucher'
+import type { CreateUpdateVoucher, VoucherData } from '@/types/api/Voucher'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const profileKey = 'voucher-seller'

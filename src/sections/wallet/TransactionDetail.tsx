@@ -43,7 +43,7 @@ const TransactionDetail: React.FC<TransactionDetailProps> = ({
             )}
           </P>
 
-          {useWalletHistoryDetail.data?.data?.transaction.orders.length > 0 ? (
+          {useWalletHistoryDetail.data?.data?.transaction?.orders.length > 0 ? (
             <div>
               <div className="mt-4 border-t-4 border-dashed border-gray-400 pt-3 ">
                 <P className="font-bold">Transaction ID :</P>

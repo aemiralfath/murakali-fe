@@ -45,6 +45,23 @@ export const useSellerOrderDetail = (orderID: string) => {
   )
 }
 
+export const useWithdrawOrderBalance = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (orderID: string) => {
+      return await authorizedClient.post<APIResponse<null>>(
+        '/seller/withdrawal/' + orderID
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+    }
+  )
+}
+
 export const useUpdateOrderStatus = () => {
   const queryClient = useQueryClient()
 
