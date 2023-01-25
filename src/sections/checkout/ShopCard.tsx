@@ -4,6 +4,7 @@ import { Button, H2, P } from '@/components'
 import ProductCart from '@/components/card/ProductCart'
 import formatMoney from '@/helper/formatMoney'
 import type { CartDetail } from '@/types/api/cart'
+import { PostCheckout, ProductPostCheckout } from '@/types/api/checkout'
 import type { LocationCostRequest } from '@/types/api/location'
 import type { VoucherData } from '@/types/api/voucher'
 import { Menu } from '@headlessui/react'
@@ -16,11 +17,13 @@ interface ShopCardProps {
   index: number
   idProducts: string[] | string
   destination: number
+  postCheckout: PostCheckout
   courierID: (
     courierID: string,
     delivery_fee: number,
     voucherID: string,
-    voucherPrice: number
+    voucherPrice: number,
+    productDetail: ProductPostCheckout[]
   ) => void
 }
 
@@ -29,10 +32,13 @@ const ShopCard: React.FC<ShopCardProps> = ({
   index,
   idProducts,
   destination,
+  postCheckout,
   courierID,
 }) => {
   const locationCost = useLocationCost()
   const voucherShop = useGetVoucherShopCheckout(cart.shop.id)
+
+  const [productD, setProductD] = useState<ProductPostCheckout[]>()
 
   const [totalPrice, setTotalPrice] = useState<number>(0)
   const [voucherPrice, setVoucherPrice] = useState<number>(0)
@@ -103,7 +109,37 @@ const ShopCard: React.FC<ShopCardProps> = ({
         .filter((item) => idProducts.includes(item.id))
         .map((product) => (
           <div className="flex flex-col gap-5" key={product.id}>
-            <ProductCart forCart={false} listProduct={product} />
+            <ProductCart
+              forCart={false}
+              listProduct={product}
+              productNote={(idProduct, note) => {
+                postCheckout.cart_items
+                  .filter((item) => cart.shop.id === item.shop_id)
+                  .map((shop) => {
+                    const temp: ProductPostCheckout[] =
+                      shop.product_details.map((product) => {
+                        let tempNote: string = product.note
+                        if (product.id === idProduct) {
+                          tempNote = note
+                        }
+                        return {
+                          id: product.id,
+                          cart_id: product.cart_id,
+                          quantity: product.quantity,
+                          note: tempNote,
+                        }
+                      })
+                    setProductD(temp)
+                    courierID(
+                      delivery.id,
+                      delivery.delivery_fee,
+                      voucher.id,
+                      voucherPrice,
+                      temp
+                    )
+                  })
+              }}
+            />
           </div>
         ))}
 
@@ -141,7 +177,8 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                     shipping.courier.id,
                                     shipping.fee,
                                     voucher.id,
-                                    voucherPrice
+                                    voucherPrice,
+                                    productD
                                   )
                                   setDelivery({
                                     id: shipping.courier.id,
@@ -264,13 +301,20 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                     } else {
                                       tempVoucherPrice = data.discount_fix_price
                                     }
+
+                                    if (
+                                      tempVoucherPrice > data.max_discount_price
+                                    ) {
+                                      tempVoucherPrice = data.max_discount_price
+                                    }
                                     setVoucherPrice(tempVoucherPrice)
 
                                     courierID(
                                       delivery.id,
                                       delivery.delivery_fee,
                                       data.id,
-                                      tempVoucherPrice
+                                      tempVoucherPrice,
+                                      productD
                                     )
                                     setVoucher(data)
                                   }}
