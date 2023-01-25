@@ -17,6 +17,7 @@ export interface CartPostCheckout {
 
 export interface ProductPostCheckout {
   id: string
+  cart_id: string
   quantity: number
-  sub_price: number
+  note: string
 }
