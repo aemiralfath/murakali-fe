@@ -35,10 +35,11 @@ export const useGetDefaultAddress = (
   isDefault: boolean,
   isShopDefault: boolean
 ) => {
-  return useQuery(
-    [profileKey],
-    async () => await getDefaultAddress(isDefault, isShopDefault)
-  )
+  return useQuery({
+    queryKey: [profileKey],
+    queryFn: async () => await getDefaultAddress(isDefault, isShopDefault),
+    retry: false,
+  })
 }
 
 export const useCreateAddress = () => {
