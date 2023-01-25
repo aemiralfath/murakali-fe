@@ -1,7 +1,7 @@
 import React from 'react'
-import SectionOneSideBar from './template/sidebar/sectionOne'
-import SectionTwoSideBar from './template/sidebar/sectionTwo'
-import type { ValidPage } from './template/sidebar/sectionTwo'
+import SectionOneSideBar from './template/sidebar/seller-panel/sectionOneSellerPanel'
+import SectionTwoSideBar from './template/sidebar/seller-panel/sectionTwoSellerPanel'
+import type { ValidPage } from './template/sidebar/seller-panel/sectionTwoSellerPanel'
 
 const SellerPanelLayout: React.FC<{
   children: React.ReactNode

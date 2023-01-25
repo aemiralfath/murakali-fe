@@ -14,6 +14,11 @@ export interface SellerOrderStatus {
   order_status_id: number
 }
 
+export interface CancelOrderStatus {
+  order_id: string
+  cancel_notes: string
+}
+
 export interface UpdateNoResiSellerOrder {
   order_id: string
   resi_no: string

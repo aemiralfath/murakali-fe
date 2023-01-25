@@ -1,10 +1,10 @@
-import { useUpdateOrderStatus } from '@/api/seller/order'
-import { Button, P } from '@/components'
+import { useCancelOrderStatus } from '@/api/seller/order'
+import { Button, TextInput } from '@/components'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { APIResponse } from '@/types/api/response'
-import type { SellerOrderStatus } from '@/types/api/seller'
+import type { CancelOrderStatus } from '@/types/api/seller'
 import type { AxiosError } from 'axios'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 
@@ -13,37 +13,48 @@ interface CancleDeliveryProps {
 }
 
 const CancelDelivery: React.FC<CancleDeliveryProps> = ({ orderID }) => {
-  const updateSellerOrderStatus = useUpdateOrderStatus()
+  const cancelSellerOrderStatus = useCancelOrderStatus()
   const dispatch = useDispatch()
 
+  const [note, setNote] = useState('')
+
   useEffect(() => {
-    if (updateSellerOrderStatus.isSuccess) {
+    if (cancelSellerOrderStatus.isSuccess) {
       toast.success('Cancel Order Success')
       dispatch(closeModal())
     }
-  }, [updateSellerOrderStatus.isSuccess])
+  }, [cancelSellerOrderStatus.isSuccess])
 
   useEffect(() => {
-    if (updateSellerOrderStatus.isError) {
-      const errmsg = updateSellerOrderStatus.failureReason as AxiosError<
+    if (cancelSellerOrderStatus.isError) {
+      const errmsg = cancelSellerOrderStatus.failureReason as AxiosError<
         APIResponse<null>
       >
       toast.error(errmsg.response?.data.message as string)
     }
-  }, [updateSellerOrderStatus.isError])
+  }, [cancelSellerOrderStatus.isError])
   return (
     <div>
-      <P className="mb-3"> Did you want to Cancel this order?</P>
-      <div className="flex justify-end gap-x-2">
+      <TextInput
+        type="text"
+        name="note"
+        onChange={(event) => {
+          setNote(event.target.value)
+        }}
+        placeholder="cancel notes"
+        full
+        required
+      />
+      <div className="m-3 flex justify-end gap-x-2">
         <Button
           buttonType="primary"
           outlined
           onClick={() => {
-            const status: SellerOrderStatus = {
+            const status: CancelOrderStatus = {
               order_id: orderID,
-              order_status_id: 7,
+              cancel_notes: note,
             }
-            updateSellerOrderStatus.mutate(status)
+            cancelSellerOrderStatus.mutate(status)
           }}
         >
           Yes

@@ -3,7 +3,7 @@ import type { APIResponse, PaginationData } from '@/types/api/response'
 import type { CreateUpdateVoucher, VoucherData } from '@/types/api/voucher'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-const profileKey = 'voucher'
+const profileKey = 'voucher-seller'
 
 const getSellerVouchers = async (
   voucherStatus: string,

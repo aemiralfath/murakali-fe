@@ -1,15 +1,15 @@
 const orderStatusData = [
   {
     id: '1',
-    name: 'Waiting to Pay',
+    name: 'Waiting for Payment',
   },
   {
     id: '2',
-    name: 'Waiting for Seller',
+    name: 'Waiting for Seller Confirmation',
   },
   {
     id: '3',
-    name: 'Processed',
+    name: 'On Process',
   },
   {
     id: '4',

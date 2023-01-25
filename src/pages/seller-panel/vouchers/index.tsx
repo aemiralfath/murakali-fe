@@ -254,7 +254,7 @@ function Vouchers() {
       </Head>
       <SellerPanelLayout selectedPage="voucher">
         <div className="flex w-full items-center justify-between">
-          <H2>Voucher List</H2>
+          <H2>Voucher Shop List</H2>
           <Button
             size={'sm'}
             buttonType="primary"
@@ -354,7 +354,6 @@ function Vouchers() {
           </div>
         </div>
       </SellerPanelLayout>
-      Vouchers
     </div>
   )
 }

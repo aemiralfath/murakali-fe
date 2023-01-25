@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { APIResponse, PaginationData } from '@/types/api/response'
 import type { OrderData } from '@/types/api/order'
 import type {
+  CancelOrderStatus,
   SellerOrderStatus,
   UpdateNoResiSellerOrder,
 } from '@/types/api/seller'
@@ -54,6 +55,27 @@ export const useUpdateOrderStatus = () => {
         {
           order_id: data.order_id,
           order_status_id: data.order_status_id.toString(),
+        }
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+    }
+  )
+}
+
+export const useCancelOrderStatus = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (data: CancelOrderStatus) => {
+      return await authorizedClient.patch<APIResponse<null>>(
+        '/seller/order-cancel',
+        {
+          order_id: data.order_id,
+          cancel_notes: data.cancel_notes,
         }
       )
     },

@@ -6,7 +6,7 @@ import {
 } from '@/api/seller/voucher'
 import { Button, Chip, H2, H4, P, TextInput } from '@/components'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
-import { closeModal } from '@/redux/reducer/modalReducer'
+
 import type { APIResponse } from '@/types/api/response'
 import type { CreateUpdateVoucher } from '@/types/api/voucher'
 import type { AxiosError } from 'axios'
@@ -80,7 +80,7 @@ function ManageVouchers() {
   }, [sellerVoucher.isSuccess])
 
   const useSellerDetailInformation = useGetSellerDetailInformation()
-  const dispatch = useDispatch()
+
   const [input, setInput] = useState<CreateUpdateVoucher>({
     code: '',
     quota: 0,
@@ -224,7 +224,7 @@ function ManageVouchers() {
                 </P>
               </div>
               <div className="flex flex-1 items-center">
-                <P className="w-32 font-bold">{SellerName}</P>
+                <P className="w-fit font-bold">{SellerName}</P>
                 <TextInput
                   type="text"
                   name="code"
@@ -273,10 +273,18 @@ function ManageVouchers() {
                   type="datetime-local"
                   name="actived_date"
                   onChange={handleChange}
+                  max={
+                    input.expired_date === ''
+                      ? ''
+                      : moment(input.expired_date).format('YYYY-MM-DD HH:mm')
+                  }
                   min={moment(Date.now()).format('YYYY-MM-DD HH:mm')}
                   placeholder={String(Date.now())}
                   value={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
                   full
+                  disabled={
+                    Date.now() >= Date.parse(input.actived_date) && edit
+                  }
                   required
                 />
               </div>
@@ -305,6 +313,13 @@ function ManageVouchers() {
                   type="datetime-local"
                   name="expired_date"
                   onChange={handleChange}
+                  max={
+                    Date.now() >= Date.parse(input.actived_date) &&
+                    Date.now() <= Date.parse(input.expired_date) &&
+                    edit
+                      ? input.expired_date
+                      : ''
+                  }
                   min={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
                   placeholder={String(Date.now())}
                   value={moment(input.expired_date).format('YYYY-MM-DD HH:mm')}

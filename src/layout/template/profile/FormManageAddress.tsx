@@ -19,12 +19,14 @@ interface FormManageAddressProps {
   isEdit: boolean
   editData?: AddressDetail
   role: number
+  isInShop?: boolean
 }
 
 const FormManageAddress: React.FC<FormManageAddressProps> = ({
   isEdit,
   editData,
   role,
+  isInShop = false,
 }) => {
   const addressInit: AddressDetail = {
     id: '',
@@ -193,6 +195,15 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
       }
     }
 
+    let isDefault = selected[0]
+    if (isInShop && isEdit) {
+      isDefault = editData.is_default
+    }
+    let isShopDefault = selected[1]
+    if (!isInShop && isEdit) {
+      isShopDefault = editData.is_shop_default
+    }
+
     const temp: AddressDetail = {
       id: '',
       user_id: '',
@@ -205,8 +216,8 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
       sub_district: input.sub_district,
       zip_code: input.zip_code,
       address_detail: input.address_detail,
-      is_default: selected[0],
-      is_shop_default: selected[1],
+      is_default: isDefault,
+      is_shop_default: isShopDefault,
     }
 
     if (!isEdit) {
@@ -413,17 +424,21 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
             />
           </div>
           <div>
-            <label className="flex gap-2 text-sm font-medium text-gray-900">
-              <input
-                type="checkbox"
-                name={'shippingaddress'}
-                value={0}
-                checked={selected[0]}
-                onChange={handleChangeCheckbox}
-              />
-              Choose as Shipping Address
-            </label>
-            {role === 2 ? (
+            {!isInShop ? (
+              <label className="flex gap-2 text-sm font-medium text-gray-900">
+                <input
+                  type="checkbox"
+                  name={'shippingaddress'}
+                  value={0}
+                  checked={selected[0]}
+                  onChange={handleChangeCheckbox}
+                />
+                Choose as Shipping Address
+              </label>
+            ) : (
+              <></>
+            )}
+            {role === 2 && isInShop ? (
               <label className="flex gap-2 text-sm font-medium text-gray-900">
                 <input
                   type="checkbox"

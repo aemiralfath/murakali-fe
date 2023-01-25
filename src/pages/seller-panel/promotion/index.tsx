@@ -118,7 +118,7 @@ function PromotionSeller() {
               className="rounded"
               onClick={() => {
                 router.push({
-                  pathname: '/seller-panel/promotion/' + row.id,
+                  pathname: '/seller-panel/promotion/' + row.promotion_id,
                 })
               }}
             >
@@ -130,8 +130,8 @@ function PromotionSeller() {
               outlined
               onClick={() => {
                 router.push(
-                  '/seller-panel/promotion/manage?intent=edit&product_id=' +
-                    row.id
+                  '/seller-panel/promotion/manage?intent=edit&id=' +
+                    row.promotion_id
                 )
               }}
             >
@@ -142,8 +142,8 @@ function PromotionSeller() {
               buttonType="ghost"
               onClick={() => {
                 router.push(
-                  '/seller-panel/promotion/manage?intent=add&product_id=' +
-                    row.id
+                  '/seller-panel/promotion/manage?intent=add&id=' +
+                    row.promotion_id
                 )
               }}
             >
