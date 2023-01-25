@@ -1,13 +1,34 @@
-import { useCompleteOrder, useGetOrderByID } from '@/api/order'
-import { A, Button, Chip, Divider, H1, H3, P } from '@/components'
+import { useCompleteOrder, useGetOrderByID, useReceiveOrder } from '@/api/order'
+import {
+  useCreateProductReview,
+  useDeleteProductReview,
+  useGetReviewByUserID,
+} from '@/api/product/review'
+import { useGetUserProfile } from '@/api/user/profile'
+import {
+  A,
+  Button,
+  Chip,
+  Divider,
+  H1,
+  H3,
+  NumberInput,
+  P,
+  RatingStars,
+  TextArea,
+} from '@/components'
+import Uploader from '@/components/uploader'
 import { orderStatus } from '@/constants/status'
+import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
 import { useLoadingModal, useModal } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
 import ConfirmationModal from '@/layout/template/confirmation/confirmationModal'
+import { ReviewCard } from '@/sections/productdetail/ProductReview'
 import type { AddressDetail } from '@/types/api/address'
-import type { BuyerOrder } from '@/types/api/order'
+import type { BuyerOrder, BuyerOrderDetail } from '@/types/api/order'
 import type { APIResponse } from '@/types/api/response'
+import type { ProductReview } from '@/types/api/review'
 import type { AxiosError } from 'axios'
 import moment from 'moment'
 import Head from 'next/head'
@@ -15,13 +36,256 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
-import { HiInformationCircle } from 'react-icons/hi'
+import {
+  HiCheck,
+  HiInboxIn,
+  HiInformationCircle,
+  HiMinus,
+  HiPlus,
+  HiTrash,
+} from 'react-icons/hi'
 
-const OrderDetailCard: React.FC<LoadingDataWrapper<BuyerOrder>> = ({
-  isLoading,
-  data,
-}) => {
+const OrderDetailCardSection: React.FC<{
+  detail: BuyerOrderDetail
+  userId?: string
+  isReview?: boolean
+}> = ({ detail, userId, isReview }) => {
+  const gotReview = useGetReviewByUserID(
+    detail.product_id,
+    userId,
+    Boolean(userId) && isReview
+  )
+  const createReview = useCreateProductReview()
+  const deleteReview = useDeleteProductReview()
+
+  const modal = useModal()
+  const setLoadingModal = useLoadingModal()
+
+  const [review, setReview] = useState<ProductReview>()
+  const [open, setOpen] = useState(false)
+
+  const [star, setStar] = useState(5)
+  const [reviewImage, setReviewImage] = useState<string>()
+  const [comment, setComment] = useState<string>()
+
+  useEffect(() => {
+    if (gotReview.isSuccess) {
+      if (gotReview.data.data.rows.length > 0) {
+        setReview(gotReview.data.data.rows[0])
+      }
+    }
+  }, [gotReview.isSuccess])
+
+  useEffect(() => {
+    if (gotReview.data?.data.rows.length > 0) {
+      setReview(gotReview.data.data.rows[0])
+    }
+  }, [gotReview.isFetching])
+
+  useEffect(() => {
+    if (createReview.isSuccess) {
+      gotReview.refetch()
+      toast.success('Review created!')
+    }
+  }, [createReview.isSuccess])
+
+  useEffect(() => {
+    if (createReview.isError) {
+      const errmsg = createReview.failureReason as AxiosError<APIResponse<null>>
+      toast.error(errmsg.response?.data.message as string)
+    }
+  }, [createReview.isError])
+
+  useEffect(() => {
+    setLoadingModal(deleteReview.isLoading)
+  }, [deleteReview.isLoading])
+
+  useEffect(() => {
+    if (deleteReview.isSuccess) {
+      gotReview.refetch()
+      toast.success('Review deleted!')
+      setReview(undefined)
+    }
+  }, [deleteReview.isSuccess])
+
+  useEffect(() => {
+    if (deleteReview.isError) {
+      const errmsg = deleteReview.failureReason as AxiosError<APIResponse<null>>
+      toast.error(errmsg.response?.data.message as string)
+    }
+  }, [deleteReview.isError])
+
+  const handleDeleteReview = () => {
+    modal.error({
+      title: 'Confirmation',
+      closeButton: false,
+      content: (
+        <ConfirmationModal
+          msg="Do you want to delete this product review?"
+          onConfirm={() => {
+            deleteReview.mutate(review.id)
+          }}
+        />
+      ),
+    })
+  }
+
+  return (
+    <div className="flex gap-2.5">
+      <div>
+        <Image
+          alt={detail.product_title}
+          src={detail.product_detail_url}
+          width={100}
+          height={100}
+        />
+      </div>
+      <div className="flex-1 px-2">
+        <P className="font-semibold">{detail.product_title}</P>
+        <P className="text-sm opacity-60">Quantity: {detail.order_quantity}</P>
+        {isReview ? (
+          <div className="mt-2" id="review">
+            {review ? (
+              <Button
+                buttonType="gray"
+                className="text-white"
+                size="xs"
+                onClick={() => {
+                  modal.info({
+                    title: 'Product Review',
+                    content: (
+                      <div className="flex flex-col gap-2">
+                        <ReviewCard item={review} />
+                        <A
+                          className="flex items-center gap-2 text-sm opacity-60"
+                          onClick={handleDeleteReview}
+                        >
+                          <HiTrash /> Delete review
+                        </A>
+                      </div>
+                    ),
+                  })
+                }}
+              >
+                See Review
+              </Button>
+            ) : (
+              <div
+                className={cx(
+                  open ? 'rounded bg-gray-50 p-2 transition-all' : ''
+                )}
+              >
+                <Button
+                  buttonType="gray"
+                  className="text-white"
+                  outlined
+                  size="xs"
+                  onClick={() => {
+                    setOpen(!open)
+                  }}
+                >
+                  {open ? <HiMinus /> : <HiPlus />} Add Review
+                </Button>
+                {open ? (
+                  <div className="flex gap-2">
+                    <div className="mt-2 flex flex-1 flex-col gap-2">
+                      <div className="flex items-center gap-3">
+                        <RatingStars rating={star} size={'lg'} />
+                        <NumberInput
+                          setValue={setStar}
+                          maxValue={5}
+                          min={1}
+                          value={star}
+                        />
+                      </div>
+                      <div className="flex justify-start gap-3 p-2">
+                        <div>
+                          <Uploader
+                            id={'review-photo'}
+                            title={'Photo'}
+                            size="md"
+                            onChange={(s) => setReviewImage(s)}
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <TextArea
+                            label="Comment"
+                            placeholder="Your tought about the product ..."
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            errorMsg={
+                              comment?.length > 150
+                                ? `${comment.length}/160`
+                                : undefined
+                            }
+                          />
+                          <div className="mt-2 flex justify-end gap-2">
+                            <Button
+                              size="sm"
+                              buttonType="primary"
+                              outlined
+                              onClick={() => {
+                                setOpen(false)
+                              }}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              size="sm"
+                              buttonType="primary"
+                              isLoading={createReview.isLoading}
+                              onClick={() => {
+                                if (comment.length <= 160) {
+                                  createReview.mutate({
+                                    product_id: detail.product_id,
+                                    rating: star,
+                                    comment: comment,
+                                    photo_url: reviewImage,
+                                  })
+                                } else {
+                                  toast.error(
+                                    'Comment must be 160 character or less'
+                                  )
+                                }
+                              }}
+                            >
+                              Add Review
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <></>
+                )}
+              </div>
+            )}
+          </div>
+        ) : (
+          <></>
+        )}
+      </div>
+      <div className="px-2 text-right">
+        <P className="text-xs opacity-60">
+          Rp
+          {formatMoney(detail.order_item_price / detail.order_quantity)} / pcs
+        </P>
+        <P className="font-semibold">
+          Rp{formatMoney(detail.order_total_price)}
+        </P>
+      </div>
+    </div>
+  )
+}
+
+const OrderDetailCard: React.FC<
+  LoadingDataWrapper<BuyerOrder> & {
+    isReview?: boolean
+  }
+> = ({ isLoading, data, isReview }) => {
   const order = data
+  const userProfile = useGetUserProfile()
 
   return (
     <div className={'flex w-full flex-col gap-2.5 bg-white'}>
@@ -36,31 +300,12 @@ const OrderDetailCard: React.FC<LoadingDataWrapper<BuyerOrder>> = ({
       ) : (
         order.detail.map((detail) => {
           return (
-            <div
-              className="flex gap-2.5"
+            <OrderDetailCardSection
+              detail={detail}
               key={`${detail.product_detail_id}-${order.order_id}`}
-            >
-              <Image
-                alt={detail.product_title}
-                src={detail.product_detail_url}
-                width={100}
-                height={100}
-              />
-              <div className="flex-1 px-2">
-                <P className="font-semibold">{detail.product_title}</P>
-                <P className="text-sm opacity-60">
-                  Quantity: {detail.order_quantity}
-                </P>
-              </div>
-              <div className="px-2 text-right">
-                <P className="text-xs opacity-60">
-                  Rp{formatMoney(detail.order_item_price)} / pcs
-                </P>
-                <P className="font-semibold">
-                  Rp{formatMoney(detail.order_total_price)}
-                </P>
-              </div>
-            </div>
+              userId={userProfile.data?.data.id}
+              isReview={isReview}
+            />
           )
         })
       )}
@@ -106,6 +351,7 @@ const AddressDetailCard: React.FC<{
 const OrderDetail = () => {
   const modal = useModal()
   const router = useRouter()
+
   const setIsLoadingModal = useLoadingModal()
   const { id } = router.query
   const [orderID, setOrderID] = useState('')
@@ -116,14 +362,38 @@ const OrderDetail = () => {
   }, [id])
 
   const order = useGetOrderByID(orderID)
+  const receiveOrder = useReceiveOrder()
   const completeOrder = useCompleteOrder()
+
+  useEffect(() => {
+    setIsLoadingModal(receiveOrder.isLoading)
+  }, [receiveOrder.isLoading])
+  useEffect(() => {
+    if (receiveOrder.isSuccess) {
+      order.refetch()
+      toast.success('Confirmation received!')
+    }
+  }, [receiveOrder.isSuccess])
+  useEffect(() => {
+    if (receiveOrder.isError) {
+      const errmsg = receiveOrder.failureReason as AxiosError<APIResponse<null>>
+      toast.error(errmsg.response?.data.message as string)
+    }
+  }, [receiveOrder.isError])
+
   useEffect(() => {
     setIsLoadingModal(completeOrder.isLoading)
   }, [completeOrder.isLoading])
   useEffect(() => {
     if (completeOrder.isSuccess) {
       order.refetch()
-      toast.success('Order completed!')
+      if (order.data?.data) {
+        toast.success(
+          `Rp${formatMoney(
+            order.data.data.total_price
+          )} has been sent to Seller!`
+        )
+      }
     }
   }, [completeOrder.isSuccess])
   useEffect(() => {
@@ -229,37 +499,61 @@ const OrderDetail = () => {
                 </div>
                 <div className="flex-auto">
                   <P className="mb-1 text-sm">Status</P>
-                  <Chip type="gray">
+                  <Chip type="gray" className="mb-2">
                     {orderStatus[order.data.data.order_status]}
                   </Chip>
                   {order.data.data.order_status === 5 ? (
                     <>
-                      <div className="indicator mt-4">
-                        <span className="badge-error badge indicator-item"></span>
-                        <Button
-                          buttonType="primary"
-                          onClick={() => {
-                            modal.info({
-                              title: 'Confirmation',
-                              closeButton: false,
-                              content: (
-                                <ConfirmationModal
-                                  msg={
-                                    'Do you really want to complete this order?'
-                                  }
-                                  onConfirm={() => {
-                                    completeOrder.mutate({
-                                      order_id: order.data.data.order_id,
-                                    })
-                                  }}
-                                />
-                              ),
-                            })
-                          }}
-                        >
-                          Complete Order
-                        </Button>
-                      </div>
+                      <Button
+                        buttonType="primary"
+                        onClick={() => {
+                          modal.info({
+                            title: 'Confirmation',
+                            closeButton: false,
+                            content: (
+                              <ConfirmationModal
+                                msg={'Have you receive these product(s)?'}
+                                onConfirm={() => {
+                                  receiveOrder.mutate({
+                                    order_id: order.data.data.order_id,
+                                  })
+                                }}
+                              />
+                            ),
+                          })
+                        }}
+                      >
+                        <HiInboxIn /> Confirm Received
+                      </Button>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                  {order.data.data.order_status === 6 ? (
+                    <>
+                      <Button
+                        buttonType="primary"
+                        onClick={() => {
+                          modal.info({
+                            title: 'Confirmation',
+                            closeButton: false,
+                            content: (
+                              <ConfirmationModal
+                                msg={`Complete Order & Release Rp${formatMoney(
+                                  order.data.data.total_price
+                                )} to the Seller?`}
+                                onConfirm={() => {
+                                  completeOrder.mutate({
+                                    order_id: order.data.data.order_id,
+                                  })
+                                }}
+                              />
+                            ),
+                          })
+                        }}
+                      >
+                        <HiCheck /> Complete Order
+                      </Button>
                       <div className="mt-2 flex items-baseline gap-1">
                         <P className="text-xs opacity-50">Or</P>
                         <A
@@ -292,7 +586,11 @@ const OrderDetail = () => {
                 />
               </div>
               <div className="mt-5 flex flex-col gap-3 rounded border bg-white p-4">
-                <OrderDetailCard data={order.data.data} isLoading={false} />
+                <OrderDetailCard
+                  data={order.data.data}
+                  isLoading={false}
+                  isReview={order.data.data.order_status >= 7}
+                />
                 <Divider />
                 <div className={'flex items-center justify-between'}>
                   <>

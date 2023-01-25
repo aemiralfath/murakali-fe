@@ -1,5 +1,5 @@
 import { A, Divider, H3, P, Spinner } from '@/components'
-import { useModal } from '@/hooks'
+import { useModal, useUser } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
 import ProductImageCarousel from '@/layout/template/product/ProductImageCarousel'
 import type { GetServerSideProps, NextPage } from 'next'
@@ -25,7 +25,12 @@ import ProductCarousel from '@/sections/home/ProductCarousel'
 import ProductCard from '@/layout/template/product/ProductCard'
 import { dehydrate, QueryClient } from '@tanstack/react-query'
 import cx from '@/helper/cx'
-import { useAddFavProduct } from '@/api/product/favorite'
+import {
+  useAddFavProduct,
+  useCheckFavoriteProduct,
+  useCountSpecificFavoriteProduct,
+  useDeleteFavProduct,
+} from '@/api/product/favorite'
 import { toast } from 'react-hot-toast'
 import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
@@ -33,30 +38,58 @@ import type { APIResponse } from '@/types/api/response'
 const ProductPage: NextPage = () => {
   const router = useRouter()
   const { pid } = router.query
-
+  const { user } = useUser()
   const product = useGetProductById(pid as string)
   const addFavorite = useAddFavProduct()
-  const [addedFav, setAddedFav] = useState(false)
+  const deleteFavorite = useDeleteFavProduct()
+  const checkFavorite = useCheckFavoriteProduct()
+  const countFavorite = useCountSpecificFavoriteProduct()
+  const [checkFav, setCheckFav] = useState(false)
+  const [countFav, setCountFav] = useState(0)
   useEffect(() => {
     if (addFavorite.isError) {
       const errmsg = addFavorite.failureReason as AxiosError<APIResponse<null>>
       if (errmsg.response?.data.message === 'Product already in favorite.') {
         toast.success('Product already in favorite')
-        setAddedFav(true)
       } else if (errmsg.response?.data.message === 'Forbidden') {
         toast.error('You must login first')
-        router.push('/login')
+        router.push({
+          pathname: '/login',
+          query: {
+            from: ('p/' + pid) as string,
+          },
+        })
       } else {
         toast.error(errmsg.response?.data.message as string)
       }
     }
   }, [addFavorite.isError])
+
+  useEffect(() => {
+    if (deleteFavorite.isError) {
+      const errmsg = deleteFavorite.failureReason as AxiosError<
+        APIResponse<null>
+      >
+
+      toast.error(errmsg.response?.data.message as string)
+    }
+  }, [deleteFavorite.isError])
+
   useEffect(() => {
     if (addFavorite.isSuccess) {
       toast.success('Added to Favorite')
-      setAddedFav(true)
+      checkFavorite.mutate(pid as string)
+      countFavorite.mutate(pid as string)
     }
   }, [addFavorite.isSuccess])
+
+  useEffect(() => {
+    if (deleteFavorite.isSuccess) {
+      toast.success('Remove from Favorite')
+      checkFavorite.mutate(pid as string)
+      countFavorite.mutate(pid as string)
+    }
+  }, [addFavorite.isSuccess, deleteFavorite.isSuccess])
 
   const totalReview = useGetTotalReview(pid as string)
   const seller = useGetSellerInfo(product.data?.data.products_info.shop_id)
@@ -104,7 +137,6 @@ const ProductPage: NextPage = () => {
   const [selectVariant, setSelectVariant] = useState<
     ProductDetail | undefined
   >()
-
   useEffect(() => {
     if (product.isSuccess) {
       const variantNames = Object.keys(
@@ -179,6 +211,21 @@ const ProductPage: NextPage = () => {
     }
   }, [selectMap])
 
+  useEffect(() => {
+    if (checkFavorite.isSuccess) {
+      setCheckFav(checkFavorite.data.data.data)
+    }
+  }, [checkFavorite.isSuccess])
+  useEffect(() => {
+    if (countFavorite.isSuccess) {
+      setCountFav(countFavorite.data.data.data)
+    }
+  }, [countFavorite.isSuccess])
+
+  useEffect(() => {
+    checkFavorite.mutate(pid as string)
+    countFavorite.mutate(pid as string)
+  }, [])
   return (
     <>
       <Head>
@@ -218,16 +265,36 @@ const ProductPage: NextPage = () => {
                     <A
                       className={cx(
                         'flex items-center gap-1 font-semibold',
-                        addedFav ? 'text-red-400' : ''
+                        checkFav ? 'text-red-400' : ''
                       )}
                       onClick={() => {
-                        if (product.data?.data) {
-                          addFavorite.mutate(product.data.data.products_info.id)
+                        if (product.data?.data && user) {
+                          if (!checkFav) {
+                            addFavorite.mutate(
+                              product.data.data.products_info.id
+                            )
+                          } else if (checkFav) {
+                            deleteFavorite.mutate(
+                              product.data.data.products_info.id
+                            )
+                          }
+                        } else {
+                          toast.error('You must login first')
+                          router.push({
+                            pathname: '/login',
+                            query: {
+                              from: ('/p/' + pid) as string,
+                            },
+                          })
                         }
                       }}
                     >
                       <HiHeart className="text-xl" />
-                      <P>Favorite</P>
+                      <P>
+                        Favorite {'('}
+                        {countFav > 1000 ? <>{countFav / 1000} K</> : countFav}
+                        {')'}
+                      </P>
                     </A>
                     <P>•</P>
                     <A

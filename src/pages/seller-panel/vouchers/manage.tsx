@@ -15,7 +15,6 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
 
 function ManageVouchers() {
   const router = useRouter()
