@@ -59,7 +59,7 @@ export const useUpdateAdminCategories = () => {
   return useMutation(
     async (data: CreateUpdateCategory) => {
       return await authorizedClient.put<APIResponse<null>>(
-        '/admin/voucher',
+        '/admin/category',
         data
       )
     },

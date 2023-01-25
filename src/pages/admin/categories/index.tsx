@@ -1,20 +1,17 @@
 import {
   useAdminCategories,
-  useCreateAdminCategories,
   useDeleteAdminCategories,
-  useUpdateAdminCategories,
 } from '@/api/admin/categories'
 import { Button } from '@/components'
 import AdminPanelLayout from '@/layout/AdminPanelLayout'
 import Head from 'next/head'
+import router from 'next/router'
 import React from 'react'
+import { HiPlus } from 'react-icons/hi'
 
 function CategoriesAdmin() {
   const category = useAdminCategories()
   const deleteAdminCategory = useDeleteAdminCategories()
-  // perlu dibikin ke page manage baru kaya voucher trus copy ini
-  //   const createCategory = useCreateAdminCategories()
-  //   const updateCategory = useUpdateAdminCategories()
 
   function deleteCategory(id: string) {
     deleteAdminCategory.mutate(id)
@@ -27,7 +24,22 @@ function CategoriesAdmin() {
         <meta name="admin" content="Admin | Murakali E-Commerce Application" />
       </Head>
       <AdminPanelLayout selectedPage="category">
-        <Button>Add New Category</Button>
+        <Button
+          size={'sm'}
+          buttonType="primary"
+          outlined
+          onClick={() => {
+            router.push({
+              pathname: '/admin/categories/manage',
+              query: {
+                category: '',
+                type: '',
+              },
+            })
+          }}
+        >
+          <HiPlus /> Add Category
+        </Button>
         <div>
           {category.isLoading ? (
             <>asd</>
@@ -37,7 +49,19 @@ function CategoriesAdmin() {
                 <div key={index}>
                   <div>
                     category name : {item.name}|| level : {item.level}{' '}
-                    <Button>edit</Button>
+                    <Button
+                      onClick={() => {
+                        router.push({
+                          pathname: '/admin/categories/manage',
+                          query: {
+                            category: item.id,
+                            type: 'update',
+                          },
+                        })
+                      }}
+                    >
+                      edit
+                    </Button>
                     <Button
                       onClick={() => {
                         deleteCategory(item.id)
