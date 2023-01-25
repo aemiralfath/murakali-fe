@@ -55,6 +55,7 @@ const ButtonSortData = [
 ]
 
 const useProductListing = () => {
+  const [filterKeyword, setFilterKeyword] = useState<string>('')
   const [sortBy, setSortBy] = useState<SortBy>({ sort_by: '', sort: '' })
 
   const [filterLocation, setFilterLocation] = useState<ProvinceDetail[]>([])
@@ -65,6 +66,8 @@ const useProductListing = () => {
   const [page, setPage] = useState(1)
 
   return {
+    filterKeyword,
+    setFilterKeyword,
     sortBy,
     setSortBy,
     filterLocation,
@@ -96,6 +99,8 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   noCategory,
 }) => {
   const {
+    filterKeyword,
+    setFilterKeyword,
     sortBy,
     setSortBy,
     filterLocation,
@@ -118,7 +123,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   const useCategory = useGetAllCategory()
 
   const router = useRouter()
-  const { catName } = router.query
+  const { catName, keyword } = router.query
 
   useEffect(() => {
     if (catName === undefined) {
@@ -137,6 +142,15 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
       setCategoryName(temp)
     }
   }, [useCategory.isSuccess])
+
+  useEffect(() => {
+    console.log('keyword', keyword === undefined, keyword)
+    if (keyword === undefined) {
+      setFilterKeyword('')
+    } else {
+      setFilterKeyword(String(keyword))
+    }
+  }, [keyword])
 
   return (
     <div className="flex gap-3">
