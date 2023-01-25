@@ -56,7 +56,7 @@ const ProductPage: NextPage = () => {
         router.push({
           pathname: '/login',
           query: {
-            from: ('p/' + pid) as string,
+            from: ('/p/' + pid) as string,
           },
         })
       } else {
@@ -342,6 +342,7 @@ const ProductPage: NextPage = () => {
               <Spinner color="neutral" />
             ) : (
               <ChooseVariantQty
+                productID={pid as string}
                 qty={qty}
                 setQty={setQty}
                 selectVariant={selectVariant}

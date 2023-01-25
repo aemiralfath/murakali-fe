@@ -122,7 +122,18 @@ function Vouchers() {
                 )}
               </div>
             ),
-
+            'Min Product Price': (
+              <div>
+                Rp
+                {formatMoney(data.min_product_price)}
+              </div>
+            ),
+            'Max Discount Price': (
+              <div>
+                Rp
+                {formatMoney(data.max_discount_price)}
+              </div>
+            ),
             Action: (
               <div className="flex w-fit flex-col gap-1">
                 {Date.now() > Date.parse(data.expired_date) ? (
@@ -215,20 +226,6 @@ function Vouchers() {
                 ) : (
                   <></>
                 )}
-
-                {Date.now() < Date.parse(data.expired_date) ? (
-                  <Button
-                    buttonType="primary"
-                    outlined
-                    onClick={() => {
-                      router.push('/seller-panel/vouchers/manage')
-                    }}
-                  >
-                    <HiPencilAlt /> Update
-                  </Button>
-                ) : (
-                  <></>
-                )}
               </div>
             ),
           }
@@ -243,6 +240,8 @@ function Vouchers() {
         Qouta: '',
         'Active Date': '',
         'Discount ': '',
+        'Min Product Price': '',
+        'Max Discount Price': '',
       },
     ]
   }
