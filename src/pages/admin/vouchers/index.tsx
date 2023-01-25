@@ -19,7 +19,7 @@ import { Button, Chip, H2, P, PaginationNav } from '@/components'
 import { useAdminVouchers, useDeleteAdminVouchers } from '@/api/admin/voucher'
 import cx from '@/helper/cx'
 import voucherData from '@/dummy/voucherData'
-import type { VoucherData } from '@/types/api/Voucher'
+import type { VoucherData } from '@/types/api/voucher'
 
 function VouchersAdmin() {
   const router = useRouter()

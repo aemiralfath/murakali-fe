@@ -70,3 +70,43 @@ export const useAddFavProduct = () => {
     }
   )
 }
+
+export const useCheckFavoriteProduct = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (id: string) => {
+      return await authorizedClient.post<APIResponse<null>>(
+        '/product/favorite/check',
+        {
+          product_id: id,
+        }
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([profileKey, 'check'])
+      },
+    }
+  )
+}
+
+export const useCountSpecificFavoriteProduct = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (id: string) => {
+      return await authorizedClient.post<APIResponse<null>>(
+        '/product/favorite/count',
+        {
+          product_id: id,
+        }
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([profileKey, 'count'])
+      },
+    }
+  )
+}

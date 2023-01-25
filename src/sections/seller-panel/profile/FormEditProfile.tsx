@@ -61,9 +61,9 @@ const FormEditSellerInformation: React.FC = () => {
   //TODO: Still buggy, fix later
   return (
     <>
-      <div className="px-6 py-6 lg:px-8">
+      <div className="px-6 pb-6 lg:px-8">
         <form
-          className="mt-1 flex flex-col gap-y-3"
+          className="flex flex-col gap-y-3"
           onSubmit={(e) => {
             void handleEditSellerDetailInformation(e)
             return false

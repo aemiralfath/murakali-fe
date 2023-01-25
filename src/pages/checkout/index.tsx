@@ -9,7 +9,11 @@ import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import CheckoutSummary from '@/sections/checkout/CheckoutSummary'
 import AddressOption from '@/sections/checkout/option/AddressOption'
 import { useRouter } from 'next/router'
-import type { CartPostCheckout, PostCheckout } from '@/types/api/checkout'
+import type {
+  CartPostCheckout,
+  PostCheckout,
+  ProductPostCheckout,
+} from '@/types/api/checkout'
 
 import { FaAddressCard } from 'react-icons/fa'
 
@@ -19,7 +23,7 @@ import { useGetUserWallet } from '@/api/user/wallet'
 import { useGetUserSLP } from '@/api/user/slp'
 import Footer from '@/layout/template/footer'
 import { Menu } from '@headlessui/react'
-import type { VoucherData } from '@/types/api/Voucher'
+import type { VoucherData } from '@/types/api/voucher'
 import { useGetVoucherMarketplaceCheckout } from '@/api/user/checkout'
 import formatMoney from '@/helper/formatMoney'
 import moment from 'moment'
@@ -28,7 +32,7 @@ function Checkout() {
   const userWallet = useGetUserWallet()
   const userSLP = useGetUserSLP()
   const defaultAddress = useGetDefaultAddress(true, false)
-  const [voucherPrice, setVoucherPrice] = useState<number>(0)
+
   const modal = useModal()
   const router = useRouter()
   interface LabeledValue {
@@ -59,9 +63,9 @@ function Checkout() {
             .map((product) => {
               return {
                 id: product.id,
+                cart_id: '',
                 quantity: product.quantity,
-                sub_price:
-                  product.product_price - product.promo.result_discount,
+                note: '',
               }
             })
           return {
@@ -167,11 +171,13 @@ function Checkout() {
                     .map((cart, index) => (
                       <div key={cart.id}>
                         <ShopCard
+                          postCheckout={checkoutItems}
                           courierID={(
                             courierID,
                             deliveryFee,
                             voucherID,
-                            voucherPrice
+                            voucherPrice,
+                            productDetail
                           ) => {
                             const tempCheckoutItem2 =
                               checkoutItems.cart_items.map((cartDetail) => {
@@ -182,11 +188,14 @@ function Checkout() {
                                   cartDetail.voucher_shop_total
                                 let tempVoucher: string =
                                   cartDetail.voucher_shop_id
+                                let tempProductDetail: ProductPostCheckout[] =
+                                  cartDetail.product_details
                                 if (cart.shop.id === cartDetail.shop_id) {
                                   tempCourier = courierID
                                   tempDeliveryFee = deliveryFee
                                   tempVoucher = voucherID
                                   tempVoucherTotal = voucherPrice
+                                  tempProductDetail = productDetail
                                 }
 
                                 return {
@@ -194,7 +203,7 @@ function Checkout() {
                                   voucher_shop_id: tempVoucher,
                                   voucher_shop_total: tempVoucherTotal,
                                   courier_id: tempCourier,
-                                  product_details: cartDetail.product_details,
+                                  product_details: tempProductDetail,
                                   courier_fee: tempDeliveryFee,
                                 }
                               })

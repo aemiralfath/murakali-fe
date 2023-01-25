@@ -11,6 +11,7 @@ import { useRouter } from 'next/router'
 import formatMoney from '@/helper/formatMoney'
 
 interface ChooseVariantQtyProps {
+  productID: string
   variantNamesState: string[]
   selectVariant: ProductDetail | undefined
   setSelectVariant: (p: ProductDetail | undefined) => void
@@ -19,6 +20,7 @@ interface ChooseVariantQtyProps {
 }
 
 const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
+  productID,
   variantNamesState,
   selectVariant,
   qty,
@@ -116,7 +118,13 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
           disabled={!selectVariant}
           onClick={() => {
             if (!user && !isLoading) {
-              router.push('/login')
+              toast.error('You must login first')
+              router.push({
+                pathname: '/login',
+                query: {
+                  from: ('/p/' + productID) as string,
+                },
+              })
             } else {
               if (selectVariant) {
                 addToCart.mutate({
@@ -139,7 +147,13 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
           className="rounded"
           onClick={() => {
             if (!user && !isLoading) {
-              router.push('/login')
+              toast.error('You must login first')
+              router.push({
+                pathname: '/login',
+                query: {
+                  from: ('/p/' + productID) as string,
+                },
+              })
             } else {
               if (selectVariant) {
                 addToCart.mutate({
