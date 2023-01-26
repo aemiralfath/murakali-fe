@@ -28,21 +28,28 @@ const defaultShownProvince = [
   'Sumatera Selatan',
 ]
 
-const FilterChip: React.FC<{ value: string; onClose: () => void }> = ({
-  value,
-  onClose,
-}) => {
+const FilterChip: React.FC<{
+  value: string
+  onClose: () => void
+  isCategoryPage?: boolean
+}> = ({ value, onClose, isCategoryPage }) => {
   return (
     <div className=" flex items-center gap-1 rounded-full bg-primary bg-opacity-10 py-1 pl-2 pr-1 font-medium text-primary-focus">
       {value}
-      <button
-        className="flex aspect-square h-[1.5rem] items-center justify-center rounded-full border border-white bg-primary text-xs text-white"
-        onClick={() => {
-          onClose()
-        }}
-      >
-        <HiX />
-      </button>
+      {!isCategoryPage ? (
+        <>
+          <button
+            className="flex aspect-square h-[1.5rem] items-center justify-center rounded-full border border-white bg-primary text-xs text-white"
+            onClick={() => {
+              onClose()
+            }}
+          >
+            <HiX />
+          </button>
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   )
 }
@@ -86,6 +93,7 @@ type ProductListingLayoutProps = LoadingDataWrapper<BriefProduct[]> & {
   controller: ProductListingHook
   totalPage?: number
   noCategory?: boolean
+  isCategoryPage?: boolean
 }
 
 const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
@@ -94,6 +102,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   controller,
   totalPage,
   noCategory,
+  isCategoryPage,
 }) => {
   const {
     sortBy,
@@ -312,6 +321,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                       )}
 
                       <FilterChip
+                        isCategoryPage={isCategoryPage}
                         key={`category-${filterCategory}`}
                         value={filterCategory}
                         onClose={() => {
