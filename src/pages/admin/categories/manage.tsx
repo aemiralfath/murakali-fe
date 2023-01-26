@@ -4,7 +4,7 @@ import {
   useUpdateAdminCategories,
 } from '@/api/admin/categories'
 
-import { Button, Chip, Divider, H2, H4, P, TextInput } from '@/components'
+import { Button, Chip, H2, H4, P, TextInput } from '@/components'
 import Uploader from '@/components/uploader'
 import AdminPanelLayout from '@/layout/AdminPanelLayout'
 import type { CreateUpdateCategory } from '@/types/api/admincategory'
@@ -20,7 +20,7 @@ import toast from 'react-hot-toast'
 function ManageCategoryAdmin() {
   const router = useRouter()
 
-  const [id, setId] = useState<string>()
+  const [, setId] = useState<string>()
   const [edit, setEdit] = useState<boolean>(false)
   const createCategory = useCreateAdminCategories()
   const updateCategory = useUpdateAdminCategories()
@@ -46,7 +46,7 @@ function ManageCategoryAdmin() {
     }
   }, [category.isSuccess])
 
-  const [parent, setParent] = useState<CreateUpdateCategory>({
+  const [, setParent] = useState<CreateUpdateCategory>({
     id: '',
     name: '',
     photo_url: '',
