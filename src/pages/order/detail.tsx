@@ -235,7 +235,11 @@ const OrderDetailCardSection: React.FC<{
                               buttonType="primary"
                               isLoading={createReview.isLoading}
                               onClick={() => {
-                                if (comment.length <= 160) {
+                                if (
+                                  typeof comment === 'string'
+                                    ? comment?.length <= 160
+                                    : true
+                                ) {
                                   createReview.mutate({
                                     product_id: detail.product_id,
                                     rating: star,
