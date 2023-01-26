@@ -52,28 +52,31 @@ function Checkout() {
     result_discount: decrypt(String(router.query.resultDiscount), secret),
   }
 
+  const [checkValidCheckout, setCheckValidCheckout] = useState<boolean>(false)
+
   const [checkoutItems, setCheckoutItems] = useState<PostCheckout>()
   useEffect(() => {
     if (cartList.data?.data.rows && idShops) {
       const tempCheckoutItem: CartPostCheckout[] = cartList.data.data.rows
         .filter((item) => idShops.includes(item.shop.id))
         .map((cartDetail) => {
-          const product_details = cartDetail.product_details
-            .filter((item) => idProducts.includes(item.id))
-            .map((product) => {
-              return {
-                id: product.id,
-                cart_id: '',
-                quantity: product.quantity,
-                note: '',
-              }
-            })
+          const product_details: ProductPostCheckout[] =
+            cartDetail.product_details
+              .filter((item) => idProducts.includes(item.id))
+              .map((product) => {
+                return {
+                  id: product.id,
+                  cart_id: '',
+                  quantity: product.quantity,
+                  note: '',
+                }
+              })
           return {
             shop_id: cartDetail.shop.id,
             voucher_shop_id: '',
             voucher_shop_total: 0,
             courier_id: '',
-            product_details,
+            product_details: product_details,
             courier_fee: 0,
           }
         })
@@ -112,6 +115,31 @@ function Checkout() {
 
   const voucherMarketplace = useGetVoucherMarketplaceCheckout()
 
+  useEffect(() => {
+    if (checkoutItems) {
+      let tempVoucherPrice: number
+      if (voucher.discount_percentage > 0) {
+        tempVoucherPrice =
+          (voucher.discount_percentage / 100) *
+          (mapPriceQuantitys.subPrice -
+            checkoutItems.cart_items.reduce(
+              (accumulator, currentValue) =>
+                accumulator + currentValue.voucher_shop_total,
+              0
+            ))
+      } else {
+        tempVoucherPrice = voucher.discount_fix_price
+      }
+
+      setCheckoutItems({
+        wallet_id: checkoutItems.wallet_id,
+        card_number: checkoutItems.card_number,
+        voucher_marketplace_id: voucher.id,
+        voucher_marketplace_total: tempVoucherPrice,
+        cart_items: checkoutItems.cart_items,
+      })
+    }
+  }, [voucher, checkoutItems])
   return (
     <>
       <Navbar />
@@ -324,39 +352,6 @@ function Checkout() {
                                           <Button
                                             onClick={() => {
                                               setVoucher(data)
-                                              let tempVoucherPrice: number
-                                              if (
-                                                data.discount_percentage > 0
-                                              ) {
-                                                tempVoucherPrice =
-                                                  (data.discount_percentage /
-                                                    100) *
-                                                  (mapPriceQuantitys.subPrice -
-                                                    checkoutItems.cart_items.reduce(
-                                                      (
-                                                        accumulator,
-                                                        currentValue
-                                                      ) =>
-                                                        accumulator +
-                                                        currentValue.voucher_shop_total,
-                                                      0
-                                                    ))
-                                              } else {
-                                                tempVoucherPrice =
-                                                  data.discount_fix_price
-                                              }
-
-                                              setCheckoutItems({
-                                                wallet_id:
-                                                  checkoutItems.wallet_id,
-                                                card_number:
-                                                  checkoutItems.card_number,
-                                                voucher_marketplace_id: data.id,
-                                                voucher_marketplace_total:
-                                                  tempVoucherPrice,
-                                                cart_items:
-                                                  checkoutItems.cart_items,
-                                              })
                                             }}
                                             className="btn my-1 mx-auto h-fit w-full gap-1  border-4 border-solid  border-primary bg-white py-2 
                             text-start text-primary hover:border-white hover:bg-primary hover:text-white"

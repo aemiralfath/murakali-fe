@@ -38,7 +38,17 @@ const ShopCard: React.FC<ShopCardProps> = ({
   const locationCost = useLocationCost()
   const voucherShop = useGetVoucherShopCheckout(cart.shop.id)
 
-  const [productD, setProductD] = useState<ProductPostCheckout[]>()
+  const [productD, setProductD] = useState<ProductPostCheckout[]>([])
+
+  useEffect(() => {
+    if (postCheckout) {
+      setProductD(
+        postCheckout.cart_items.filter(
+          (item) => cart.shop.id === item.shop_id
+        )[0].product_details
+      )
+    }
+  }, [postCheckout])
 
   const [totalPrice, setTotalPrice] = useState<number>(0)
   const [voucherPrice, setVoucherPrice] = useState<number>(0)

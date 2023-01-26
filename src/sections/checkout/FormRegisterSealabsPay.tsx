@@ -79,9 +79,9 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
     })
   }
   return (
-    <div className="px-6 py-6 lg:px-8">
+    <div className="px-6 lg:px-8">
       <form
-        className="mt-1 flex flex-col gap-y-3"
+        className="flex flex-col gap-y-3"
         onSubmit={(e) => {
           void handleRegisterSealabsPay(e)
           return false
