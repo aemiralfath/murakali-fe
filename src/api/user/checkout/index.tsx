@@ -1,6 +1,6 @@
 import { authorizedClient } from '@/api/apiClient'
 import type { APIResponse, PaginationData } from '@/types/api/response'
-import type { VoucherData } from '@/types/api/Voucher'
+import type { VoucherData } from '@/types/api/voucher'
 
 import { useQuery } from '@tanstack/react-query'
 

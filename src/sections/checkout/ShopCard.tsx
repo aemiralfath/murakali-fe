@@ -6,7 +6,7 @@ import formatMoney from '@/helper/formatMoney'
 import type { CartDetail } from '@/types/api/cart'
 import type { PostCheckout, ProductPostCheckout } from '@/types/api/checkout'
 import type { LocationCostRequest } from '@/types/api/location'
-import type { VoucherData } from '@/types/api/Voucher'
+import type { VoucherData } from '@/types/api/voucher'
 import { Menu } from '@headlessui/react'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
@@ -156,7 +156,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
       <div className="flex flex-wrap items-center justify-center gap-y-2 md:justify-end">
         <div className="block">
           <Menu>
-            <Menu.Button className="btn-outline btn-primary btn  m-1 w-44 gap-4">
+            <Menu.Button className="btn-outline btn btn-primary  m-1 w-44 gap-4">
               {delivery.name ? (
                 <div className="flex-start flex items-center gap-2">
                   <FaShippingFast />
@@ -231,7 +231,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
 
         <div className="block">
           <Menu>
-            <Menu.Button className="btn-outline btn-primary btn  m-1 w-56 gap-4">
+            <Menu.Button className="btn-outline btn btn-primary  m-1 w-56 gap-4">
               {voucher.code ? (
                 <div className="flex-start flex items-center gap-2">
                   <FaTicketAlt />
