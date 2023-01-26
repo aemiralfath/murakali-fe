@@ -264,9 +264,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
                   </div>
                   {paymentOption.balance ? (
                     paymentOption.balance - totalOrder < 0 ? (
-                      <Button type="button" buttonType="primary">
-                        Top up
-                      </Button>
+                      <></>
                     ) : blocked ? (
                       <div className="mt-2">
                         <span className="mx-2 mt-2">

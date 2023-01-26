@@ -58,7 +58,7 @@ function ManageCategoryAdmin() {
     id: '',
     name: '',
     photo_url: '',
-    level: '',
+    level: '1',
     parent_id: '',
   })
 
