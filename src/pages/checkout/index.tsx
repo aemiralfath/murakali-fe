@@ -58,22 +58,23 @@ function Checkout() {
       const tempCheckoutItem: CartPostCheckout[] = cartList.data.data.rows
         .filter((item) => idShops.includes(item.shop.id))
         .map((cartDetail) => {
-          const product_details = cartDetail.product_details
-            .filter((item) => idProducts.includes(item.id))
-            .map((product) => {
-              return {
-                id: product.id,
-                cart_id: '',
-                quantity: product.quantity,
-                note: '',
-              }
-            })
+          const product_details: ProductPostCheckout[] =
+            cartDetail.product_details
+              .filter((item) => idProducts.includes(item.id))
+              .map((product) => {
+                return {
+                  id: product.id,
+                  cart_id: '',
+                  quantity: product.quantity,
+                  note: '',
+                }
+              })
           return {
             shop_id: cartDetail.shop.id,
             voucher_shop_id: '',
             voucher_shop_total: 0,
             courier_id: '',
-            product_details,
+            product_details: product_details,
             courier_fee: 0,
           }
         })
