@@ -4,7 +4,7 @@ import { Button, H2, P } from '@/components'
 import ProductCart from '@/components/card/ProductCart'
 import formatMoney from '@/helper/formatMoney'
 import type { CartDetail } from '@/types/api/cart'
-import { PostCheckout, ProductPostCheckout } from '@/types/api/checkout'
+import type { PostCheckout, ProductPostCheckout } from '@/types/api/checkout'
 import type { LocationCostRequest } from '@/types/api/location'
 import type { VoucherData } from '@/types/api/voucher'
 import { Menu } from '@headlessui/react'
@@ -38,7 +38,17 @@ const ShopCard: React.FC<ShopCardProps> = ({
   const locationCost = useLocationCost()
   const voucherShop = useGetVoucherShopCheckout(cart.shop.id)
 
-  const [productD, setProductD] = useState<ProductPostCheckout[]>()
+  const [productD, setProductD] = useState<ProductPostCheckout[]>([])
+
+  useEffect(() => {
+    if (postCheckout) {
+      setProductD(
+        postCheckout.cart_items.filter(
+          (item) => cart.shop.id === item.shop_id
+        )[0].product_details
+      )
+    }
+  }, [postCheckout])
 
   const [totalPrice, setTotalPrice] = useState<number>(0)
   const [voucherPrice, setVoucherPrice] = useState<number>(0)
