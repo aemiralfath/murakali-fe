@@ -1,5 +1,5 @@
 import { useGetAllCategory } from '@/api/category'
-import { Breadcrumbs, Chip, H2, P } from '@/components'
+import { Breadcrumbs, Chip, P } from '@/components'
 import { Navbar } from '@/layout/template'
 import Footer from '@/layout/template/footer'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
