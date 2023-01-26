@@ -2,12 +2,12 @@ import {
   useAdminCategories,
   useDeleteAdminCategories,
 } from '@/api/admin/categories'
-import { Button } from '@/components'
+import { Button, H3, H4, P } from '@/components'
 import AdminPanelLayout from '@/layout/AdminPanelLayout'
 import Head from 'next/head'
 import router from 'next/router'
 import React from 'react'
-import { HiPlus } from 'react-icons/hi'
+import { HiOutlinePencil, HiPlus, HiTrash } from 'react-icons/hi'
 
 function CategoriesAdmin() {
   const category = useAdminCategories()
@@ -24,32 +24,46 @@ function CategoriesAdmin() {
         <meta name="admin" content="Admin | Murakali E-Commerce Application" />
       </Head>
       <AdminPanelLayout selectedPage="category">
-        <Button
-          size={'sm'}
-          buttonType="primary"
-          outlined
-          onClick={() => {
-            router.push({
-              pathname: '/admin/categories/manage',
-              query: {
-                category: '',
-                type: '',
-              },
-            })
-          }}
-        >
-          <HiPlus /> Add Category
-        </Button>
-        <div>
+        <div className="flex justify-between">
+          <Button
+            size={'sm'}
+            buttonType="primary"
+            outlined
+            onClick={() => {
+              router.push({
+                pathname: '/admin/categories/manage',
+                query: {
+                  category: '',
+                  type: '',
+                },
+              })
+            }}
+          >
+            <HiPlus /> Add Category
+          </Button>
+        </div>
+        <div className="my-5">
+          <div className="grid grid-cols-3 gap-2 p-2 font-bold">
+            <H3 className="text-center">Category</H3>
+            <H3 className="text-center">Category Level</H3>
+            <H3 className="text-center">Activity</H3>
+          </div>
           {category.isLoading ? (
-            <>asd</>
+            <>Loading...</>
           ) : (
             category.data?.data.map((item, index) => {
               return (
-                <div key={index}>
-                  <div>
-                    category name : {item.name}|| level : {item.level}{' '}
+                <div
+                  key={index}
+                  className="grid grid-cols-3 gap-2 p-2 transition-all hover:bg-slate-400"
+                >
+                  <div className="text-center">{item.name}</div>
+                  <div className="text-center">{item.level}</div>
+                  <div className="text-center">
                     <Button
+                      className="mx-3"
+                      type="button"
+                      buttonType="primary"
                       onClick={() => {
                         router.push({
                           pathname: '/admin/categories/manage',
@@ -60,14 +74,18 @@ function CategoriesAdmin() {
                         })
                       }}
                     >
+                      <HiOutlinePencil />
                       edit
                     </Button>
                     <Button
+                      className="btn-error"
+                      type="button"
                       onClick={() => {
                         deleteCategory(item.id)
                       }}
                     >
-                      delete
+                      <HiTrash />
+                      Delete
                     </Button>
                   </div>
                 </div>
