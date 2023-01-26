@@ -6,7 +6,7 @@ import type { SLPUser } from '@/types/api/slp'
 import type { WalletUser } from '@/types/api/wallet'
 
 import React, { useEffect, useState } from 'react'
-import PaymentOption from './PaymentOption'
+import PaymentOption from './option/PaymentOption'
 
 interface CheckoutSummaryProps {
   mapPriceQuantity: {
@@ -29,6 +29,8 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
   const modal = useModal()
 
   const [deliveryFee, setDeliveryFee] = useState(0)
+  const [voucherShopTotal, setVoucherShopTotal] = useState(0)
+
   function handleCheckout() {
     modal.edit({
       title: 'Choose Payment Option',
@@ -50,7 +52,14 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
         (accumulator, currentValue) => accumulator + currentValue.courier_fee,
         0
       )
+      const tempVoucherShopPrice: number = postCheckout.cart_items.reduce(
+        (accumulator, currentValue) =>
+          accumulator + currentValue.voucher_shop_total,
+        0
+      )
+
       setDeliveryFee(tempDeliveryFee)
+      setVoucherShopTotal(tempVoucherShopPrice)
     }
   }, [postCheckout])
   return (
@@ -78,17 +87,28 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
         </div>
         <div className=" grid grid-cols-1 gap-1 lg:grid-cols-2 ">
           <div>Vocher Shop</div>
-          <div className="flex justify-start lg:justify-end"> Rp. 0</div>
+          <div className="flex justify-start lg:justify-end">
+            - Rp.{ConvertShowMoney(voucherShopTotal)}
+          </div>
         </div>
         <div className=" grid grid-cols-1 gap-1 lg:grid-cols-2 ">
           <div>Voucher Murakali</div>
-          <div className="flex justify-start lg:justify-end"> Rp. 0</div>
+          <div className="flex justify-start lg:justify-end">
+            {' '}
+            - Rp.{ConvertShowMoney(postCheckout.voucher_marketplace_total)}
+          </div>
         </div>
         <hr></hr>
         <div className="grid grid-cols-1 gap-1 font-bold lg:grid-cols-2 ">
           <div>All Total</div>
           <div className="flex justify-start lg:justify-end">
-            Rp. {ConvertShowMoney(mapPriceQuantity.subPrice + deliveryFee)}
+            Rp.{' '}
+            {ConvertShowMoney(
+              mapPriceQuantity.subPrice +
+                deliveryFee -
+                voucherShopTotal -
+                postCheckout.voucher_marketplace_total
+            )}
           </div>
         </div>
 

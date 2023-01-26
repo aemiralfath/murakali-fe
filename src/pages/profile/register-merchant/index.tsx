@@ -6,7 +6,7 @@ import MainLayout from '@/layout/MainLayout'
 import { useGetAllAddress, useGetDefaultAddress } from '@/api/user/address'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/router'
-import AddressOption from '@/sections/checkout/AddressOption'
+import AddressOption from '@/sections/checkout/option/AddressOption'
 import { useRegistrationMerchant } from '@/api/auth/register-merchant'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -141,6 +141,7 @@ function MerchantRegistration() {
                           <Button
                             buttonType="primary"
                             size="sm"
+                            type="button"
                             onClick={() => {
                               modal.info({
                                 title: 'Choose Address',
@@ -163,6 +164,7 @@ function MerchantRegistration() {
                         <div className="col-span-1 flex items-center justify-end px-2">
                           <Button
                             buttonType="primary"
+                            type="button"
                             size="sm"
                             onClick={() => {
                               modal.info({

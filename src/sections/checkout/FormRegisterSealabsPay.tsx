@@ -12,7 +12,7 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
-import PaymentOption from './PaymentOption'
+import PaymentOption from './option/PaymentOption'
 
 interface FormRegisterSealabsPayProps {
   postCheckout?: PostCheckout
@@ -79,9 +79,9 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
     })
   }
   return (
-    <div className="px-6 py-6 lg:px-8">
+    <div className="px-6 lg:px-8">
       <form
-        className="mt-1 flex flex-col gap-y-3"
+        className="flex flex-col gap-y-3"
         onSubmit={(e) => {
           void handleRegisterSealabsPay(e)
           return false

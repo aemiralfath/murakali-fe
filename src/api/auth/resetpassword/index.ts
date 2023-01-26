@@ -5,12 +5,12 @@ import type { APIResponse } from '@/types/api/response'
 
 const profileKey = ['auth']
 
-export const useGetUserVerify = (code: string, email: string) => {
+export const useGetUserVerify = (code: string) => {
   const queryClient = useQueryClient()
   return useMutation(
     async () => {
       return await unauthorizedClient.get<APIResponse<null>>(
-        '/auth/verify?code=' + code + '&email=' + email
+        '/auth/verify?code=' + code
       )
     },
     {

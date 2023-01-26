@@ -11,9 +11,9 @@ import Head from 'next/head'
 function VerifyPage() {
   const router = useRouter()
 
-  const { code, email } = router.query
+  const { code } = router.query
 
-  const getUserVerify = useGetUserVerify(code as string, email as string)
+  const getUserVerify = useGetUserVerify(code as string)
   useEffect(() => {
     if (getUserVerify.isSuccess) {
       toast.success('Verify Success')

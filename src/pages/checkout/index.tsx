@@ -7,9 +7,13 @@ import { useGetCart } from '@/api/user/cart'
 import { Navbar } from '@/layout/template'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import CheckoutSummary from '@/sections/checkout/CheckoutSummary'
-import AddressOption from '@/sections/checkout/AddressOption'
+import AddressOption from '@/sections/checkout/option/AddressOption'
 import { useRouter } from 'next/router'
-import type { CartPostCheckout, PostCheckout } from '@/types/api/checkout'
+import type {
+  CartPostCheckout,
+  PostCheckout,
+  ProductPostCheckout,
+} from '@/types/api/checkout'
 
 import { FaAddressCard } from 'react-icons/fa'
 
@@ -17,11 +21,18 @@ import { decrypt } from 'n-krypta'
 import ShopCard from '@/sections/checkout/ShopCard'
 import { useGetUserWallet } from '@/api/user/wallet'
 import { useGetUserSLP } from '@/api/user/slp'
+import Footer from '@/layout/template/footer'
+import { Menu } from '@headlessui/react'
+import type { VoucherData } from '@/types/api/voucher'
+import { useGetVoucherMarketplaceCheckout } from '@/api/user/checkout'
+import formatMoney from '@/helper/formatMoney'
+import moment from 'moment'
 function Checkout() {
   const cartList = useGetCart()
   const userWallet = useGetUserWallet()
   const userSLP = useGetUserSLP()
   const defaultAddress = useGetDefaultAddress(true, false)
+
   const modal = useModal()
   const router = useRouter()
   interface LabeledValue {
@@ -47,22 +58,23 @@ function Checkout() {
       const tempCheckoutItem: CartPostCheckout[] = cartList.data.data.rows
         .filter((item) => idShops.includes(item.shop.id))
         .map((cartDetail) => {
-          const product_details = cartDetail.product_details
-            .filter((item) => idProducts.includes(item.id))
-            .map((product) => {
-              return {
-                id: product.id,
-                quantity: product.quantity,
-                sub_price:
-                  product.product_price * product.quantity -
-                  product.promo.result_discount * product.quantity,
-              }
-            })
+          const product_details: ProductPostCheckout[] =
+            cartDetail.product_details
+              .filter((item) => idProducts.includes(item.id))
+              .map((product) => {
+                return {
+                  id: product.id,
+                  cart_id: '',
+                  quantity: product.quantity,
+                  note: '',
+                }
+              })
           return {
             shop_id: cartDetail.shop.id,
             voucher_shop_id: '',
+            voucher_shop_total: 0,
             courier_id: '',
-            product_details,
+            product_details: product_details,
             courier_fee: 0,
           }
         })
@@ -71,11 +83,35 @@ function Checkout() {
         wallet_id: '',
         card_number: '',
         voucher_marketplace_id: '',
+        voucher_marketplace_total: 0,
         cart_items: tempCheckoutItem,
       })
     }
   }, [cartList.data?.data, idShops])
 
+  const [voucher, setVoucher] = useState<VoucherData>({
+    id: '',
+    shop_id: '',
+    code: '',
+    quota: 0,
+    actived_date: '',
+    expired_date: '',
+    discount_percentage: 0,
+    discount_fix_price: 0,
+    min_product_price: 0,
+    max_discount_price: 0,
+    created_at: '',
+    updated_at: {
+      Time: '',
+      Valid: false,
+    },
+    deleted_at: {
+      Time: '',
+      Valid: false,
+    },
+  })
+
+  const voucherMarketplace = useGetVoucherMarketplaceCheckout()
   return (
     <>
       <Navbar />
@@ -136,22 +172,39 @@ function Checkout() {
                     .map((cart, index) => (
                       <div key={cart.id}>
                         <ShopCard
-                          courierID={(courierID, deliveryFee) => {
+                          postCheckout={checkoutItems}
+                          courierID={(
+                            courierID,
+                            deliveryFee,
+                            voucherID,
+                            voucherPrice,
+                            productDetail
+                          ) => {
                             const tempCheckoutItem2 =
                               checkoutItems.cart_items.map((cartDetail) => {
                                 let tempCourier: string = cartDetail.courier_id
                                 let tempDeliveryFee: number =
                                   cartDetail.courier_fee
+                                let tempVoucherTotal: number =
+                                  cartDetail.voucher_shop_total
+                                let tempVoucher: string =
+                                  cartDetail.voucher_shop_id
+                                let tempProductDetail: ProductPostCheckout[] =
+                                  cartDetail.product_details
                                 if (cart.shop.id === cartDetail.shop_id) {
                                   tempCourier = courierID
                                   tempDeliveryFee = deliveryFee
+                                  tempVoucher = voucherID
+                                  tempVoucherTotal = voucherPrice
+                                  tempProductDetail = productDetail
                                 }
 
                                 return {
                                   shop_id: cartDetail.shop_id,
-                                  voucher_shop_id: cartDetail.voucher_shop_id,
+                                  voucher_shop_id: tempVoucher,
+                                  voucher_shop_total: tempVoucherTotal,
                                   courier_id: tempCourier,
-                                  product_details: cartDetail.product_details,
+                                  product_details: tempProductDetail,
                                   courier_fee: tempDeliveryFee,
                                 }
                               })
@@ -160,6 +213,8 @@ function Checkout() {
                               card_number: checkoutItems.card_number,
                               voucher_marketplace_id:
                                 checkoutItems.voucher_marketplace_id,
+                              voucher_marketplace_total:
+                                checkoutItems.voucher_marketplace_total,
                               cart_items: tempCheckoutItem2,
                             })
                           }}
@@ -184,23 +239,176 @@ function Checkout() {
           </div>
           <div>
             <div className="col-span-3  flex flex-col gap-5">
-              <div className="flex h-fit items-center  justify-center gap-10 rounded-lg border-[1px] border-solid border-gray-300 py-8 px-8">
-                <div className="dropdown">
-                  <label
-                    tabIndex={0}
-                    className="btn-outline btn-primary btn m-1 w-44 gap-2"
-                  >
-                    <FaTicketAlt /> Voucher Murakali
-                  </label>
-                  <ul
-                    tabIndex={0}
-                    className="dropdown-content menu rounded-box z-50 w-52 bg-base-100 p-2 shadow"
-                  >
-                    <li></li>
-                    <li></li>
-                  </ul>
+              <div className="flex h-fit items-center justify-center rounded-lg border-[1px] border-solid border-gray-300 py-8 ">
+                <div className="block ">
+                  <Menu>
+                    <Menu.Button className="btn-outline btn-primary btn  m-1 w-56 gap-4">
+                      {voucher.code ? (
+                        <div className="flex-start flex items-center gap-2">
+                          <FaTicketAlt />
+                          <div className="flex flex-col">
+                            <P>{voucher.code}</P>
+                            {voucher.discount_percentage > 0 ? (
+                              <P>{voucher.discount_percentage}%</P>
+                            ) : (
+                              <P>Rp. {voucher.discount_fix_price}</P>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <FaTicketAlt /> Voucher Marketplace
+                        </>
+                      )}
+                    </Menu.Button>
+
+                    {voucherMarketplace.isSuccess ? (
+                      voucherMarketplace.data?.data?.rows?.length > 0 ? (
+                        voucherMarketplace.data.data.rows.map((data, index) => (
+                          <div key={index}>
+                            <Menu.Items className="absolute  max-h-64 w-56 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
+                              <div className="p-1">
+                                {data.quota <= 0 ? (
+                                  <>
+                                    <Menu.Item>
+                                      {() => (
+                                        <Button
+                                          disabled
+                                          className="btn my-1 mx-auto h-fit w-full gap-1  border-4 border-solid  border-primary bg-gray-500 py-2 
+                            text-start text-white "
+                                        >
+                                          <a className="flex flex-col ">
+                                            <span className="text-lg  font-bold">
+                                              Discount{' '}
+                                              {data.discount_percentage > 0 ? (
+                                                <>{data.discount_percentage}%</>
+                                              ) : (
+                                                <>
+                                                  Rp.{' '}
+                                                  {formatMoney(
+                                                    data.discount_fix_price
+                                                  )}
+                                                </>
+                                              )}
+                                            </span>
+                                            <span className=" text-md ">
+                                              {data.code}
+                                            </span>
+
+                                            <span className=" text-xs ">
+                                              Min. Rp.{' '}
+                                              {formatMoney(
+                                                data.min_product_price
+                                              )}
+                                            </span>
+
+                                            <span className=" text-xs ">
+                                              until{' '}
+                                              {moment(data.expired_date).format(
+                                                'DD MMM YYYY '
+                                              )}{' '}
+                                            </span>
+                                          </a>
+                                        </Button>
+                                      )}
+                                    </Menu.Item>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Menu.Item>
+                                      {() => (
+                                        <Button
+                                          onClick={() => {
+                                            setVoucher(data)
+                                            let tempVoucherPrice: number
+                                            if (data.discount_percentage > 0) {
+                                              tempVoucherPrice =
+                                                (data.discount_percentage /
+                                                  100) *
+                                                (mapPriceQuantitys.subPrice -
+                                                  checkoutItems.cart_items.reduce(
+                                                    (
+                                                      accumulator,
+                                                      currentValue
+                                                    ) =>
+                                                      accumulator +
+                                                      currentValue.voucher_shop_total,
+                                                    0
+                                                  ))
+                                            } else {
+                                              tempVoucherPrice =
+                                                data.discount_fix_price
+                                            }
+
+                                            setCheckoutItems({
+                                              wallet_id:
+                                                checkoutItems.wallet_id,
+                                              card_number:
+                                                checkoutItems.card_number,
+                                              voucher_marketplace_id: data.id,
+                                              voucher_marketplace_total:
+                                                tempVoucherPrice,
+                                              cart_items:
+                                                checkoutItems.cart_items,
+                                            })
+                                          }}
+                                          className="btn my-1 mx-auto h-fit w-full gap-1  border-4 border-solid  border-primary bg-white py-2 
+                            text-start text-primary hover:border-white hover:bg-primary hover:text-white"
+                                        >
+                                          <a className="flex flex-col ">
+                                            <span className="text-lg  font-bold">
+                                              Discount{' '}
+                                              {data.discount_percentage > 0 ? (
+                                                <>{data.discount_percentage}%</>
+                                              ) : (
+                                                <>
+                                                  Rp.{' '}
+                                                  {formatMoney(
+                                                    data.discount_fix_price
+                                                  )}
+                                                </>
+                                              )}
+                                            </span>
+                                            <span className=" text-md ">
+                                              {data.code}
+                                            </span>
+                                            <span className=" text-xs ">
+                                              Min. Rp.{' '}
+                                              {formatMoney(
+                                                data.min_product_price
+                                              )}
+                                            </span>
+
+                                            <span className=" text-xs ">
+                                              until{' '}
+                                              {moment(data.expired_date).format(
+                                                'DD MMM YYYY '
+                                              )}{' '}
+                                            </span>
+                                          </a>
+                                        </Button>
+                                      )}
+                                    </Menu.Item>
+                                  </>
+                                )}
+                              </div>
+                            </Menu.Items>
+                          </div>
+                        ))
+                      ) : (
+                        <Menu.Items className="absolute h-10 w-56 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
+                          <div className=" p-2">
+                            <P className=" text-center">No Voucher Available</P>
+                          </div>
+                        </Menu.Items>
+                      )
+                    ) : (
+                      <a></a>
+                    )}
+                  </Menu>
                 </div>
               </div>
+
               {!userWallet.isLoading && !userSLP.isLoading && checkoutItems ? (
                 <CheckoutSummary
                   mapPriceQuantity={mapPriceQuantitys}
@@ -215,6 +423,7 @@ function Checkout() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   )
 }

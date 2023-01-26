@@ -45,7 +45,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ index, value, ...rest }) => {
   )
 }
 
-const ReviewCard: React.FC<ReviewProps> = ({ item }) => {
+export const ReviewCard: React.FC<ReviewProps> = ({ item }) => {
   const modal = useModal()
 
   return (

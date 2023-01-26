@@ -236,19 +236,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-1 rounded-b-lg bg-primary p-2">
-                <div>
-                  <Button
-                    size="xs"
-                    className="w-full text-white"
-                    buttonType="white"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      // TODO: Add OnClick
-                    }}
-                  >
-                    Buy Now
-                  </Button>
-                </div>
+                <div></div>
               </div>
             </>
           ) : (
@@ -266,19 +254,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     See Details
                   </Button>
                 </div>
-                <div>
-                  {/* <Button
-                    size="xs"
-                    buttonType="white"
-                    className="w-full"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      // TODO: Add OnClick
-                    }}
-                  >
-                    Buy Now
-                  </Button> */}
-                </div>
+                <div></div>
               </div>
             </>
           )}

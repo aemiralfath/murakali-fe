@@ -2,6 +2,7 @@ import { H3, Avatar, A, P, Divider } from '@/components'
 import cx from '@/helper/cx'
 import type { ProductInfo } from '@/types/api/product'
 import type { SellerInfo } from '@/types/api/seller'
+import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { HiChevronUp, HiChevronDown } from 'react-icons/hi'
 
@@ -12,6 +13,7 @@ interface ProductDescription {
 
 // TODO: Integrate with Layout
 const ProductDescription = ({ seller, productInfo }: ProductDescription) => {
+  const router = useRouter()
   const [descriptionOpen, setDescriptionOpen] = useState(false)
 
   return (
@@ -44,7 +46,14 @@ const ProductDescription = ({ seller, productInfo }: ProductDescription) => {
         <div className="flex items-center gap-4 pr-4">
           <Avatar size="lg" />
           <div className="w-fit overflow-ellipsis xl:w-[10rem]">
-            <A className="font-semibold">{seller.name}</A>
+            <A
+              className="font-semibold"
+              onClick={() => {
+                router.push('/seller/' + seller.id)
+              }}
+            >
+              {seller.name}
+            </A>
             {/* <P className="text-sm">DKI Jakarta</P> */}
           </div>
         </div>
