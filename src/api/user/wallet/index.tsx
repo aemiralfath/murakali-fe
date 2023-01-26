@@ -18,7 +18,12 @@ const getUserWallet = async () => {
   return response.data
 }
 
-export const useGetUserWallet = () => useQuery([profileKey, 'w'], getUserWallet)
+export const useGetUserWallet = () =>
+  useQuery({
+    queryKey: [profileKey, 'w'],
+    queryFn: getUserWallet,
+    retry: false,
+  })
 
 const getUserWalletHistory = async (page: number, sort: string) => {
   const response = await authorizedClient.get<

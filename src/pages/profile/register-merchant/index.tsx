@@ -141,6 +141,7 @@ function MerchantRegistration() {
                           <Button
                             buttonType="primary"
                             size="sm"
+                            type="button"
                             onClick={() => {
                               modal.info({
                                 title: 'Choose Address',
@@ -163,6 +164,7 @@ function MerchantRegistration() {
                         <div className="col-span-1 flex items-center justify-end px-2">
                           <Button
                             buttonType="primary"
+                            type="button"
                             size="sm"
                             onClick={() => {
                               modal.info({
