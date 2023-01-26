@@ -36,6 +36,7 @@ const Products = () => {
     { name: 'price', sort_by: 'min_price' },
     { name: 'sold', sort_by: 'unit_sold' },
     { name: 'view', sort_by: 'view_count' },
+    { name: 'status', sort_by: 'listed_status' },
   ]
 
   const modal = useModal()
