@@ -3,19 +3,42 @@ import {
   useDeleteAdminCategories,
 } from '@/api/admin/categories'
 import { Button, H3, H4, P } from '@/components'
+import { useDispatch, useModal } from '@/hooks'
 import AdminPanelLayout from '@/layout/AdminPanelLayout'
+import { closeModal } from '@/redux/reducer/modalReducer'
+import { APIResponse } from '@/types/api/response'
+import { AxiosError } from 'axios'
 import Head from 'next/head'
 import router from 'next/router'
-import React from 'react'
+import React, { useEffect } from 'react'
+import toast from 'react-hot-toast'
 import { HiOutlinePencil, HiPlus, HiTrash } from 'react-icons/hi'
 
 function CategoriesAdmin() {
   const category = useAdminCategories()
   const deleteAdminCategory = useDeleteAdminCategories()
+  const modal = useModal()
+  const dispatch = useDispatch()
 
   function deleteCategory(id: string) {
     deleteAdminCategory.mutate(id)
   }
+
+  useEffect(() => {
+    if (deleteAdminCategory.isSuccess) {
+      toast.success('Successfully delete category')
+      dispatch(closeModal())
+    }
+  }, [deleteAdminCategory.isSuccess])
+
+  useEffect(() => {
+    if (deleteAdminCategory.isError) {
+      const errmsg = deleteAdminCategory.failureReason as AxiosError<
+        APIResponse<null>
+      >
+      toast.error(errmsg.response?.data.message as string)
+    }
+  }, [deleteAdminCategory.isError])
 
   return (
     <div>
