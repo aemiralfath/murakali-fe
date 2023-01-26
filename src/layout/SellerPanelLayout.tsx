@@ -5,7 +5,7 @@ import type { ValidPage } from './template/sidebar/seller-panel/sectionTwoSeller
 
 const SellerPanelLayout: React.FC<{
   children: React.ReactNode
-  selectedPage: ValidPage
+  selectedPage?: ValidPage
 }> = ({ children, selectedPage }) => {
   return (
     <>
