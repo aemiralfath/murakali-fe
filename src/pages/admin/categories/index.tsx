@@ -2,12 +2,12 @@ import {
   useAdminCategories,
   useDeleteAdminCategories,
 } from '@/api/admin/categories'
-import { Button, H3, H4, P } from '@/components'
-import { useDispatch, useModal } from '@/hooks'
+import { Button, H3 } from '@/components'
+import { useDispatch } from '@/hooks'
 import AdminPanelLayout from '@/layout/AdminPanelLayout'
 import { closeModal } from '@/redux/reducer/modalReducer'
-import { APIResponse } from '@/types/api/response'
-import { AxiosError } from 'axios'
+import type { APIResponse } from '@/types/api/response'
+import type { AxiosError } from 'axios'
 import Head from 'next/head'
 import router from 'next/router'
 import React, { useEffect } from 'react'
@@ -17,7 +17,7 @@ import { HiOutlinePencil, HiPlus, HiTrash } from 'react-icons/hi'
 function CategoriesAdmin() {
   const category = useAdminCategories()
   const deleteAdminCategory = useDeleteAdminCategories()
-  const modal = useModal()
+
   const dispatch = useDispatch()
 
   function deleteCategory(id: string) {

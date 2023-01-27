@@ -20,7 +20,7 @@ function Category() {
 
       <TitlePageExtend title="All Categories" />
       <div className="px: lg:px-15 container mx-auto    my-8 mb-10 min-h-screen w-full ">
-        <div className="my-4">
+        <div className="my-4 mx-5">
           <Breadcrumbs data={dummyBreadcrumbs} />
         </div>
         <div className="flex  flex-wrap  justify-between gap-y-8  px-2">
@@ -32,8 +32,19 @@ function Category() {
                 <>
                   {useCategory.data?.data?.map((levelOne, index) => (
                     <div
+                      style={{
+                        backgroundImage: `linear-gradient(
+          to right,
+          rgba(0, 0, 0, 0), 
+          rgba(0, 0, 0, 0), 
+          rgba(0, 0, 0, 0), 
+          rgba(0, 0, 0, 0.1)
+        )`,
+                      }}
                       key={'levelOne-' + index}
-                      className=" min-h-[50px] w-full rounded-tl-2xl rounded-br-2xl border-[1px] border-solid border-gray-300 bg-white  lg:w-[48%] "
+                      className=" min-h-[50px] w-full 
+                      rounded-tl-2xl
+                      rounded-br-2xl border-[1px] border-solid border-gray-300 bg-white drop-shadow-xl  lg:w-[48%] "
                     >
                       <div className="flex w-fit items-center  justify-center rounded-tl-2xl rounded-br-2xl bg-primary px-3 pt-5 pb-5 md:px-10">
                         <Link

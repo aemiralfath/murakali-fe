@@ -3,6 +3,7 @@ import ProductListingLayout, {
   useProductListing,
 } from '@/layout/ProductListingLayout'
 import { Navbar } from '@/layout/template'
+import Footer from '@/layout/template/footer'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import type { ProductQuery } from '@/types/api/product'
 import type { NextPage } from 'next'
@@ -161,6 +162,7 @@ const FilterCategoryName: NextPage = () => {
           <div>handle error</div>
         )}
       </div>
+      <Footer />
     </>
   )
 }

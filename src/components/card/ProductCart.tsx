@@ -282,13 +282,12 @@ const ProductCart: React.FC<ProductCartProps> = ({
           ) : (
             <div className="ml-0 lg:ml-7">
               <TextInput
-                label={'Notes'}
-                inputSize="md"
                 type="text"
                 name="note"
                 placeholder="please input note"
                 onChange={handleChange}
                 value={input.note}
+                className="w-full"
               />
             </div>
           )}
