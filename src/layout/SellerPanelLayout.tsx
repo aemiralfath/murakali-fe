@@ -9,11 +9,19 @@ const SellerPanelLayout: React.FC<{
 }> = ({ children, selectedPage }) => {
   return (
     <>
-      <SectionOneSideBar />
-      <div className="flex w-full bg-primary bg-opacity-5">
-        <SectionTwoSideBar selectedPage={selectedPage} />
-        <div className="w-full max-w-full overflow-auto">
-          <div className="container p-6">{children}</div>
+      <div className="drawer-mobile drawer">
+        <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-content flex flex-col bg-gray-100 ">
+          <div className="customscroll w-full max-w-full overflow-auto">
+            <SectionOneSideBar />
+            <div className="container mx-auto p-6">{children}</div>
+          </div>
+        </div>
+        <div className="drawer-side">
+          <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
+          <div className="w-64 bg-primary">
+            <SectionTwoSideBar selectedPage={selectedPage} />
+          </div>
         </div>
       </div>
     </>

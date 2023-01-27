@@ -1,4 +1,6 @@
+import { Icon } from '@/components'
 import cx from '@/helper/cx'
+import { useMediaQuery } from '@/hooks'
 
 import { useRouter } from 'next/router'
 import React from 'react'
@@ -45,8 +47,8 @@ const SideBarMenu: React.FC<SideBarMenuProps> = ({
       className={cx(
         'w-full px-6 py-4 text-white transition-all',
         active
-          ? ' rounded-r-full bg-white font-semibold text-primary shadow-sm'
-          : 'hover:rounded-r-full hover:bg-white hover:font-semibold hover:text-primary'
+          ? ' rounded-r-full bg-white text-primary shadow-sm'
+          : 'hover:rounded-r-full hover:bg-white hover:text-primary'
       )}
       onClick={() => {
         if (!active) {
@@ -65,6 +67,8 @@ const SideBarMenu: React.FC<SideBarMenuProps> = ({
 const SectionTwoSideBarSellerPanel: React.FC<SellerSideBarProps> = ({
   selectedPage,
 }) => {
+  const sm = useMediaQuery('sm')
+
   const items: Array<SideBarMenuProps> = [
     {
       link: 'order',
@@ -113,8 +117,14 @@ const SectionTwoSideBarSellerPanel: React.FC<SellerSideBarProps> = ({
   return (
     <>
       <div className="flex">
-        <div className="flex min-h-screen w-64 bg-primary py-5">
-          <div className="mr-4 flex w-full flex-col gap-2 py-4">
+        <div className="flex h-full bg-primary py-5">
+          <div className="mr-4 flex flex-col gap-2">
+            <div className="relative flex justify-between">
+              <div className="mx-6 my-1 flex max-w-[2rem] items-center sm:max-w-[6rem]">
+                <Icon color="white" small={!sm} />
+              </div>
+            </div>
+            <div className="mt-3 h-[1px] w-full bg-white" />
             {items.map((item, idx) => (
               <SideBarMenu key={idx} {...item} />
             ))}
