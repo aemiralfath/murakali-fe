@@ -9,7 +9,11 @@ import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import CheckoutSummary from '@/sections/checkout/CheckoutSummary'
 import AddressOption from '@/sections/checkout/option/AddressOption'
 import { useRouter } from 'next/router'
-import type { CartPostCheckout, PostCheckout } from '@/types/api/checkout'
+import type {
+  CartPostCheckout,
+  PostCheckout,
+  ProductPostCheckout,
+} from '@/types/api/checkout'
 
 import { FaAddressCard } from 'react-icons/fa'
 
@@ -19,7 +23,7 @@ import { useGetUserWallet } from '@/api/user/wallet'
 import { useGetUserSLP } from '@/api/user/slp'
 import Footer from '@/layout/template/footer'
 import { Menu } from '@headlessui/react'
-import { VoucherData } from '@/types/api/voucher'
+import type { VoucherData } from '@/types/api/voucher'
 import { useGetVoucherMarketplaceCheckout } from '@/api/user/checkout'
 import formatMoney from '@/helper/formatMoney'
 import moment from 'moment'
@@ -28,7 +32,7 @@ function Checkout() {
   const userWallet = useGetUserWallet()
   const userSLP = useGetUserSLP()
   const defaultAddress = useGetDefaultAddress(true, false)
-  const [voucherPrice, setVoucherPrice] = useState<number>(0)
+
   const modal = useModal()
   const router = useRouter()
   interface LabeledValue {
@@ -48,28 +52,31 @@ function Checkout() {
     result_discount: decrypt(String(router.query.resultDiscount), secret),
   }
 
+  const [checkValidCheckout, setCheckValidCheckout] = useState<boolean>(false)
+
   const [checkoutItems, setCheckoutItems] = useState<PostCheckout>()
   useEffect(() => {
     if (cartList.data?.data.rows && idShops) {
       const tempCheckoutItem: CartPostCheckout[] = cartList.data.data.rows
         .filter((item) => idShops.includes(item.shop.id))
         .map((cartDetail) => {
-          const product_details = cartDetail.product_details
-            .filter((item) => idProducts.includes(item.id))
-            .map((product) => {
-              return {
-                id: product.id,
-                quantity: product.quantity,
-                sub_price:
-                  product.product_price - product.promo.result_discount,
-              }
-            })
+          const product_details: ProductPostCheckout[] =
+            cartDetail.product_details
+              .filter((item) => idProducts.includes(item.id))
+              .map((product) => {
+                return {
+                  id: product.id,
+                  cart_id: '',
+                  quantity: product.quantity,
+                  note: '',
+                }
+              })
           return {
             shop_id: cartDetail.shop.id,
             voucher_shop_id: '',
             voucher_shop_total: 0,
             courier_id: '',
-            product_details,
+            product_details: product_details,
             courier_fee: 0,
           }
         })
@@ -107,6 +114,32 @@ function Checkout() {
   })
 
   const voucherMarketplace = useGetVoucherMarketplaceCheckout()
+
+  useEffect(() => {
+    if (checkoutItems) {
+      let tempVoucherPrice: number
+      if (voucher.discount_percentage > 0) {
+        tempVoucherPrice =
+          (voucher.discount_percentage / 100) *
+          (mapPriceQuantitys.subPrice -
+            checkoutItems.cart_items.reduce(
+              (accumulator, currentValue) =>
+                accumulator + currentValue.voucher_shop_total,
+              0
+            ))
+      } else {
+        tempVoucherPrice = voucher.discount_fix_price
+      }
+
+      setCheckoutItems({
+        wallet_id: checkoutItems.wallet_id,
+        card_number: checkoutItems.card_number,
+        voucher_marketplace_id: voucher.id,
+        voucher_marketplace_total: tempVoucherPrice,
+        cart_items: checkoutItems.cart_items,
+      })
+    }
+  }, [voucher, checkoutItems])
   return (
     <>
       <Navbar />
@@ -167,11 +200,13 @@ function Checkout() {
                     .map((cart, index) => (
                       <div key={cart.id}>
                         <ShopCard
+                          postCheckout={checkoutItems}
                           courierID={(
                             courierID,
                             deliveryFee,
                             voucherID,
-                            voucherPrice
+                            voucherPrice,
+                            productDetail
                           ) => {
                             const tempCheckoutItem2 =
                               checkoutItems.cart_items.map((cartDetail) => {
@@ -182,11 +217,14 @@ function Checkout() {
                                   cartDetail.voucher_shop_total
                                 let tempVoucher: string =
                                   cartDetail.voucher_shop_id
+                                let tempProductDetail: ProductPostCheckout[] =
+                                  cartDetail.product_details
                                 if (cart.shop.id === cartDetail.shop_id) {
                                   tempCourier = courierID
                                   tempDeliveryFee = deliveryFee
                                   tempVoucher = voucherID
                                   tempVoucherTotal = voucherPrice
+                                  tempProductDetail = productDetail
                                 }
 
                                 return {
@@ -194,7 +232,7 @@ function Checkout() {
                                   voucher_shop_id: tempVoucher,
                                   voucher_shop_total: tempVoucherTotal,
                                   courier_id: tempCourier,
-                                  product_details: cartDetail.product_details,
+                                  product_details: tempProductDetail,
                                   courier_fee: tempDeliveryFee,
                                 }
                               })
@@ -254,137 +292,114 @@ function Checkout() {
 
                     {voucherMarketplace.isSuccess ? (
                       voucherMarketplace.data?.data?.rows?.length > 0 ? (
-                        voucherMarketplace.data.data.rows.map((data, index) => (
-                          <div key={index}>
-                            <Menu.Items className="absolute  max-h-64 w-56 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
-                              <div className="p-1">
-                                {data.quota <= 0 ? (
-                                  <>
-                                    <Menu.Item>
-                                      {() => (
-                                        <Button
-                                          disabled
-                                          className="btn my-1 mx-auto h-fit w-full gap-1  border-4 border-solid  border-primary bg-gray-500 py-2 
+                        <div>
+                          <Menu.Items className="absolute max-h-64 w-56 origin-top-left divide-y divide-gray-100  overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
+                            {voucherMarketplace.data?.data?.rows.map(
+                              (data, index) => (
+                                <div className="px-1" key={index}>
+                                  {data.quota <= 0 ? (
+                                    <>
+                                      <Menu.Item>
+                                        {() => (
+                                          <Button
+                                            disabled
+                                            className="btn mx-auto mb-1 h-fit w-full gap-1  border-4 border-solid  border-primary bg-gray-500 py-2 
                             text-start text-white "
-                                        >
-                                          <a className="flex flex-col ">
-                                            <span className="text-lg  font-bold">
-                                              Discount{' '}
-                                              {data.discount_percentage > 0 ? (
-                                                <>{data.discount_percentage}%</>
-                                              ) : (
-                                                <>
-                                                  Rp.{' '}
-                                                  {formatMoney(
-                                                    data.discount_fix_price
-                                                  )}
-                                                </>
-                                              )}
-                                            </span>
-                                            <span className=" text-md ">
-                                              {data.code}
-                                            </span>
+                                          >
+                                            <a className="flex flex-col items-center ">
+                                              <span className="text-lg  font-bold">
+                                                Discount{' '}
+                                                {data.discount_percentage >
+                                                0 ? (
+                                                  <>
+                                                    {data.discount_percentage}%
+                                                  </>
+                                                ) : (
+                                                  <>
+                                                    Rp.{' '}
+                                                    {formatMoney(
+                                                      data.discount_fix_price
+                                                    )}
+                                                  </>
+                                                )}
+                                              </span>
+                                              <span className=" text-md  max-w-[80%] truncate break-words">
+                                                {data.code}
+                                              </span>
 
-                                            <span className=" text-xs ">
-                                              Min. Rp.{' '}
-                                              {formatMoney(
-                                                data.min_product_price
-                                              )}
-                                            </span>
+                                              <span className=" text-xs ">
+                                                Min. Rp.{' '}
+                                                {formatMoney(
+                                                  data.min_product_price
+                                                )}
+                                              </span>
 
-                                            <span className=" text-xs ">
-                                              until{' '}
-                                              {moment(data.expired_date).format(
-                                                'DD MMM YYYY '
-                                              )}{' '}
-                                            </span>
-                                          </a>
-                                        </Button>
-                                      )}
-                                    </Menu.Item>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Menu.Item>
-                                      {() => (
-                                        <Button
-                                          onClick={() => {
-                                            setVoucher(data)
-                                            let tempVoucherPrice: number
-                                            if (data.discount_percentage > 0) {
-                                              tempVoucherPrice =
-                                                (data.discount_percentage /
-                                                  100) *
-                                                (mapPriceQuantitys.subPrice -
-                                                  checkoutItems.cart_items.reduce(
-                                                    (
-                                                      accumulator,
-                                                      currentValue
-                                                    ) =>
-                                                      accumulator +
-                                                      currentValue.voucher_shop_total,
-                                                    0
-                                                  ))
-                                            } else {
-                                              tempVoucherPrice =
-                                                data.discount_fix_price
-                                            }
-
-                                            setCheckoutItems({
-                                              wallet_id:
-                                                checkoutItems.wallet_id,
-                                              card_number:
-                                                checkoutItems.card_number,
-                                              voucher_marketplace_id: data.id,
-                                              voucher_marketplace_total:
-                                                tempVoucherPrice,
-                                              cart_items:
-                                                checkoutItems.cart_items,
-                                            })
-                                          }}
-                                          className="btn my-1 mx-auto h-fit w-full gap-1  border-4 border-solid  border-primary bg-white py-2 
+                                              <span className=" text-xs ">
+                                                until{' '}
+                                                {moment(
+                                                  data.expired_date
+                                                ).format('DD MMM YYYY ')}{' '}
+                                              </span>
+                                            </a>
+                                          </Button>
+                                        )}
+                                      </Menu.Item>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Menu.Item>
+                                        {() => (
+                                          <Button
+                                            onClick={() => {
+                                              setVoucher(data)
+                                            }}
+                                            className="btn my-1 mx-auto h-fit w-full gap-1  border-4 border-solid  border-primary bg-white py-2 
                             text-start text-primary hover:border-white hover:bg-primary hover:text-white"
-                                        >
-                                          <a className="flex flex-col ">
-                                            <span className="text-lg  font-bold">
-                                              Discount{' '}
-                                              {data.discount_percentage > 0 ? (
-                                                <>{data.discount_percentage}%</>
-                                              ) : (
-                                                <>
-                                                  Rp.{' '}
-                                                  {formatMoney(
-                                                    data.discount_fix_price
-                                                  )}
-                                                </>
-                                              )}
-                                            </span>
-                                            <span className=" text-md ">
-                                              {data.code}
-                                            </span>
-                                            <span className=" text-xs ">
-                                              Min. Rp.{' '}
-                                              {formatMoney(
-                                                data.min_product_price
-                                              )}
-                                            </span>
+                                          >
+                                            <a className="flex flex-col items-center ">
+                                              <span className="text-lg  font-bold">
+                                                Discount{' '}
+                                                {data.discount_percentage >
+                                                0 ? (
+                                                  <>
+                                                    {data.discount_percentage}%
+                                                  </>
+                                                ) : (
+                                                  <>
+                                                    Rp.{' '}
+                                                    {formatMoney(
+                                                      data.discount_fix_price
+                                                    )}
+                                                  </>
+                                                )}
+                                              </span>
+                                              <span className=" text-md max-w-[80%] truncate break-words">
+                                                {data.code}
+                                              </span>
+                                              <span className=" text-xs ">
+                                                Min. Rp.{' '}
+                                                {formatMoney(
+                                                  data.min_product_price
+                                                )}
+                                              </span>
 
-                                            <span className=" text-xs ">
-                                              until{' '}
-                                              {moment(data.expired_date).format(
-                                                'DD MMM YYYY '
-                                              )}{' '}
-                                            </span>
-                                          </a>
-                                        </Button>
-                                      )}
-                                    </Menu.Item>
-                                  </>
-                                )}
-                              </div>
-                            </Menu.Items>
-                          </div>
-                        ))
+                                              <span className=" text-xs ">
+                                                until{' '}
+                                                {moment(
+                                                  data.expired_date
+                                                ).format('DD MMM YYYY ')}{' '}
+                                              </span>
+                                            </a>
+                                          </Button>
+                                        )}
+                                      </Menu.Item>
+                                    </>
+                                  )}
+                                </div>
+                              )
+                            )}
+                          </Menu.Items>
+                        </div>
                       ) : (
                         <Menu.Items className="absolute h-10 w-56 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
                           <div className=" p-2">

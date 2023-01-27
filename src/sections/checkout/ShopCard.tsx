@@ -4,6 +4,7 @@ import { Button, H2, P } from '@/components'
 import ProductCart from '@/components/card/ProductCart'
 import formatMoney from '@/helper/formatMoney'
 import type { CartDetail } from '@/types/api/cart'
+import type { PostCheckout, ProductPostCheckout } from '@/types/api/checkout'
 import type { LocationCostRequest } from '@/types/api/location'
 import type { VoucherData } from '@/types/api/voucher'
 import { Menu } from '@headlessui/react'
@@ -16,11 +17,13 @@ interface ShopCardProps {
   index: number
   idProducts: string[] | string
   destination: number
+  postCheckout: PostCheckout
   courierID: (
     courierID: string,
     delivery_fee: number,
     voucherID: string,
-    voucherPrice: number
+    voucherPrice: number,
+    productDetail: ProductPostCheckout[]
   ) => void
 }
 
@@ -29,10 +32,23 @@ const ShopCard: React.FC<ShopCardProps> = ({
   index,
   idProducts,
   destination,
+  postCheckout,
   courierID,
 }) => {
   const locationCost = useLocationCost()
   const voucherShop = useGetVoucherShopCheckout(cart.shop.id)
+
+  const [productD, setProductD] = useState<ProductPostCheckout[]>([])
+
+  useEffect(() => {
+    if (postCheckout) {
+      setProductD(
+        postCheckout.cart_items.filter(
+          (item) => cart.shop.id === item.shop_id
+        )[0].product_details
+      )
+    }
+  }, [postCheckout])
 
   const [totalPrice, setTotalPrice] = useState<number>(0)
   const [voucherPrice, setVoucherPrice] = useState<number>(0)
@@ -103,7 +119,37 @@ const ShopCard: React.FC<ShopCardProps> = ({
         .filter((item) => idProducts.includes(item.id))
         .map((product) => (
           <div className="flex flex-col gap-5" key={product.id}>
-            <ProductCart forCart={false} listProduct={product} />
+            <ProductCart
+              forCart={false}
+              listProduct={product}
+              productNote={(idProduct, note) => {
+                postCheckout.cart_items
+                  .filter((item) => cart.shop.id === item.shop_id)
+                  .map((shop) => {
+                    const temp: ProductPostCheckout[] =
+                      shop.product_details.map((product) => {
+                        let tempNote: string = product.note
+                        if (product.id === idProduct) {
+                          tempNote = note
+                        }
+                        return {
+                          id: product.id,
+                          cart_id: product.cart_id,
+                          quantity: product.quantity,
+                          note: tempNote,
+                        }
+                      })
+                    setProductD(temp)
+                    courierID(
+                      delivery.id,
+                      delivery.delivery_fee,
+                      voucher.id,
+                      voucherPrice,
+                      temp
+                    )
+                  })
+              }}
+            />
           </div>
         ))}
 
@@ -141,7 +187,8 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                     shipping.courier.id,
                                     shipping.fee,
                                     voucher.id,
-                                    voucherPrice
+                                    voucherPrice,
+                                    productD
                                   )
                                   setDelivery({
                                     id: shipping.courier.id,
@@ -152,8 +199,8 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                 }}
                                 className="btn m-2 h-24  w-40  gap-4 border-gray-300 bg-white text-primary outline hover:border-white hover:bg-primary hover:text-white"
                               >
-                                <a className="flex flex-col gap-3">
-                                  <span className="text-start font-bold">
+                                <a className="flex flex-col gap-1">
+                                  <span className="text-lg font-bold">
                                     {shipping.courier.name}
                                   </span>
                                   <span className="">Rp. {shipping.fee}</span>
@@ -206,10 +253,10 @@ const ShopCard: React.FC<ShopCardProps> = ({
 
             {voucherShop.isSuccess ? (
               voucherShop.data?.data?.rows?.length > 0 ? (
-                voucherShop.data.data.rows.map((data, index) => (
-                  <div key={index}>
-                    <Menu.Items className="absolute max-h-64 w-56 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
-                      <div className="p-1">
+                <div>
+                  <Menu.Items className="absolute max-h-64 w-56 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
+                    {voucherShop.data.data.rows.map((data, index) => (
+                      <div className="p-1" key={index}>
                         {data.quota <= 0 ? (
                           <>
                             <Menu.Item>
@@ -219,7 +266,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                   className="btn my-1 mx-auto h-fit w-full gap-1  border-4 border-solid  border-primary bg-gray-500 py-2 
                             text-start text-white "
                                 >
-                                  <a className="flex flex-col ">
+                                  <a className="flex flex-col items-center">
                                     <span className="text-lg  font-bold">
                                       Discount{' '}
                                       {data.discount_percentage > 0 ? (
@@ -231,9 +278,9 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                         </>
                                       )}
                                     </span>
-                                    <span className=" text-md ">
+                                    <P className="text-md max-w-[70%] truncate break-words">
                                       {data.code}
-                                    </span>
+                                    </P>
                                     <span className=" text-xs ">
                                       Min. Rp.{' '}
                                       {formatMoney(data.min_product_price)}
@@ -264,20 +311,27 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                     } else {
                                       tempVoucherPrice = data.discount_fix_price
                                     }
+
+                                    if (
+                                      tempVoucherPrice > data.max_discount_price
+                                    ) {
+                                      tempVoucherPrice = data.max_discount_price
+                                    }
                                     setVoucherPrice(tempVoucherPrice)
 
                                     courierID(
                                       delivery.id,
                                       delivery.delivery_fee,
                                       data.id,
-                                      tempVoucherPrice
+                                      tempVoucherPrice,
+                                      productD
                                     )
                                     setVoucher(data)
                                   }}
                                   className="btn my-1 mx-auto h-fit w-full gap-1  border-4 border-solid  border-primary bg-white py-2 
                             text-start text-primary hover:border-white hover:bg-primary hover:text-white"
                                 >
-                                  <a className="flex flex-col ">
+                                  <a className="flex flex-col items-center ">
                                     <span className="text-lg  font-bold">
                                       Discount{' '}
                                       {data.discount_percentage > 0 ? (
@@ -289,9 +343,9 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                         </>
                                       )}
                                     </span>
-                                    <span className=" text-md ">
+                                    <P className=" text-md max-w-[80%] truncate break-words">
                                       {data.code}
-                                    </span>
+                                    </P>
                                     <span className=" text-xs ">
                                       Min. Rp.{' '}
                                       {formatMoney(data.min_product_price)}
@@ -310,9 +364,9 @@ const ShopCard: React.FC<ShopCardProps> = ({
                           </>
                         )}
                       </div>
-                    </Menu.Items>
-                  </div>
-                ))
+                    ))}
+                  </Menu.Items>
+                </div>
               ) : (
                 <Menu.Items className="absolute h-10 w-56 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
                   <div className=" p-2">

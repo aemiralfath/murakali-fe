@@ -23,11 +23,23 @@ const Login = () => {
     password: '',
   })
 
+  const [fromPage, setFromPage] = useState<string>('')
+  const from = router.query.from
+  useEffect(() => {
+    if (typeof from === 'string') {
+      setFromPage(from)
+    }
+  }, [from])
+
   const login = useLogin()
   useEffect(() => {
     if (login.isSuccess) {
       toast.success('Login Success')
-      router.push('/')
+      if (fromPage === '') {
+        router.push('/')
+      } else {
+        router.push(fromPage)
+      }
     }
   }, [login.isSuccess])
   useEffect(() => {

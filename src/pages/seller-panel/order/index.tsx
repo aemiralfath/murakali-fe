@@ -1,9 +1,9 @@
-import { useSellerOrders } from '@/api/seller/order'
+import { useSellerOrders, useWithdrawOrderBalance } from '@/api/seller/order'
 import { Button, H2 } from '@/components'
 import Table from '@/components/table'
 import orderStatusData from '@/dummy/orderStatusData'
 import type { OrderData } from '@/types/api/order'
-import type { PaginationData } from '@/types/api/response'
+import type { APIResponse, PaginationData } from '@/types/api/response'
 import moment from 'moment'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -16,12 +16,15 @@ import formatMoney from '@/helper/formatMoney'
 import { useModal } from '@/hooks'
 import ProcessDelivery from '@/sections/seller-panel/delivery-servise/ProcessDelivery'
 import CancelDelivery from '@/sections/seller-panel/delivery-servise/CancelDelivery'
+import { toast } from 'react-hot-toast'
+import type { AxiosError } from 'axios'
 
 function ListOrderDeliveryService() {
   const router = useRouter()
 
   const [orderStatusID, setOrderStatusID] = useState('')
   const sellerOrders = useSellerOrders(orderStatusID, '')
+  const withdrawOrderBalance = useWithdrawOrderBalance()
   const orderStatuses = orderStatusData
   const modal = useModal()
 
@@ -40,6 +43,21 @@ function ListOrderDeliveryService() {
       closeButton: false,
     })
   }
+
+  useEffect(() => {
+    if (withdrawOrderBalance.isSuccess) {
+      toast.success('Withdraw balance success!')
+    }
+  }, [withdrawOrderBalance.isSuccess])
+
+  useEffect(() => {
+    if (withdrawOrderBalance.isError) {
+      const errMsg = withdrawOrderBalance.failureReason as AxiosError<
+        APIResponse<null>
+      >
+      toast.error(errMsg.response?.data.message as string)
+    }
+  }, [withdrawOrderBalance.isError])
 
   const formatSub = (pagination?: PaginationData<OrderData>) => {
     if (pagination) {
@@ -107,6 +125,23 @@ function ListOrderDeliveryService() {
                 >
                   Look Detail
                 </Button>
+                {data.order_status === 7 ? (
+                  <>
+                    <Button
+                      onClick={() => {
+                        withdrawOrderBalance.mutate(data.order_id)
+                      }}
+                      buttonType="primary"
+                      size="sm"
+                      className="rounded"
+                      disabled={data.is_withdraw}
+                    >
+                      Withdraw Balance
+                    </Button>
+                  </>
+                ) : (
+                  <></>
+                )}
                 {data.order_status === 2 ? (
                   <>
                     <Button

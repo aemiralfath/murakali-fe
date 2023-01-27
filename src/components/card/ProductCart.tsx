@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { useDeleteCart, useUpdateCart } from '@/api/user/cart'
-import { Button, H4, P } from '@/components'
+import { Button, H4, P, TextInput } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 
 import { useModal } from '@/hooks'
@@ -11,7 +11,7 @@ import type { APIResponse } from '@/types/api/response'
 import type { AxiosError } from 'axios'
 import Image from 'next/image'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { HiTrash } from 'react-icons/hi'
@@ -19,13 +19,18 @@ import { HiTrash } from 'react-icons/hi'
 interface ProductCartProps extends React.InputHTMLAttributes<HTMLInputElement> {
   listProduct: ProductCartDetail
   forCart: boolean
+  productNote?: (productID: string, note: string) => void
 }
 
 const ProductCart: React.FC<ProductCartProps> = ({
   listProduct,
   forCart,
+  productNote,
   ...rest
 }) => {
+  const [input, setInput] = useState({
+    note: '',
+  })
   const modal = useModal()
   const deleteCart = useDeleteCart()
   const updateCart = useUpdateCart()
@@ -60,6 +65,18 @@ const ProductCart: React.FC<ProductCartProps> = ({
     }
   }, [deleteCart.isError])
 
+  const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const inputName = event.currentTarget.name
+    const value = event.currentTarget.value
+
+    setInput((prev) => ({ ...prev, [inputName]: value }))
+  }
+
+  useEffect(() => {
+    if (input.note != '') {
+      productNote(listProduct.id, input.note)
+    }
+  }, [input])
   return (
     <label>
       <div className="z-40 mb-5 rounded-lg border-[1px] border-solid border-gray-300 py-5 px-2 transition-all hover:shadow-xl sm:px-8">
@@ -249,11 +266,30 @@ const ProductCart: React.FC<ProductCartProps> = ({
               </button>
             </div>
           ) : (
-            <div className="flex items-center justify-end gap-2">
-              <P>Quantity :</P>
-              <P className="flex h-8 w-8 items-center justify-center">
-                {listProduct.quantity}
-              </P>
+            <>
+              <div className="flex items-center justify-end gap-2">
+                <P>Quantity :</P>
+                <P className="flex h-8 w-8 items-center justify-center">
+                  {listProduct.quantity}
+                </P>
+              </div>
+            </>
+          )}
+        </div>
+        <div>
+          {forCart ? (
+            <></>
+          ) : (
+            <div className="ml-0 lg:ml-7">
+              <TextInput
+                label={'Notes'}
+                inputSize="md"
+                type="text"
+                name="note"
+                placeholder="please input note"
+                onChange={handleChange}
+                value={input.note}
+              />
             </div>
           )}
         </div>

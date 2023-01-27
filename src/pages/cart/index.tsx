@@ -68,7 +68,7 @@ function Cart() {
       <title>Cart</title>
       <TitlePageExtend title="Cart" />
 
-      <div className="container my-8 mx-auto mb-10 h-screen min-h-screen w-full px-2">
+      <div className="container my-8 mx-auto mb-10 h-fit min-h-screen w-full px-2">
         <div className="grid grid-cols-1 gap-2 xl:grid-cols-4">
           <div className="col-span-3  flex flex-col gap-5">
             <div className="flex justify-between rounded-lg border-[1px] border-solid border-gray-300 py-5 px-8">

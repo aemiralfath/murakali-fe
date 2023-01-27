@@ -51,6 +51,7 @@ function SealabsPay() {
         APIResponse<null>
       >
       toast.error(errmsg.response?.data.message as string)
+      dispatch(closeModal())
     }
   }, [sealabspayDelete.isError])
 
@@ -87,7 +88,7 @@ function SealabsPay() {
                 })
               }}
             >
-              + Add Address
+              + Add Sealabs Pay Card
             </Button>
           </div>
           <div className="my-4 h-full">

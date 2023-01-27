@@ -9,6 +9,7 @@ interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   fit?: boolean
   errorMsg?: string
   leftIcon?: React.ReactNode
+  rightIcon?: React.ReactNode
   state?: 'success' | 'error' | 'loading'
   inputSize?: 'xs' | 'sm' | 'md' | 'lg'
   transparent?: boolean
@@ -20,6 +21,7 @@ const TextInput: React.FC<TextInputProps> = ({
   fit,
   errorMsg,
   leftIcon,
+  rightIcon,
   state,
   inputSize = 'md',
   transparent,
@@ -84,6 +86,20 @@ const TextInput: React.FC<TextInputProps> = ({
           )}
         >
           {leftIcon}
+        </div>
+      ) : (
+        <></>
+      )}
+
+      {rightIcon ? (
+        <div
+          className={cx(
+            'pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 transform',
+            label ? 'pt-[1.65rem]' : '',
+            errorMsg ? 'pb-[1.65rem]' : ''
+          )}
+        >
+          {rightIcon}
         </div>
       ) : (
         <></>
