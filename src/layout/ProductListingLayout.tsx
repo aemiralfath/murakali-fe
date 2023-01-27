@@ -18,7 +18,6 @@ import type { ProvinceDetail } from '@/types/api/address'
 import type { SortBy } from '@/types/helper/sort'
 import type { BriefProduct } from '@/types/api/product'
 import { useGetAllCategory } from '@/api/category'
-import { useRouter } from 'next/router'
 
 const defaultShownProvince = [
   'DKI Jakarta',
@@ -99,8 +98,6 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   noCategory,
 }) => {
   const {
-    filterKeyword,
-    setFilterKeyword,
     sortBy,
     setSortBy,
     filterLocation,
@@ -122,17 +119,6 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   const [categoryName, setCategoryName] = useState<string[]>([])
   const useCategory = useGetAllCategory()
 
-  const router = useRouter()
-  const { catName, keyword } = router.query
-
-  useEffect(() => {
-    if (catName === undefined) {
-      setFilterCategory('')
-    } else {
-      setFilterCategory(String(catName))
-    }
-  }, [catName])
-
   useEffect(() => {
     if (useCategory.isSuccess) {
       const temp: string[] = useCategory.data.data.map(
@@ -142,15 +128,6 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
       setCategoryName(temp)
     }
   }, [useCategory.isSuccess])
-
-  useEffect(() => {
-    console.log('keyword', keyword === undefined, keyword)
-    if (keyword === undefined) {
-      setFilterKeyword('')
-    } else {
-      setFilterKeyword(String(keyword))
-    }
-  }, [keyword])
 
   return (
     <div className="flex gap-3">
@@ -193,6 +170,19 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
               />
             </>
           )}
+          <Divider />
+          <button
+            className="flex items-center gap-2 font-medium text-primary"
+            onClick={() => {
+              setFilterLocation([])
+              setFilterPrice(undefined)
+              setFilterRating(-1)
+              setFilterCategory('')
+            }}
+          >
+            <HiFilter className="text-xl" />
+            <span>Clear Filter</span>
+          </button>
         </div>
         <div
           className="absolute h-screen w-screen"
@@ -324,14 +314,17 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                       ) : (
                         <></>
                       )}
-
-                      <FilterChip
-                        key={`category-${filterCategory}`}
-                        value={filterCategory}
-                        onClose={() => {
-                          setFilterCategory('')
-                        }}
-                      />
+                      {filterCategory ? (
+                        <FilterChip
+                          key={`category-${filterCategory}`}
+                          value={filterCategory}
+                          onClose={() => {
+                            setFilterCategory('')
+                          }}
+                        />
+                      ) : (
+                        <></>
+                      )}
                     </>
                   )}
                 </div>
