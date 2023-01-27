@@ -14,7 +14,9 @@ const SellerPanelLayout: React.FC<{
         <div className="drawer-content flex flex-col bg-gray-100 ">
           <div className="customscroll w-full max-w-full overflow-auto">
             <SectionOneSideBar />
-            <div className="container mx-auto p-6">{children}</div>
+            <div className="container mx-auto py-6 sm:px-6 lg:ml-0">
+              {children}
+            </div>
           </div>
         </div>
         <div className="drawer-side">

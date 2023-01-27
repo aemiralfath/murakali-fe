@@ -84,7 +84,7 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
 const SectionOneSideBarSellerPanel: React.FC = ({}) => {
   const [navbarOpen, setNavbarOpen] = useState(false)
 
-  const md = useMediaQuery('md')
+  const lg = useMediaQuery('lg')
   const { user } = useUser()
 
   return (
@@ -93,7 +93,7 @@ const SectionOneSideBarSellerPanel: React.FC = ({}) => {
         className={`relative z-20 flex flex-wrap items-center justify-between bg-white px-2 py-5 shadow-md`}
       >
         <div className="mx-auto flex w-full flex-wrap items-center justify-end gap-2 px-3">
-          {md ? (
+          {lg ? (
             <></>
           ) : (
             <label

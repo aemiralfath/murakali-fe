@@ -27,6 +27,7 @@ import {
 import { useGetAllProvince } from '@/api/user/address/extra'
 import Image from 'next/image'
 import { HiOutlineEye } from 'react-icons/hi'
+import { useMediaQuery } from '@/hooks'
 
 type ProgressBarProps = React.HTMLAttributes<HTMLProgressElement> & {
   label: string
@@ -59,6 +60,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 }
 
 const SellerPanelHome = () => {
+  const sm = useMediaQuery('sm')
   const sellerPerformance = useGetSellerPerformance(false)
   const provinces = useGetAllProvince()
 
@@ -88,23 +90,23 @@ const SellerPanelHome = () => {
             <>
               <div>
                 <div className="grid grid-cols-12 gap-4">
-                  <div className="col-span-9">
+                  <div className="col-span-12 lg:col-span-7 xl:col-span-9">
                     <H2>Daily Sales</H2>
                     <div className="h-[24rem] w-full">
                       <ResponsiveContainer width={'100%'} height={'100%'}>
                         <LineChart
                           width={500}
                           height={300}
-                          data={sellerPerformance.data.data.daily_order.map(
-                            (order) => {
+                          data={sellerPerformance.data.data.daily_order
+                            .slice(sm ? 0 : 15)
+                            .map((order) => {
                               return {
                                 date: moment(order.date).format('D'),
                                 success: order.success_order,
                                 failed: order.failed_order,
                                 month: moment(order.date).format('MMMM'),
                               }
-                            }
-                          )}
+                            })}
                           margin={{
                             top: 5,
                             right: 30,
@@ -143,15 +145,15 @@ const SellerPanelHome = () => {
                     <div className="h-[8rem] w-full">
                       <ResponsiveContainer width={'100%'} height={'100%'}>
                         <AreaChart
-                          data={sellerPerformance.data.data.daily_sales.map(
-                            (order) => {
+                          data={sellerPerformance.data.data.daily_sales
+                            .slice(sm ? 0 : 15)
+                            .map((order) => {
                               return {
                                 date: moment(order.date).format('D'),
                                 sales: order.total_sales,
                                 month: moment(order.date).format('MMMM'),
                               }
-                            }
-                          )}
+                            })}
                           margin={{
                             top: 5,
                             right: 30,
@@ -194,7 +196,7 @@ const SellerPanelHome = () => {
                       </ResponsiveContainer>
                     </div>
                   </div>
-                  <div className="col-span-3 grid grid-cols-1 grid-rows-2 gap-4">
+                  <div className="col-span-12 grid grid-cols-1 grid-rows-2 gap-4 lg:col-span-5 xl:col-span-3">
                     <div className="flex flex-col gap-2">
                       <H2>Total Rating</H2>
                       <div className="w-full flex-1 py-2">
@@ -325,7 +327,7 @@ const SellerPanelHome = () => {
           )}
         </div>
         <div className="mt-5 grid grid-cols-8 gap-5">
-          <div className="col-span-5 w-full rounded border bg-white p-5">
+          <div className="col-span-8 w-full rounded border bg-white p-5 md:col-span-5">
             {sellerPerformance.data?.data ? (
               <div>
                 <H3>Most Ordered Product</H3>
@@ -367,7 +369,7 @@ const SellerPanelHome = () => {
               <></>
             )}
           </div>
-          <div className="col-span-3 h-fit w-full rounded border bg-white p-5">
+          <div className="col-span-8 h-fit w-full rounded border bg-white p-5 md:col-span-3">
             {sellerPerformance.data?.data ? (
               <div>
                 <H3>Order per Province</H3>

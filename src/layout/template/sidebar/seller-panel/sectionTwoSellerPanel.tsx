@@ -51,9 +51,7 @@ const SideBarMenu: React.FC<SideBarMenuProps> = ({
           : 'hover:rounded-r-full hover:bg-white hover:text-primary'
       )}
       onClick={() => {
-        if (!active) {
-          router.push(`/seller-panel/${link}`)
-        }
+        router.push(`/seller-panel/${link}`)
       }}
     >
       <div className="flex-column flex items-center gap-x-2 text-left text-lg">
@@ -68,6 +66,7 @@ const SectionTwoSideBarSellerPanel: React.FC<SellerSideBarProps> = ({
   selectedPage,
 }) => {
   const sm = useMediaQuery('sm')
+  const router = useRouter()
 
   const items: Array<SideBarMenuProps> = [
     {
@@ -120,7 +119,12 @@ const SectionTwoSideBarSellerPanel: React.FC<SellerSideBarProps> = ({
         <div className="flex h-full bg-primary py-5">
           <div className="mr-4 flex flex-col gap-2">
             <div className="relative flex justify-between">
-              <div className="mx-6 my-1 flex max-w-[2rem] items-center sm:max-w-[6rem]">
+              <div
+                className="mx-6 my-1 flex max-w-[2rem] cursor-pointer items-center sm:max-w-[6rem]"
+                onClick={() => {
+                  router.push('/seller-panel')
+                }}
+              >
                 <Icon color="white" small={!sm} />
               </div>
             </div>
