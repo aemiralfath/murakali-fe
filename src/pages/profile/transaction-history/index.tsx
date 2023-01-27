@@ -368,7 +368,26 @@ const OrderCard: React.FC<
           {order.order_status === 6 ? (
             <div className="mt-2 flex items-baseline justify-center gap-1 text-center">
               <P className="text-xs opacity-50">Or</P>
-              <A className="text-xs opacity-50 hover:opacity-100" underline>
+              <A
+                className="text-xs opacity-50 hover:opacity-100"
+                underline
+                onClick={() => {
+                  modal.info({
+                    title: 'Confirmation',
+                    closeButton: false,
+                    content: (
+                      <ConfirmationModal
+                        msg={
+                          'Are you sure Want to Complaint the Order and Refund?'
+                        }
+                        onConfirm={() => {
+                          router.push('/order/complaint?id=' + order.order_id)
+                        }}
+                      />
+                    ),
+                  })
+                }}
+              >
                 File a Complaint
               </A>
             </div>

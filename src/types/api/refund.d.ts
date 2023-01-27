@@ -35,3 +35,9 @@ export interface RefundOrderData {
     }
   }
 }
+
+export interface CreateRefundUserRequest {
+  image: string
+  order_id: string
+  reason: string
+}
