@@ -278,8 +278,15 @@ const Navbar: React.FC = () => {
               onChange={(e) => setSearchKeyword(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
-                  if (keyword) {
-                    router.push(`/search/${keyword}`)
+                  if (keyword && keyword.replace(/\s/g, '').length) {
+                    router.push({
+                      pathname: '/search',
+                      query: { keyword },
+                    })
+                  } else {
+                    router.push({
+                      pathname: '/search',
+                    })
                   }
                 }
               }}
@@ -288,8 +295,15 @@ const Navbar: React.FC = () => {
               type="submit"
               className="absolute top-0 right-0 h-full px-1 text-xl"
               onClick={() => {
-                if (keyword) {
-                  router.push(`/search/${keyword}`)
+                if (keyword && keyword.replace(/\s/g, '').length) {
+                  router.push({
+                    pathname: '/search',
+                    query: { keyword },
+                  })
+                } else {
+                  router.push({
+                    pathname: '/search',
+                  })
                 }
               }}
             >

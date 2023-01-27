@@ -1,6 +1,6 @@
 import { Button, P } from '@/components'
 import { useMediaQuery } from '@/hooks'
-import type { BannerResponse } from '@/types/api/banner'
+import type { BannerData } from '@/types/api/banner'
 import Link from 'next/link'
 import React from 'react'
 import style from './carousel.module.css'
@@ -68,7 +68,7 @@ const Banner: React.FC<{
 }
 
 const BannerCarousel: React.FC<{
-  banners: BannerResponse[]
+  banners: BannerData[]
   isLoading?: boolean
 }> = ({ banners, isLoading }) => {
   return (

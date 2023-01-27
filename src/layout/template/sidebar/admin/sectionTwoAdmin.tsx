@@ -2,9 +2,9 @@ import cx from '@/helper/cx'
 
 import { useRouter } from 'next/router'
 import React from 'react'
-import { HiTag, HiBookmark } from 'react-icons/hi'
+import { HiTag, HiBookmark, HiOutlineAnnotation } from 'react-icons/hi'
 
-export type ValidPage = 'voucher' | 'category' | 'refund'
+export type ValidPage = 'voucher' | 'category' | 'refund' | 'banner'
 
 interface AdminSideBarProps {
   selectedPage: ValidPage
@@ -65,6 +65,12 @@ const SectionTwoSideBarAdmin: React.FC<AdminSideBarProps> = ({
       title: 'Refund',
       icon: <HiTag />,
       active: selectedPage === 'refund',
+    },
+    {
+      link: 'banner',
+      title: 'Banner',
+      icon: <HiOutlineAnnotation />,
+      active: selectedPage === 'banner',
     },
   ]
 

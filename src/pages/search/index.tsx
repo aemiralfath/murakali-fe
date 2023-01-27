@@ -11,47 +11,70 @@ import type { ProductQuery } from '@/types/api/product'
 
 const SearchPage: NextPage = () => {
   const router = useRouter()
+  const { catName, keyword, sort_by, sort } = router.query
+
   const INF = 1000000000
 
-  const { searchparam } = router.query
-  const [queryParam] = useState<Map<string, string>>(new Map<string, string>())
+  const [queryParam, setQueryParam] = useState<Map<string, string>>(
+    new Map<string, string>()
+  )
+  const handleUpdateQuery = (k: string, v: string) => {
+    queryParam.set(k, v)
+    setQueryParam(queryParam)
+  }
+  const handleDeleteQuery = (k: string) => {
+    queryParam.delete(k)
+    setQueryParam(queryParam)
+  }
+
+  // bikin useeffect buat ganti parameter pake router
 
   const [flag, setFlag] = useState(true)
   const [locationState, setLocationState] = useState('')
-  const [categoryState, setCategoryState] = useState('')
-  const [resultFor, setResultFor] = useState('')
+  // const [resultFor, setResultFor] = useState('')
   const controller = useProductListing()
   const {
+    filterKeyword,
+    setFilterKeyword,
     sortBy,
+    setSortBy,
     filterPrice,
     filterRating,
     filterLocation,
     filterCategory,
+    setFilterCategory,
     page,
   } = controller
 
   useEffect(() => {
+    if (sort !== undefined) {
+      setSortBy({ sort_by: String(sort_by), sort: String(sort) })
+    }
+    setFlag(true)
+  }, [sort])
+
+  useEffect(() => {
     if (sortBy.sort_by !== '') {
-      queryParam.set('sort_by', sortBy.sort_by)
+      handleUpdateQuery('sort_by', sortBy.sort_by)
     } else if (sortBy.sort_by === '') {
-      queryParam.delete('sort_by')
+      handleDeleteQuery('sort_by')
     }
 
     if (sortBy.sort !== '') {
-      queryParam.set('sort', sortBy.sort)
+      handleUpdateQuery('sort', sortBy.sort)
     } else if (sortBy.sort === '') {
-      queryParam.delete('sort')
+      handleDeleteQuery('sort')
     }
     setFlag(true)
   }, [sortBy])
 
   useEffect(() => {
     if (filterPrice === undefined) {
-      queryParam.delete('min_price')
-      queryParam.delete('max_price')
+      handleDeleteQuery('min_price')
+      handleDeleteQuery('max_price')
     } else {
-      queryParam.set('min_price', String(filterPrice.min))
-      queryParam.set('max_price', String(filterPrice.max))
+      handleUpdateQuery('min_price', String(filterPrice.min))
+      handleUpdateQuery('max_price', String(filterPrice.max))
     }
 
     setFlag(true)
@@ -59,9 +82,9 @@ const SearchPage: NextPage = () => {
 
   useEffect(() => {
     if (filterRating === -1) {
-      queryParam.delete('rating')
+      handleDeleteQuery('rating')
     } else {
-      queryParam.set('rating', String(filterRating))
+      handleUpdateQuery('rating', String(filterRating))
     }
     setFlag(true)
   }, [filterRating])
@@ -77,41 +100,60 @@ const SearchPage: NextPage = () => {
     })
     if (locationQuery === '') {
       setLocationState('')
-      queryParam.delete('location')
+      handleDeleteQuery('location')
     } else {
       setLocationState(locationQuery)
-      queryParam.set('location', locationQuery)
+      handleUpdateQuery('location', locationQuery)
     }
     setFlag(true)
   }, [filterLocation])
 
   useEffect(() => {
-    const queryCategory = filterCategory
-    if (queryCategory === '') {
-      setCategoryState('')
-      queryParam.delete('category')
-    } else {
-      setCategoryState(queryCategory)
-      queryParam.set('category', queryCategory)
-    }
-    setFlag(true)
-  }, [filterCategory])
-
-  useEffect(() => {
-    queryParam.set('page', String(page))
+    handleUpdateQuery('page', String(page))
     setFlag(true)
   }, [page])
 
   useEffect(() => {
+    if (catName === undefined) {
+      setFilterCategory('')
+      handleDeleteQuery('category')
+    } else {
+      setFilterCategory(String(catName))
+      handleUpdateQuery('category', String(catName))
+    }
     setFlag(true)
-    router.push({
-      pathname: `/search/${searchparam}`,
-    })
-  }, [searchparam])
+  }, [catName])
+
+  useEffect(() => {
+    if (keyword === undefined) {
+      setFilterKeyword('')
+      handleDeleteQuery('keyword')
+    } else {
+      setFilterKeyword(String(keyword))
+      handleUpdateQuery('keyword', String(keyword))
+    }
+    setFlag(true)
+  }, [keyword])
+
+  // useEffect(() => {}, [filterKeyword])
+
+  // Query params -> mengubah state filter
+  // state berganti -> query params, reload
+
+  // url?keyword='aldaksd'&page=2
+  // 1. Ngecek query params -> kosong atau nggak. Query params, itu kalo di useRouter, itu akan kosong dulu.
+  // const { keyword } = router.params
+  // keyword -> undefined -> ada isinya
+  /* useEffect(() => {
+    if(keyword !== undefined) {
+      setStateFilterKeyword(keyword)
+    }
+  }, [keyword])
+  */
 
   const productQuery: ProductQuery = {
-    search: String(searchparam),
-    category: categoryState,
+    search: filterKeyword,
+    category: filterCategory,
     limit: 30,
     page: page,
     sort_by: sortBy.sort_by,
@@ -127,7 +169,6 @@ const SearchPage: NextPage = () => {
   const SearchProductList = useSearchQueryProduct(productQuery)
 
   useEffect(() => {
-    setFlag(false)
     if (flag === true) {
       let stringQuery = ''
       let fr = false
@@ -149,21 +190,27 @@ const SearchPage: NextPage = () => {
         if (num2 > SearchProductList.data.data.total_rows) {
           num2 = SearchProductList.data.data.total_rows
         }
-        setResultFor(
-          num1 +
-            ' - ' +
-            num2 +
-            ' of ' +
-            SearchProductList.data.data.total_rows +
-            ' results for "' +
-            searchparam +
-            '"'
-        )
-      } else {
-        setResultFor('no results for "' + searchparam + '"')
+        // let message = ''
+        // if (keyword === undefined) {
+        //   message = 'Showing all products'
+        // } else {
+        //   message = 'Showing results for "' + filterKeyword + '"'
+        // }
+        // setResultFor(
+        //   num1 +
+        //     ' - ' +
+        //     num2 +
+        //     ' of ' +
+        //     SearchProductList.data.data.total_rows +
+        //     ' ' +
+        //     message
+        // )
       }
+      // else {
+      //   setResultFor('no results for "' + filterKeyword + '"')
+      // }
       router.push({
-        pathname: `/search/${searchparam}`,
+        pathname: `/search`,
         query: stringQuery,
       })
     }
@@ -176,7 +223,7 @@ const SearchPage: NextPage = () => {
         <meta name="description" content="Murakali E-Commerce Application" />
       </Head>
       <MainLayout>
-        {resultFor}
+        {/* {resultFor} */}
         {SearchProductList.isLoading ? (
           <ProductListingLayout controller={controller} isLoading={true} />
         ) : SearchProductList.data.data.rows ? (
