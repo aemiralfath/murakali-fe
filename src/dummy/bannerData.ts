@@ -1,6 +1,6 @@
-import type { BannerResponse } from '@/types/api/banner'
+import type { BannerData } from '@/types/api/banner'
 
-const bannerData: BannerResponse[] = [
+const bannerData: BannerData[] = [
   {
     id: '1',
     title: '12.12 - 50% Off',
