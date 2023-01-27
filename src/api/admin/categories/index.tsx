@@ -1,10 +1,10 @@
 import { authorizedClient } from '@/api/apiClient'
-import {
+import type {
   AdminCategoryData,
   CreateUpdateCategory,
 } from '@/types/api/admincategory'
-import type { APIResponse, PaginationData } from '@/types/api/response'
-import type { CreateUpdateVoucher, VoucherData } from '@/types/api/voucher'
+import type { APIResponse } from '@/types/api/response'
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const profileKey = 'category-admin'

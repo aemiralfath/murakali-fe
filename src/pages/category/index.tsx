@@ -61,9 +61,9 @@ function Category() {
                                 </Chip>
                               </Link>
 
-                              <div className="flex  flex-wrap gap-x-3 gap-y-1 py-2">
-                                {levelOne.child_category.length > 0 ? (
-                                  levelOne.child_category.map(
+                              <div className="flex  flex-wrap gap-x-3 gap-y-1  py-2">
+                                {levelTwo.child_category.length > 0 ? (
+                                  levelTwo.child_category.map(
                                     (levelThree, index) => (
                                       <Link
                                         key={'levelThree-' + index}

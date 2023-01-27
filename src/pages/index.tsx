@@ -1,6 +1,6 @@
 import { useRecommendedProduct } from '@/api/product/recommended'
 import { Divider, H1, H4 } from '@/components'
-import bannerData from '@/dummy/bannerData'
+
 import MainLayout from '@/layout/MainLayout'
 import ProductCard from '@/layout/template/product/ProductCard'
 import BannerCarousel from '@/sections/home/BannerCarousel'
@@ -11,20 +11,29 @@ import { type NextPage } from 'next'
 import CategorySearch from '@/sections/home/CategorySearch'
 import Link from 'next/link'
 import { useGetAllCategory } from '@/api/category'
+import { useBanner } from '@/api/admin/banner'
+import bannerData from '@/dummy/bannerData'
 
 const Home: NextPage = () => {
   const categories = useGetAllCategory()
 
   const recommendedProduct = useRecommendedProduct()
 
+  const banner = useBanner()
   return (
     <div className="relative">
       <Head>
         <title>Murakali</title>
         <meta name="description" content="Murakali E-Commerce Application" />
       </Head>
-      <div className="absolute z-20 max-w-full translate-y-[4rem] overflow-x-hidden md:translate-y-[4.5rem]">
-        <BannerCarousel banners={bannerData} />
+      <div className="absolute z-20 w-full translate-y-[4rem] overflow-x-hidden md:translate-y-[4.5rem]">
+        {banner.isLoading ? (
+          <BannerCarousel banners={bannerData} isLoading={true} />
+        ) : banner.data?.data ? (
+          <BannerCarousel banners={banner.data?.data} isLoading={false} />
+        ) : (
+          <BannerCarousel banners={bannerData} isLoading={false} />
+        )}
       </div>
       <MainLayout>
         <div className="-z-50 h-[16rem] w-full sm:h-[18rem] lg:h-[22rem]" />

@@ -3,16 +3,57 @@ import {
   useDeleteDeliverySeller,
   useDeliveryServiceSeller,
 } from '@/api/seller/delivery-service'
-import { Chip, H2 } from '@/components'
+import { Button, Chip, H2, P } from '@/components'
+import { useModal } from '@/hooks'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
+import { closeModal } from '@/redux/reducer/modalReducer'
+import type { APIResponse } from '@/types/api/response'
+import type { AxiosError } from 'axios'
 import Head from 'next/head'
 import Image from 'next/image'
+import { useEffect } from 'react'
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
 
 function SellerDeliveryService() {
   const useCouriers = useDeliveryServiceSeller()
   const useCreateCourier = useCreateDeliverySeller()
   const useDeleteCourier = useDeleteDeliverySeller()
 
+  const modal = useModal()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (useCreateCourier.isSuccess) {
+      toast.success('Successfully add delivery service')
+      dispatch(closeModal())
+    }
+  }, [useCreateCourier.isSuccess])
+
+  useEffect(() => {
+    if (useCreateCourier.isError) {
+      const errmsg = useCreateCourier.failureReason as AxiosError<
+        APIResponse<null>
+      >
+      toast.error(errmsg.response?.data.message as string)
+    }
+  }, [useCreateCourier.isError])
+
+  useEffect(() => {
+    if (useDeleteCourier.isSuccess) {
+      toast.success('Successfully remove delivery service')
+      dispatch(closeModal())
+    }
+  }, [useDeleteCourier.isSuccess])
+
+  useEffect(() => {
+    if (useDeleteCourier.isError) {
+      const errmsg = useDeleteCourier.failureReason as AxiosError<
+        APIResponse<null>
+      >
+      toast.error(errmsg.response?.data.message as string)
+    }
+  }, [useDeleteCourier.isError])
   return (
     <div>
       <Head>
@@ -52,9 +93,77 @@ function SellerDeliveryService() {
                           }
                           onClick={(event) => {
                             if (event.currentTarget.checked) {
-                              useCreateCourier.mutate(courier.courier_id)
+                              modal.edit({
+                                title: 'Add Delivery Service',
+                                content: (
+                                  <>
+                                    <P>
+                                      Do you really want to add this delivery
+                                      service?
+                                    </P>
+                                    <div className="mt-4 flex justify-end gap-2">
+                                      <Button
+                                        type="button"
+                                        outlined
+                                        buttonType="primary"
+                                        onClick={() => {
+                                          dispatch(closeModal())
+                                        }}
+                                      >
+                                        Cancel
+                                      </Button>
+                                      <Button
+                                        type="button"
+                                        buttonType="primary"
+                                        onClick={() => {
+                                          useCreateCourier.mutate(
+                                            courier.courier_id
+                                          )
+                                        }}
+                                      >
+                                        Add
+                                      </Button>
+                                    </div>
+                                  </>
+                                ),
+                                closeButton: false,
+                              })
                             } else {
-                              useDeleteCourier.mutate(courier.shop_courier_id)
+                              modal.edit({
+                                title: 'Remove Delivery Service',
+                                content: (
+                                  <>
+                                    <P>
+                                      Do you really want to remove this delivery
+                                      service?
+                                    </P>
+                                    <div className="mt-4 flex justify-end gap-2">
+                                      <Button
+                                        type="button"
+                                        buttonType="primary"
+                                        onClick={() => {
+                                          dispatch(closeModal())
+                                        }}
+                                      >
+                                        Cancel
+                                      </Button>
+                                      <Button
+                                        type="button"
+                                        buttonType="primary"
+                                        outlined
+                                        onClick={() => {
+                                          useDeleteCourier.mutate(
+                                            courier.shop_courier_id
+                                          )
+                                        }}
+                                      >
+                                        Remove
+                                      </Button>
+                                    </div>
+                                  </>
+                                ),
+                                closeButton: false,
+                              })
                             }
                           }}
                         />

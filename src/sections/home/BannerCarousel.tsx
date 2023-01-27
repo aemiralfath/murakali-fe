@@ -1,5 +1,6 @@
 import { Button, P } from '@/components'
 import { useMediaQuery } from '@/hooks'
+import type { BannerResponse } from '@/types/api/banner'
 import Link from 'next/link'
 import React from 'react'
 import style from './carousel.module.css'
@@ -14,7 +15,7 @@ const Banner: React.FC<{
 
   return (
     <div
-      className="flex h-[16rem] w-full justify-center gap-4 bg-cover bg-center bg-no-repeat px-8 py-12 sm:h-[22rem] sm:px-12 sm:pt-12 sm:pb-20 lg:h-[28rem]"
+      className="flex h-[16rem] w-full  justify-center gap-4 bg-cover bg-center bg-no-repeat px-8 py-12 sm:h-[22rem] sm:px-12 sm:pt-12 sm:pb-20 lg:h-[28rem] lg:justify-around"
       style={
         lg
           ? {
@@ -60,38 +61,55 @@ const Banner: React.FC<{
           </div>
         </div>
       </div>
+      <div></div>
+      <div></div>
     </div>
   )
 }
 
 const BannerCarousel: React.FC<{
-  banners: Array<{
-    title: string
-    content: string
-    image_url: string
-    page_url: string
-    is_active: boolean
-  }>
-}> = ({ banners }) => {
+  banners: BannerResponse[]
+  isLoading?: boolean
+}> = ({ banners, isLoading }) => {
   return (
     <div className="max-w-full">
       <div className={style.bannerCarousel}>
-        {banners.map((banner, index) => {
-          return (
-            <div
-              key={index}
-              id={`slide${index}`}
-              className="carousel-item relative h-[16rem] w-full sm:h-[22rem] lg:h-[28rem]"
-            >
-              <Banner
-                title={banner.title}
-                content={banner.content}
-                imageUrl={banner.image_url}
-                pageUrl={banner.page_url}
-              />
+        {isLoading ? (
+          <>
+            <div className="carousel-item relative h-[16rem] w-screen sm:h-[22rem] lg:h-[28rem]">
+              <div className="flex h-[16rem] w-full animate-pulse justify-center gap-4   bg-gray-300 bg-cover bg-center bg-no-repeat px-8 py-12 sm:h-[22rem] sm:px-12 sm:pt-12 sm:pb-20 lg:h-[28rem]">
+                <div className="container mx-auto flex h-full flex-col gap-3 text-white lg:justify-center">
+                  <div className="flex flex-col gap-3 sm:max-w-[80%] lg:max-w-[50%]"></div>
+                </div>
+              </div>
             </div>
-          )
-        })}
+          </>
+        ) : (
+          <>
+            {banners.map((banner, index) => {
+              return (
+                <>
+                  {banner.is_active ? (
+                    <div
+                      id={`slide${index}`}
+                      className="carousel-item relative h-[16rem] w-full sm:h-[22rem] lg:h-[28rem]"
+                      key={index}
+                    >
+                      <Banner
+                        title={banner.title}
+                        content={banner.content}
+                        imageUrl={banner.image_url}
+                        pageUrl={banner.page_url}
+                      />
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </>
+              )
+            })}
+          </>
+        )}
       </div>
     </div>
   )

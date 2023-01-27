@@ -198,10 +198,6 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
             </>
           )}
         </div>
-        {/* <div
-          className="absolute h-screen w-screen"
-          onClick={() => setOpenMenu(false)}
-        /> */}
       </Transition>
       <div className="flex flex-1 flex-col gap-3 bg-white">
         <div className="flex w-full items-center justify-between rounded border py-2 px-3">
