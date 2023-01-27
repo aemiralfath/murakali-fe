@@ -49,9 +49,7 @@ const SideBarMenu: React.FC<SideBarMenuProps> = ({
           : 'hover:rounded-r-full hover:bg-white hover:font-semibold hover:text-primary'
       )}
       onClick={() => {
-        if (!active) {
-          router.push(`/seller-panel/${link}`)
-        }
+        router.push(`/seller-panel/${link}`)
       }}
     >
       <div className="flex-column flex items-center gap-x-2 text-left text-lg">

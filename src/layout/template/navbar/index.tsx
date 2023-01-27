@@ -47,8 +47,8 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <div className="absolute right-[10%] top-auto">
-          <div className="relative mt-3 w-[32rem] rounded-md bg-white py-2 px-4 shadow-lg">
+        <div className="absolute right-[10%] top-auto ">
+          <div className="relative z-40 mt-3 w-[32rem] rounded-md bg-white py-2 px-4 shadow-lg">
             <div className="absolute -top-[7px] right-[10px] h-5 w-5 rotate-45 bg-white" />
             <H2 className="text-primary">Cart</H2>
             <div className="grid grid-cols-1 divide-y">

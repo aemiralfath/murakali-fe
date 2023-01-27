@@ -45,14 +45,18 @@ function Checkout() {
   const idShops = router.query.idShop
   const secret = 'test'
 
+  const [addresInfo, setAddresInfo] = useState({
+    id: '',
+    name: '',
+    fullAddress: '',
+  })
+
   const mapPriceQuantitys: LabeledValue = {
     price: decrypt(String(router.query.price), secret),
     subPrice: decrypt(String(router.query.subPrice), secret),
     quantity: decrypt(String(router.query.quantity), secret),
     result_discount: decrypt(String(router.query.resultDiscount), secret),
   }
-
-  const [checkValidCheckout, setCheckValidCheckout] = useState<boolean>(false)
 
   const [checkoutItems, setCheckoutItems] = useState<PostCheckout>()
   useEffect(() => {
@@ -82,6 +86,7 @@ function Checkout() {
         })
 
       setCheckoutItems({
+        address_id: '',
         wallet_id: '',
         card_number: '',
         voucher_marketplace_id: '',
@@ -132,6 +137,7 @@ function Checkout() {
       }
 
       setCheckoutItems({
+        address_id: addresInfo.id,
         wallet_id: checkoutItems.wallet_id,
         card_number: checkoutItems.card_number,
         voucher_marketplace_id: voucher.id,
@@ -139,7 +145,30 @@ function Checkout() {
         cart_items: checkoutItems.cart_items,
       })
     }
-  }, [voucher, checkoutItems])
+  }, [voucher, checkoutItems, addresInfo])
+
+  useEffect(() => {
+    if (defaultAddress.isSuccess) {
+      setAddresInfo({
+        id: defaultAddress.data?.data?.rows[0].id,
+        name: defaultAddress.data?.data?.rows[0].name,
+        fullAddress:
+          defaultAddress.data?.data?.rows[0].address_detail +
+          ', ' +
+          defaultAddress.data?.data?.rows[0].sub_district +
+          ', ' +
+          defaultAddress.data?.data?.rows[0].district +
+          ', ' +
+          defaultAddress.data?.data?.rows[0].city +
+          ', ' +
+          defaultAddress.data?.data?.rows[0].province +
+          ', Indonesia (' +
+          defaultAddress.data?.data?.rows[0].zip_code +
+          ')',
+      })
+    }
+  }, [defaultAddress.isSuccess])
+
   return (
     <>
       <Navbar />
@@ -150,33 +179,20 @@ function Checkout() {
           <div className="col-span-3  flex flex-col gap-5">
             <div className="flex h-fit flex-wrap items-center justify-between gap-10 rounded-lg border-[1px] border-solid border-gray-300 py-5 px-8">
               <div>
-                {!defaultAddress.isLoading ? (
-                  <>
-                    {defaultAddress.data?.data ? (
-                      <div>
-                        <H3 className="mb-1 font-bold">Shipping Address:</H3>
-                        <P className="font-bold">
-                          {defaultAddress.data.data.rows[0].name}
-                        </P>
-                        <P>
-                          {defaultAddress.data.data.rows[0].address_detail},{' '}
-                          {defaultAddress.data.data.rows[0].sub_district},{' '}
-                          {defaultAddress.data.data.rows[0].district},{' '}
-                          {defaultAddress.data.data.rows[0].city},
-                          {defaultAddress.data.data.rows[0].province}, Indonesia
-                          ({defaultAddress.data.data.rows[0].zip_code})
-                        </P>
-                      </div>
-                    ) : (
-                      <P className="font-bold">
-                        You dont have default address, please choose your
-                        default address
-                      </P>
-                    )}
-                  </>
-                ) : (
-                  <></>
-                )}
+                <>
+                  {addresInfo ? (
+                    <div>
+                      <H3 className="mb-1 font-bold">Shipping Address:</H3>
+                      <P className="font-bold">{addresInfo.name}</P>
+                      <P>{addresInfo.fullAddress}</P>
+                    </div>
+                  ) : (
+                    <P className="font-bold">
+                      You dont have default address, please choose your default
+                      address
+                    </P>
+                  )}
+                </>
               </div>
               <Button
                 buttonType="primary"
@@ -237,6 +253,7 @@ function Checkout() {
                                 }
                               })
                             setCheckoutItems({
+                              address_id: checkoutItems.address_id,
                               wallet_id: checkoutItems.wallet_id,
                               card_number: checkoutItems.card_number,
                               voucher_marketplace_id:
