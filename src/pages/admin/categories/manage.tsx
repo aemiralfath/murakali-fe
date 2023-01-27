@@ -20,7 +20,6 @@ import toast from 'react-hot-toast'
 function ManageCategoryAdmin() {
   const router = useRouter()
 
-  const [, setId] = useState<string>()
   const [edit, setEdit] = useState<boolean>(false)
   const createCategory = useCreateAdminCategories()
   const updateCategory = useUpdateAdminCategories()
@@ -31,12 +30,6 @@ function ManageCategoryAdmin() {
   const [selected, setSelected] = useState('no parent category')
 
   useEffect(() => {
-    if (typeof categoryID === 'string') {
-      setId(categoryID)
-    }
-  }, [categoryID])
-
-  useEffect(() => {
     if (typeManage === 'update' && categoryID) {
       category.data?.data
         .filter((item) => item.id === categoryID)
@@ -45,14 +38,6 @@ function ManageCategoryAdmin() {
       setEdit(true)
     }
   }, [category.isSuccess])
-
-  const [, setParent] = useState<CreateUpdateCategory>({
-    id: '',
-    name: '',
-    photo_url: '',
-    level: '',
-    parent_id: '',
-  })
 
   const [input, setInput] = useState<CreateUpdateCategory>({
     id: '',
@@ -68,7 +53,6 @@ function ManageCategoryAdmin() {
         .filter((item) => item.id === input.parent_id)
         .map((item) => {
           setSelected(item.name)
-          setParent(item)
         })
     }
   }, [input])
@@ -188,13 +172,37 @@ function ManageCategoryAdmin() {
               <div className="flex flex-1 items-center">
                 <TextInput
                   type="text"
-                  name="name" // harus sama kaya di state input
+                  name="name"
                   onChange={handleChange}
                   value={input.name}
                   full
                   maxLength={10}
                   required
                 />
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-wrap justify-between gap-3">
+              <div className="w-[30%]">
+                <div className="flex items-center gap-3">
+                  <H4>Category Photo</H4>
+                  <Chip type={'gray'}>Required</Chip>
+                </div>
+                <P className="mt-2 max-w-[20rem] text-sm">New Category Photo</P>
+              </div>
+              <div className="flex flex-1">
+                <div className="">
+                  <Uploader
+                    id={'admincategoryimage'}
+                    title={'Photo'}
+                    onChange={(s) =>
+                      setInput((prev) => ({
+                        ...prev,
+                        ['photo_url']: s,
+                      }))
+                    }
+                  />
+                </div>
               </div>
             </div>
 
@@ -425,30 +433,6 @@ function ManageCategoryAdmin() {
                 </div>
               </>
             )}
-
-            <div className="mt-6 flex flex-wrap justify-between gap-3">
-              <div className="w-[30%]">
-                <div className="flex items-center gap-3">
-                  <H4>Category Photo</H4>
-                  <Chip type={'gray'}>Required</Chip>
-                </div>
-                <P className="mt-2 max-w-[20rem] text-sm">New Category Photo</P>
-              </div>
-              <div className="flex flex-1">
-                <div className="">
-                  <Uploader
-                    id={'admincategoryimage'}
-                    title={'Photo'}
-                    onChange={(s) =>
-                      setInput((prev) => ({
-                        ...prev,
-                        ['photo_url']: s,
-                      }))
-                    }
-                  />
-                </div>
-              </div>
-            </div>
 
             <div className="mt-4 flex justify-between gap-2 lg:justify-end">
               <Button

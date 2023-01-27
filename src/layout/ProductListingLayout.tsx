@@ -63,6 +63,7 @@ const ButtonSortData = [
 ]
 
 const useProductListing = () => {
+  const [filterKeyword, setFilterKeyword] = useState<string>('')
   const [sortBy, setSortBy] = useState<SortBy>({ sort_by: '', sort: '' })
 
   const [filterLocation, setFilterLocation] = useState<ProvinceDetail[]>([])
@@ -73,6 +74,8 @@ const useProductListing = () => {
   const [page, setPage] = useState(1)
 
   return {
+    filterKeyword,
+    setFilterKeyword,
     sortBy,
     setSortBy,
     filterLocation,
@@ -126,17 +129,6 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   const [openMenu, setOpenMenu] = useState(false)
   const [categoryList, setCategoryList] = useState<CategoryData[]>([])
   const useCategory = useGetAllCategory()
-
-  const router = useRouter()
-  const { catName } = router.query
-
-  useEffect(() => {
-    if (catName === undefined) {
-      setFilterCategory('')
-    } else {
-      setFilterCategory(String(catName))
-    }
-  }, [catName])
 
   useEffect(() => {
     if (useCategory.isSuccess) {
@@ -197,6 +189,19 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
               />
             </>
           )}
+          <Divider />
+          <button
+            className="flex items-center gap-2 font-medium text-primary"
+            onClick={() => {
+              setFilterLocation([])
+              setFilterPrice(undefined)
+              setFilterRating(-1)
+              setFilterCategory('')
+            }}
+          >
+            <HiFilter className="text-xl" />
+            <span>Clear Filter</span>
+          </button>
         </div>
         <div
           className="absolute h-screen w-screen"

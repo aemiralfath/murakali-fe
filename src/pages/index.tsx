@@ -9,10 +9,12 @@ import Head from 'next/head'
 
 import { type NextPage } from 'next'
 import CategorySearch from '@/sections/home/CategorySearch'
-import Link from 'next/link'
 import { useGetAllCategory } from '@/api/category'
+import { useRouter } from 'next/router'
 
 const Home: NextPage = () => {
+  const router = useRouter()
+
   const categories = useGetAllCategory()
 
   const recommendedProduct = useRecommendedProduct()
@@ -52,9 +54,20 @@ const Home: NextPage = () => {
           <div className="flex justify-between ">
             <H1>Selected Products</H1>
             <H4 className="self-end">
-              <Link href="/products" className="whitespace-nowrap">
+              <button
+                onClick={() => {
+                  router.push({
+                    pathname: `/search`,
+                    query: {
+                      sort_by: 'unit_sold',
+                      sort: 'ASC',
+                    },
+                  })
+                }}
+                className="whitespace-nowrap"
+              >
                 See All
-              </Link>
+              </button>
             </H4>
           </div>
           <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">

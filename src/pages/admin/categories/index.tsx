@@ -77,7 +77,7 @@ function CategoriesAdmin() {
               return (
                 <div
                   key={index}
-                  className="grid grid-cols-3 gap-2 p-2 transition-all hover:bg-slate-400"
+                  className="grid grid-cols-3 gap-2 p-2 transition-all hover:bg-slate-200"
                 >
                   <div className="text-center">{item.name}</div>
                   <div className="text-center">{item.level}</div>
