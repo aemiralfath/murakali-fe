@@ -112,6 +112,7 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType }) => {
             width: '100%',
             display: 'flex',
             justifyContent: 'center',
+            flexWrap: 'wrap',
           }}
           inputStyle={{ borderColor: 'grey' }}
           inputFocusStyle={{ borderColor: 'blue' }}

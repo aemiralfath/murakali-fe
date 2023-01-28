@@ -55,7 +55,7 @@ function Category() {
                         </Link>
                       </div>
 
-                      <div className="my-5 mx-4 flex flex-wrap lg:mx-10 ">
+                      <div className="my-5 mx-4 flex flex-wrap gap-x-2 lg:mx-10">
                         {levelOne.child_category.length > 0 ? (
                           levelOne.child_category.map((levelTwo, index) => (
                             <div

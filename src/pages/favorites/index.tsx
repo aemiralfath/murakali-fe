@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
-import { Navbar } from '@/layout/template'
-import Footer from '@/layout/template/footer'
+
 import ProductFavoriteLayout, {
   useFavoriteProductListing,
 } from '@/sections/favorites/ProductFavoriteLayout'
 import { useFavoriteQueryProduct } from '@/api/product/favorite'
 import type { ProductQuery } from '@/types/api/product'
-import { Breadcrumbs, H4 } from '@/components'
+import { Breadcrumbs } from '@/components'
 import Router from 'next/router'
 import { useUser } from '@/hooks'
+import Head from 'next/head'
+import MainLayout from '@/layout/MainLayout'
 
 const dummyBreadcrumbs = [
   { name: 'Home', link: '/' },
@@ -79,11 +79,12 @@ function Favorite() {
 
   return (
     <>
-      <Navbar />
-      <TitlePageExtend title="Favorite Product" />
-
-      <div className="container mx-auto  my-5 h-fit min-h-screen w-fit ">
-        <div className="my-4">
+      <Head>
+        <title>Favorites - Murakali</title>
+        <meta name="description" content="Murakali E-Commerce Application" />
+      </Head>
+      <MainLayout>
+        <div className="my-1">
           <Breadcrumbs data={dummyBreadcrumbs} />
         </div>
 
@@ -97,13 +98,9 @@ function Favorite() {
             totalPage={FavoriteProductList.data.data.total_pages}
           />
         ) : (
-          <div className="flex h-96 items-center justify-center rounded-lg border-[1px] border-solid border-gray-300">
-            <H4>You dont have favorite product</H4>
-          </div>
+          <div className="flex h-96 items-center justify-center rounded-lg border-[1px] border-solid border-gray-300"></div>
         )}
-      </div>
-
-      <Footer />
+      </MainLayout>
     </>
   )
 }

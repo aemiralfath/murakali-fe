@@ -280,14 +280,14 @@ const ProductCart: React.FC<ProductCartProps> = ({
           {forCart ? (
             <></>
           ) : (
-            <div className="ml-0 lg:ml-7">
+            <div className="ml-0 mt-3 max-w-sm lg:ml-7">
               <TextInput
                 type="text"
                 name="note"
                 placeholder="please input note"
                 onChange={handleChange}
                 value={input.note}
-                className="w-full"
+                full
               />
             </div>
           )}

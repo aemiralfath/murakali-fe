@@ -145,6 +145,7 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType, email, setState }) => {
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
+          flexWrap: 'wrap',
         }}
         inputStyle={{ borderColor: 'grey' }}
         inputFocusStyle={{ borderColor: 'blue' }}
