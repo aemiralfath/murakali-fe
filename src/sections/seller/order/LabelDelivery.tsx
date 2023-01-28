@@ -27,13 +27,14 @@ const LabelDelivery: React.FC<LabelDeliveryProps> = ({ allData }) => {
         <div className="mb-2 flex flex-col items-center justify-center border-b-4 border-black pb-2">
           <H2 className="font-bold">Invoice</H2>
 
-          <Barcode value={allData.invoice} />
+          <Barcode value={allData.invoice} width={1} height={90} />
         </div>
         <div className="mb-2 flex justify-between border-b-4 border-black pb-2">
           <div>
             <H3 className="font-bold">Delivery Info</H3>
             <P>{allData.courier_name}</P>
             <P>{allData.courier_description}</P>
+            <P>ETD {allData.courier_etd.replace(/\D/g, '')} Days</P>
           </div>
           <div>
             <P className="mt-5">

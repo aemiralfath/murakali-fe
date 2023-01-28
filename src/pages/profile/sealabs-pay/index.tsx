@@ -10,6 +10,7 @@ import { closeModal } from '@/redux/reducer/modalReducer'
 import FormRegisterSealabsPay from '@/sections/checkout/FormRegisterSealabsPay'
 import type { APIResponse } from '@/types/api/response'
 import type { AxiosError } from 'axios'
+import moment from 'moment'
 import Head from 'next/head'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
@@ -66,7 +67,7 @@ function SealabsPay() {
       </Head>
       <ProfileLayout selectedPage="sealabs-pay">
         <>
-          <div className="flex justify-between">
+          <div className="flex flex-wrap justify-between gap-y-2">
             <H1 className="text-primary">Manage Sealabs-Pay</H1>
             <Button
               buttonType="primary"
@@ -99,8 +100,13 @@ function SealabsPay() {
                   <div className=" my-4 mx-2 grid grid-cols-1 gap-2 md:grid-cols-4">
                     <div className="col-span-3 flex flex-col gap-y-2 ">
                       <H2>{slp.name}</H2>
-                      <H3>{slp.card_number}</H3>
-                      <P>Expired At : {slp.active_date}</P>
+                      <H3 className=" block truncate font-semibold">
+                        {slp.card_number}
+                      </H3>
+                      <P>
+                        Expired At :
+                        {moment(slp.active_date).format('DD-MMM-YYYY ')}
+                      </P>
                       {slp.is_default ? (
                         <div className="flex flex-wrap gap-2">
                           <Chip>Default</Chip>
