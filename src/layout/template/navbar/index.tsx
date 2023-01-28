@@ -10,7 +10,13 @@ import {
 import { Menu, Transition } from '@headlessui/react'
 import Link from 'next/link'
 import React, { Fragment, useEffect, useState } from 'react'
-import { HiHeart, HiMenu, HiSearch, HiShoppingCart } from 'react-icons/hi'
+import {
+  HiCurrencyDollar,
+  HiHeart,
+  HiMenu,
+  HiSearch,
+  HiShoppingCart,
+} from 'react-icons/hi'
 
 import type { CartData } from '@/types/api/cart'
 import Image from 'next/image'
@@ -47,8 +53,8 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <div className="absolute right-[10%] top-auto">
-          <div className="relative mt-3 w-[32rem] rounded-md bg-white py-2 px-4 shadow-lg">
+        <div className="absolute right-[10%] top-auto ">
+          <div className="relative z-40 mt-3 w-[32rem] rounded-md bg-white py-2 px-4 shadow-lg">
             <div className="absolute -top-[7px] right-[10px] h-5 w-5 rotate-45 bg-white" />
             <H2 className="text-primary">Cart</H2>
             <div className="grid grid-cols-1 divide-y">
@@ -264,7 +270,7 @@ const Navbar: React.FC = () => {
           <div className="relative flex-1">
             <TextInput
               type="text"
-              placeholder="Search ..."
+              placeholder={sm ? 'Search ...' : ''}
               inputSize="sm"
               full
               transparent
@@ -384,43 +390,52 @@ const Navbar: React.FC = () => {
       >
         <div className="bg-primary px-5 pb-3">
           {!user ? (
-            <ul className="flex list-none items-center justify-end gap-2">
-              <li className="nav-item">
-                <Link
-                  href={`/cart`}
-                  className="flex items-center gap-2 text-sm text-white hover:opacity-75"
-                >
-                  <HiShoppingCart size={26} />
-                  <div>Cart</div>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link
-                  href={`/favorites`}
-                  className="flex items-center gap-2 text-sm text-white hover:opacity-75"
-                >
-                  <HiHeart size={26} />
-                  <div>Favorites</div>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/login">
-                  <Button buttonType="white" outlined={true} size="sm">
-                    Login
-                  </Button>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link href="/register">
-                  <Button buttonType="white" size="sm">
-                    Register
-                  </Button>
-                </Link>
-              </li>
-            </ul>
+            <>
+              {' '}
+              <ul className="container mx-auto flex list-none flex-col gap-2">
+                <li className="nav-item pt-2">
+                  <Link
+                    href={`/cart`}
+                    className="flex items-center gap-2 text-sm text-white hover:opacity-75"
+                  >
+                    <HiShoppingCart size={26} />
+                    <div>Cart</div>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    href={`/favorites`}
+                    className="flex items-center gap-2 text-sm text-white hover:opacity-75"
+                  >
+                    <HiHeart size={26} />
+                    <div>Favorites</div>
+                  </Link>
+                </li>
+
+                <li className="nav-item">
+                  <Link href="/login">
+                    <Button
+                      buttonType="white"
+                      className="w-full"
+                      outlined={true}
+                      size="sm"
+                    >
+                      Login
+                    </Button>
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link href="/register">
+                    <Button buttonType="white" size="sm" className="w-full">
+                      Register
+                    </Button>
+                  </Link>
+                </li>
+              </ul>
+            </>
           ) : (
             <ul className="container mx-auto flex list-none flex-col gap-2">
-              <li className="nav-item">
+              <li className="nav-item pt-2">
                 <Link
                   href={`/cart`}
                   className="flex items-center gap-2 text-sm text-white hover:opacity-75"
@@ -436,6 +451,15 @@ const Navbar: React.FC = () => {
                 >
                   <HiHeart size={26} />
                   <div>Favorites</div>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  href={`/wallet`}
+                  className="flex items-center gap-2 text-sm text-white hover:opacity-75"
+                >
+                  <HiCurrencyDollar size={24} />
+                  <div>My Wallet</div>
                 </Link>
               </li>
               <li className="nav-item">

@@ -139,7 +139,9 @@ const FormTopUp: React.FC = () => {
                         <div className=" my-4 mx-2 grid grid-cols-1 gap-2 md:grid-cols-4">
                           <div className="col-span-3 flex flex-col gap-y-2 ">
                             <H4>{slpOption.name}</H4>
-                            <P>{slpOption.card_number}</P>
+                            <P className="block truncate font-semibold">
+                              {slpOption.card_number}
+                            </P>
                           </div>
                         </div>
                       </div>

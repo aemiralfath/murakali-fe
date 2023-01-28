@@ -175,7 +175,7 @@ const OrderCard: React.FC<
               {order.shop_name}
             </A>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex flex-wrap items-center gap-1">
             <P className="text-xs opacity-60">
               {moment(order.created_at).format('DD MMMM YYYY')}
             </P>
@@ -197,7 +197,7 @@ const OrderCard: React.FC<
         order.detail.map((detail) => {
           return (
             <div
-              className="flex gap-2.5"
+              className="flex flex-wrap gap-2.5"
               key={`${detail.product_detail_id}-${order.order_id}`}
             >
               <Image
@@ -284,7 +284,7 @@ const OrderCard: React.FC<
       {insideTransaction ? (
         <></>
       ) : order ? (
-        <div className="grid grid-cols-2 items-center gap-x-4">
+        <div className="grid grid-cols-1  items-center gap-x-4 lg:grid-cols-2">
           {order.order_status === 5 ? (
             <Button
               buttonType="primary"

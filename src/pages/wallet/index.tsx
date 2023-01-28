@@ -97,7 +97,7 @@ function Wallet() {
               <hr></hr>
               <div className="flex justify-around py-4">
                 <Button
-                  wide
+                  className="w-fit sm:w-full"
                   buttonType="primary"
                   onClick={() => {
                     modal.edit({

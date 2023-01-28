@@ -8,7 +8,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <div className="absolute z-20 w-full">
         <Navbar />
       </div>
-      <main className="container relative mx-auto flex min-h-[60vh] flex-col gap-6 px-5 pt-[5.5rem] sm:pt-[7rem]">
+      <main className="container relative mx-auto flex min-h-[80vh] flex-col gap-6 px-5 pt-[5.5rem] sm:pt-[7rem]">
         {children}
       </main>
       <div className="w-full">
