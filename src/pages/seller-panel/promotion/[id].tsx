@@ -77,7 +77,7 @@ const PromotionDetailSeller = () => {
         <title>Murakali | Seller Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="promotion">
-        <div className="flex w-full items-center justify-between">
+        <div className="flex flex-col items-baseline justify-between gap-2 px-3 py-5 sm:flex-row sm:px-0">
           <H2>Promotion Detail</H2>
           <Button
             size={'sm'}
@@ -91,36 +91,36 @@ const PromotionDetailSeller = () => {
           </Button>
         </div>
 
-        <div className="md:px-18 mt-3  flex  h-full flex-col rounded border  bg-white p-6 px-5 lg:px-52 ">
-          <div className="mt-6 flex justify-between gap-3">
-            <div className="w-[30%]">
+        <div className="mt-3  flex  h-full flex-col rounded border  bg-white p-6 px-5 ">
+          <div className="flex flex-col justify-between md:flex-row md:gap-3">
+            <div className="md:w-[30%]">
               <div className="flex items-center gap-3">
                 <H4>Promotion Name</H4>
               </div>
             </div>
             <div className="flex-1">
-              <H4>{input.name}</H4>
+              <P>{input.name}</P>
             </div>
           </div>
 
-          <div className="mt-6 flex flex-wrap justify-between gap-3">
-            <div className="w-[30%]">
+          <div className="mt-6 flex flex-col justify-between md:flex-row md:gap-3">
+            <div className="md:w-[30%]">
               <div className="flex items-center gap-3">
                 <H4>Active Date</H4>
               </div>
             </div>
             <div className="flex flex-1 items-center">
-              <H4>{moment(input.actived_date).format('YYYY-MM-DD, HH:mm')}</H4>
+              <P>{moment(input.actived_date).format('YYYY-MM-DD, HH:mm')}</P>
             </div>
           </div>
-          <div className="mt-6 flex flex-wrap justify-between gap-3">
-            <div className="w-[30%]">
+          <div className="mt-6 flex flex-col justify-between md:flex-row md:gap-3">
+            <div className="md:w-[30%]">
               <div className="flex items-center gap-3">
                 <H4>Expired Date</H4>
               </div>
             </div>
             <div className="flex flex-1 items-center">
-              <H4>{moment(input.expired_date).format('YYYY-MM-DD, HH:mm')}</H4>
+              <P>{moment(input.expired_date).format('YYYY-MM-DD, HH:mm')}</P>
             </div>
           </div>
         </div>
@@ -136,16 +136,16 @@ const PromotionDetailSeller = () => {
             {selectedProduct.length > 0 ? (
               selectedProduct.map((sp, index) => {
                 return (
-                  <div key={index} className="flex-col py-3">
-                    <div className="flex items-center justify-start bg-base-200">
-                      <div className=" ml-10 flex w-fit p-1 align-middle">
-                        <div className="flex flex-1 gap-3">
+                  <div key={index} className="flex-col">
+                    <div className="flex items-center justify-start rounded bg-base-200 p-2">
+                      <div className="flex w-fit p-1 align-middle">
+                        <div className="flex flex-1 items-center gap-3">
                           <div className="flex-1">
                             <Image
                               src={sp.product_thumbnail_url}
-                              className={'rounded-lg'}
-                              width={200}
-                              height={200}
+                              className={'min-w-[4rem] rounded-lg'}
+                              width={80}
+                              height={80}
                               alt={sp.product_name}
                             />
                           </div>
@@ -156,12 +156,13 @@ const PromotionDetailSeller = () => {
                           </div>
 
                           <div className="flex-auto">
-                            <P>Price</P>
-                            <P>Rp. {ConvertShowMoney(sp.price)}</P>
+                            <P className="text-sm">Price</P>
+                            <P className="line-through">
+                              Rp. {ConvertShowMoney(sp.price)}
+                            </P>
                           </div>
                           <div className="flex-auto">
-                            <P className="font-bold text-primary">
-                              {' '}
+                            <P className="text-sm font-bold text-primary">
                               Price Sale
                             </P>
                             <P className="font-bold text-primary">
@@ -172,9 +173,9 @@ const PromotionDetailSeller = () => {
                       </div>
                     </div>
 
-                    <div className="ml-10 p-2">
+                    <div className="p-2">
                       <div className="-mt-2 flex gap-2">
-                        <div className="w-[20%]">
+                        <div className="lg:w-[20%]">
                           {sp.discount_percentage > 0 &&
                           sp.discount_fix_price === 0 ? (
                             <div>
@@ -193,7 +194,7 @@ const PromotionDetailSeller = () => {
                             <></>
                           )}
                         </div>
-                        <div className="w-[20%]">
+                        <div className="lg:w-[20%]">
                           <div>
                             <H4 className="py-3">Minimum Product Price</H4>
                             <P>Rp. {ConvertShowMoney(sp.min_product_price)}</P>
@@ -203,7 +204,7 @@ const PromotionDetailSeller = () => {
                             <P>Rp. {ConvertShowMoney(sp.max_discount_price)}</P>
                           </div>
                         </div>
-                        <div className="w-[20%]">
+                        <div className="lg:w-[20%]">
                           <div>
                             <H4 className="py-3">Quota</H4>
                             <P>{sp.quota} unit</P>

@@ -12,7 +12,7 @@ import SellerPanelLayout from '@/layout/SellerPanelLayout'
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
-import { useLoadingModal } from '@/hooks'
+import { useLoadingModal, useMediaQuery } from '@/hooks'
 import type { APIResponse, PaginationData } from '@/types/api/response'
 import { useRouter } from 'next/router'
 import { HiArrowLeft } from 'react-icons/hi'
@@ -36,6 +36,8 @@ import type { AxiosError } from 'axios'
 const ManagePromotionSeller = () => {
   const router = useRouter()
   const { intent, id } = router.query
+
+  const md = useMediaQuery('md')
 
   const [input, setInput] = useState<CreatePromotionSellerRequest>({
     name: '',
@@ -503,7 +505,7 @@ const ManagePromotionSeller = () => {
         <title>Murakali | Seller Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="promotion">
-        <div className="flex w-full items-center justify-between">
+        <div className="flex flex-col items-baseline justify-between gap-2 px-3 py-5 sm:flex-row sm:px-0">
           {intent === 'edit' ? <H2>Edit Promotion</H2> : <H2>Add Promotion</H2>}
           <Button
             size={'sm'}
@@ -517,32 +519,45 @@ const ManagePromotionSeller = () => {
           </Button>
         </div>
 
-        <div className="md:px-18 mt-3  flex  h-full flex-col rounded border  bg-white p-6 px-5 lg:px-52 ">
+        <div className=" mt-3 flex h-full flex-col rounded border  bg-white p-6 px-5 ">
           <div className="mt-6 flex justify-between gap-3">
-            <div className="w-[30%]">
-              <div className="flex items-center gap-3">
-                <H4>Promotion Name</H4>
+            {md ? (
+              <div className="w-[30%]">
+                <div className="flex items-center gap-3">
+                  <H4>Promotion Name</H4>
+                  <Chip type={'gray'}>Required</Chip>
+                </div>
               </div>
-            </div>
+            ) : (
+              <></>
+            )}
             <div className="flex-1">
               <TextInput
                 name="name"
                 full
+                required
+                label={md ? undefined : 'Promotion Name'}
                 value={input.name}
                 onChange={handleChangePromotion}
-                placeholder="promotion name"
+                placeholder="A Blasting Promotion"
               />
             </div>
           </div>
 
           <div className="mt-6 flex flex-wrap justify-between gap-3">
-            <div className="w-[30%]">
-              <div className="flex items-center gap-3">
-                <H4>Active Date</H4>
-                <Chip type={'gray'}>Required</Chip>
+            {md ? (
+              <div className="w-[30%]">
+                <div className="flex items-center gap-3">
+                  <H4>Active Date</H4>
+                  <Chip type={'gray'}>Required</Chip>
+                </div>
+                <P className="mt-2 max-w-[20rem] text-sm">
+                  Active Voucher Date
+                </P>
               </div>
-              <P className="mt-2 max-w-[20rem] text-sm">Active Voucher Date</P>
-            </div>
+            ) : (
+              <></>
+            )}
             <div className="flex flex-1 items-center">
               <TextInput
                 type="datetime-local"
@@ -551,6 +566,7 @@ const ManagePromotionSeller = () => {
                 min={moment(Date.now()).format('YYYY-MM-DD HH:mm')}
                 placeholder={String(Date.now())}
                 value={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
+                label={md ? undefined : 'Active Date'}
                 disabled={
                   intent === 'edit' &&
                   new Date() > new Date(saveInput.actived_date) &&
@@ -563,19 +579,26 @@ const ManagePromotionSeller = () => {
           </div>
 
           <div className="mt-6 flex flex-wrap justify-between gap-3">
-            <div className="w-[30%]">
-              <div className="flex items-center gap-3">
-                <H4>Expired Date</H4>
-                <Chip type={'gray'}>Required</Chip>
+            {md ? (
+              <div className="w-[30%]">
+                <div className="flex items-center gap-3">
+                  <H4>Expired Date</H4>
+                  <Chip type={'gray'}>Required</Chip>
+                </div>
+                <P className="mt-2 max-w-[20rem] text-sm">
+                  Expired Voucher Date
+                </P>
               </div>
-              <P className="mt-2 max-w-[20rem] text-sm">Expired Voucher Date</P>
-            </div>
+            ) : (
+              <></>
+            )}
             <div className="flex flex-1 items-center">
               <TextInput
                 type="datetime-local"
                 name="expired_date"
                 onChange={handleChangePromotion}
                 min={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
+                label={md ? undefined : 'Expired Date'}
                 max={
                   intent === 'edit' &&
                   new Date() > new Date(saveInput.actived_date) &&
@@ -600,10 +623,10 @@ const ManagePromotionSeller = () => {
           <div className="py-6">
             <Divider />
           </div>
-          <div className="flex items-start gap-2">
+          <div className="">
             {selectedProduct.length > 0 ? (
-              <div className="w-full">
-                <div className="flex h-12 w-full items-center gap-3 rounded-lg bg-base-200 px-2">
+              <>
+                <div className="flex w-full items-center gap-2">
                   <input
                     type={'checkbox'}
                     className={'checkbox'}
@@ -621,133 +644,139 @@ const ManagePromotionSeller = () => {
                       selectedProductId.length === selectedProduct.length
                     }
                   />
-                  <div className="flex max-w-[12rem] items-center gap-1">
-                    <P>Discount Percentage</P>
-                    <TextInput
-                      inputSize="sm"
-                      full
-                      placeholder="%"
-                      value={tempDiscountPercentage}
-                      disabled={tempDiscountFixPrice > 0}
-                      onChange={(e) => {
-                        const parsed = parseInt(e.target.value)
-                        setTempDiscountPercentage(
-                          Number.isNaN(parsed)
-                            ? 0
-                            : tempDiscountFixPrice > 0
-                            ? 0
-                            : tempDiscountPercentage > 100
-                            ? 100
-                            : parsed
-                        )
-                      }}
-                    />
-                  </div>
-                  <div className="flex max-w-[12rem] items-center gap-1">
-                    <P>Discount Nominal</P>
-                    <TextInput
-                      inputSize="sm"
-                      full
-                      placeholder="Rp."
-                      value={tempDiscountFixPrice}
-                      disabled={tempDiscountPercentage > 0}
-                      onChange={(e) => {
-                        const parsed = parseInt(e.target.value)
-                        setTempDiscountFixPrice(
-                          Number.isNaN(parsed)
-                            ? 0
-                            : tempDiscountPercentage > 0
-                            ? 0
-                            : parsed
-                        )
-                      }}
-                    />
-                  </div>
-                  <div className="flex max-w-[10rem] items-center gap-1">
-                    <P>Min Price</P>
-                    <TextInput
-                      inputSize="sm"
-                      full
-                      placeholder="Rp."
-                      value={tempMinimumProductPrice}
-                      onChange={(e) => {
-                        const parsed = parseInt(e.target.value)
-                        setTempMinimumProductPrice(
-                          Number.isNaN(parsed) ? 0 : parsed
-                        )
-                      }}
-                    />
-                  </div>
-                  <div className="flex max-w-[12rem] items-center gap-1">
-                    <P>Max Discount</P>
-                    <TextInput
-                      inputSize="sm"
-                      full
-                      placeholder="Rp."
-                      value={tempMaxDiscountPrice}
-                      disabled={tempDiscountFixPrice > 0}
-                      onChange={(e) => {
-                        const parsed = parseInt(e.target.value)
-                        setTempMaxDiscountPrice(
-                          Number.isNaN(parsed)
-                            ? 0
-                            : tempDiscountFixPrice > 0
-                            ? tempDiscountFixPrice
-                            : parsed
-                        )
-                      }}
-                    />
-                  </div>
+                  <div className="min-h-12 flex w-full flex-wrap items-center gap-3 rounded-lg bg-base-200 p-2">
+                    <div className="flex max-w-[12rem] items-center gap-1">
+                      <P className="whitespace-nowrap text-sm">
+                        Discount Percentage
+                      </P>
+                      <TextInput
+                        inputSize="sm"
+                        full
+                        placeholder="%"
+                        value={tempDiscountPercentage}
+                        disabled={tempDiscountFixPrice > 0}
+                        onChange={(e) => {
+                          const parsed = parseInt(e.target.value)
+                          setTempDiscountPercentage(
+                            Number.isNaN(parsed)
+                              ? 0
+                              : tempDiscountFixPrice > 0
+                              ? 0
+                              : tempDiscountPercentage > 100
+                              ? 100
+                              : parsed
+                          )
+                        }}
+                      />
+                    </div>
+                    <div className="flex max-w-[12rem] items-center gap-1">
+                      <P className="whitespace-nowrap text-sm">
+                        Discount Nominal
+                      </P>
+                      <TextInput
+                        inputSize="sm"
+                        full
+                        placeholder="Rp."
+                        value={tempDiscountFixPrice}
+                        disabled={tempDiscountPercentage > 0}
+                        onChange={(e) => {
+                          const parsed = parseInt(e.target.value)
+                          setTempDiscountFixPrice(
+                            Number.isNaN(parsed)
+                              ? 0
+                              : tempDiscountPercentage > 0
+                              ? 0
+                              : parsed
+                          )
+                        }}
+                      />
+                    </div>
+                    <div className="flex max-w-[10rem] items-center gap-1">
+                      <P className="whitespace-nowrap text-sm">Min Price</P>
+                      <TextInput
+                        inputSize="sm"
+                        full
+                        placeholder="Rp."
+                        value={tempMinimumProductPrice}
+                        onChange={(e) => {
+                          const parsed = parseInt(e.target.value)
+                          setTempMinimumProductPrice(
+                            Number.isNaN(parsed) ? 0 : parsed
+                          )
+                        }}
+                      />
+                    </div>
+                    <div className="flex max-w-[12rem] items-center gap-1">
+                      <P className="whitespace-nowrap text-sm">Max Discount</P>
+                      <TextInput
+                        inputSize="sm"
+                        full
+                        placeholder="Rp."
+                        value={tempMaxDiscountPrice}
+                        disabled={tempDiscountFixPrice > 0}
+                        onChange={(e) => {
+                          const parsed = parseInt(e.target.value)
+                          setTempMaxDiscountPrice(
+                            Number.isNaN(parsed)
+                              ? 0
+                              : tempDiscountFixPrice > 0
+                              ? tempDiscountFixPrice
+                              : parsed
+                          )
+                        }}
+                      />
+                    </div>
 
-                  <div className="flex max-w-[12rem] items-center gap-1">
-                    <P>Quota</P>
-                    <TextInput
-                      inputSize="sm"
-                      full
-                      placeholder="Quota"
-                      value={tempQuota}
-                      onChange={(e) => {
-                        const parsed = parseInt(e.target.value)
-                        setTempQuota(Number.isNaN(parsed) ? 0 : parsed)
-                      }}
-                    />
-                  </div>
-                  <div className="flex max-w-[12rem] items-center gap-1">
-                    <P>Max Quantity</P>
-                    <TextInput
-                      inputSize="sm"
-                      full
-                      placeholder="Qty"
-                      value={tempMaxQuantity}
-                      onChange={(e) => {
-                        const parsed = parseInt(e.target.value)
-                        setTempMaxQuantity(Number.isNaN(parsed) ? 0 : parsed)
-                      }}
-                    />
-                  </div>
-                  <div className="flex flex-1 justify-end">
-                    <Button
-                      size="sm"
-                      disabled={
-                        tempDiscountPercentage === null &&
-                        tempDiscountFixPrice === null &&
-                        tempMinimumProductPrice === null &&
-                        tempMaxDiscountPrice === null &&
-                        tempQuota === null &&
-                        tempMaxQuantity === null
-                      }
-                      onClick={handleChangeOnClick}
-                    >
-                      Set
-                    </Button>
+                    <div className="flex max-w-[12rem] items-center gap-1">
+                      <P className="whitespace-nowrap text-sm">Quota</P>
+                      <TextInput
+                        inputSize="sm"
+                        full
+                        placeholder="Quota"
+                        value={tempQuota}
+                        onChange={(e) => {
+                          const parsed = parseInt(e.target.value)
+                          setTempQuota(Number.isNaN(parsed) ? 0 : parsed)
+                        }}
+                      />
+                    </div>
+                    <div className="flex max-w-[12rem] items-center gap-1">
+                      <P className="whitespace-nowrap text-sm">Max Quantity</P>
+                      <TextInput
+                        inputSize="sm"
+                        full
+                        placeholder="Qty"
+                        value={tempMaxQuantity}
+                        onChange={(e) => {
+                          const parsed = parseInt(e.target.value)
+                          setTempMaxQuantity(Number.isNaN(parsed) ? 0 : parsed)
+                        }}
+                      />
+                    </div>
+                    <div className="flex flex-1 justify-end">
+                      <Button
+                        size="sm"
+                        disabled={
+                          tempDiscountPercentage === null &&
+                          tempDiscountFixPrice === null &&
+                          tempMinimumProductPrice === null &&
+                          tempMaxDiscountPrice === null &&
+                          tempQuota === null &&
+                          tempMaxQuantity === null
+                        }
+                        onClick={handleChangeOnClick}
+                      >
+                        Set
+                      </Button>
+                    </div>
                   </div>
                 </div>
                 <P className="mt-1 text-xs">
                   Selected {selectedProductId.length} products
                 </P>
-              </div>
+              </>
             ) : (
-              <span className="flex h-12 items-center text-sm">
+              <span className="flex h-12 items-center text-sm italic">
                 Select some products
               </span>
             )}
@@ -758,9 +787,9 @@ const ManagePromotionSeller = () => {
               selectedProduct.map((sp, index) => {
                 return (
                   <div key={index} className="flex-col py-3">
-                    <div className="flex items-center justify-start bg-base-200">
-                      <div className=" flex w-fit p-1 align-middle">
-                        <div className="mt-3 w-[3rem]">
+                    <div className="flex items-center justify-start overflow-auto bg-base-200">
+                      <div className="flex w-fit items-center p-1 align-middle">
+                        <div className="px-[1rem]">
                           <input
                             type={'checkbox'}
                             className={'checkbox'}
@@ -768,46 +797,47 @@ const ManagePromotionSeller = () => {
                             onClick={() => toggleSelectedProduct(sp.product_id)}
                           />
                         </div>
-                        <div className="flex flex-1 gap-3">
-                          <div className="flex-1">
+                        <div className="flex max-w-full flex-1 items-center gap-3 py-1">
+                          <div className="flex">
                             <Image
                               src={sp.product_thumbnail_url}
-                              className={'rounded-lg'}
-                              width={200}
-                              height={200}
+                              className={'min-w-[4rem] rounded-lg'}
+                              width={50}
+                              height={50}
                               alt={sp.product_name}
                             />
                           </div>
-                          <div className="flex-col gap-2 p-1">
-                            <P className="w-[15rem] font-semibold line-clamp-2">
+                          <div className="flex-1 flex-col gap-2">
+                            <P className="w-[15rem] font-semibold leading-tight line-clamp-2">
                               {sp.product_name}
                             </P>
                           </div>
-
-                          <div className="flex-auto">
-                            <P>Price</P>
-                            <P>Rp. {ConvertShowMoney(sp.price)}</P>
-                          </div>
-                          <div className="flex-auto">
-                            <P className="font-bold text-primary">
-                              {' '}
-                              Price Sale
-                            </P>
-                            <P className="font-bold text-primary">
-                              Rp. {ConvertShowMoney(sp.product_subprice)}
-                            </P>
+                          <div className="flex items-center gap-3">
+                            <div className="flex-auto">
+                              <P className="text-sm">Price</P>
+                              <P>Rp.{ConvertShowMoney(sp.price)}</P>
+                            </div>
+                            <div className="flex-auto">
+                              <P className="text-sm font-medium text-primary">
+                                Price Sale
+                              </P>
+                              <P className="font-bold text-primary">
+                                Rp.{ConvertShowMoney(sp.product_subprice)}
+                              </P>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="ml-10 p-2">
-                      <div className="-mt-2 flex gap-2">
+                    <div className="p-2 md:ml-10">
+                      <div className="-mt-2 flex flex-wrap gap-2">
                         <div className="">
                           <TextInput
                             name="discount_percentage"
-                            label="discount Percentage"
+                            label="Discount (Percentage)"
                             value={sp.discount_percentage}
+                            full
                             disabled={sp.discount_fix_price > 0}
                             onChange={(event) =>
                               handleChange(event, sp.product_id)
@@ -815,7 +845,7 @@ const ManagePromotionSeller = () => {
                           />
                           <TextInput
                             name="discount_fix_price"
-                            label="discount nominal"
+                            label="Discount Nominal"
                             value={
                               sp.discount_fix_price > sp.price
                                 ? sp.price
@@ -830,7 +860,7 @@ const ManagePromotionSeller = () => {
                         <div className="">
                           <TextInput
                             name="min_product_price"
-                            label="minimum product price"
+                            label="Min Price"
                             value={sp.min_product_price}
                             onChange={(event) =>
                               handleChange(event, sp.product_id)
@@ -838,7 +868,7 @@ const ManagePromotionSeller = () => {
                           />
                           <TextInput
                             name="max_discount_price"
-                            label="maximum discount"
+                            label="Max Price"
                             value={sp.max_discount_price}
                             disabled={sp.discount_fix_price > 0}
                             onChange={(event) =>
@@ -849,7 +879,7 @@ const ManagePromotionSeller = () => {
                         <div className="">
                           <TextInput
                             name="quota"
-                            label="quota"
+                            label="Quota"
                             disabled={intent === 'edit'}
                             value={sp.quota}
                             onChange={(event) =>
@@ -858,7 +888,7 @@ const ManagePromotionSeller = () => {
                           />
                           <TextInput
                             name="max_quantity"
-                            label="maximum product quantity"
+                            label="Max Quantity"
                             value={sp.max_quantity}
                             onChange={(event) =>
                               handleChange(event, sp.product_id)
@@ -886,7 +916,7 @@ const ManagePromotionSeller = () => {
 
         {intent === 'add' ? (
           <div className="mt-3 flex max-w-full flex-col overflow-auto rounded border bg-white px-6 pt-6">
-            <div className="flex w-full items-center justify-between py-5">
+            <div className="flex w-full flex-wrap items-center justify-between gap-2 py-5">
               <H2>Select Products</H2>
             </div>
             <Table

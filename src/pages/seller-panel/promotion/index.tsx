@@ -190,8 +190,8 @@ function PromotionSeller() {
         <title>Murakali | Seller Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="promotion">
-        <div className="flex w-full items-center justify-between">
-          <H2>Promotion List</H2>
+        <div className="flex flex-col items-baseline justify-between gap-2 px-3 py-5 sm:flex-row sm:px-0">
+          <H2>Promotions</H2>
           <Button
             size={'sm'}
             buttonType="primary"
