@@ -1,5 +1,5 @@
 import { useGetSellerDetailInformation } from '@/api/seller'
-import { A, Avatar, Button, H3, P } from '@/components'
+import { Avatar, Button, H3, P } from '@/components'
 import { useModal } from '@/hooks'
 import React, { useEffect, useState } from 'react'
 import FormEditSellerInformation from './FormEditProfile'
