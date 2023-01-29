@@ -188,6 +188,7 @@ const ProductInfo: React.FC<{
                   name="radio-condition-new"
                   className="radio checked:bg-primary"
                   checked={checked}
+                  readOnly
                 />
                 <span className="label-text">New</span>
               </label>
@@ -201,6 +202,7 @@ const ProductInfo: React.FC<{
                   name="radio-condition-used"
                   className="radio checked:bg-primary"
                   checked={checked}
+                  readOnly
                 />
                 <span className="label-text">Used</span>
               </label>

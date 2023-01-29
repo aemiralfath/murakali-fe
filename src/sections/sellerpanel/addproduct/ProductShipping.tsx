@@ -45,6 +45,7 @@ const ProductShipping: React.FC<{
                   name="radio-dg-no"
                   className="radio checked:bg-primary"
                   checked={checked}
+                  readOnly
                 />
                 <span className="label-text">No</span>
               </label>
@@ -58,6 +59,7 @@ const ProductShipping: React.FC<{
                   name="radio-dg-yes"
                   className="radio checked:bg-primary"
                   checked={checked}
+                  readOnly
                 />
                 <span className="label-text">
                   Contains Battery/Liquid/Magnet/Flammables
