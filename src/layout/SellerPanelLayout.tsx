@@ -44,7 +44,7 @@ const SellerPanelLayout: React.FC<{
               <div
                 className={cx(
                   'sticky bottom-0 left-0 z-20 w-full border-t-2 border-base-300 bg-base-200 p-5 transition-all',
-                  hideAlert ? 'translate-y-[100%]' : 'h-fit'
+                  hideAlert ? 'hidden' : 'h-fit'
                 )}
               >
                 Alert: This page is best viewed on larger screen
