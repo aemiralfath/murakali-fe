@@ -1,4 +1,4 @@
-import { Icon } from '@/components'
+import { A, Icon } from '@/components'
 import cx from '@/helper/cx'
 import { useMediaQuery } from '@/hooks'
 
@@ -12,6 +12,7 @@ import {
   HiShoppingBag,
   HiTruck,
   HiTag,
+  HiArrowLeft,
 } from 'react-icons/hi'
 
 export type ValidPage =
@@ -105,12 +106,6 @@ const SectionTwoSideBarSellerPanel: React.FC<SellerSideBarProps> = ({
       icon: <HiTruck />,
       active: selectedPage === 'delivery-service',
     },
-    {
-      link: 'wallet',
-      title: 'Wallet',
-      icon: <HiNewspaper className="-rotate-90" />,
-      active: selectedPage === 'wallet',
-    },
   ]
 
   return (
@@ -132,6 +127,17 @@ const SectionTwoSideBarSellerPanel: React.FC<SellerSideBarProps> = ({
             {items.map((item, idx) => (
               <SideBarMenu key={idx} {...item} />
             ))}
+            <div className="absolute bottom-0 mb-8 ml-4">
+              <A
+                className="flex items-center gap-2 font-medium text-white"
+                underline
+                onClick={() => {
+                  router.push('/')
+                }}
+              >
+                <HiArrowLeft /> Back to Main App
+              </A>
+            </div>
           </div>
         </div>
       </div>
