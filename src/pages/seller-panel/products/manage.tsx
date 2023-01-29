@@ -214,7 +214,7 @@ const AddProduct = () => {
         <title>Murakali | Seller Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="product">
-        <div className="flex w-full items-center justify-between">
+        <div className="flex flex-col items-baseline justify-between gap-2 px-3 py-5 sm:flex-row sm:px-0">
           {intent === 'edit' ? <H2>Edit Product</H2> : <H2>Add Product</H2>}
           <Button
             size={'sm'}

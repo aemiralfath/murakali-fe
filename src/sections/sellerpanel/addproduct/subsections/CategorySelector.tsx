@@ -46,7 +46,7 @@ const CategorySelector: React.FC<{
         leaveFrom="opacity-100 translate-y-0"
         leaveTo="opacity-0 -translate-y-1"
       >
-        <Popover.Panel className="absolute right-0 mt-1 w-[32rem] transform rounded border bg-white px-4 shadow-md sm:px-0">
+        <Popover.Panel className="absolute right-0 mt-1 w-[300px] transform rounded border bg-white px-4 shadow-md sm:px-0 md:w-[32rem]">
           <div className="grid grid-cols-6 gap-1 divide-x-2 divide-primary divide-opacity-10 p-2">
             <div
               className={
