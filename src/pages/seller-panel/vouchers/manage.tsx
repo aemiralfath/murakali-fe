@@ -5,6 +5,7 @@ import {
   useUpdateVouchers,
 } from '@/api/seller/voucher'
 import { Button, Chip, H2, H4, P, TextInput } from '@/components'
+import { useMediaQuery } from '@/hooks'
 
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
 
@@ -16,9 +17,11 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import { HiArrowLeft } from 'react-icons/hi'
 
 function ManageVouchers() {
   const router = useRouter()
+  const md = useMediaQuery('md')
 
   const [id, setId] = useState<string>()
   const [edit, setEdit] = useState<boolean>(false)
@@ -221,11 +224,21 @@ function ManageVouchers() {
         <title>Murakali | Voucher Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="voucher">
-        <div className="flex  w-full items-center justify-start">
+        <div className="flex flex-col items-baseline justify-between gap-2 px-3 py-5 sm:flex-row sm:px-0">
           <H2>{edit ? 'Edit' : duplicate ? 'Duplicate' : 'Add'} Voucher</H2>
+          <Button
+            size="sm"
+            buttonType="primary"
+            outlined
+            onClick={() => {
+              router.back()
+            }}
+          >
+            <HiArrowLeft /> Back{' '}
+          </Button>
         </div>
 
-        <div className="md:px-18 mt-3 flex h-full flex-col rounded border bg-white p-6 px-5 lg:px-52 ">
+        <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 px-5 ">
           <form
             className=" mt-1 gap-y-3"
             onSubmit={(e) => {
@@ -234,17 +247,23 @@ function ManageVouchers() {
             }}
           >
             <div className="mt-6 flex flex-wrap justify-between gap-3">
-              <div className="w-[30%]">
-                <div className=" flex flex-wrap items-center gap-3">
-                  <H4>Code Voucher</H4>
-                  <Chip type={'gray'}>Required</Chip>
+              {md ? (
+                <div className="w-[30%]">
+                  <div className=" flex flex-wrap items-center gap-3">
+                    <H4>Code Voucher</H4>
+                    <Chip type={'gray'}>Required</Chip>
+                  </div>
+                  <P className="mt-2 max-w-[20rem] text-sm">
+                    Code Voucher, code maximum 5 characters
+                  </P>
                 </div>
-                <P className="mt-2 max-w-[20rem] text-sm">
-                  Code Voucher, code maximum 5 characters
-                </P>
-              </div>
+              ) : (
+                <></>
+              )}
               <div className="flex flex-1 items-center">
-                <P className="w-36 font-bold">{SellerName}</P>
+                <P className="mt-6 mr-1 w-36 whitespace-nowrap font-bold md:mt-0">
+                  {SellerName}
+                </P>
                 <TextInput
                   type="text"
                   name="code"
@@ -253,19 +272,24 @@ function ManageVouchers() {
                   full
                   maxLength={5}
                   required
+                  label={md ? undefined : 'Code Voucher'}
                   disabled={edit}
                 />
               </div>
             </div>
 
             <div className="mt-6 flex flex-wrap justify-between gap-3">
-              <div className="w-[30%]">
-                <div className="flex items-center gap-3">
-                  <H4>Quota</H4>
-                  <Chip type={'gray'}>Required</Chip>
+              {md ? (
+                <div className="w-[30%]">
+                  <div className="flex items-center gap-3">
+                    <H4>Quota</H4>
+                    <Chip type={'gray'}>Required</Chip>
+                  </div>
+                  <P className="mt-2 max-w-[20rem] text-sm">Voucher Quota</P>
                 </div>
-                <P className="mt-2 max-w-[20rem] text-sm">Voucher Quota</P>
-              </div>
+              ) : (
+                <></>
+              )}
               <div className="flex flex-1 items-center">
                 <TextInput
                   type="number"
@@ -274,21 +298,26 @@ function ManageVouchers() {
                   onChange={handleChange}
                   value={input.quota}
                   full
+                  label={md ? undefined : 'Quota'}
                   required
                 />
               </div>
             </div>
 
             <div className="mt-6 flex flex-wrap justify-between gap-3">
-              <div className="w-[30%]">
-                <div className="flex items-center gap-3">
-                  <H4>Active Date</H4>
-                  <Chip type={'gray'}>Required</Chip>
+              {md ? (
+                <div className="w-[30%]">
+                  <div className="flex items-center gap-3">
+                    <H4>Active Date</H4>
+                    <Chip type={'gray'}>Required</Chip>
+                  </div>
+                  <P className="mt-2 max-w-[20rem] text-sm">
+                    Active Voucher Date
+                  </P>
                 </div>
-                <P className="mt-2 max-w-[20rem] text-sm">
-                  Active Voucher Date
-                </P>
-              </div>
+              ) : (
+                <></>
+              )}
               <div className="flex flex-1 items-center">
                 <TextInput
                   type="datetime-local"
@@ -301,6 +330,7 @@ function ManageVouchers() {
                   }
                   min={moment(Date.now()).format('YYYY-MM-DD HH:mm')}
                   value={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
+                  label={md ? undefined : 'Active Date'}
                   full
                   disabled={
                     Date.now() >= Date.parse(input.actived_date) && edit
@@ -311,23 +341,27 @@ function ManageVouchers() {
             </div>
 
             <div className="mt-6 flex flex-wrap justify-between gap-3">
-              <div className="w-[30%]">
-                <div className="flex items-center gap-3">
-                  <H4>Expired Date</H4>
-                  <Chip type={'gray'}>Required</Chip>
+              {md ? (
+                <div className="w-[30%]">
+                  <div className="flex items-center gap-3">
+                    <H4>Expired Date</H4>
+                    <Chip type={'gray'}>Required</Chip>
+                  </div>
+                  <div className="mt-2 max-w-[20rem] text-sm">
+                    Expired Voucher Date
+                    {input.actived_date === '' ? (
+                      <P className="font-bold">
+                        Please input active date first, before input exporired
+                        date
+                      </P>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
                 </div>
-                <div className="mt-2 max-w-[20rem] text-sm">
-                  Expired Voucher Date
-                  {input.actived_date === '' ? (
-                    <P className="font-bold">
-                      Please input active date first, before input exporired
-                      date
-                    </P>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              </div>
+              ) : (
+                <></>
+              )}
               <div className="flex flex-1 items-center">
                 <TextInput
                   type="datetime-local"
@@ -343,15 +377,18 @@ function ManageVouchers() {
                   min={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
                   value={moment(input.expired_date).format('YYYY-MM-DD HH:mm')}
                   full
+                  label={md ? undefined : 'Expired Date'}
                   disabled={input.actived_date === ''}
                   required
                 />
               </div>
             </div>
             <div className="label-text mt-5 block">
-              <H4>Select Voucher Type (Discount Persentage/Fix Price)</H4>
+              <H4 className="font-sans font-normal md:font-heading md:font-semibold">
+                Select Voucher Type (Discount Persentage/Fix Price)
+              </H4>
             </div>
-            <div className="mx-5 flex flex-row flex-wrap gap-2">
+            <div className=" mt-1 flex flex-row flex-wrap gap-4">
               <div>
                 <label className="flex items-center gap-1">
                   <input
@@ -385,15 +422,19 @@ function ManageVouchers() {
             {selected === 'P' ? (
               <>
                 <div className="mt-6 flex flex-wrap justify-between gap-3">
-                  <div className="w-[30%]">
-                    <div className="flex items-center gap-3">
-                      <H4>Discount Persentage</H4>
-                      <Chip type={'gray'}>Required</Chip>
+                  {md ? (
+                    <div className="w-[30%]">
+                      <div className="flex items-center gap-3">
+                        <H4>Discount Percentage</H4>
+                        <Chip type={'gray'}>Required</Chip>
+                      </div>
+                      <P className="mt-2 max-w-[20rem] text-sm">
+                        Please input Discount percentage
+                      </P>
                     </div>
-                    <P className="mt-2 max-w-[20rem] text-sm">
-                      Please input Discount persentage
-                    </P>
-                  </div>
+                  ) : (
+                    <></>
+                  )}
                   <div className="flex flex-1 items-center">
                     <TextInput
                       type="number"
@@ -402,27 +443,34 @@ function ManageVouchers() {
                       placeholder="persentage"
                       value={input.discount_percentage}
                       full
+                      label={md ? undefined : 'Discount Percentage'}
                       maxLength={3}
                       min={1}
                       max={100}
                       required
                     />
-                    <P className="w-20 text-center text-lg font-bold">%</P>
+                    <P className="mt-6 w-20 text-center text-lg font-bold md:mt-0">
+                      %
+                    </P>
                   </div>
                 </div>
               </>
             ) : (
               <>
                 <div className="mt-6 flex flex-wrap justify-between gap-3">
-                  <div className="w-[30%]">
-                    <div className="flex items-center gap-3">
-                      <H4>Discount Fix Price</H4>
-                      <Chip type={'gray'}>Required</Chip>
+                  {md ? (
+                    <div className="w-[30%]">
+                      <div className="flex items-center gap-3">
+                        <H4>Discount Fixed Price</H4>
+                        <Chip type={'gray'}>Required</Chip>
+                      </div>
+                      <P className="mt-2 max-w-[20rem] text-sm">
+                        Please input Discount Fixed Price
+                      </P>
                     </div>
-                    <P className="mt-2 max-w-[20rem] text-sm">
-                      Please input Discount Fix Price
-                    </P>
-                  </div>
+                  ) : (
+                    <></>
+                  )}
                   <div className="flex flex-1 items-center">
                     <TextInput
                       type="number"
@@ -432,6 +480,7 @@ function ManageVouchers() {
                       placeholder="x.xxx"
                       value={input.discount_fix_price}
                       min={1}
+                      label={md ? undefined : 'Discount (Fixed Price)'}
                       full
                       required
                     />
@@ -440,15 +489,19 @@ function ManageVouchers() {
               </>
             )}
             <div className="mt-6 flex flex-wrap justify-between gap-3">
-              <div className="w-[30%]">
-                <div className="flex items-center gap-3">
-                  <H4>Max Discount Price</H4>
-                  <Chip type={'gray'}>Required</Chip>
+              {md ? (
+                <div className="w-[30%]">
+                  <div className="flex items-center gap-3">
+                    <H4>Max Discount Price</H4>
+                    <Chip type={'gray'}>Required</Chip>
+                  </div>
+                  <P className="mt-2 max-w-[20rem] text-sm">
+                    Please input Max Discount
+                  </P>
                 </div>
-                <P className="mt-2 max-w-[20rem] text-sm">
-                  Please input Max Discount
-                </P>
-              </div>
+              ) : (
+                <></>
+              )}
               <div className="flex flex-1 items-center">
                 <TextInput
                   type="number"
@@ -462,6 +515,7 @@ function ManageVouchers() {
                       : input.max_discount_price
                   }
                   disabled={selected === 'F'}
+                  label={md ? undefined : 'Max Discount Price'}
                   full
                   min={1}
                   required
@@ -470,15 +524,19 @@ function ManageVouchers() {
             </div>
 
             <div className="mt-6 flex flex-wrap justify-between gap-3">
-              <div className="w-[30%]">
-                <div className="flex items-center gap-3">
-                  <H4>Min Product Price</H4>
-                  <Chip type={'gray'}>Required</Chip>
+              {md ? (
+                <div className="w-[30%]">
+                  <div className="flex items-center gap-3">
+                    <H4>Min Product Price</H4>
+                    <Chip type={'gray'}>Required</Chip>
+                  </div>
+                  <P className="mt-2 max-w-[20rem] text-sm">
+                    Please input Min Product Price
+                  </P>
                 </div>
-                <P className="mt-2 max-w-[20rem] text-sm">
-                  Please input Min Product Price
-                </P>
-              </div>
+              ) : (
+                <></>
+              )}
               <div className="flex flex-1 items-center">
                 <TextInput
                   type="number"
@@ -489,12 +547,13 @@ function ManageVouchers() {
                   value={input.min_product_price}
                   full
                   min={0}
+                  label={md ? undefined : 'Min Discount Price'}
                   required
                 />
               </div>
             </div>
 
-            <div className="mt-4 flex justify-between gap-2 lg:justify-end">
+            <div className="mt-4 flex gap-2 lg:justify-end">
               <Button
                 type="button"
                 outlined

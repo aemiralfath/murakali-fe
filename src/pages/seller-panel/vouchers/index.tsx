@@ -252,7 +252,7 @@ function Vouchers() {
         <title>Murakali | Voucher Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="voucher">
-        <div className="flex w-full items-center justify-between">
+        <div className="flex flex-col items-baseline justify-between gap-2 px-3 py-5 sm:flex-row sm:px-0">
           <H2>Voucher Shop List</H2>
           <Button
             size={'sm'}
