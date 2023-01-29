@@ -1,33 +1,18 @@
 import { useGetSellerPerformance } from '@/api/seller/performance'
-import { A, Chip, H2, H3, P } from '@/components'
-import { ComposableMap, Geographies, Geography } from 'react-simple-maps'
-import ColorScale from 'color-scales'
+import { A, Button, Chip, H1, H2, H3, P } from '@/components'
 import formatMoney from '@/helper/formatMoney'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
-import moment from 'moment'
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  LabelList,
-  Line,
-  LineChart,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
 import { useGetAllProvince } from '@/api/user/address/extra'
 import Image from 'next/image'
-import { HiOutlineEye } from 'react-icons/hi'
-import { useMediaQuery } from '@/hooks'
+import { HiDownload, HiOutlineEye, HiRefresh } from 'react-icons/hi'
+import DailyOrderLineChart from '@/sections/seller-panel/dashboard/DailyOrderLineChart'
+import DailySalesAreaChart from '@/sections/seller-panel/dashboard/DailySalesAreaChart'
+import TotalRatingAreaChart from '@/sections/seller-panel/dashboard/TotalRatingAreaChart'
+import TotalSalesPieChart from '@/sections/seller-panel/dashboard/TotalSalesPieChart'
+import OrderPerProvinceMap from '@/sections/seller-panel/dashboard/OrderPerProvinceMap'
+import moment from 'moment'
 
 type ProgressBarProps = React.HTMLAttributes<HTMLProgressElement> & {
   label: string
@@ -60,12 +45,21 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 }
 
 const SellerPanelHome = () => {
-  const sm = useMediaQuery('sm')
-  const sellerPerformance = useGetSellerPerformance(false)
+  const [isUpdate, setIsUpdate] = useState(false)
+  const sellerPerformance = useGetSellerPerformance(isUpdate)
+
   const provinces = useGetAllProvince()
 
   const [maxOrder, setMaxOrder] = useState(1)
-  const colorScale = new ColorScale(0, maxOrder, ['#accafa', '#3b82f6'])
+
+  const today = new Date()
+  const currHr = today.getHours()
+
+  useEffect(() => {
+    if (sellerPerformance.isSuccess) {
+      setIsUpdate(false)
+    }
+  }, [sellerPerformance.isSuccess])
 
   useEffect(() => {
     if (sellerPerformance.data?.data.num_order_by_province) {
@@ -85,246 +79,82 @@ const SellerPanelHome = () => {
         <title>Murakali | Seller Panel</title>
       </Head>
       <SellerPanelLayout>
-        <div className="w-full rounded border bg-white p-5">
-          {sellerPerformance.data?.data ? (
-            <>
-              <div>
-                <div className="grid grid-cols-12 gap-4">
-                  <div className="col-span-12 lg:col-span-7 xl:col-span-9">
-                    <H2>Daily Sales</H2>
-                    <div className="h-[24rem] w-full">
-                      <ResponsiveContainer width={'100%'} height={'100%'}>
-                        <LineChart
-                          width={500}
-                          height={300}
-                          data={sellerPerformance.data.data.daily_order
-                            .slice(sm ? 0 : 15)
-                            .map((order) => {
-                              return {
-                                date: moment(order.date).format('D'),
-                                success: order.success_order,
-                                failed: order.failed_order,
-                                month: moment(order.date).format('MMMM'),
-                              }
-                            })}
-                          margin={{
-                            top: 5,
-                            right: 30,
-                            left: 20,
-                            bottom: 5,
-                          }}
-                        >
-                          <CartesianGrid
-                            strokeDasharray="5 5"
-                            stroke="#f2f2f2"
-                          />{' '}
-                          <XAxis xAxisId={0} dataKey="date" fontSize={14} />
-                          <XAxis
-                            xAxisId={1}
-                            dataKey="month"
-                            fontSize={12}
-                            allowDuplicatedCategory={false}
-                          />
-                          <Tooltip />
-                          <Line
-                            type="monotone"
-                            dataKey="success"
-                            stroke="#4ade80"
-                            strokeWidth={'3px'}
-                            activeDot={{ r: 8 }}
-                          />
-                          <Line
-                            type="monotone"
-                            dataKey="failed"
-                            stroke="#ef4444"
-                            strokeWidth={'3px'}
-                          />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </div>
-                    <div className="h-[8rem] w-full">
-                      <ResponsiveContainer width={'100%'} height={'100%'}>
-                        <AreaChart
-                          data={sellerPerformance.data.data.daily_sales
-                            .slice(sm ? 0 : 15)
-                            .map((order) => {
-                              return {
-                                date: moment(order.date).format('D'),
-                                sales: order.total_sales,
-                                month: moment(order.date).format('MMMM'),
-                              }
-                            })}
-                          margin={{
-                            top: 5,
-                            right: 30,
-                            left: 20,
-                            bottom: 5,
-                          }}
-                        >
-                          <defs>
-                            <linearGradient
-                              id="colorSuccess"
-                              x1="0"
-                              y1="0"
-                              x2="0"
-                              y2="1"
-                            >
-                              <stop
-                                offset="5%"
-                                stopColor="#3b82f6"
-                                stopOpacity={0.6}
-                              />
-                              <stop
-                                offset="95%"
-                                stopColor="#3b82f6"
-                                stopOpacity={0}
-                              />
-                            </linearGradient>
-                          </defs>
-                          <XAxis xAxisId={0} dataKey="date" fontSize={14} />
-
-                          <Tooltip />
-                          <Area
-                            type="monotone"
-                            dataKey="sales"
-                            stroke="#3b82f6"
-                            strokeWidth={'2px'}
-                            fillOpacity={1}
-                            fill={'url(#colorSuccess)'}
-                          />
-                        </AreaChart>
-                      </ResponsiveContainer>
-                    </div>
+        <div className="flex items-baseline justify-between px-3 py-5 sm:px-0">
+          <H1>
+            Good{' '}
+            {currHr < 12 ? 'Morning' : currHr < 18 ? 'Afternoon' : 'Evening'}!
+          </H1>
+        </div>
+        <div className="mt-4 w-full rounded border bg-white p-5">
+          <div>
+            <div className="grid grid-cols-12 gap-4">
+              <div className="col-span-12 lg:col-span-7 xl:col-span-9">
+                <H2>Daily Order</H2>
+                <div className="h-[24rem] w-full">
+                  {sellerPerformance.isSuccess ? (
+                    <DailyOrderLineChart
+                      dailyOrder={sellerPerformance.data.data.daily_order}
+                    />
+                  ) : sellerPerformance.isLoading ? (
+                    <div className="h-full w-full animate-pulse rounded bg-base-300" />
+                  ) : (
+                    <></>
+                  )}
+                </div>
+                <div className="h-[8rem] w-full">
+                  {sellerPerformance.isSuccess ? (
+                    <DailySalesAreaChart
+                      dailySales={sellerPerformance.data.data.daily_sales}
+                    />
+                  ) : sellerPerformance.isLoading ? (
+                    <div className="h-full w-full animate-pulse rounded bg-base-300" />
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              </div>
+              <div className="col-span-12 grid min-h-[32rem] grid-cols-1 grid-rows-2 gap-4 lg:col-span-5 xl:col-span-3">
+                <div className="flex flex-col gap-2">
+                  <H2>Total Rating</H2>
+                  <div className="w-full flex-1 py-2">
+                    {sellerPerformance.isSuccess ? (
+                      <TotalRatingAreaChart
+                        totalRating={sellerPerformance.data.data.total_rating}
+                      />
+                    ) : sellerPerformance.isLoading ? (
+                      <div className="h-full w-full animate-pulse rounded bg-base-300" />
+                    ) : (
+                      <></>
+                    )}
                   </div>
-                  <div className="col-span-12 grid grid-cols-1 grid-rows-2 gap-4 lg:col-span-5 xl:col-span-3">
-                    <div className="flex flex-col gap-2">
-                      <H2>Total Rating</H2>
-                      <div className="w-full flex-1 py-2">
-                        <ResponsiveContainer height={'100%'}>
-                          <BarChart
-                            margin={{
-                              left: -34,
-                            }}
-                            height={100}
-                            layout="vertical"
-                            data={[
-                              {
-                                name: '5',
-                                value:
-                                  sellerPerformance.data.data.total_rating
-                                    .rating_5,
-                              },
-                              {
-                                name: '4',
-                                value:
-                                  sellerPerformance.data.data.total_rating
-                                    .rating_4 * 1,
-                              },
-                              {
-                                name: '3',
-                                value:
-                                  sellerPerformance.data.data.total_rating
-                                    .rating_3,
-                              },
-                              {
-                                name: '2',
-                                value:
-                                  sellerPerformance.data.data.total_rating
-                                    .rating_2,
-                              },
-                              {
-                                name: '1',
-                                value:
-                                  sellerPerformance.data.data.total_rating
-                                    .rating_1,
-                              },
-                            ]}
-                          >
-                            <Tooltip />
-                            <YAxis
-                              dataKey="name"
-                              type="category"
-                              fontSize={12}
-                              axisLine={false}
-                            />
-                            <XAxis type="number" fontSize={12} />
-                            <Bar
-                              dataKey="value"
-                              fill="#fde047"
-                              barSize={20}
-                            ></Bar>
-                          </BarChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </div>
-                    <div className="relative flex flex-col gap-2">
-                      <div className="absolute bottom-0 left-0 flex w-full items-center justify-center gap-2 p-2">
-                        <P className="text-sm">Total (all time): </P>
-                        <P className="text-sm font-semibold">
-                          Rp
-                          {formatMoney(
+                </div>
+                <div className="relative flex flex-col gap-2">
+                  <div className="absolute bottom-0 left-0 flex w-full items-center justify-center gap-2 p-2">
+                    <P className="text-sm">Total (all time): </P>
+                    <P className="text-sm font-semibold">
+                      {sellerPerformance.data?.data
+                        ? `Rp ${formatMoney(
                             sellerPerformance.data.data.total_sales.total_sales
-                          )}
-                        </P>
-                      </div>
-                      <H2>Total Sales</H2>
-                      <div className="w-full flex-1 p-2">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <PieChart
-                            margin={{
-                              top: 0,
-                              right: 0,
-                              bottom: 35,
-                            }}
-                          >
-                            <Pie
-                              dataKey="value"
-                              data={[
-                                {
-                                  name: 'Available',
-                                  value:
-                                    sellerPerformance.data.data.total_sales
-                                      .withdrawable_sum,
-                                },
-                                {
-                                  name: 'Withdrawn',
-                                  value:
-                                    sellerPerformance.data.data.total_sales
-                                      .withdrawn_sum,
-                                },
-                              ]}
-                              cx="50%"
-                              cy="50%"
-                              outerRadius={80}
-                              innerRadius={60}
-                              labelLine={false}
-                            >
-                              <LabelList
-                                dataKey={'value'}
-                                fill={'#000'}
-                                position={'inside'}
-                                formatter={formatMoney}
-                                style={{
-                                  paddingTop: '100px',
-                                  stroke: 'none',
-                                  fontSize: 12,
-                                }}
-                              />
-                              <Cell key="cell-available" fill="#3b82f6" />
-                              <Cell key="cell-withdrawn" fill="#accafa" />
-                            </Pie>
-                            <Tooltip />
-                          </PieChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </div>
+                          )}`
+                        : ''}
+                    </P>
+                  </div>
+                  <H2>Total Sales</H2>
+                  <div className="w-full flex-1 p-2">
+                    {sellerPerformance.isSuccess ? (
+                      <TotalSalesPieChart
+                        totalSales={sellerPerformance.data.data.total_sales}
+                      />
+                    ) : sellerPerformance.isLoading ? (
+                      <div className="h-full w-full animate-pulse rounded bg-base-300" />
+                    ) : (
+                      <></>
+                    )}
                   </div>
                 </div>
               </div>
-            </>
-          ) : (
-            <></>
-          )}
+            </div>
+          </div>
         </div>
         <div className="mt-5 grid grid-cols-8 gap-5">
           <div className="col-span-8 w-full rounded border bg-white p-5 md:col-span-5">
@@ -361,7 +191,7 @@ const SellerPanelHome = () => {
                       }
                     )
                   ) : (
-                    <P className="text-base-300">No Product Yer</P>
+                    <P className="text-base-300">No Product Yet</P>
                   )}
                 </div>
               </div>
@@ -369,70 +199,88 @@ const SellerPanelHome = () => {
               <></>
             )}
           </div>
-          <div className="col-span-8 h-fit w-full rounded border bg-white p-5 md:col-span-3">
-            {sellerPerformance.data?.data ? (
+          <div className="col-span-8 w-full md:col-span-3">
+            <div className="h-fit w-full rounded border bg-white p-5">
               <div>
                 <H3>Order per Province</H3>
-                <ComposableMap
-                  projection="geoMercator"
-                  projectionConfig={{
-                    rotate: [-5.6, -2, 2],
-                    center: [112.4, 1],
-                    scale: 1350,
-                  }}
-                  style={{
-                    aspectRatio: '15/8',
-                    maxHeight: '20rem',
+                <>
+                  {sellerPerformance.isSuccess ? (
+                    <OrderPerProvinceMap
+                      maxOrder={maxOrder}
+                      orders={sellerPerformance.data.data.num_order_by_province}
+                    />
+                  ) : sellerPerformance.isLoading ? (
+                    <div className="aspect-[15/8] h-[20rem] animate-pulse rounded bg-base-300" />
+                  ) : (
+                    <></>
+                  )}
+                  {sellerPerformance.data?.data
+                    ? sellerPerformance.data.data.num_order_by_province
+                        .slice(0, 5)
+                        .map((order) => (
+                          <ProgressBar
+                            key={order.province_id}
+                            label={
+                              provinces.data?.data
+                                ? provinces.data.data.rows[
+                                    order.province_id - 1
+                                  ].province
+                                : `${order.province_id}`
+                            }
+                            value={order.num_orders}
+                            max={maxOrder}
+                          />
+                        ))
+                    : Array(5)
+                        .fill(0)
+                        .map((num, idx) => {
+                          return (
+                            <ProgressBar
+                              key={`${num}-${idx}`}
+                              label={''}
+                              value={num}
+                              max={maxOrder}
+                            />
+                          )
+                        })}
+                </>
+              </div>
+            </div>
+            <div className="mt-4 h-fit w-full rounded border bg-white p-5">
+              <P>Data will be updated every 12 hours</P>
+              <P className="text-sm opacity-60">
+                Last Updated:{' '}
+                {sellerPerformance.data?.data
+                  ? moment(
+                      sellerPerformance.data.data.report_updated_at
+                    ).format('DD MMMM YYYY hh:mm A')
+                  : '-'}
+              </P>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button
+                  outlined
+                  onClick={() => {
+                    setIsUpdate(true)
+                    sellerPerformance.refetch()
                   }}
                 >
-                  <Geographies geography="indonesia.json">
-                    {({ geographies }) =>
-                      geographies.map((geo) => {
-                        const foundIndex =
-                          sellerPerformance.data.data.num_order_by_province.findIndex(
-                            (s) => s.province_id === geo.properties.id
-                          )
-                        return (
-                          <Geography
-                            key={geo.rsmKey}
-                            geography={geo}
-                            fill={colorScale
-                              .getColor(
-                                foundIndex === -1
-                                  ? 0
-                                  : sellerPerformance.data.data
-                                      .num_order_by_province[foundIndex]
-                                      .num_orders
-                              )
-                              .toHexString()}
-                            className={
-                              'transition-all hover:fill-primary-focus'
-                            }
-                          />
-                        )
-                      })
-                    }
-                  </Geographies>
-                </ComposableMap>
-                {sellerPerformance.data.data.num_order_by_province
-                  .slice(0, 5)
-                  .map((order) => (
-                    <ProgressBar
-                      key={order.province_id}
-                      label={
-                        provinces.data?.data
-                          ? provinces.data.data.rows[order.province_id - 1]
-                              .province
-                          : `${order.province_id}`
-                      }
-                      value={order.num_orders}
-                      max={maxOrder}
-                    />
-                  ))}
+                  <HiRefresh /> Update
+                </Button>
+                <a
+                  className="btn-outline btn flex items-center gap-2"
+                  href={`data:text/json;charset=utf-8,${encodeURIComponent(
+                    JSON.stringify(
+                      sellerPerformance.data?.data
+                        ? sellerPerformance.data.data
+                        : {}
+                    )
+                  )}`}
+                  download={'report.json'}
+                >
+                  <HiDownload /> Download
+                </a>
               </div>
-            ) : (
-              <></>
-            )}
+            </div>
           </div>
         </div>
       </SellerPanelLayout>

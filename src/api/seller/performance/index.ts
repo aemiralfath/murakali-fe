@@ -12,7 +12,7 @@ const getSellerPerformance = async (update: boolean) => {
 
 export const useGetSellerPerformance = (update: boolean) => {
   return useQuery({
-    queryKey: ['seller-performance'],
+    queryKey: ['seller-performance', update],
     queryFn: async () => await getSellerPerformance(update),
   })
 }
