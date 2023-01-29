@@ -178,7 +178,9 @@ const SellerPanelHome = () => {
                               height={60}
                             />
                             <div className="flex-1 p-2">
-                              <A className="font-semibold">{product.title}</A>
+                              <A className="font-semibold line-clamp-2">
+                                {product.title}
+                              </A>
                               <P className="flex items-center gap-1 text-xs opacity-60">
                                 <HiOutlineEye /> {product.view_count}
                               </P>
