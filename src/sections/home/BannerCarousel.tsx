@@ -2,7 +2,7 @@ import { Button, P } from '@/components'
 import { useMediaQuery } from '@/hooks'
 import type { BannerData } from '@/types/api/banner'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import style from './carousel.module.css'
 
 const Banner: React.FC<{
@@ -71,9 +71,41 @@ const BannerCarousel: React.FC<{
   banners: BannerData[]
   isLoading?: boolean
 }> = ({ banners, isLoading }) => {
+  const carouselRef = useRef<HTMLDivElement>(null)
+  const [scroll, setScroll] = useState<'none' | 'left' | 'right'>('none')
+
+  useEffect(() => {
+    const carouselContainer = carouselRef.current
+    if (carouselContainer) {
+      if (scroll === 'left') {
+        carouselContainer.scrollLeft -= carouselContainer.clientWidth
+        setScroll('none')
+      }
+      if (scroll === 'right') {
+        carouselContainer.scrollLeft += carouselContainer.clientWidth
+        setScroll('none')
+      }
+    }
+  }, [scroll])
+
+  useEffect(() => {
+    const carouselContainer = carouselRef.current
+    const interval = setInterval(() => {
+      if (
+        carouselContainer.scrollLeft + carouselContainer.clientWidth ===
+        carouselContainer.scrollWidth
+      ) {
+        carouselContainer.scrollLeft = 0
+      } else {
+        setScroll('right')
+      }
+    }, 7000)
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <div className="max-w-full">
-      <div className={style.bannerCarousel}>
+      <div className={style.bannerCarousel} ref={carouselRef}>
         {isLoading ? (
           <>
             <div className="carousel-item relative h-[16rem] w-screen sm:h-[22rem] lg:h-[28rem]">
