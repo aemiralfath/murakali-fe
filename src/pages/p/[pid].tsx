@@ -131,6 +131,20 @@ const ProductPage: NextPage = () => {
     0
   )
 
+  const recommendedProduct = useGetSellerProduct(
+    1,
+    24,
+    '',
+    product.data?.data.products_info.category_name,
+    '',
+    'recommended',
+    'desc',
+    0,
+    0,
+    0,
+    0
+  )
+
   const [variantNamesState, setVariantNames] = useState<string[]>([])
   const [variantTypesState, setVariantTypes] = useState<{
     [key: string]: string[]
@@ -375,7 +389,7 @@ const ProductPage: NextPage = () => {
                         <P className="text-md block max-w-[95%] truncate font-bold text-primary ">
                           {voucher.code}
                         </P>
-                        <div className="flex justify-between">
+                        <div className="flex flex-wrap justify-between">
                           <P className=" text-[12px] text-gray-500 ">
                             Min. Rp. {formatMoney(voucher.min_product_price)}
                           </P>
@@ -416,6 +430,9 @@ const ProductPage: NextPage = () => {
         <Divider />
         <H3>Another Products from Seller</H3>
         <ProductCarousel product={sellerProduct.data?.data.rows} />
+        <Divider />
+        <H3>Recommended Product</H3>
+        <ProductCarousel product={recommendedProduct.data?.data.rows} />
         <Divider />
         <H3>Similiar Products</H3>
         <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
