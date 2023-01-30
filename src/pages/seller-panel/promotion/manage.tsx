@@ -33,6 +33,7 @@ import {
   useUpdatePromotion,
 } from '@/api/seller/promotion'
 import type { AxiosError } from 'axios'
+import { BsTrash } from 'react-icons/bs'
 const ManagePromotionSeller = () => {
   const router = useRouter()
   const { intent, id } = router.query
@@ -51,20 +52,14 @@ const ManagePromotionSeller = () => {
     setInput((prev) => ({ ...prev, [inputName]: value }))
   }
 
-  const [tempDiscountPercentage, setTempDiscountPercentage] = useState<
-    number | null
-  >(null)
-  const [tempDiscountFixPrice, setTempDiscountFixPrice] = useState<
-    number | null
-  >(null)
-  const [tempMinimumProductPrice, setTempMinimumProductPrice] = useState<
-    number | null
-  >(null)
-  const [tempMaxDiscountPrice, setTempMaxDiscountPrice] = useState<
-    number | null
-  >(null)
-  const [tempQuota, setTempQuota] = useState<number | null>(null)
-  const [tempMaxQuantity, setTempMaxQuantity] = useState<number | null>(null)
+  const [tempDiscountPercentage, setTempDiscountPercentage] =
+    useState<number>(0)
+  const [tempDiscountFixPrice, setTempDiscountFixPrice] = useState<number>(0)
+  const [tempMinimumProductPrice, setTempMinimumProductPrice] =
+    useState<number>(0)
+  const [tempMaxDiscountPrice, setTempMaxDiscountPrice] = useState<number>(0)
+  const [tempQuota, setTempQuota] = useState<number>(0)
+  const [tempMaxQuantity, setTempMaxQuantity] = useState<number>(0)
 
   const handleChange = (
     event: React.FormEvent<HTMLInputElement>,
@@ -166,12 +161,12 @@ const ManagePromotionSeller = () => {
       })
       return tempProduct
     })
-    setTempDiscountPercentage(null)
-    setTempDiscountFixPrice(null)
-    setTempMinimumProductPrice(null)
-    setTempMaxDiscountPrice(null)
-    setTempQuota(null)
-    setTempMaxQuantity(null)
+    setTempDiscountPercentage(0)
+    setTempDiscountFixPrice(0)
+    setTempMinimumProductPrice(0)
+    setTempMaxDiscountPrice(0)
+    setTempQuota(0)
+    setTempMaxQuantity(0)
 
     setSelectedProduct(newState)
     toast.success('Value has been set')
@@ -798,6 +793,25 @@ const ManagePromotionSeller = () => {
                             </P>
                           </div>
                         </div>
+                      </div>
+
+                      <div className="flex flex-1 justify-end px-5 align-middle">
+                        <Button
+                          size="sm"
+                          buttonType="ghost"
+                          onClick={() => {
+                            setSelectedProduct(
+                              selectedProduct.filter(
+                                (sp2) => sp2.product_id !== sp.product_id
+                              )
+                            )
+                            setSelectedId(
+                              selectedId.filter((id) => id !== sp.product_id)
+                            )
+                          }}
+                        >
+                          <BsTrash className="h-6 w-6" />
+                        </Button>
                       </div>
                     </div>
 
