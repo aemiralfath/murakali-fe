@@ -138,19 +138,27 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
 
   function handleTransaction() {
     if (postCheckout) {
-      const tempCheckout = postCheckout
       if (validateUUID(selected)) {
-        tempCheckout.card_number = ''
-        tempCheckout.wallet_id = selected
         modalPIN.info({
           title: 'Input PIN',
-          content: <FormPin amount={totalOrder} postCheckout={tempCheckout} />,
+          content: (
+            <FormPin
+              amount={totalOrder}
+              postCheckout={{
+                ...postCheckout,
+                card_number: '',
+                wallet_id: selected,
+              }}
+            />
+          ),
           closeButton: false,
         })
       } else {
-        tempCheckout.wallet_id = ''
-        tempCheckout.card_number = selected
-        createTransaction.mutate(tempCheckout)
+        createTransaction.mutate({
+          ...postCheckout,
+          wallet_id: '',
+          card_number: selected,
+        })
       }
     } else if (transaction) {
       if (transaction.card_number === parseInt(selected)) {
