@@ -44,7 +44,7 @@ function ManageVouchers() {
     if (sellerVoucher.isSuccess) {
       if (typeManage === 'update') {
         setInput({
-          code: (sellerVoucher.data?.data?.code).replace(SellerName, ''),
+          code: sellerVoucher.data?.data?.code,
           quota: sellerVoucher.data?.data?.quota,
           actived_date: moment(sellerVoucher.data?.data?.actived_date).format(
             'YYYY-MM-DD HH:mm'
@@ -98,7 +98,9 @@ function ManageVouchers() {
   useEffect(() => {
     if (useSellerDetailInformation.isSuccess) {
       setSellerName(
-        (useSellerDetailInformation.data?.data?.name).replace(' ', '-') + '-'
+        (useSellerDetailInformation.data?.data?.name)
+          .replace(/\s/g, '')
+          .toUpperCase() + '-'
       )
     }
   }, [useSellerDetailInformation.isSuccess])
@@ -169,7 +171,7 @@ function ManageVouchers() {
     event.preventDefault()
     const letterNumber = /^[0-9a-zA-Z]+$/
 
-    if (!input.code.match(letterNumber)) {
+    if (!input.code.match(letterNumber) && !edit) {
       toast.error('input code must alphabet')
       return
     }
@@ -261,9 +263,14 @@ function ManageVouchers() {
                 <></>
               )}
               <div className="flex flex-1 items-center">
-                <P className="mt-6 mr-1 w-36 whitespace-nowrap font-bold md:mt-0">
-                  {SellerName}
-                </P>
+                {edit ? (
+                  <></>
+                ) : (
+                  <>
+                    <P className="mr-2 w-fit font-bold">{SellerName}</P>
+                  </>
+                )}
+
                 <TextInput
                   type="text"
                   name="code"
@@ -297,6 +304,7 @@ function ManageVouchers() {
                   placeholder="quota"
                   onChange={handleChange}
                   value={input.quota}
+                  maxLength={8}
                   full
                   label={md ? undefined : 'Quota'}
                   required
@@ -328,7 +336,13 @@ function ManageVouchers() {
                       ? ''
                       : moment(input.expired_date).format('YYYY-MM-DD HH:mm')
                   }
-                  min={moment(Date.now()).format('YYYY-MM-DD HH:mm')}
+                  min={
+                    !duplicate
+                      ? moment(Date.now()).format('YYYY-MM-DD HH:mm')
+                      : moment(sellerVoucher.data?.data?.actived_date).format(
+                          'YYYY-MM-DD HH:mm'
+                        )
+                  }
                   value={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
                   label={md ? undefined : 'Active Date'}
                   full

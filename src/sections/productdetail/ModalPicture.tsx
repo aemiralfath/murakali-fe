@@ -1,7 +1,8 @@
 import { Dialog, Transition } from '@headlessui/react'
 
 import React, { Fragment, useEffect, useState } from 'react'
-import Zoom from 'react-img-zoom'
+import Image from 'next/image'
+
 interface ModalPictureProps {
   isOpen: boolean
 
@@ -16,11 +17,11 @@ const ModalPicture: React.FC<ModalPictureProps> = ({
   productTitle,
   closeModal,
 }) => {
-  const [imageSize, setImageSize] = useState(800)
+  const [imageSize, setImageSize] = useState(700)
   useEffect(() => {
     window.addEventListener('resize', () => {
       if (window.innerWidth >= 500) {
-        setImageSize(800)
+        setImageSize(700)
       } else {
         setImageSize(300)
       }
@@ -54,12 +55,12 @@ const ModalPicture: React.FC<ModalPictureProps> = ({
             >
               <Dialog.Panel className=" h-full w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white p-1 text-left align-middle shadow-xl transition-all">
                 <div className="m-1 flex items-center justify-center ">
-                  <Zoom
-                    img={productImage}
-                    zoomScale={1.5}
+                  <Image
                     width={imageSize}
                     height={imageSize}
                     alt={productTitle}
+                    src={productImage}
+                    loading="lazy"
                     onError={({ currentTarget }) => {
                       currentTarget.onerror = null
                       currentTarget.src = '/asset/no-image.png'

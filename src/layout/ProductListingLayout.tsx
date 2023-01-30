@@ -1,5 +1,5 @@
 import { useGetAllProvince } from '@/api/user/address/extra'
-import { A, Divider, H4, P, PaginationNav } from '@/components'
+import { A, Button, Divider, H4, P, PaginationNav } from '@/components'
 import LocationFilter from '@/sections/productslisting/LocationFilter'
 import React, { useEffect, useState } from 'react'
 import { HiArrowDown, HiArrowUp, HiFilter, HiX } from 'react-icons/hi'
@@ -19,6 +19,7 @@ import type { SortBy } from '@/types/helper/sort'
 import type { BriefProduct } from '@/types/api/product'
 import { useGetAllCategory } from '@/api/category'
 import { useRouter } from 'next/router'
+import type { CategoryData } from '@/types/api/category'
 
 const defaultShownProvince = [
   'DKI Jakarta',
@@ -28,21 +29,28 @@ const defaultShownProvince = [
   'Sumatera Selatan',
 ]
 
-const FilterChip: React.FC<{ value: string; onClose: () => void }> = ({
-  value,
-  onClose,
-}) => {
+const FilterChip: React.FC<{
+  value: string
+  onClose: () => void
+  isCategoryPage?: boolean
+}> = ({ value, onClose, isCategoryPage }) => {
   return (
     <div className=" flex items-center gap-1 rounded-full bg-primary bg-opacity-10 py-1 pl-2 pr-1 font-medium text-primary-focus">
       {value}
-      <button
-        className="flex aspect-square h-[1.5rem] items-center justify-center rounded-full border border-white bg-primary text-xs text-white"
-        onClick={() => {
-          onClose()
-        }}
-      >
-        <HiX />
-      </button>
+      {!isCategoryPage ? (
+        <>
+          <button
+            className="flex aspect-square h-[1.5rem] items-center justify-center rounded-full border border-white bg-primary text-xs text-white"
+            onClick={() => {
+              onClose()
+            }}
+          >
+            <HiX />
+          </button>
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   )
 }
@@ -55,6 +63,7 @@ const ButtonSortData = [
 ]
 
 const useProductListing = () => {
+  const [filterKeyword, setFilterKeyword] = useState<string>('')
   const [sortBy, setSortBy] = useState<SortBy>({ sort_by: '', sort: '' })
 
   const [filterLocation, setFilterLocation] = useState<ProvinceDetail[]>([])
@@ -65,6 +74,8 @@ const useProductListing = () => {
   const [page, setPage] = useState(1)
 
   return {
+    filterKeyword,
+    setFilterKeyword,
     sortBy,
     setSortBy,
     filterLocation,
@@ -86,6 +97,7 @@ type ProductListingLayoutProps = LoadingDataWrapper<BriefProduct[]> & {
   controller: ProductListingHook
   totalPage?: number
   noCategory?: boolean
+  isCategoryPage?: boolean
 }
 
 const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
@@ -94,6 +106,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   controller,
   totalPage,
   noCategory,
+  isCategoryPage,
 }) => {
   const {
     sortBy,
@@ -114,27 +127,12 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   const allProvince = useGetAllProvince()
   const [shownProvince, setShownProvince] = useState(defaultShownProvince)
   const [openMenu, setOpenMenu] = useState(false)
-  const [categoryName, setCategoryName] = useState<string[]>([])
+  const [categoryList, setCategoryList] = useState<CategoryData[]>([])
   const useCategory = useGetAllCategory()
-
-  const router = useRouter()
-  const { catName } = router.query
-
-  useEffect(() => {
-    if (catName === undefined) {
-      setFilterCategory('')
-    } else {
-      setFilterCategory(String(catName))
-    }
-  }, [catName])
 
   useEffect(() => {
     if (useCategory.isSuccess) {
-      const temp: string[] = useCategory.data.data.map(
-        (category) => category.name
-      )
-
-      setCategoryName(temp)
+      setCategoryList(useCategory.data?.data)
     }
   }, [useCategory.isSuccess])
 
@@ -148,9 +146,21 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
         leave="transition ease-in duration-75"
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
-        className="absolute origin-top-left lg:relative"
+        className="absolute z-50 origin-top-left lg:relative"
       >
-        <div className="absolute z-40 flex w-[14rem] flex-col gap-3 rounded border bg-white py-2 px-3 shadow-xl lg:relative lg:z-0 lg:shadow-none">
+        <div className="absoute lz-40 flex w-[14rem] flex-col gap-3 rounded border bg-white py-2 px-3 shadow-xl lg:relative lg:z-0 lg:shadow-none">
+          {openMenu ? (
+            <Button
+              buttonType={'ghost'}
+              className={'flex lg:hidden '}
+              onClick={() => setOpenMenu(false)}
+            >
+              Close
+            </Button>
+          ) : (
+            <></>
+          )}
+
           <LocationFilter
             provinces={allProvince}
             defaultShownProvince={defaultShownProvince}
@@ -173,19 +183,28 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
               <Divider />
 
               <CategoryFilter
-                categories={categoryName}
+                categories={categoryList}
                 filterCategory={filterCategory}
                 setFilterCategory={setFilterCategory}
               />
             </>
           )}
+          <Divider />
+          <button
+            className="flex items-center gap-2 font-medium text-primary"
+            onClick={() => {
+              setFilterLocation([])
+              setFilterPrice(undefined)
+              setFilterRating(-1)
+              setFilterCategory('')
+            }}
+          >
+            <HiFilter className="text-xl" />
+            <span>Clear Filter</span>
+          </button>
         </div>
-        <div
-          className="absolute h-screen w-screen"
-          onClick={() => setOpenMenu(false)}
-        />
       </Transition>
-      <div className="flex flex-1 flex-col gap-3">
+      <div className="flex flex-1 flex-col gap-3 bg-white">
         <div className="flex w-full items-center justify-between rounded border py-2 px-3">
           <div className="flex items-center gap-2">
             <H4>Sort</H4>
@@ -310,14 +329,18 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                       ) : (
                         <></>
                       )}
-
-                      <FilterChip
-                        key={`category-${filterCategory}`}
-                        value={filterCategory}
-                        onClose={() => {
-                          setFilterCategory('')
-                        }}
-                      />
+                      {filterCategory != '' ? (
+                        <FilterChip
+                          isCategoryPage={isCategoryPage}
+                          key={`category-${filterCategory}`}
+                          value={filterCategory}
+                          onClose={() => {
+                            setFilterCategory('')
+                          }}
+                        />
+                      ) : (
+                        <></>
+                      )}
                     </>
                   )}
                 </div>

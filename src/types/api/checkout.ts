@@ -1,4 +1,5 @@
 export interface PostCheckout {
+  address_id: string
   wallet_id: string
   card_number: string
   voucher_marketplace_id: string

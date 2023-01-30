@@ -1,6 +1,8 @@
-const bannerData = [
+import type { BannerData } from '@/types/api/banner'
+
+const bannerData: BannerData[] = [
   {
-    id: 1,
+    id: '1',
     title: '12.12 - 50% Off',
     content:
       'lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet',
@@ -10,7 +12,7 @@ const bannerData = [
     is_active: true,
   },
   {
-    id: 2,
+    id: '2',
     title: 'Free Delivery',
     content:
       'lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet',

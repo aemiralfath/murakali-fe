@@ -35,6 +35,27 @@ function Wallet() {
             <div className="flex justify-center">
               <Spinner color="gray" />
             </div>
+          ) : userWallet.isError ? (
+            <div className="flex flex-col items-center justify-center">
+              <P className="text-center font-bold text-gray-500">
+                You Dont Have Wallet, Click Button Bellow and input your pin to
+                activated wallet
+              </P>
+              <div className="flex justify-around py-4">
+                <Button
+                  buttonType="primary"
+                  onClick={() => {
+                    modal.edit({
+                      title: 'Activate Wallet',
+                      content: <FormPINWallet createPin={true} />,
+                      closeButton: false,
+                    })
+                  }}
+                >
+                  <HiStatusOnline /> Active Wallet
+                </Button>
+              </div>
+            </div>
           ) : userWallet.data?.data ? (
             <>
               {' '}
@@ -76,7 +97,7 @@ function Wallet() {
               <hr></hr>
               <div className="flex justify-around py-4">
                 <Button
-                  wide
+                  className="w-fit sm:w-full"
                   buttonType="primary"
                   onClick={() => {
                     modal.edit({
@@ -90,31 +111,6 @@ function Wallet() {
                 </Button>
               </div>
             </>
-          ) : (
-            <></>
-          )}
-
-          {userWallet.isError ? (
-            <div className="flex flex-col items-center justify-center">
-              <P className="text-center font-bold text-gray-500">
-                You Dont Have Wallet, Click Button Bellow and input your pin to
-                activated wallet
-              </P>
-              <div className="flex justify-around py-4">
-                <Button
-                  buttonType="primary"
-                  onClick={() => {
-                    modal.edit({
-                      title: 'Activate Wallet',
-                      content: <FormPINWallet createPin={true} />,
-                      closeButton: false,
-                    })
-                  }}
-                >
-                  <HiStatusOnline /> Active Wallet
-                </Button>
-              </div>
-            </div>
           ) : (
             <></>
           )}

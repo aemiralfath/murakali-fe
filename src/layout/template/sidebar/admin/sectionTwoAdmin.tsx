@@ -2,9 +2,9 @@ import cx from '@/helper/cx'
 
 import { useRouter } from 'next/router'
 import React from 'react'
-import { HiTag } from 'react-icons/hi'
+import { HiTag, HiBookmark, HiOutlineAnnotation } from 'react-icons/hi'
 
-export type ValidPage = 'voucher' | 'refund'
+export type ValidPage = 'voucher' | 'category' | 'refund' | 'banner'
 
 interface AdminSideBarProps {
   selectedPage: ValidPage
@@ -33,9 +33,7 @@ const SideBarMenu: React.FC<SideBarMenuProps> = ({
           : 'hover:rounded-r-full hover:bg-white hover:font-semibold hover:text-primary'
       )}
       onClick={() => {
-        if (!active) {
-          router.push(`/seller-panel/${link}`)
-        }
+        router.push(`/admin/${link}`)
       }}
     >
       <div className="flex-column flex items-center gap-x-2 text-left text-lg">
@@ -57,10 +55,22 @@ const SectionTwoSideBarAdmin: React.FC<AdminSideBarProps> = ({
       active: selectedPage === 'voucher',
     },
     {
+      link: 'categories',
+      title: 'Category',
+      icon: <HiBookmark />,
+      active: selectedPage === 'category',
+    },
+    {
       link: 'refund',
       title: 'Refund',
       icon: <HiTag />,
       active: selectedPage === 'refund',
+    },
+    {
+      link: 'banner',
+      title: 'Banner',
+      icon: <HiOutlineAnnotation />,
+      active: selectedPage === 'banner',
     },
   ]
 

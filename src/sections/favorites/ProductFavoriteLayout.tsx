@@ -12,6 +12,7 @@ import type { SortBy } from '@/types/helper/sort'
 import type { BriefProduct } from '@/types/api/product'
 import ProductCard from '@/layout/template/product/ProductCard'
 import { useGetAllCategory } from '@/api/category'
+import type { CategoryData } from '@/types/api/category'
 
 const FilterChip: React.FC<{ value: string; onClose: () => void }> = ({
   value,
@@ -82,16 +83,13 @@ const ProductFavoriteLayout: React.FC<ProductFavoriteLayoutProps> = ({
 
   const [openMenu, setOpenMenu] = useState(false)
 
-  const [categoryName, setCategoryName] = useState<string[]>([])
+  const [categoryList, setCategoryList] = useState<CategoryData[]>([])
 
   const useCategory = useGetAllCategory()
 
   useEffect(() => {
     if (useCategory.isSuccess) {
-      const temp: string[] = useCategory.data.data.map(
-        (category) => category.name
-      )
-      setCategoryName(temp)
+      setCategoryList(useCategory.data?.data)
     }
   }, [useCategory.isSuccess])
 
@@ -109,7 +107,7 @@ const ProductFavoriteLayout: React.FC<ProductFavoriteLayoutProps> = ({
       >
         <div className="absolute z-40 flex w-[14rem] flex-col gap-3 rounded border bg-white py-2 px-3 shadow-xl lg:relative lg:z-0 lg:shadow-none">
           <CategoryFilter
-            categories={categoryName}
+            categories={categoryList}
             filterCategory={filterCategory}
             setFilterCategory={setFilterCategory}
           />

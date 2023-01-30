@@ -36,6 +36,7 @@ const Products = () => {
     { name: 'price', sort_by: 'min_price' },
     { name: 'sold', sort_by: 'unit_sold' },
     { name: 'view', sort_by: 'view_count' },
+    { name: 'status', sort_by: 'listed_status' },
   ]
 
   const modal = useModal()
@@ -400,7 +401,7 @@ const Products = () => {
           {selectedId.length > 0 ? (
             <div className="mb-3 flex items-center gap-2">
               <span>Selected {selectedId.length} products</span>
-              <div className="dropdown-bottom dropdown">
+              <div className="dropdown dropdown-bottom">
                 <label
                   tabIndex={0}
                   className="btn-outline btn-ghost btn-xs btn flex cursor-pointer items-center gap-1"
@@ -444,7 +445,7 @@ const Products = () => {
                     {
                       colName: 'Select',
                       component: (
-                        <div className="dropdown-bottom dropdown">
+                        <div className="dropdown dropdown-bottom">
                           <label tabIndex={0} className="cursor-pointer">
                             <HiChevronDown />
                           </label>

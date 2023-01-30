@@ -3,6 +3,7 @@ import ProductListingLayout, {
   useProductListing,
 } from '@/layout/ProductListingLayout'
 import { Navbar } from '@/layout/template'
+import Footer from '@/layout/template/footer'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import type { ProductQuery } from '@/types/api/product'
 import type { NextPage } from 'next'
@@ -145,7 +146,7 @@ const FilterCategoryName: NextPage = () => {
         <meta name="description" content="Murakali E-Commerce Application" />
       </Head>
       <Navbar />
-      <TitlePageExtend title="Category" />
+      <TitlePageExtend title={categoryState} />
       <div className="container mx-auto mt-3">
         {SearchProductList.isLoading ? (
           <ProductListingLayout controller={controller} isLoading={true} />
@@ -154,12 +155,14 @@ const FilterCategoryName: NextPage = () => {
             controller={controller}
             isLoading={false}
             data={SearchProductList.data.data.rows}
+            isCategoryPage={true}
             totalPage={SearchProductList.data.data.total_pages}
           />
         ) : (
           <div>handle error</div>
         )}
       </div>
+      <Footer />
     </>
   )
 }

@@ -473,7 +473,7 @@ const ProductVariants: React.FC<{
                   <TextInput
                     inputSize="sm"
                     full
-                    placeholder="Weight"
+                    placeholder="Weight (grams)"
                     value={tempChangeWeight}
                     onChange={(e) => {
                       const parsed = parseInt(e.target.value)
@@ -599,7 +599,7 @@ const ProductVariants: React.FC<{
                                 }}
                               />
                               <TextInput
-                                label="Weight"
+                                label="Weight (grams)"
                                 value={
                                   productDetailData[getKey(vname1, vname2)]
                                     ?.weight
@@ -701,7 +701,7 @@ const ProductVariants: React.FC<{
                         }}
                       />
                       <TextInput
-                        label="Weight"
+                        label="Weight (grams)"
                         value={productDetailData[getKey(vname)]?.weight}
                         onChange={(e) => {
                           const parsed = parseInt(e.target.value)

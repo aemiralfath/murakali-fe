@@ -1,4 +1,4 @@
-import { Button, H3 } from '@/components'
+import { Button, H3, P } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import { useModal } from '@/hooks'
 import type { PostCheckout } from '@/types/api/checkout'
@@ -30,7 +30,9 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
 
   const [deliveryFee, setDeliveryFee] = useState(0)
   const [voucherShopTotal, setVoucherShopTotal] = useState(0)
-
+  const [shippingAddressEmptyOrNot, setShippingAddressEmptyOrNot] =
+    useState<boolean>(true)
+  const [productEmpty, setProductsEmpty] = useState<boolean>(false)
   function handleCheckout() {
     modal.edit({
       title: 'Choose Payment Option',
@@ -60,6 +62,23 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
 
       setDeliveryFee(tempDeliveryFee)
       setVoucherShopTotal(tempVoucherShopPrice)
+    }
+  }, [postCheckout])
+
+  useEffect(() => {
+    if (postCheckout) {
+      postCheckout.cart_items.forEach(function (shop) {
+        if (!shop.courier_id) {
+          setShippingAddressEmptyOrNot(true)
+          return
+        }
+        if (shop.product_details.length <= 0) {
+          setProductsEmpty(true)
+          return
+        }
+        setShippingAddressEmptyOrNot(false)
+        setProductsEmpty(false)
+      })
     }
   }, [postCheckout])
   return (
@@ -112,9 +131,25 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
           </div>
         </div>
 
-        <Button buttonType="primary" onClick={handleCheckout}>
+        <Button
+          buttonType="primary"
+          onClick={handleCheckout}
+          disabled={shippingAddressEmptyOrNot || productEmpty}
+        >
           Choose Payment Option
         </Button>
+        {shippingAddressEmptyOrNot ? (
+          <P className="-mt-2 text-center text-sm text-error">
+            Please Choose Shipping Option First
+          </P>
+        ) : (
+          <></>
+        )}
+        {productEmpty ? (
+          <P className="-mt-2 text-center text-sm text-error">Product Empty</P>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   )
