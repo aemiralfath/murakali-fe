@@ -59,6 +59,7 @@ function Checkout() {
   }
 
   const [checkoutItems, setCheckoutItems] = useState<PostCheckout>()
+
   useEffect(() => {
     if (cartList.data?.data.rows && idShops) {
       const tempCheckoutItem: CartPostCheckout[] = cartList.data.data.rows
@@ -145,7 +146,7 @@ function Checkout() {
         cart_items: checkoutItems.cart_items,
       })
     }
-  }, [voucher, checkoutItems, addresInfo])
+  }, [voucher, addresInfo])
 
   useEffect(() => {
     if (defaultAddress.isSuccess) {
