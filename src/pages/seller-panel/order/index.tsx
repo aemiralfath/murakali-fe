@@ -139,6 +139,23 @@ function ListOrderDeliveryService() {
                       Withdraw Balance
                     </Button>
                   </>
+                ) : data.order_status === 6 ? (
+                  <>
+                    <Button
+                      size="sm"
+                      buttonType="ghost"
+                      outlined
+                      className="text-gray-500"
+                      onClick={() => {
+                        router.push(
+                          '/seller-panel/order/refund-thread?id=' +
+                            data.order_id
+                        )
+                      }}
+                    >
+                      Refund Thread
+                    </Button>
+                  </>
                 ) : (
                   <></>
                 )}
