@@ -27,7 +27,6 @@ import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
 import { useGetHoverCart } from '@/api/user/cart'
 import formatMoney from '@/helper/formatMoney'
-import { useGetUserProfile } from '@/api/user/profile'
 
 const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
   cart,
