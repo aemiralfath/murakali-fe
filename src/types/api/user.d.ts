@@ -1,0 +1,50 @@
+export interface UserData {
+  user: UserDetail
+}
+
+export interface UserDetail {
+  id: string
+  email: string
+  full_name: string
+  user_name: string
+  phone_number: string
+  gender: 'M' | 'F'
+  birth_date: string
+  photo_url: string
+  role: number
+}
+
+export interface UserProfilePhotoEditRequest {
+  photo: File | undefined
+}
+
+export interface IUserResponse {
+  message: string
+  data: IUserData
+}
+export interface IUserData {
+  user: IUserDetail
+}
+export interface IUserDetail {
+  id: string
+  email: string
+  fullname: string
+  username: string
+  phone_no: string
+  gender: string
+  birth_date: string
+  photo_url: string
+  role: number
+}
+
+export interface IUserUploadPhotoProfile {
+  photo_url: File | undefined
+}
+
+export interface Jwt {
+  id: string
+  role_id: number
+  iss: string
+  exp: number
+  iat: number
+}

@@ -1,0 +1,72 @@
+const orderStatusData = [
+  {
+    id: '1',
+    name: 'Waiting for Payment',
+  },
+  {
+    id: '2',
+    name: 'Waiting for Seller Confirmation',
+  },
+  {
+    id: '3',
+    name: 'On Process',
+  },
+  {
+    id: '4',
+    name: 'On Delivery',
+  },
+  {
+    id: '5',
+    name: 'Delivered',
+  },
+  {
+    id: '6',
+    name: 'Received',
+  },
+  {
+    id: '7',
+    name: 'Completed',
+  },
+  {
+    id: '8',
+    name: 'Canceled',
+  },
+  {
+    id: '9',
+    name: 'Refunded',
+  },
+]
+
+const sellerOrderStatusData = [
+  {
+    id: 1,
+    name: 'Waiting for Payment',
+  },
+  {
+    id: 2,
+    name: 'Waiting for Seller Confirmation',
+  },
+  {
+    id: 3,
+    name: 'On Process',
+  },
+  {
+    id: 4,
+    name: 'On Delivery',
+  },
+  {
+    id: 5,
+    name: 'Delivered',
+  },
+  {
+    id: 6,
+    name: 'Received',
+  },
+  {
+    id: 7,
+    name: 'Completed',
+  },
+]
+
+export default orderStatusData
+export { sellerOrderStatusData }
