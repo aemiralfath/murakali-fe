@@ -209,7 +209,11 @@ function VoucherDetail() {
 
           <div className="mt-10 flex max-w-full flex-col gap-3 overflow-auto">
             <H4>
-              Order Using Voucher {sellerVoucher.data?.data?.code} History
+              Order Using Voucher{' '}
+              <span className="font-mono font-light">
+                &quot;{sellerVoucher.data?.data?.code}&quot;
+              </span>{' '}
+              History
             </H4>
             <div>
               {sellerOrders.isLoading ? (

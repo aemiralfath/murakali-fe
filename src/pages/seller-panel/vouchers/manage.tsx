@@ -91,14 +91,15 @@ function ManageVouchers() {
     expired_date: '',
     discount_percentage: 0,
     discount_fix_price: 0,
-    min_product_price: 0,
+    min_product_price: 1,
     max_discount_price: 0,
   })
 
   useEffect(() => {
     if (useSellerDetailInformation.isSuccess) {
       setSellerName(
-        (useSellerDetailInformation.data?.data?.name)
+        useSellerDetailInformation.data?.data?.name
+          .slice(0, 8)
           .replace(/\s/g, '')
           .toUpperCase() + '-'
       )
@@ -128,7 +129,7 @@ function ManageVouchers() {
         expired_date: '',
         discount_percentage: 0,
         discount_fix_price: 0,
-        min_product_price: 0,
+        min_product_price: 1,
         max_discount_price: 0,
       })
       setDuplicate(false)
@@ -144,7 +145,7 @@ function ManageVouchers() {
         expired_date: '',
         discount_percentage: 0,
         discount_fix_price: 0,
-        min_product_price: 0,
+        min_product_price: 1,
         max_discount_price: 0,
       })
     }
@@ -267,7 +268,9 @@ function ManageVouchers() {
                   <></>
                 ) : (
                   <>
-                    <P className="mr-2 w-fit font-bold">{SellerName}</P>
+                    <P className="mr-2 w-fit font-mono font-semibold">
+                      {SellerName}
+                    </P>
                   </>
                 )}
 
@@ -560,7 +563,7 @@ function ManageVouchers() {
                   placeholder="x.xxx"
                   value={input.min_product_price}
                   full
-                  min={0}
+                  min={1}
                   label={md ? undefined : 'Min Discount Price'}
                   required
                 />
