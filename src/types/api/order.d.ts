@@ -89,5 +89,7 @@ export interface BuyerOrder {
   buyer_phone_number: number | null
   buyer_address: null | AddressDetail
   seller_address: null | AddressDetail
+  is_refund: boolean | null
+  is_withdraw: boolean | null
   detail: BuyerOrderDetail[]
 }

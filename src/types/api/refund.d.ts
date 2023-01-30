@@ -36,8 +36,33 @@ export interface RefundOrderData {
   }
 }
 
+export interface ConversationRefundThread {
+  user_name: string
+  photo_url: string
+  refund_data: RefundOrderData
+  refund_threads: RefundThread[]
+}
+
+export interface RefundThread {
+  id: string
+  refund_id: string
+  user_id: string
+  user_name: string
+  shop_name: string
+  photo_url: string
+  is_seller: boolean
+  is_buyer: boolean
+  text: string
+  created_at: string
+}
+
 export interface CreateRefundUserRequest {
   image: string
   order_id: string
   reason: string
+}
+
+export interface CreateRefundThreadRequest {
+  refund_id: string
+  text: string
 }

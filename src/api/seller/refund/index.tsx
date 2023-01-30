@@ -2,35 +2,34 @@ import { authorizedClient } from '@/api/apiClient'
 import type {
   ConversationRefundThread,
   CreateRefundThreadRequest,
-  CreateRefundUserRequest,
 } from '@/types/api/refund'
 import type { APIResponse } from '@/types/api/response'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const refundKey = 'refund'
 
-const getRefundThread = async (orderID: string) => {
+const getRefundThreadSeller = async (orderID: string) => {
   const response = await authorizedClient.get<
     APIResponse<ConversationRefundThread>
-  >('/user/refund/' + orderID)
+  >('/seller/refund/' + orderID)
   return response.data
 }
 
-export const useGetRefundThread = (orderID: string) => {
+export const useGetRefundThreadSeller = (orderID: string) => {
   return useQuery({
     queryKey: [refundKey, 'orderID: ' + orderID],
-    queryFn: async () => await getRefundThread(orderID),
+    queryFn: async () => await getRefundThreadSeller(orderID),
     enabled: Boolean(orderID),
     refetchOnWindowFocus: true,
   })
 }
 
-export const useCreateRefund = () => {
+export const useCreateRefundThreadSeller = () => {
   const queryClient = useQueryClient()
   return useMutation(
-    async (data: CreateRefundUserRequest) => {
+    async (data: CreateRefundThreadRequest) => {
       return await authorizedClient.post<APIResponse<null>>(
-        '/user/refund',
+        '/seller/refund-thread',
         data
       )
     },
@@ -42,13 +41,36 @@ export const useCreateRefund = () => {
   )
 }
 
-export const useCreateRefundThreadUser = () => {
+export const useRefundAccept = () => {
   const queryClient = useQueryClient()
+
   return useMutation(
-    async (data: CreateRefundThreadRequest) => {
-      return await authorizedClient.post<APIResponse<null>>(
-        '/user/refund-thread',
-        data
+    async (refund_id: string) => {
+      return await authorizedClient.patch<APIResponse<null>>(
+        '/seller/refund-accept',
+        {
+          refund_id,
+        }
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([refundKey])
+      },
+    }
+  )
+}
+
+export const useRefundReject = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation(
+    async (refund_id: string) => {
+      return await authorizedClient.patch<APIResponse<null>>(
+        '/seller/refund-reject',
+        {
+          refund_id,
+        }
       )
     },
     {

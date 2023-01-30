@@ -1,6 +1,6 @@
 import { useGetOrderByID } from '@/api/order'
 import { useCreateRefund } from '@/api/user/refund'
-import { A, Button, Chip, Divider, H1, H3, H4, P, TextArea } from '@/components'
+import { Button, Chip, Divider, H1, H3, H4, P, TextArea } from '@/components'
 import Uploader from '@/components/uploader'
 import formatMoney from '@/helper/formatMoney'
 import { useLoadingModal } from '@/hooks'
@@ -134,11 +134,8 @@ const OrderComplaint = () => {
     if (createRefund.isSuccess) {
       order.refetch()
       if (order.data?.data) {
-        toast.success(
-          `Rp${formatMoney(
-            order.data.data.total_price
-          )} has been sent to Seller!`
-        )
+        toast.success('Submit Complaint order success')
+        router.push('/profile/transaction-history')
       }
     }
   }, [createRefund.isSuccess])
@@ -187,18 +184,7 @@ const OrderComplaint = () => {
             <P className="flex w-full justify-center">Loading</P>
           ) : order.isSuccess ? (
             <>
-              <div className="grid grid-cols-4 justify-center gap-4 rounded border p-4">
-                <div className="flex-auto">
-                  <P className="text-sm">Shop Name</P>
-                  <A
-                    className="font-semibold"
-                    onClick={() => {
-                      router.push('/seller/' + order.data.data.shop_id)
-                    }}
-                  >
-                    {order.data.data.shop_name}
-                  </A>
-                </div>
+              <div className="grid grid-cols-2 justify-center gap-4 rounded border p-4">
                 <div className="flex flex-auto flex-col gap-6">
                   <div className="flex-auto">
                     <P className="text-sm">Resi Number</P>
@@ -285,65 +271,63 @@ const OrderComplaint = () => {
                 </div>
               </div>
 
-              <div className="mt-5 flex flex-col gap-3 rounded border bg-white p-4">
-                <div className="mt-3 flex h-full flex-col rounded border bg-white px-6 pt-6 pb-12 ">
-                  <div className="mt-6 flex gap-3">
-                    <div className="w-[30%]">
-                      <div className="flex items-center gap-3">
-                        <H3>Photo</H3>
+              <div className="mt-3 flex h-full flex-col rounded border bg-white px-6 pt-6 pb-12 ">
+                <div className="mt-6 flex gap-3">
+                  <div className="w-[30%]">
+                    <div className="flex items-center gap-3">
+                      <H3>Photo</H3>
 
-                        <Chip type={'gray'}>Required</Chip>
-                      </div>
-                      <P className="mt-2 max-w-[20rem] text-sm">
-                        Use image formats .jpg, .jpeg, or .png,
-                      </P>
+                      <Chip type={'gray'}>Required</Chip>
                     </div>
-                    <div className="flex gap-3">
-                      <Uploader
-                        id={'thumbnail'}
-                        title={'Thumbnail Photo'}
-                        size="lg"
-                        onChange={(s) => setReasonPhoto(s)}
-                        defaultImage={reasonPhoto}
-                      />
-                    </div>
+                    <P className="mt-2 max-w-[20rem] text-sm">
+                      Use image formats .jpg, .jpeg, or .png,
+                    </P>
                   </div>
-
-                  <div className="mt-6 flex justify-between gap-3">
-                    <div className="w-[30%]">
-                      <div className="flex items-center gap-3">
-                        <H4>Reason</H4>
-                        <Chip type={'gray'}>Required</Chip>
-                      </div>
-                      <P className="mt-2 max-w-[20rem] text-sm">
-                        descript reason for refund
-                      </P>
-                    </div>
-                    <div className="-z-0 flex-1">
-                      <TextArea
-                        rows={4}
-                        full
-                        value={reasonText}
-                        onChange={(e) => setReasonText(e.target.value)}
-                        placeholder={`I received an inappropriate item (product, size, variant)`}
-                      />
-                    </div>
+                  <div className="flex gap-3">
+                    <Uploader
+                      id={'thumbnail'}
+                      title={'Thumbnail Photo'}
+                      size="lg"
+                      onChange={(s) => setReasonPhoto(s)}
+                      defaultImage={reasonPhoto}
+                    />
                   </div>
                 </div>
-                <Divider />
 
-                <div className="mt-6 flex justify-end gap-3">
-                  <Button onClick={handleSubmit} buttonType="primary">
-                    Submit
-                  </Button>
-                  <Button
-                    onClick={() => router.back()}
-                    buttonType="primary"
-                    outlined
-                  >
-                    Cancel
-                  </Button>
+                <div className="mt-6 flex justify-between gap-3">
+                  <div className="w-[30%]">
+                    <div className="flex items-center gap-3">
+                      <H4>Reason</H4>
+                      <Chip type={'gray'}>Required</Chip>
+                    </div>
+                    <P className="mt-2 max-w-[20rem] text-sm">
+                      descript reason for refund
+                    </P>
+                  </div>
+                  <div className="-z-0 flex-1">
+                    <TextArea
+                      rows={4}
+                      full
+                      value={reasonText}
+                      onChange={(e) => setReasonText(e.target.value)}
+                      placeholder={`I received an inappropriate item (product, size, variant)`}
+                    />
+                  </div>
                 </div>
+              </div>
+              <Divider />
+
+              <div className="mt-6 flex justify-end gap-3">
+                <Button onClick={handleSubmit} buttonType="primary">
+                  Submit
+                </Button>
+                <Button
+                  onClick={() => router.back()}
+                  buttonType="primary"
+                  outlined
+                >
+                  Cancel
+                </Button>
               </div>
             </>
           ) : (
