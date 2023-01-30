@@ -18,7 +18,7 @@ import type { ProvinceDetail } from '@/types/api/address'
 import type { SortBy } from '@/types/helper/sort'
 import type { BriefProduct } from '@/types/api/product'
 import { useGetAllCategory } from '@/api/category'
-import { useRouter } from 'next/router'
+
 import type { CategoryData } from '@/types/api/category'
 
 const defaultShownProvince = [
@@ -395,18 +395,6 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
               })
             )}
           </div>
-          {!isLoading && data?.length !== 0 ? (
-            <div className="mt-4 flex w-full justify-center">
-              <PaginationNav
-                total={totalPage ?? 1}
-                page={page}
-                onChange={setPage}
-                size="sm"
-              />
-            </div>
-          ) : (
-            <></>
-          )}
         </div>
       </div>
     </div>
