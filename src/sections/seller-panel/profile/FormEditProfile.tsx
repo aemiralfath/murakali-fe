@@ -2,11 +2,11 @@ import {
   useEditSellerDetailInformation,
   useGetSellerDetailInformation,
 } from '@/api/seller'
-import { useEditUserProfile } from '@/api/user/profile'
+
 import { Button, TextInput } from '@/components'
 import { closeModal } from '@/redux/reducer/modalReducer'
-import { APIResponse } from '@/types/api/response'
-import { AxiosError } from 'axios'
+import type { APIResponse } from '@/types/api/response'
+import type { AxiosError } from 'axios'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
