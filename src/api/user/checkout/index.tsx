@@ -1,4 +1,4 @@
-import { authorizedClient } from '@/api/apiClient'
+import { authorizedClient, unauthorizedClient } from '@/api/apiClient'
 import type { APIResponse, PaginationData } from '@/types/api/response'
 import type { VoucherData } from '@/types/api/voucher'
 
@@ -8,7 +8,7 @@ const voucherShop = 'voucher-shop'
 const voucherMarketplace = 'voucher-marketplace'
 
 const getVoucherShopCheckout = async (id: string) => {
-  const response = await authorizedClient.get<
+  const response = await unauthorizedClient.get<
     APIResponse<PaginationData<VoucherData>>
   >('/cart/voucher/' + id + '?limit=100')
   return response.data

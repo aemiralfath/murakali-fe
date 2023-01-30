@@ -34,6 +34,9 @@ import {
 import { toast } from 'react-hot-toast'
 import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
+import { useGetVoucherShopCheckout } from '@/api/user/checkout'
+import formatMoney from '@/helper/formatMoney'
+import moment from 'moment'
 
 const ProductPage: NextPage = () => {
   const router = useRouter()
@@ -92,6 +95,9 @@ const ProductPage: NextPage = () => {
   }, [addFavorite.isSuccess, deleteFavorite.isSuccess])
 
   const totalReview = useGetTotalReview(pid as string)
+  const voucherShop = useGetVoucherShopCheckout(
+    product.data?.data.products_info.shop_id
+  )
   const seller = useGetSellerInfo(product.data?.data.products_info.shop_id)
   const productImage = useGetProductImagesByProductID(pid as string)
   const modal = useModal()
@@ -119,6 +125,20 @@ const ProductPage: NextPage = () => {
     '',
     '',
     '',
+    0,
+    0,
+    0,
+    0
+  )
+
+  const recommendedProduct = useGetSellerProduct(
+    1,
+    24,
+    '',
+    product.data?.data.products_info.category_name,
+    '',
+    'recommended',
+    'desc',
     0,
     0,
     0,
@@ -235,11 +255,6 @@ const ProductPage: NextPage = () => {
         </>
       </Head>
       <MainLayout>
-        {/* {isLoading ? (
-          <div className="h-[1.25rem] w-[16rem] animate-pulse rounded bg-base-300" />
-        ) : (
-          <Breadcrumbs data={dummyBreadcrumbs} />
-        )} */}
         <div className="grid grid-cols-12">
           <div className="col-span-12 flex flex-col md:flex-row lg:col-span-9">
             {isLoading ? (
@@ -353,6 +368,57 @@ const ProductPage: NextPage = () => {
           </div>
         </div>
         <Divider />
+
+        {voucherShop.isLoading ? (
+          <></>
+        ) : (
+          <>
+            {voucherShop.data?.data.rows.length > 0 ? (
+              <div className="mt-8 lg:mt-0 lg:pl-6 xl:col-span-2">
+                {' '}
+                <H3>Voucher Shop</H3>
+                <div className="flex h-full w-full overflow-x-auto">
+                  {voucherShop.data?.data.rows.map((voucher, idx) => {
+                    return (
+                      <div
+                        key={'voucher' + idx}
+                        className={
+                          'my-2 mx-1 h-20 w-64 rounded-lg border-4 border-solid border-primary py-2 px-5 hover:shadow-lg'
+                        }
+                      >
+                        <P className="text-md block max-w-[95%] truncate font-bold text-primary ">
+                          {voucher.code}
+                        </P>
+                        <div className="flex flex-wrap justify-between">
+                          <P className=" text-[12px] text-gray-500 ">
+                            Min. Rp. {formatMoney(voucher.min_product_price)}
+                          </P>
+                          <P className=" text-[12px] text-gray-500 ">
+                            until{' '}
+                            {moment(voucher.expired_date).format(
+                              'DD MMM YYYY '
+                            )}{' '}
+                          </P>
+                        </div>
+
+                        <P className=" text-[12px] text-gray-500 ">
+                          Quota Left
+                          {' ' + voucher.quota}
+                        </P>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            ) : (
+              <P className="italic text-gray-400">
+                There are no voucher for this product, yet.
+              </P>
+            )}
+          </>
+        )}
+
+        <Divider />
         <div className="">
           <div className="mt-8 lg:mt-0 lg:pl-6 xl:col-span-2">
             <ProductReview
@@ -364,6 +430,9 @@ const ProductPage: NextPage = () => {
         <Divider />
         <H3>Another Products from Seller</H3>
         <ProductCarousel product={sellerProduct.data?.data.rows} />
+        <Divider />
+        <H3>Recommended Product</H3>
+        <ProductCarousel product={recommendedProduct.data?.data.rows} />
         <Divider />
         <H3>Similiar Products</H3>
         <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">

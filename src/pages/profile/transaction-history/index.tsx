@@ -313,31 +313,47 @@ const OrderCard: React.FC<
             <></>
           )}
           {order.order_status === 6 ? (
-            <Button
-              buttonType="primary"
-              outlined
-              isLoading={receiveOrder.isLoading}
-              onClick={() => {
-                modal.info({
-                  title: 'Confirmation',
-                  closeButton: false,
-                  content: (
-                    <ConfirmationModal
-                      msg={`Complete Order & Release Rp${formatMoney(
-                        order.total_price
-                      )} to the Seller?`}
-                      onConfirm={() => {
-                        completeOrder.mutate({
-                          order_id: order.order_id,
-                        })
-                      }}
-                    />
-                  ),
-                })
-              }}
-            >
-              <HiCheck /> Complete Order
-            </Button>
+            <>
+              {order.is_refund === false ? (
+                <Button
+                  buttonType="primary"
+                  outlined
+                  isLoading={receiveOrder.isLoading}
+                  onClick={() => {
+                    modal.info({
+                      title: 'Confirmation',
+                      closeButton: false,
+                      content: (
+                        <ConfirmationModal
+                          msg={`Complete Order & Release Rp${formatMoney(
+                            order.total_price
+                          )} to the Seller?`}
+                          onConfirm={() => {
+                            completeOrder.mutate({
+                              order_id: order.order_id,
+                            })
+                          }}
+                        />
+                      ),
+                    })
+                  }}
+                >
+                  <HiCheck /> Complete Order
+                </Button>
+              ) : (
+                <Button
+                  buttonType="gray"
+                  outlined
+                  isLoading={receiveOrder.isLoading}
+                  className="text-white"
+                  onClick={() => {
+                    router.push('/order/refund-thread?id=' + order.order_id)
+                  }}
+                >
+                  Refund Thread
+                </Button>
+              )}
+            </>
           ) : (
             <></>
           )}
@@ -367,10 +383,37 @@ const OrderCard: React.FC<
           </Button>
           {order.order_status === 6 ? (
             <div className="mt-2 flex items-baseline justify-center gap-1 text-center">
-              <P className="text-xs opacity-50">Or</P>
-              <A className="text-xs opacity-50 hover:opacity-100" underline>
-                File a Complaint
-              </A>
+              {order.is_refund === false ? (
+                <>
+                  <P className="text-xs opacity-50">Or</P>
+                  <A
+                    className="text-xs opacity-50 hover:opacity-100"
+                    underline
+                    onClick={() => {
+                      modal.info({
+                        title: 'Confirmation',
+                        closeButton: false,
+                        content: (
+                          <ConfirmationModal
+                            msg={
+                              'Are you sure Want to Complaint the Order and Refund?'
+                            }
+                            onConfirm={() => {
+                              router.push(
+                                '/order/complaint?id=' + order.order_id
+                              )
+                            }}
+                          />
+                        ),
+                      })
+                    }}
+                  >
+                    File a Complaint
+                  </A>
+                </>
+              ) : (
+                <></>
+              )}
             </div>
           ) : (
             <></>

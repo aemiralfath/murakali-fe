@@ -78,7 +78,7 @@ const ProductCart: React.FC<ProductCartProps> = ({
     }
   }, [input])
   return (
-    <label>
+    <div>
       <div className="z-0 mb-5 rounded-lg border-[1px] border-solid border-gray-300 py-5 px-2 transition-all hover:shadow-xl sm:px-8">
         <div className="flex flex-wrap justify-around gap-3 ">
           <div className="align-center  flex-start flex  justify-between gap-x-4 ">
@@ -280,20 +280,20 @@ const ProductCart: React.FC<ProductCartProps> = ({
           {forCart ? (
             <></>
           ) : (
-            <div className="ml-0 lg:ml-7">
+            <div className="ml-0 mt-3 max-w-sm lg:ml-7">
               <TextInput
                 type="text"
                 name="note"
                 placeholder="please input note"
                 onChange={handleChange}
                 value={input.note}
-                className="w-full"
+                full
               />
             </div>
           )}
         </div>
       </div>
-    </label>
+    </div>
   )
 }
 

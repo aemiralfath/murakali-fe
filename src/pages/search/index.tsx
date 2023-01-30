@@ -8,12 +8,19 @@ import ProductListingLayout, {
 } from '@/layout/ProductListingLayout'
 import { useSearchQueryProduct } from '@/api/product/search'
 import type { ProductQuery } from '@/types/api/product'
+import cx from '@/helper/cx'
+import { useGetAllSellers } from '@/api/seller'
+import SellerLayout from '@/sections/search/SellerLayout'
+import Image from 'next/image'
+import { P } from '@/components'
 
 const SearchPage: NextPage = () => {
   const router = useRouter()
   const { catName, keyword, sort_by, sort } = router.query
 
   const INF = 1000000000
+
+  const [productOrShop, setProductOrShop] = useState<number>(1)
 
   const [queryParam, setQueryParam] = useState<Map<string, string>>(
     new Map<string, string>()
@@ -27,11 +34,9 @@ const SearchPage: NextPage = () => {
     setQueryParam(queryParam)
   }
 
-  // bikin useeffect buat ganti parameter pake router
-
   const [flag, setFlag] = useState(true)
   const [locationState, setLocationState] = useState('')
-  // const [resultFor, setResultFor] = useState('')
+
   const controller = useProductListing()
   const {
     filterKeyword,
@@ -135,22 +140,6 @@ const SearchPage: NextPage = () => {
     setFlag(true)
   }, [keyword])
 
-  // useEffect(() => {}, [filterKeyword])
-
-  // Query params -> mengubah state filter
-  // state berganti -> query params, reload
-
-  // url?keyword='aldaksd'&page=2
-  // 1. Ngecek query params -> kosong atau nggak. Query params, itu kalo di useRouter, itu akan kosong dulu.
-  // const { keyword } = router.params
-  // keyword -> undefined -> ada isinya
-  /* useEffect(() => {
-    if(keyword !== undefined) {
-      setStateFilterKeyword(keyword)
-    }
-  }, [keyword])
-  */
-
   const productQuery: ProductQuery = {
     search: filterKeyword,
     category: filterCategory,
@@ -167,6 +156,9 @@ const SearchPage: NextPage = () => {
   }
 
   const SearchProductList = useSearchQueryProduct(productQuery)
+
+  const [pageShop, setPageShop] = useState<number>(1)
+  const SearchShopList = useGetAllSellers(filterKeyword, pageShop)
 
   useEffect(() => {
     if (flag === true) {
@@ -190,25 +182,8 @@ const SearchPage: NextPage = () => {
         if (num2 > SearchProductList.data.data.total_rows) {
           num2 = SearchProductList.data.data.total_rows
         }
-        // let message = ''
-        // if (keyword === undefined) {
-        //   message = 'Showing all products'
-        // } else {
-        //   message = 'Showing results for "' + filterKeyword + '"'
-        // }
-        // setResultFor(
-        //   num1 +
-        //     ' - ' +
-        //     num2 +
-        //     ' of ' +
-        //     SearchProductList.data.data.total_rows +
-        //     ' ' +
-        //     message
-        // )
       }
-      // else {
-      //   setResultFor('no results for "' + filterKeyword + '"')
-      // }
+
       router.push({
         pathname: `/search`,
         query: stringQuery,
@@ -223,18 +198,77 @@ const SearchPage: NextPage = () => {
         <meta name="description" content="Murakali E-Commerce Application" />
       </Head>
       <MainLayout>
-        {/* {resultFor} */}
-        {SearchProductList.isLoading ? (
-          <ProductListingLayout controller={controller} isLoading={true} />
-        ) : SearchProductList.data.data.rows ? (
-          <ProductListingLayout
-            controller={controller}
-            isLoading={false}
-            data={SearchProductList.data.data.rows}
-            totalPage={SearchProductList.data.data.total_pages}
-          />
+        <div className="my-2 flex h-fit w-full max-w-full justify-center space-x-10 overflow-x-auto overflow-y-hidden whitespace-nowrap border-b-[2px]">
+          <button
+            onClick={() => setProductOrShop(1)}
+            className={cx(
+              'h-full border-b-[3px] transition-all',
+              productOrShop === 1
+                ? 'border-primary font-bold text-primary'
+                : 'border-transparent'
+            )}
+          >
+            Product
+          </button>
+          <button
+            onClick={() => setProductOrShop(2)}
+            className={cx(
+              'h-full border-b-[3px] transition-all',
+              productOrShop === 2
+                ? 'border-primary font-bold text-primary'
+                : 'border-transparent'
+            )}
+          >
+            Shop
+          </button>
+        </div>
+        {productOrShop == 1 ? (
+          <>
+            {' '}
+            {SearchProductList.isLoading ? (
+              <ProductListingLayout controller={controller} isLoading={true} />
+            ) : SearchProductList.data?.data?.rows ? (
+              <ProductListingLayout
+                controller={controller}
+                isLoading={false}
+                data={SearchProductList.data.data.rows}
+                totalPage={SearchProductList.data.data.total_pages}
+              />
+            ) : (
+              <div>handle error</div>
+            )}
+          </>
         ) : (
-          <div>handle error</div>
+          <>
+            {SearchShopList.isLoading ? (
+              <>
+                <SellerLayout isLoading={true} />
+              </>
+            ) : SearchShopList.data?.data?.rows ? (
+              <SellerLayout
+                data={SearchShopList.data?.data?.rows}
+                totalPage={SearchShopList.data.data.total_pages}
+                setPageShop={(page: number) => setPageShop(page)}
+                pageShop={pageShop}
+                isLoading={false}
+              />
+            ) : (
+              <>
+                {' '}
+                <div className="col-span-2 flex w-full flex-col items-center justify-center p-6 sm:col-span-3 md:col-span-4 xl:col-span-6">
+                  <Image
+                    src={'/asset/sorry.svg'}
+                    width={300}
+                    height={300}
+                    alt={'Sorry'}
+                  />
+                  <P className="text-sm italic text-gray-400">
+                    Sorry, shop you requested is not found.
+                  </P>
+                </div>
+              </>
+            )}
+          </>
         )}
       </MainLayout>
     </>

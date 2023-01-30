@@ -1,10 +1,24 @@
 import { authorizedClient, unauthorizedClient } from '@/api/apiClient'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 
-import type { APIResponse } from '@/types/api/response'
+import type { APIResponse, PaginationData } from '@/types/api/response'
 import type { SellerDetailInfomation, SellerInfo } from '@/types/api/seller'
 
 const profileKey = 'sellerinfo'
+
+const getAllSellers = async (search: string, page: number) => {
+  const response = await authorizedClient.get<
+    APIResponse<PaginationData<SellerInfo>>
+  >('/seller/?search=' + search + '&limit=8&page=' + page)
+  return response.data
+}
+
+export const useGetAllSellers = (search: string, page: number) => {
+  return useQuery(
+    [profileKey, 'all', search, page],
+    async () => await getAllSellers(search, page)
+  )
+}
 
 const getSellerInfo = async (shopID: string) => {
   const response = await unauthorizedClient.get<APIResponse<SellerInfo>>(

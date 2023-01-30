@@ -89,7 +89,7 @@ const CategoryTab: React.FC<{
       <>
         {sm ? (
           categories.length > 4 ? (
-            <div className="dropdown dropdown-end dropdown-hover mx-auto w-full">
+            <div className="dropdown-end dropdown dropdown-hover mx-auto w-full">
               <label
                 tabIndex={0}
                 className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
@@ -104,7 +104,7 @@ const CategoryTab: React.FC<{
 
               <ul
                 tabIndex={0}
-                className="dropdown-end dropdown-hover dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
+                className="dropdown-end dropdown-content dropdown-hover menu rounded-box w-52 bg-base-100 p-2 shadow"
               >
                 {categories.slice(3, 999).map((item, index) => {
                   return (
@@ -128,7 +128,7 @@ const CategoryTab: React.FC<{
           )
         ) : (
           <>
-            <div className="dropdown-end dropdown-hover dropdown mx-auto w-full">
+            <div className="dropdown-end dropdown dropdown-hover mx-auto w-full">
               <label
                 tabIndex={0}
                 className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
@@ -328,7 +328,6 @@ function Seller() {
                   </div>
                   <div className="z-10 col-span-4 ml-[30px] flex w-full flex-grow flex-col px-1 sm:w-auto sm:px-3 md:ml-[40px] md:px-5">
                     <H2 className="mb-3 flex flex-col gap-4 font-normal leading-3 md:mb-0 md:flex-row md:leading-normal">
-                      Shop Name
                       <span className="font-extrabold leading-snug text-primary">
                         {sellerProfile.data.data.name}
                       </span>
