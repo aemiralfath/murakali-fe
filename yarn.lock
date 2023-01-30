@@ -262,7 +262,7 @@
 
 "@types/qs@^6.9.7":
   version "6.9.7"
-  resolved "https://npm.shopee.io/@types%2fqs/-/qs-6.9.7.tgz"
+  resolved "https://registry.npmjs.org/@types%2fqs/-/qs-6.9.7.tgz"
   integrity sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==
 
 "@types/react-dom@^18.0.5":
@@ -569,7 +569,7 @@ axe-core@^4.4.3:
 
 axios-retry@^3.4.0:
   version "3.4.0"
-  resolved "https://npm.shopee.io/axios-retry/-/axios-retry-3.4.0.tgz"
+  resolved "https://registry.npmjs.org/axios-retry/-/axios-retry-3.4.0.tgz"
   integrity sha512-VdgaP+gHH4iQYCCNUWF2pcqeciVOdGrBBAYUfTY+wPcO5Ltvp/37MLFNCmJKo7Gj3SHvCSdL8ouI1qLYJN3liA==
   dependencies:
     "@babel/runtime" "^7.15.4"
@@ -1679,7 +1679,7 @@ is-regex@^1.1.4:
 
 is-retry-allowed@^2.2.0:
   version "2.2.0"
-  resolved "https://npm.shopee.io/is-retry-allowed/-/is-retry-allowed-2.2.0.tgz"
+  resolved "https://registry.npmjs.org/is-retry-allowed/-/is-retry-allowed-2.2.0.tgz"
   integrity sha512-XVm7LOeLpTW4jV19QSH38vkswxoLud8sQ57YwJVTPWdiaI9I8keEhGFpBlslyVsgdQy4Opg8QOLb8YRgsyZiQg==
 
 is-shared-array-buffer@^1.0.2:
@@ -2336,7 +2336,7 @@ punycode@^2.1.0:
 
 qs@^6.11.0:
   version "6.11.0"
-  resolved "https://npm.shopee.io/qs/-/qs-6.11.0.tgz"
+  resolved "https://registry.npmjs.org/qs/-/qs-6.11.0.tgz"
   integrity sha512-MvjoMCJwEarSbUYk5O+nmoSzSutSsTwF85zcHPQ9OrlFoZOYIjaqBAJIqIXjptyD5vThxGq52Xu/MaJzRkIk4Q==
   dependencies:
     side-channel "^1.0.4"
@@ -2917,7 +2917,7 @@ uri-js@^4.2.2:
 
 use-immer@^0.8.1:
   version "0.8.1"
-  resolved "https://npm.shopee.io/use-immer/-/use-immer-0.8.1.tgz"
+  resolved "https://registry.npmjs.org/use-immer/-/use-immer-0.8.1.tgz"
   integrity sha512-OfTFf1pL+ICjjcLPn9+ZnaJO/Yg4MBzYZtACEe2mZ/W2A5col28PNUnwowOAaBuOogACOK/37TU17KgsIhUpOw==
 
 use-sync-external-store@1.2.0, use-sync-external-store@^1.0.0, use-sync-external-store@^1.2.0:
