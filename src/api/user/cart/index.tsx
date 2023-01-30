@@ -22,8 +22,13 @@ const getHoverCart = async () => {
   return response.data
 }
 
-export const useGetHoverCart = () => {
-  return useQuery([cartKey, 2], async () => await getHoverCart())
+export const useGetHoverCart = (enabled: boolean) => {
+  return useQuery({
+    queryKey: [cartKey, 2],
+    queryFn: async () => await getHoverCart(),
+    retry: false,
+    enabled: enabled,
+  })
 }
 
 export const useUpdateCart = () => {

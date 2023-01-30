@@ -31,7 +31,7 @@ function Checkout() {
   const cartList = useGetCart()
   const userWallet = useGetUserWallet()
   const userSLP = useGetUserSLP()
-  const defaultAddress = useGetDefaultAddress(true, false)
+  const defaultAddress = useGetDefaultAddress(true, false, true)
 
   const modal = useModal()
   const router = useRouter()

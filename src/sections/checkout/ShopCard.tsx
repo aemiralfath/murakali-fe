@@ -174,11 +174,11 @@ const ShopCard: React.FC<ShopCardProps> = ({
 
             {locationCost.isSuccess ? (
               locationCost.data.data.data.shipping_option.length > 0 ? (
-                locationCost.data.data.data.shipping_option.map(
-                  (shipping, index) => (
-                    <div key={index}>
-                      <Menu.Items className="absolute w-44 origin-top-left  divide-y divide-gray-100 rounded-md bg-white shadow-lg focus:outline-none ">
-                        <div className="p-1">
+                <div>
+                  <Menu.Items className="absolute w-44 origin-top-left  divide-y divide-gray-100 rounded-md bg-white shadow-lg focus:outline-none ">
+                    {locationCost.data.data.data.shipping_option.map(
+                      (shipping, index) => (
+                        <div key={index}>
                           <Menu.Item>
                             {() => (
                               <Button
@@ -212,10 +212,10 @@ const ShopCard: React.FC<ShopCardProps> = ({
                             )}
                           </Menu.Item>
                         </div>
-                      </Menu.Items>
-                    </div>
-                  )
-                )
+                      )
+                    )}
+                  </Menu.Items>
+                </div>
               ) : (
                 <Menu.Items className="absolute h-10 w-44  origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
                   <div className=" p-2">

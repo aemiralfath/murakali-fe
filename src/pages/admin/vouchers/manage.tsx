@@ -228,9 +228,7 @@ function ManageVouchersAdmin() {
                   <H4>Code Voucher</H4>
                   <Chip type={'gray'}>Required</Chip>
                 </div>
-                <P className="mt-2 max-w-[20rem] text-sm">
-                  Code Voucher, code maximum 5 characters
-                </P>
+                <P className="mt-2 max-w-[20rem] text-sm">Code Voucher</P>
               </div>
               <div className="flex flex-1 items-center">
                 <TextInput
@@ -337,7 +335,7 @@ function ManageVouchersAdmin() {
               </div>
             </div>
             <div className="label-text mt-5 block">
-              <H4>Select Voucher Type (Discount Persentage/Fix Price)</H4>
+              <H4>Select Voucher Type (Discount Percentage/Fix Price)</H4>
             </div>
             <div className="mx-5 flex flex-row flex-wrap gap-2">
               <div>
@@ -351,7 +349,7 @@ function ManageVouchersAdmin() {
                     name="Discount"
                     checked={selected === 'P'}
                   />
-                  Persentage
+                  Percentage
                 </label>
               </div>
               <div>
@@ -375,11 +373,11 @@ function ManageVouchersAdmin() {
                 <div className="mt-6 flex flex-wrap justify-between gap-3">
                   <div className="w-[30%]">
                     <div className="flex items-center gap-3">
-                      <H4>Discount Persentage</H4>
+                      <H4>Discount Percentage</H4>
                       <Chip type={'gray'}>Required</Chip>
                     </div>
                     <P className="mt-2 max-w-[20rem] text-sm">
-                      Please input Discount persentage
+                      Please input Discount Percentage
                     </P>
                   </div>
                   <div className="flex flex-1 items-center">
@@ -387,7 +385,7 @@ function ManageVouchersAdmin() {
                       type="number"
                       name="discount_percentage"
                       onChange={handleChange}
-                      placeholder="persentage"
+                      placeholder="percentage"
                       value={input.discount_percentage}
                       full
                       maxLength={3}

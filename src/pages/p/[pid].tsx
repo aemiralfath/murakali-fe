@@ -37,6 +37,7 @@ import type { APIResponse } from '@/types/api/response'
 import { useGetVoucherShopCheckout } from '@/api/user/checkout'
 import formatMoney from '@/helper/formatMoney'
 import moment from 'moment'
+import DeliveryInformation from '@/sections/productdetail/DeliveryInformation'
 
 const ProductPage: NextPage = () => {
   const router = useRouter()
@@ -49,6 +50,7 @@ const ProductPage: NextPage = () => {
   const countFavorite = useCountSpecificFavoriteProduct()
   const [checkFav, setCheckFav] = useState(false)
   const [countFav, setCountFav] = useState(0)
+
   useEffect(() => {
     if (addFavorite.isError) {
       const errmsg = addFavorite.failureReason as AxiosError<APIResponse<null>>
@@ -340,6 +342,19 @@ const ProductPage: NextPage = () => {
                 productInfo={product.data?.data.products_info}
                 totalReview={totalReview.data?.data?.total_rating ?? 0}
               />
+              <div className="mt-4 md:mx-4 xl:col-span-3">
+                {product.isSuccess ? (
+                  <DeliveryInformation
+                    weight={
+                      selectVariant !== undefined ? selectVariant.weight : 0
+                    }
+                    shopID={product.data?.data?.products_info.shop_id}
+                    productID={product.data?.data?.products_info.id}
+                  />
+                ) : (
+                  <></>
+                )}
+              </div>
               <div className="mt-4 md:mx-4 xl:col-span-3">
                 {seller.data?.data && product.data?.data ? (
                   <ProductDescription
