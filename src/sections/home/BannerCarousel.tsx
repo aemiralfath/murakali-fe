@@ -48,13 +48,15 @@ const Banner: React.FC<{
             </div>
 
             <div className="mt-3">
-              <Link href={pageUrl}>
+              <Link
+                href={pageUrl === '' ? '#recommended-product-list' : pageUrl}
+              >
                 <Button
                   buttonType="white"
                   size={lg ? 'md' : 'sm'}
                   className="px-6 text-base-content"
                 >
-                  Shop Now
+                  Click here
                 </Button>
               </Link>
             </div>
