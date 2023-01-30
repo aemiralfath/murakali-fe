@@ -305,7 +305,7 @@ function Vouchers() {
                 voucherStatus === '' ? 'border-primary' : 'border-transparent'
               )}
             >
-              All Order
+              All
             </button>
             {voucherData.map((status, index) => {
               return (
