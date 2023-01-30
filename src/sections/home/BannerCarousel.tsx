@@ -1,4 +1,5 @@
 import { Button, P } from '@/components'
+import bannerData from '@/dummy/bannerData'
 import { useMediaQuery } from '@/hooks'
 import type { BannerData } from '@/types/api/banner'
 import Link from 'next/link'
@@ -86,28 +87,57 @@ const BannerCarousel: React.FC<{
           </>
         ) : (
           <>
-            {banners.map((banner, index) => {
-              return (
-                <>
-                  {banner.is_active ? (
-                    <div
-                      id={`slide${index}`}
-                      className="carousel-item relative h-[16rem] w-full sm:h-[22rem] lg:h-[28rem]"
-                      key={index}
-                    >
-                      <Banner
-                        title={banner.title}
-                        content={banner.content}
-                        imageUrl={banner.image_url}
-                        pageUrl={banner.page_url}
-                      />
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                </>
-              )
-            })}
+            {banners.filter((item) => item.is_active === true) ? (
+              banners
+                .filter((item) => item.is_active === true)
+                .map((banner, index) => {
+                  return (
+                    <>
+                      {banner.is_active ? (
+                        <div
+                          id={`slide${index}`}
+                          className="carousel-item relative h-[16rem] w-full sm:h-[22rem] lg:h-[28rem]"
+                          key={index}
+                        >
+                          <Banner
+                            title={banner.title}
+                            content={banner.content}
+                            imageUrl={banner.image_url}
+                            pageUrl={banner.page_url}
+                          />
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                    </>
+                  )
+                })
+            ) : (
+              <>
+                {bannerData.map((banner, index) => {
+                  return (
+                    <>
+                      {banner.is_active ? (
+                        <div
+                          id={`slide${index}`}
+                          className="carousel-item relative h-[16rem] w-full sm:h-[22rem] lg:h-[28rem]"
+                          key={index}
+                        >
+                          <Banner
+                            title={banner.title}
+                            content={banner.content}
+                            imageUrl={banner.image_url}
+                            pageUrl={banner.page_url}
+                          />
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                    </>
+                  )
+                })}
+              </>
+            )}
           </>
         )}
       </div>

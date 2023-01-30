@@ -27,6 +27,7 @@ import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
 import { useGetHoverCart } from '@/api/user/cart'
 import formatMoney from '@/helper/formatMoney'
+import { useGetUserProfile } from '@/api/user/profile'
 
 const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
   cart,
@@ -241,7 +242,7 @@ const Navbar: React.FC = () => {
   const { user, isLoading } = useUser()
 
   const sm = useMediaQuery('sm')
-  const cart = useGetHoverCart()
+  const cart = useGetHoverCart(Boolean(user?.id))
   const setIsLoading = useLoadingModal()
   const setSearchKeyword = useSearchKeyword()
   const router = useRouter()
