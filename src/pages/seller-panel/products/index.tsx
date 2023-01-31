@@ -400,7 +400,7 @@ const Products = () => {
           {selectedId.length > 0 ? (
             <div className="mb-3 flex items-center gap-2">
               <span>Selected {selectedId.length} products</span>
-              <div className="dropdown dropdown-bottom">
+              <div className="dropdown-bottom dropdown">
                 <label
                   tabIndex={0}
                   className="btn-outline btn-ghost btn-xs btn flex cursor-pointer items-center gap-1"
@@ -444,7 +444,7 @@ const Products = () => {
                     {
                       colName: 'Select',
                       component: (
-                        <div className="dropdown dropdown-bottom">
+                        <div className="dropdown-bottom dropdown">
                           <label tabIndex={0} className="cursor-pointer">
                             <HiChevronDown />
                           </label>

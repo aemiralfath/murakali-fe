@@ -106,7 +106,7 @@ const OrderDetailCard: React.FC<
                         Rp
                         {formatMoney(order.total_price + order.delivery_fee)}
                       </P>
-                      <div className="dropdown-end dropdown">
+                      <div className="dropdown dropdown-end">
                         <label tabIndex={0}>
                           <HiInformationCircle className="cursor-pointer text-gray-400" />
                         </label>

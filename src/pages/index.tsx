@@ -1,17 +1,15 @@
+import { useAdminBanner } from '@/api/admin/banner'
+import { useGetAllCategory } from '@/api/category'
 import { useRecommendedProduct } from '@/api/product/recommended'
 import { Divider, H1, H4 } from '@/components'
-
+import bannerData from '@/dummy/bannerData'
 import MainLayout from '@/layout/MainLayout'
 import ProductCard from '@/layout/template/product/ProductCard'
 import BannerCarousel from '@/sections/home/BannerCarousel'
 import CategoriesCarousel from '@/sections/home/CategoriesCarousel'
-import Head from 'next/head'
-
-import { type NextPage } from 'next'
 import CategorySearch from '@/sections/home/CategorySearch'
-import { useGetAllCategory } from '@/api/category'
-import { useAdminBanner } from '@/api/admin/banner'
-import bannerData from '@/dummy/bannerData'
+import { type NextPage } from 'next'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 const Home: NextPage = () => {
@@ -76,7 +74,8 @@ const Home: NextPage = () => {
                     pathname: `/search`,
                     query: {
                       sort_by: 'unit_sold',
-                      sort: 'ASC',
+                      sort: 'DESC',
+                      rating: 4,
                     },
                   })
                 }}
