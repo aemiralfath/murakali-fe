@@ -3,6 +3,7 @@ import { toast } from 'react-hot-toast'
 import { HiHeart, HiShare } from 'react-icons/hi'
 
 import Head from 'next/head'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import {
@@ -20,7 +21,7 @@ import {
 } from '@/api/product/favorite'
 import { useGetSellerInfo } from '@/api/seller'
 import { useGetVoucherShopCheckout } from '@/api/user/checkout'
-import { A, Divider, H3, P, Spinner } from '@/components'
+import { A, Divider, H3, H4, P, Spinner } from '@/components'
 import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
 import { useModal, useUser } from '@/hooks'
@@ -459,7 +460,7 @@ const ProductPage: NextPage = () => {
           <></>
         ) : (
           <>
-            {voucherShop.data?.data?.rows.length > 0 ? (
+            {voucherShop.data?.data?.rows ? (
               <div className="mt-8 lg:mt-0 lg:pl-6 xl:col-span-2">
                 {' '}
                 <H3>Voucher Shop</H3>
@@ -518,13 +519,43 @@ const ProductPage: NextPage = () => {
           </div>
         </div>
         <Divider />
-        <H3>Another Products from Seller</H3>
+        <div className="mx-5 flex justify-between">
+          <H3>Another Products from Seller</H3>
+          <H4 className="self-end">
+            <Link
+              href={
+                '/seller/' +
+                product.data?.data?.products_info.shop_id +
+                '#seller-products'
+              }
+              className="whitespace-nowrap"
+            >
+              See All
+            </Link>
+          </H4>
+        </div>
+
         <ProductCarousel product={sellerProduct.data?.data?.rows ?? []} />
         <Divider />
-        <H3>Recommended Product</H3>
+        <H3 className="mx-5">Recommended Product</H3>
         <ProductCarousel product={recommendedProduct.data?.data?.rows ?? []} />
         <Divider />
-        <H3>Similiar Products</H3>
+        <div className="mx-5 flex justify-between">
+          <H3>Similiar Products</H3>
+          <H4 className="self-end">
+            <Link
+              href={
+                '/cat/' +
+                product.data?.data?.products_info.category_name +
+                '?page=1'
+              }
+              className="whitespace-nowrap"
+            >
+              See All
+            </Link>
+          </H4>
+        </div>
+
         <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {similiarProduct.isLoading ? (
             Array(3)

@@ -1,17 +1,17 @@
-import { A, H4, P, PaginationNav } from '@/components'
-
 import React, { useEffect, useState } from 'react'
 import { HiArrowDown, HiArrowUp, HiFilter, HiX } from 'react-icons/hi'
-import CategoryFilter from '@/sections/productslisting/CategoryFilter'
+
+import { useGetAllCategory } from '@/api/category'
+import { A, H4, P, PaginationNav } from '@/components'
 import cx from '@/helper/cx'
 import { useMediaQuery } from '@/hooks'
-import { Transition } from '@headlessui/react'
-
-import type { SortBy } from '@/types/helper/sort'
-import type { BriefProduct } from '@/types/api/product'
 import ProductCard from '@/layout/template/product/ProductCard'
-import { useGetAllCategory } from '@/api/category'
+import CategoryFilter from '@/sections/productslisting/CategoryFilter'
 import type { CategoryData } from '@/types/api/category'
+import type { BriefProduct } from '@/types/api/product'
+import type { SortBy } from '@/types/helper/sort'
+
+import { Transition } from '@headlessui/react'
 
 const FilterChip: React.FC<{ value: string; onClose: () => void }> = ({
   value,

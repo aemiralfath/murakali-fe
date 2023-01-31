@@ -1,21 +1,22 @@
+import React, { Fragment, useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import {
   useAdminCategories,
   useCreateAdminCategories,
   useUpdateAdminCategories,
 } from '@/api/admin/categories'
-
 import { Button, Chip, H2, H4, P, TextInput } from '@/components'
 import Uploader from '@/components/uploader'
 import AdminPanelLayout from '@/layout/AdminPanelLayout'
 import type { CreateUpdateCategory } from '@/types/api/admincategory'
-
 import type { APIResponse } from '@/types/api/response'
+
 import { Listbox, Transition } from '@headlessui/react'
 import type { AxiosError } from 'axios'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React, { Fragment, useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
 
 function ManageCategoryAdmin() {
   const router = useRouter()

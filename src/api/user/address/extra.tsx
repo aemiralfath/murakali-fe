@@ -1,7 +1,4 @@
 import { unauthorizedClient } from '@/api/apiClient'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-
-import type { APIResponse } from '@/types/api/response'
 import type {
   City,
   FetchParamInfo,
@@ -9,6 +6,9 @@ import type {
   SubDistrict,
   Urban,
 } from '@/types/api/address'
+import type { APIResponse } from '@/types/api/response'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const profileKey = ['province']
 

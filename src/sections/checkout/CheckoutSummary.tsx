@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from 'react'
+
 import { Button, H3, P } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import { useModal } from '@/hooks'
@@ -5,7 +7,6 @@ import type { PostCheckout } from '@/types/api/checkout'
 import type { SLPUser } from '@/types/api/slp'
 import type { WalletUser } from '@/types/api/wallet'
 
-import React, { useEffect, useState } from 'react'
 import PaymentOption from './option/PaymentOption'
 
 interface CheckoutSummaryProps {

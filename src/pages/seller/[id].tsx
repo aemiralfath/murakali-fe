@@ -394,7 +394,7 @@ function Seller() {
           <ProductCarousel product={product.data?.data?.rows ?? []} />
           <div id="allproducts"></div>
           <Divider />
-          <H3>Seller Products</H3>
+          <H3 id="seller-products">Seller Products</H3>
           {SearchProductList.isLoading ? (
             <ProductListingLayout controller={controller} isLoading={true} />
           ) : SearchProductList.data?.data &&

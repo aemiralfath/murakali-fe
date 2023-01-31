@@ -1,11 +1,14 @@
+import React, { useEffect, useRef, useState } from 'react'
+import { HiArrowLeft, HiArrowRight } from 'react-icons/hi'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
 import { H1, H4, P } from '@/components'
 import { useMediaQuery } from '@/hooks'
 import type { CategoryData } from '@/types/api/category'
+
 import { Transition } from '@headlessui/react'
-import Image from 'next/image'
-import Link from 'next/link'
-import React, { useEffect, useRef, useState } from 'react'
-import { HiArrowLeft, HiArrowRight } from 'react-icons/hi'
 
 const CategoryItem: React.FC<{
   name?: string

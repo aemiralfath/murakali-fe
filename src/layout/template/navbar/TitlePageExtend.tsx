@@ -1,5 +1,7 @@
-import { H1 } from '@/components'
 import React from 'react'
+
+import { H1 } from '@/components'
+
 interface TitlePageExtendProps {
   title: string
 }

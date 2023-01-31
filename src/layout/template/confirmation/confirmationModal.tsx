@@ -1,7 +1,8 @@
+import React from 'react'
+
 import { P, Button } from '@/components'
 import { useDispatch } from '@/hooks'
 import { closeModal } from '@/redux/reducer/modalReducer'
-import React from 'react'
 
 const ConfirmationModal: React.FC<{ msg: string; onConfirm: () => void }> = ({
   msg,

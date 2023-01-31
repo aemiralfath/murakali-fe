@@ -1,16 +1,17 @@
-import { useCreateAdminBanner } from '@/api/admin/banner'
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { useCreateAdminBanner } from '@/api/admin/banner'
 import { Button, Chip, H2, H4, P, TextInput } from '@/components'
 import Uploader from '@/components/uploader'
 import AdminPanelLayout from '@/layout/AdminPanelLayout'
 import type { BannerData } from '@/types/api/banner'
-
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
 
 function ManageCategoryAdmin() {
   const router = useRouter()

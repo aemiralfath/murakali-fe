@@ -1,6 +1,6 @@
-import { useGetUserProfile } from '@/api/user/profile'
 import { useEffect, useState } from 'react'
 
+import { useGetUserProfile } from '@/api/user/profile'
 import type { UserDetail } from '@/types/api/user'
 
 const useUser = () => {

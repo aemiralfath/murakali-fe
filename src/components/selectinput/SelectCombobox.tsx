@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import { HiChevronDown } from 'react-icons/hi'
+
+import cx from '@/helper/cx'
 
 import { Combobox, Transition } from '@headlessui/react'
-import cx from '@/helper/cx'
+
 import Spinner from '../spinner'
-import { HiChevronDown } from 'react-icons/hi'
+
 interface SelectInputProps
   extends React.InputHTMLAttributes<HTMLSelectElement> {
   isEdit: boolean

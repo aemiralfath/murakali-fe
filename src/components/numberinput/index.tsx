@@ -1,6 +1,7 @@
-import cx from '@/helper/cx'
 import React, { useEffect } from 'react'
 import { HiMinus, HiPlus } from 'react-icons/hi'
+
+import cx from '@/helper/cx'
 
 type NumberInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   maxValue?: number

@@ -1,7 +1,8 @@
 import { unauthorizedClient } from '@/api/apiClient'
-import { useMutation } from '@tanstack/react-query'
 import type { AccessTokenData } from '@/types/api/auth'
 import type { APIResponse } from '@/types/api/response'
+
+import { useMutation } from '@tanstack/react-query'
 
 export const useRegistrationCheckEmail = () => {
   return useMutation(async ({ email }: { email: string }) => {

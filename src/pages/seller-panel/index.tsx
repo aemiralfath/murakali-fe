@@ -1,17 +1,20 @@
+import React, { useEffect, useState } from 'react'
+import { HiDownload, HiOutlineEye, HiRefresh } from 'react-icons/hi'
+
+import Head from 'next/head'
+import Image from 'next/image'
+
 import { useGetSellerPerformance } from '@/api/seller/performance'
+import { useGetAllProvince } from '@/api/user/address/extra'
 import { A, Button, Chip, H1, H2, H3, P } from '@/components'
 import formatMoney from '@/helper/formatMoney'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
-import Head from 'next/head'
-import React, { useEffect, useState } from 'react'
-import { useGetAllProvince } from '@/api/user/address/extra'
-import Image from 'next/image'
-import { HiDownload, HiOutlineEye, HiRefresh } from 'react-icons/hi'
 import DailyOrderLineChart from '@/sections/seller-panel/dashboard/DailyOrderLineChart'
 import DailySalesAreaChart from '@/sections/seller-panel/dashboard/DailySalesAreaChart'
+import OrderPerProvinceMap from '@/sections/seller-panel/dashboard/OrderPerProvinceMap'
 import TotalRatingAreaChart from '@/sections/seller-panel/dashboard/TotalRatingAreaChart'
 import TotalSalesPieChart from '@/sections/seller-panel/dashboard/TotalSalesPieChart'
-import OrderPerProvinceMap from '@/sections/seller-panel/dashboard/OrderPerProvinceMap'
+
 import moment from 'moment'
 
 type ProgressBarProps = React.HTMLAttributes<HTMLProgressElement> & {

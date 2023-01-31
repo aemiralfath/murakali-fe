@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-import Link from 'next/link'
-
 import { Button, P } from '@/components'
 import bannerData from '@/dummy/bannerData'
 import { useMediaQuery } from '@/hooks'

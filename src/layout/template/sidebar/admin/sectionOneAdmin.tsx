@@ -1,14 +1,15 @@
-import { useLogout } from '@/api/auth/logout'
-import { Avatar, Button, Icon } from '@/components'
-
-import { useMediaQuery, useUser } from '@/hooks'
-import type { APIResponse } from '@/types/api/response'
-import { Transition } from '@headlessui/react'
-import type { AxiosError } from 'axios'
-import { useRouter } from 'next/router'
-
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
+
+import { useRouter } from 'next/router'
+
+import { useLogout } from '@/api/auth/logout'
+import { Avatar, Button, Icon } from '@/components'
+import { useMediaQuery, useUser } from '@/hooks'
+import type { APIResponse } from '@/types/api/response'
+
+import { Transition } from '@headlessui/react'
+import type { AxiosError } from 'axios'
 
 const SectionOneSideBarAdmin: React.FC = ({}) => {
   const { user } = useUser()

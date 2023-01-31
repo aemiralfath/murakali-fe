@@ -1,9 +1,9 @@
 import { env } from '@/env/client.mjs'
+import type { AccessTokenData } from '@/types/api/auth'
+import type { APIResponse } from '@/types/api/response'
+
 import axios, { isAxiosError } from 'axios'
 import { getCookie, setCookie } from 'cookies-next'
-
-import type { APIResponse } from '@/types/api/response'
-import type { AccessTokenData } from '@/types/api/auth'
 
 const baseURL = env.NEXT_PUBLIC_BE_URL
 

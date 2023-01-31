@@ -1,9 +1,11 @@
+import React, { Fragment } from 'react'
+import { HiChevronRight } from 'react-icons/hi'
+
 import cx from '@/helper/cx'
 import toTitleCase from '@/helper/toTitleCase'
 import type { CategoryData } from '@/types/api/category'
+
 import { Popover, Transition } from '@headlessui/react'
-import React, { Fragment } from 'react'
-import { HiChevronRight } from 'react-icons/hi'
 
 const CategorySelector: React.FC<{
   selectedCategory: CategoryData[]

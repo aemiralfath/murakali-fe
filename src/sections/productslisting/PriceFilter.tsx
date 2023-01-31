@@ -1,6 +1,7 @@
-import { H4, TextInput, P } from '@/components'
 import React, { useState } from 'react'
 import { HiFilter } from 'react-icons/hi'
+
+import { H4, TextInput, P } from '@/components'
 
 export type FilterPrice = {
   min: number

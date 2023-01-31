@@ -7,6 +7,7 @@ import type {
   WalletHistoryDetail,
   WalletUser,
 } from '@/types/api/wallet'
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const profileKey = 'wallet'

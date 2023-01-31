@@ -1,8 +1,9 @@
-import { Navbar } from '@/layout/template'
-import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
+import React, { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+
+import { Navbar } from '@/layout/template'
+import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 
 function SLPTopUp() {
   const router = useRouter()

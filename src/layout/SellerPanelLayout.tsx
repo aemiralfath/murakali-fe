@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
+
+import { Button } from '@/components'
+import cx from '@/helper/cx'
+import { useMediaQuery } from '@/hooks'
+
 import SectionOneSideBar from './template/sidebar/seller-panel/sectionOneSellerPanel'
 import SectionTwoSideBar from './template/sidebar/seller-panel/sectionTwoSellerPanel'
 import type { ValidPage } from './template/sidebar/seller-panel/sectionTwoSellerPanel'
-import { useMediaQuery } from '@/hooks'
-import cx from '@/helper/cx'
-import { Button } from '@/components'
 
 const SellerPanelLayout: React.FC<{
   children: React.ReactNode

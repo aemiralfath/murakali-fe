@@ -1,7 +1,8 @@
-import cx from '@/helper/cx'
-import { useMediaQuery, usePagination } from '@/hooks'
 import React from 'react'
 import { HiChevronLeft, HiChevronRight, HiDotsHorizontal } from 'react-icons/hi'
+
+import cx from '@/helper/cx'
+import { useMediaQuery, usePagination } from '@/hooks'
 
 type PaginationBtnProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   size: 'sm' | 'md'

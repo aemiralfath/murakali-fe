@@ -1,5 +1,6 @@
 import { authorizedClient } from '@/api/apiClient'
 import type { APIResponse } from '@/types/api/response'
+
 import { useMutation } from '@tanstack/react-query'
 
 export const useUploadProductPicture = () => {

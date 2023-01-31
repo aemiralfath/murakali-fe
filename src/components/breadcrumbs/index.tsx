@@ -1,7 +1,9 @@
-import cx from '@/helper/cx'
-import Link from 'next/link'
 import React from 'react'
 import { HiChevronRight } from 'react-icons/hi'
+
+import Link from 'next/link'
+
+import cx from '@/helper/cx'
 
 const Breadcrumbs: React.FC<{
   data: Array<{ name: string; link: string }>

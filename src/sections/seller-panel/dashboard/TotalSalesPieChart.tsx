@@ -1,6 +1,8 @@
+import React from 'react'
+
 import formatMoney from '@/helper/formatMoney'
 import type { TotalSales } from '@/types/api/sellerperformance'
-import React from 'react'
+
 import {
   Cell,
   LabelList,
