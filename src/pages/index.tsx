@@ -76,7 +76,8 @@ const Home: NextPage = () => {
                     pathname: `/search`,
                     query: {
                       sort_by: 'unit_sold',
-                      sort: 'ASC',
+                      sort: 'DESC',
+                      rating: 4,
                     },
                   })
                 }}

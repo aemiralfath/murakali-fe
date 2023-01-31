@@ -109,6 +109,8 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   isCategoryPage,
 }) => {
   const {
+    filterKeyword,
+    setFilterKeyword,
     sortBy,
     setSortBy,
     filterLocation,
@@ -199,6 +201,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
               setFilterPrice(undefined)
               setFilterRating(-1)
               setFilterCategory('')
+              setFilterKeyword('')
             }}
           >
             <HiFilter className="text-xl" />
@@ -290,7 +293,8 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                   {filterLocation.length === 0 &&
                   filterPrice === undefined &&
                   filterRating === -1 &&
-                  filterCategory === '' ? (
+                  filterCategory === '' &&
+                  filterKeyword === '' ? (
                     <span className="h-[1.5rem] italic text-gray-400">
                       No Filter
                     </span>
@@ -339,6 +343,15 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                           onClose={() => {
                             setFilterCategory('')
                           }}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                      {filterKeyword !== '' ? (
+                        <FilterChip
+                          key={'keyword'}
+                          value={`Keyword: ${filterKeyword}`}
+                          onClose={() => setFilterKeyword('')}
                         />
                       ) : (
                         <></>
