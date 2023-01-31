@@ -1,4 +1,5 @@
 import { useGetOrderByID } from '@/api/order'
+import { useGetSellerInfoByUserID } from '@/api/seller'
 import {
   useCreateRefundThreadSeller,
   useGetRefundThreadSeller,
@@ -27,6 +28,8 @@ function RefundThread() {
   const router = useRouter()
 
   const userProfile = useGetUserProfile()
+  const sellerInfo = useGetSellerInfoByUserID(userProfile.data.data.id)
+
   const modal = useModal()
   const setLoadingModal = useLoadingModal()
 
@@ -186,13 +189,13 @@ function RefundThread() {
 
           <div className="mt-5 flex flex-col gap-3 rounded border bg-white p-4">
             <div className="flex justify-between gap-3">
-              <div className="w-[20%] min-w-[20%] border-r-4 border-blue-500">
+              <div className="w-[20%] min-w-[20%] border-r-4 border-green-500">
                 <div className="flex h-full gap-3 align-top">
                   <div>
                     <Avatar url={userProfile.data?.data?.photo_url} size="lg" />
                   </div>
-                  <div>
-                    <H4>{userProfile.data?.data?.user_name}</H4>
+                  <div className="whitespace-pre-line">
+                    <H4>{sellerInfo.data?.data?.name}</H4>
                   </div>
                 </div>
               </div>

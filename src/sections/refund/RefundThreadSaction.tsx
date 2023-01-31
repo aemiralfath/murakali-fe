@@ -2,11 +2,77 @@ import { Avatar, Chip, Divider, H2, H4, P } from '@/components'
 import type { ConversationRefundThread, RefundThread } from '@/types/api/refund'
 import moment from 'moment'
 
-const RefundThreadConversation: React.FC<{ refundThreads: RefundThread[] }> = ({
-  refundThreads,
-}) => {
+const DividerRefundStatus: React.FC<{
+  thread_created_at?: string
+  accepted_at?: string
+  rejected_at?: string
+  refunded_at?: string
+}> = ({ thread_created_at, accepted_at, rejected_at, refunded_at }) => {
   return (
-    <div className="flex flex-col gap-5">
+    <>
+      {Date.parse(rejected_at) > Date.parse(thread_created_at) ? (
+        <div className="mt-2 flex w-full items-center py-2">
+          <div className="h-[2px] grow bg-red-500" />
+          <div className="px-1 text-xs">
+            <P className="font-bold text-red-600">
+              Rejected at{' '}
+              {moment(rejected_at).format('DD MMMM YYYY HH:mm:ss').toString()}
+            </P>
+          </div>
+          <div className="h-[2px] grow bg-red-500" />
+        </div>
+      ) : (
+        <></>
+      )}
+      {Date.parse(accepted_at) > Date.parse(thread_created_at) ? (
+        <div className="mt-2 flex w-full items-center py-2">
+          <div className="h-[2px] grow bg-green-500" />
+          <div className="px-1 text-xs">
+            <P className="font-bold text-green-600">
+              Accepted at{' '}
+              {moment(accepted_at).format('DD MMMM YYYY HH:mm:ss').toString()}
+            </P>
+          </div>
+          <div className="h-[2px] grow bg-green-500" />
+        </div>
+      ) : (
+        <></>
+      )}
+      {Date.parse(refunded_at) > Date.parse(thread_created_at) ? (
+        <div className="mt-2 flex w-full items-center py-2">
+          <div className="h-[2px] grow bg-blue-500" />
+          <div className="px-1 text-xs">
+            <P className="font-bold text-blue-600">
+              Refunded at{' '}
+              {moment(refunded_at).format('DD MMMM YYYY HH:mm:ss').toString()}
+            </P>
+          </div>
+          <div className="h-[2px] grow bg-blue-500" />
+        </div>
+      ) : (
+        <></>
+      )}
+    </>
+  )
+}
+const RefundThreadConversation: React.FC<{
+  refundThreads: RefundThread[]
+  accepted_at?: string
+  rejected_at?: string
+  refunded_at?: string
+}> = ({ refundThreads, accepted_at, rejected_at, refunded_at }) => {
+  return (
+    <div className="flex flex-col gap-3">
+      {refundThreads.length === 0 ? (
+        <DividerRefundStatus
+          thread_created_at={'2006-01-02 06:57:35.486911+00'}
+          accepted_at={accepted_at}
+          rejected_at={rejected_at}
+          refunded_at={refunded_at}
+        />
+      ) : (
+        <></>
+      )}
       {refundThreads.map((thread, index) => {
         return (
           <div key={index}>
@@ -73,6 +139,12 @@ const RefundThreadConversation: React.FC<{ refundThreads: RefundThread[] }> = ({
             ) : (
               <></>
             )}
+            <DividerRefundStatus
+              thread_created_at={thread.created_at}
+              accepted_at={accepted_at}
+              rejected_at={rejected_at}
+              refunded_at={refunded_at}
+            />
           </div>
         )
       })}
@@ -168,6 +240,9 @@ const RefundThreadSaction: React.FC<{
       </div>
       <RefundThreadConversation
         refundThreads={refundThreadData.refund_threads}
+        accepted_at={refundThreadData.refund_data.accepted_at.Time}
+        rejected_at={refundThreadData.refund_data.rejected_at.Time}
+        refunded_at={refundThreadData.refund_data.refunded_at.Time}
       />
     </div>
   )
