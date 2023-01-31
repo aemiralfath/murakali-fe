@@ -33,7 +33,7 @@ const CategorySelector: React.FC<{
     <Popover className="relative z-20">
       <Popover.Button
         disabled={disabled}
-        className={cx('btn-ghost btn', disabled ? 'btn-disabled' : '')}
+        className={cx('btn btn-ghost', disabled ? 'btn-disabled' : '')}
       >
         Choose Category
       </Popover.Button>
@@ -50,9 +50,9 @@ const CategorySelector: React.FC<{
           <div className="grid grid-cols-6 gap-1 divide-x-2 divide-primary divide-opacity-10 p-2">
             <div
               className={
-                selectedCategory[0]?.child_category.length > 0
-                  ? selectedCategory[1]?.child_category.length > 0
-                    ? selectedCategory[2]?.child_category.length > 0
+                (selectedCategory[0]?.child_category.length ?? 0) > 0
+                  ? (selectedCategory[1]?.child_category.length ?? 0) > 0
+                    ? (selectedCategory[2]?.child_category.length ?? 0) > 0
                       ? 'col-span-3'
                       : 'col-span-2'
                     : 'col-span-3'
@@ -86,17 +86,17 @@ const CategorySelector: React.FC<{
                 <div className="text-sm italic">No data!</div>
               )}
             </div>
-            {selectedCategory[0]?.child_category.length > 0 ? (
+            {(selectedCategory[0]?.child_category.length ?? 0) > 0 ? (
               <div
                 className={cx(
-                  selectedCategory[1]?.child_category.length > 0
-                    ? selectedCategory[2]?.child_category.length > 0
+                  (selectedCategory[1]?.child_category.length ?? 0) > 0
+                    ? (selectedCategory[2]?.child_category.length ?? 0) > 0
                       ? 'col-span-3'
                       : 'col-span-2'
                     : 'col-span-3'
                 )}
               >
-                {selectedCategory[0].child_category.map((category) => {
+                {selectedCategory[0]?.child_category.map((category) => {
                   return (
                     <div
                       key={category.id}
@@ -122,9 +122,9 @@ const CategorySelector: React.FC<{
             ) : (
               <></>
             )}
-            {selectedCategory[1]?.child_category.length > 0 ? (
+            {(selectedCategory[1]?.child_category.length ?? 0) > 0 ? (
               <div className={'col-span-2'}>
-                {selectedCategory[1].child_category.map((category) => {
+                {selectedCategory[1]?.child_category.map((category) => {
                   return (
                     <div
                       key={category.id}

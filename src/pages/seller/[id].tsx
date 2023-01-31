@@ -186,13 +186,13 @@ function Seller() {
     6,
     '',
     '',
-    param.query.id as string,
     'unit_sold',
     'desc',
     0,
     0,
     0,
-    0
+    0,
+    param.query.id as string
   )
 
   const {
@@ -392,13 +392,14 @@ function Seller() {
               <a href="#allproducts">See All</a>
             </H4>
           </div>
-          <ProductCarousel product={product.data?.data.rows} />
+          <ProductCarousel product={product.data?.data?.rows ?? []} />
           <div id="allproducts"></div>
           <Divider />
           <H3>Seller Products</H3>
           {SearchProductList.isLoading ? (
             <ProductListingLayout controller={controller} isLoading={true} />
-          ) : SearchProductList.data.data.rows ? (
+          ) : SearchProductList.data?.data &&
+            SearchProductList.data.data.rows ? (
             <ProductListingLayout
               controller={controller}
               isLoading={false}

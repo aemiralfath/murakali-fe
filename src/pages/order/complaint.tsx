@@ -21,12 +21,12 @@ const OrderDetailCard: React.FC<
   LoadingDataWrapper<BuyerOrder> & {
     isReview?: boolean
   }
-> = ({ isLoading, data }) => {
+> = ({ data }) => {
   const order = data
 
   return (
     <div className={'flex w-full flex-col gap-2.5 bg-white'}>
-      {isLoading ? (
+      {order === undefined ? (
         <div className="flex gap-2.5">
           <div className="h-[100px] w-[100px] animate-pulse rounded bg-base-300" />
           <div className="flex-1 px-2">
@@ -77,8 +77,8 @@ const OrderDetailCard: React.FC<
 const AddressDetailCard: React.FC<{
   name: string
   title: string
-  address: AddressDetail
-  phone: number
+  phone: number | null
+  address: AddressDetail | null
   isSeller?: boolean
 }> = ({ name, title, address, phone, isSeller }) => {
   return (
@@ -86,7 +86,7 @@ const AddressDetailCard: React.FC<{
       <P className="text-sm">{title}</P>
       <H3>{name}</H3>
       <P className="mt-1">
-        {!isSeller ? (
+        {!isSeller && address !== null ? (
           <>
             <span>{`${address.address_detail}, ${address.sub_district}, ${address.district}`}</span>
             <br />
@@ -94,8 +94,8 @@ const AddressDetailCard: React.FC<{
         ) : (
           <></>
         )}
-        {address.city}, {address.province}
-        {!isSeller ? (
+        {address ? `${address.city}, ${address.province}` : ''}
+        {!isSeller && address ? (
           <>
             <br />
             <span>{address.zip_code}</span>
@@ -181,7 +181,7 @@ const OrderComplaint = () => {
         <div className="mt-3 flex h-full w-full flex-col bg-white">
           {order.isLoading ? (
             <P className="flex w-full justify-center">Loading</P>
-          ) : order.isSuccess ? (
+          ) : order.data?.data ? (
             <>
               <div className="grid grid-cols-2 justify-center gap-4 rounded border p-4">
                 <div className="flex flex-auto flex-col gap-6">

@@ -119,7 +119,7 @@ const Products = () => {
   }
 
   useEffect(() => {
-    if (sellerInfo.isSuccess) {
+    if (sellerInfo.data?.data) {
       setParams({
         ...params,
         shop_id: sellerInfo.data.data.id,
@@ -132,7 +132,7 @@ const Products = () => {
   useEffect(() => {
     if (Boolean(params?.shop_id)) {
       setEnabled(true)
-    } else if (sellerInfo.data?.data.id) {
+    } else if (sellerInfo.data?.data?.id) {
       setEnabled(false)
       setParams({
         ...params,
@@ -174,7 +174,7 @@ const Products = () => {
   }, [sortBy])
 
   const formatData = (data?: PaginationData<BriefProduct>) => {
-    if (data?.rows.length > 0) {
+    if (data && data.rows.length > 0) {
       return data.rows.map((row) => ({
         Select: (
           <input
@@ -453,8 +453,9 @@ const Products = () => {
                             className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 font-medium shadow"
                             onClick={() => {
                               if (
+                                allProduct.data?.data &&
                                 selectedId.length <
-                                allProduct.data.data.rows.length
+                                  allProduct.data.data.rows.length
                               ) {
                                 const tempSelect =
                                   allProduct.data.data.rows.map((p) => p.id)

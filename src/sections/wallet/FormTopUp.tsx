@@ -39,7 +39,7 @@ const FormTopUp: React.FC = () => {
       dispatch(closeModal())
       router.push({
         pathname: '/slp-top-up',
-        query: { id: useSlpPayment.data.data.redirect_url },
+        query: { id: useSlpPayment.data.data?.redirect_url },
       })
     }
   }, [useSlpPayment.isSuccess])
@@ -66,7 +66,7 @@ const FormTopUp: React.FC = () => {
   }, [useSlpPayment.isError])
 
   useEffect(() => {
-    if (topUp.isSuccess) {
+    if (topUp.data?.data.data) {
       useSlpPayment.mutate(topUp.data.data.data.transaction_id)
     }
   }, [topUp.isSuccess])
@@ -115,7 +115,7 @@ const FormTopUp: React.FC = () => {
           </label>
           <div className="mx-5 flex flex-col gap-2">
             {!useSlp.isLoading ? (
-              useSlp.data.data ? (
+              useSlp.data?.data ? (
                 useSlp.data.data.map((slpOption, index) => (
                   <label key={index}>
                     <div
@@ -155,7 +155,7 @@ const FormTopUp: React.FC = () => {
               <></>
             )}
             {useSlp.isLoading ? <Spinner /> : <></>}
-            {useSlp.data?.data.length <= 0 && !useSlp.isLoading ? (
+            {(useSlp.data?.data?.length ?? 0) <= 0 && !useSlp.isLoading ? (
               <P className="text-center text-xs font-bold text-gray-500">
                 You Dont Have Sealabs Pay
               </P>

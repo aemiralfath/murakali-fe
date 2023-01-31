@@ -38,7 +38,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   postCheckout,
   userWallet,
   userSLP,
-  totalOrder,
+  totalOrder = 0,
   transaction,
 }) => {
   const modal = useModal()
@@ -63,10 +63,10 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   >([])
 
   useEffect(() => {
-    if (!getUserSLP.isLoading) {
+    if (getUserSLP.data?.data) {
       seUserSLPs(getUserSLP.data.data)
     }
-  }, [getUserSLP])
+  }, [getUserSLP.isSuccess])
 
   useEffect(() => {
     if (userWallet.unlocked_at.Valid) {
@@ -179,7 +179,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
     if (changeTransactionPaymentMethod.isSuccess) {
       router.push({
         pathname: '/slp-payment',
-        query: { id: transaction.id },
+        query: { id: transaction?.id },
       })
       dispatch(closeModal())
     }
@@ -200,7 +200,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   }, [totalOrder, blocked])
 
   useEffect(() => {
-    if (createTransaction.isSuccess) {
+    if (createTransaction.isSuccess && createTransaction.data?.data) {
       toast.success('Checkout Success')
       dispatch(closeModal())
       if (!validateUUID(selected)) {
@@ -264,7 +264,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
                       <P className="font-semibold">{paymentOption.name}</P>
                       {paymentOption.name === 'Wallet' ? (
                         <P className="text-sm">
-                          Rp{ConvertShowMoney(paymentOption.balance)}
+                          Rp{ConvertShowMoney(paymentOption.balance ?? 0)}
                         </P>
                       ) : (
                         <P className="text-sm">{paymentOption.id}</P>

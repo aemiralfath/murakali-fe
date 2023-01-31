@@ -98,11 +98,13 @@ function RefundThread() {
   }, [refundAccept.isError])
 
   const handleSubmit = () => {
-    const req: CreateRefundThreadRequest = {
-      refund_id: refundThreadData.data.data.refund_data.id,
-      text: text,
+    if (refundThreadData.data?.data) {
+      const req: CreateRefundThreadRequest = {
+        refund_id: refundThreadData.data.data.refund_data.id,
+        text: text,
+      }
+      createRefundThreadSeller.mutate(req)
     }
-    createRefundThreadSeller.mutate(req)
   }
 
   const handleActionAccept = () => {
@@ -113,7 +115,9 @@ function RefundThread() {
         <ConfirmationModal
           msg={'Are you sure Want to Accept this Order to Refund?'}
           onConfirm={() => {
-            refundAccept.mutate(refundThreadData.data.data.refund_data.id)
+            if (refundThreadData.data?.data) {
+              refundAccept.mutate(refundThreadData.data.data.refund_data.id)
+            }
           }}
         />
       ),
@@ -128,7 +132,9 @@ function RefundThread() {
         <ConfirmationModal
           msg={'Are you sure Want to Reject this Order to Refund?'}
           onConfirm={() => {
-            refundReject.mutate(refundThreadData.data.data.refund_data.id)
+            if (refundThreadData.data?.data) {
+              refundReject.mutate(refundThreadData.data.data.refund_data.id)
+            }
           }}
         />
       ),
@@ -158,7 +164,7 @@ function RefundThread() {
         <div className="mt-3 flex h-full w-full flex-col bg-white">
           {order.isLoading ? (
             <P className="flex w-full justify-center">Loading</P>
-          ) : order.isSuccess ? (
+          ) : order.data?.data ? (
             <>
               <RefundOrderDetail order={order.data.data} />
             </>
@@ -167,7 +173,7 @@ function RefundThread() {
           )}
           {refundThreadData.isLoading ? (
             <div>loading</div>
-          ) : refundThreadData.isSuccess ? (
+          ) : refundThreadData.data?.data ? (
             <>
               <RefundThreadSaction
                 refundThreadData={refundThreadData.data.data}

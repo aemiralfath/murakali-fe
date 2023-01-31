@@ -61,13 +61,13 @@ function Checkout() {
   const [checkoutItems, setCheckoutItems] = useState<PostCheckout>()
 
   useEffect(() => {
-    if (cartList.data?.data.rows && idShops) {
+    if (cartList.data?.data?.rows && idShops) {
       const tempCheckoutItem: CartPostCheckout[] = cartList.data.data.rows
         .filter((item) => idShops.includes(item.shop.id))
         .map((cartDetail) => {
           const product_details: ProductPostCheckout[] =
             cartDetail.product_details
-              .filter((item) => idProducts.includes(item.id))
+              .filter((item) => idProducts?.includes(item.id))
               .map((product) => {
                 return {
                   id: product.id,
@@ -150,23 +150,25 @@ function Checkout() {
 
   useEffect(() => {
     if (defaultAddress.isSuccess) {
-      setAddresInfo({
-        id: defaultAddress.data?.data?.rows[0].id,
-        name: defaultAddress.data?.data?.rows[0].name,
-        fullAddress:
-          defaultAddress.data?.data?.rows[0].address_detail +
-          ', ' +
-          defaultAddress.data?.data?.rows[0].sub_district +
-          ', ' +
-          defaultAddress.data?.data?.rows[0].district +
-          ', ' +
-          defaultAddress.data?.data?.rows[0].city +
-          ', ' +
-          defaultAddress.data?.data?.rows[0].province +
-          ', Indonesia (' +
-          defaultAddress.data?.data?.rows[0].zip_code +
-          ')',
-      })
+      if (defaultAddress.data?.data?.rows[0] !== undefined) {
+        setAddresInfo({
+          id: defaultAddress.data?.data?.rows[0].id,
+          name: defaultAddress.data?.data?.rows[0].name,
+          fullAddress:
+            defaultAddress.data?.data?.rows[0].address_detail +
+            ', ' +
+            defaultAddress.data?.data?.rows[0].sub_district +
+            ', ' +
+            defaultAddress.data?.data?.rows[0].district +
+            ', ' +
+            defaultAddress.data?.data?.rows[0].city +
+            ', ' +
+            defaultAddress.data?.data?.rows[0].province +
+            ', Indonesia (' +
+            defaultAddress.data?.data?.rows[0].zip_code +
+            ')',
+        })
+      }
     }
   }, [defaultAddress.isSuccess])
 
@@ -209,7 +211,7 @@ function Checkout() {
                 <FaAddressCard /> Change address
               </Button>
             </div>
-            {!cartList.isLoading ? (
+            {!cartList.isLoading && checkoutItems && idProducts ? (
               <>
                 {cartList.data?.data && idShops ? (
                   cartList.data.data.rows
@@ -265,8 +267,8 @@ function Checkout() {
                             })
                           }}
                           destination={
-                            defaultAddress.data?.data
-                              ? defaultAddress.data?.data.rows[0].city_id
+                            defaultAddress.data?.data?.rows[0] !== undefined
+                              ? defaultAddress.data.data.rows[0].city_id
                               : 0
                           }
                           cart={cart}
@@ -308,8 +310,9 @@ function Checkout() {
                       )}
                     </Menu.Button>
 
-                    {voucherMarketplace.isSuccess ? (
-                      voucherMarketplace.data?.data?.rows?.length > 0 ? (
+                    {voucherMarketplace.isSuccess &&
+                    voucherMarketplace.data?.data ? (
+                      voucherMarketplace.data.data.rows.length > 0 ? (
                         <div>
                           <Menu.Items className="absolute max-h-64 w-56 origin-top-left divide-y divide-gray-100  overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
                             {voucherMarketplace.data?.data?.rows.map(
@@ -432,7 +435,7 @@ function Checkout() {
                 </div>
               </div>
 
-              {!userWallet.isLoading && !userSLP.isLoading && checkoutItems ? (
+              {userWallet.data?.data && userSLP.data?.data && checkoutItems ? (
                 <CheckoutSummary
                   mapPriceQuantity={mapPriceQuantitys}
                   postCheckout={checkoutItems}

@@ -66,8 +66,9 @@ function VoucherDetail() {
                 Rp{formatMoney(data.total_price)}
               </div>
             ),
-            Status: orderStatusData.find((s) => s.id === `${data.order_status}`)
-              .name,
+            Status:
+              orderStatusData.find((s) => s.id === `${data.order_status}`)
+                ?.name ?? '',
             'Transaction Date': (
               <div>{moment(data.created_at).format('DD MMMM YYYY')}</div>
             ),
@@ -105,7 +106,7 @@ function VoucherDetail() {
           </Button>
         </div>
         <div className="mt-3 flex h-full w-[90rem] max-w-full flex-col rounded border bg-white p-6">
-          {sellerVoucher.isSuccess ? (
+          {sellerVoucher.data?.data ? (
             <div className=" mt-3 flex h-full flex-col justify-center gap-4 rounded border p-6 md:flex-row">
               <div className="flex flex-auto flex-col gap-6">
                 <div className="flex-auto">
@@ -217,7 +218,7 @@ function VoucherDetail() {
             <div>
               {sellerOrders.isLoading ? (
                 <Table data={formatSub()} isLoading />
-              ) : sellerOrders.isSuccess ? (
+              ) : sellerOrders.data?.data ? (
                 <Table
                   data={formatSub(sellerOrders.data.data)}
                   isLoading={false}

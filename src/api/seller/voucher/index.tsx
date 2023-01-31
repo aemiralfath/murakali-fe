@@ -83,7 +83,7 @@ export const useCreateVouchers = () => {
   )
 }
 
-export const useUpdateVouchers = (id: string) => {
+export const useUpdateVouchers = (id?: string) => {
   const queryClient = useQueryClient()
   return useMutation(
     async (data: CreateUpdateVoucher) => {

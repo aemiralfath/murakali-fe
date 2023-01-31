@@ -80,14 +80,18 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType, email, setState }) => {
   useEffect(() => {
     if (registrationOtp.isSuccess) {
       toast.success('OTP is valid')
-      pinInputRef.clear()
+      if (pinInputRef !== null) {
+        pinInputRef.clear()
+      }
       setState?.(true)
       handleClose()
     }
   }, [registrationOtp.isSuccess])
   useEffect(() => {
     if (registrationOtp.isError) {
-      pinInputRef.clear()
+      if (pinInputRef !== null) {
+        pinInputRef.clear()
+      }
       const reason = registrationOtp.failureReason as AxiosError<
         APIResponse<null>
       >

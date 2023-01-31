@@ -26,7 +26,7 @@ function MerchantRegistration() {
   const userProfile = useGetUserProfile()
 
   useEffect(() => {
-    if (userProfile.isSuccess) {
+    if (userProfile.data?.data) {
       if (userProfile.data.data.role === 2) {
         router.push('/merchant')
       }
@@ -128,14 +128,18 @@ function MerchantRegistration() {
                     {address.isSuccess ? (
                       <div className="grid grid-cols-1 sm:grid-cols-3">
                         <div className="col-span-2">
-                          <P>
-                            {address.data?.data?.rows[0].address_detail},{' '}
-                            {address.data?.data?.rows[0].sub_district},{' '}
-                            {address.data?.data?.rows[0].district},{' '}
-                            {address.data?.data?.rows[0].city},{' '}
-                            {address.data?.data?.rows[0].province}, Indonesia (
-                            {address.data?.data?.rows[0].zip_code})
-                          </P>
+                          {address.data?.data?.rows[0] !== undefined ? (
+                            <P>
+                              {address.data.data.rows[0].address_detail},{' '}
+                              {address.data.data.rows[0].sub_district},{' '}
+                              {address.data.data.rows[0].district},{' '}
+                              {address.data.data.rows[0].city},{' '}
+                              {address.data.data.rows[0].province}, Indonesia (
+                              {address.data.data.rows[0].zip_code})
+                            </P>
+                          ) : (
+                            <></>
+                          )}
                         </div>
                         <div className="col-span-1 flex items-center justify-end px-2">
                           <Button
