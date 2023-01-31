@@ -219,7 +219,7 @@ const ManagePromotionSeller = () => {
   }, [promotionDetail.isLoading, intent])
 
   useEffect(() => {
-    if (promotionDetail.isSuccess) {
+    if (promotionDetail.data?.data) {
       if (intent === 'add' && typeof id === 'string') {
         toast.success('Data has been filled!')
       }
@@ -350,38 +350,40 @@ const ManagePromotionSeller = () => {
 
     if (intent === 'edit') {
       const pp = selectedProduct.at(0)
-      const reqEditBody: SellerPromotion = {
-        promotion_id: promotionDetail.data?.data.promotion_id,
-        promotion_name: input.name,
-        product_id: pp.product_id,
-        product_name: pp.product_name,
-        product_thumbnail_url: pp.product_thumbnail_url,
-        discount_percentage: pp.discount_percentage,
-        discount_fix_price: pp.discount_fix_price,
-        min_product_price: pp.min_product_price,
-        max_discount_price: pp.max_discount_price,
-        quota: pp.quota,
-        max_quantity: pp.max_quantity,
-        actived_date: moment(input.actived_date)
-          .utc()
-          .format('DD-MM-YYYY HH:mm:ss')
-          .toString(),
-        expired_date: moment(input.expired_date)
-          .utc()
-          .format('DD-MM-YYYY HH:mm:ss')
-          .toString(),
-        created_at: '',
-        updated_at: {
-          Time: '',
-          Valid: false,
-        },
-        deleted_at: {
-          Time: '',
-          Valid: false,
-        },
-      }
+      if (pp !== undefined && promotionDetail.data?.data) {
+        const reqEditBody: SellerPromotion = {
+          promotion_id: promotionDetail.data?.data.promotion_id,
+          promotion_name: input.name,
+          product_id: pp.product_id,
+          product_name: pp.product_name,
+          product_thumbnail_url: pp.product_thumbnail_url,
+          discount_percentage: pp.discount_percentage,
+          discount_fix_price: pp.discount_fix_price,
+          min_product_price: pp.min_product_price,
+          max_discount_price: pp.max_discount_price,
+          quota: pp.quota,
+          max_quantity: pp.max_quantity,
+          actived_date: moment(input.actived_date)
+            .utc()
+            .format('DD-MM-YYYY HH:mm:ss')
+            .toString(),
+          expired_date: moment(input.expired_date)
+            .utc()
+            .format('DD-MM-YYYY HH:mm:ss')
+            .toString(),
+          created_at: '',
+          updated_at: {
+            Time: '',
+            Valid: false,
+          },
+          deleted_at: {
+            Time: '',
+            Valid: false,
+          },
+        }
 
-      updatePromotion.mutate(reqEditBody)
+        updatePromotion.mutate(reqEditBody)
+      }
     } else {
       createPromotion.mutate(reqBody)
     }
@@ -426,7 +428,7 @@ const ManagePromotionSeller = () => {
   }
 
   const formatData = (data?: PaginationData<ProductPromotion>) => {
-    if (data?.rows.length > 0) {
+    if (data && data?.rows.length > 0) {
       return data.rows.map((row) => ({
         Select: (
           <div>
@@ -919,38 +921,47 @@ const ManagePromotionSeller = () => {
           </div>
         </div>
         <div className="mt-6 flex justify-end gap-3">
-          <Button onClick={handleSubmit} buttonType="primary">
-            {intent === 'edit' ? 'Edit' : 'Save'}
-          </Button>
           <Button onClick={() => router.back()} buttonType="primary" outlined>
             Cancel
+          </Button>
+          <Button onClick={handleSubmit} buttonType="primary">
+            {intent === 'edit' ? 'Edit' : 'Save'}
           </Button>
         </div>
 
         {intent === 'add' ? (
-          <div className="mt-3 flex max-w-full flex-col overflow-auto rounded border bg-white px-6 pt-6">
+          <div className="mt-3 flex max-w-full flex-col  rounded border bg-white px-6 pt-6">
             <div className="flex w-full flex-wrap items-center justify-between gap-2 py-5">
               <H2>Select Products</H2>
             </div>
-            <Table
-              empty={
-                getProductNoPromotionSeller.isLoading ||
-                getProductNoPromotionSeller.isError
-              }
-              data={formatData(getProductNoPromotionSeller.data?.data)}
-              isLoading={getProductNoPromotionSeller.isLoading}
-            />
+            <div className=" overflow-auto">
+              {' '}
+              <Table
+                empty={
+                  getProductNoPromotionSeller.isLoading ||
+                  getProductNoPromotionSeller.isError
+                }
+                data={formatData(getProductNoPromotionSeller.data?.data)}
+                isLoading={getProductNoPromotionSeller.isLoading}
+              />
+            </div>
+
             <div className="mt-8 flex items-center gap-2">
               <P>Showing</P>
-              <P>
-                {getProductNoPromotionSeller.data?.data?.limit *
-                  (getProductNoPromotionSeller.data?.data?.page - 1) +
-                  1}{' '}
-                {' - '}
-                {getProductNoPromotionSeller.data?.data?.limit *
-                  getProductNoPromotionSeller.data?.data?.page}{' '}
-                of {getProductNoPromotionSeller.data?.data?.total_rows} entries
-              </P>
+              {getProductNoPromotionSeller.data?.data ? (
+                <P>
+                  {getProductNoPromotionSeller.data?.data?.limit *
+                    (getProductNoPromotionSeller.data?.data?.page - 1) +
+                    1}{' '}
+                  {' - '}
+                  {getProductNoPromotionSeller.data?.data?.limit *
+                    getProductNoPromotionSeller.data?.data?.page}{' '}
+                  of {getProductNoPromotionSeller.data?.data?.total_rows}{' '}
+                  entries
+                </P>
+              ) : (
+                <></>
+              )}
             </div>
             {getProductNoPromotionSeller.data?.data ? (
               <div className="mt-4 mb-4 flex w-full justify-center py-5">

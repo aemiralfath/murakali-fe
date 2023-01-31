@@ -44,7 +44,7 @@ const OrderDetailProduct: React.FC<OrderDetailProductProps> = ({ detail }) => {
                     })}
                   </P>
                 </div>
-                <div className="flex gap-10">
+                <div className="flex flex-wrap gap-10">
                   <div className="flex-auto">
                     <P className="">Unit Price :</P>{' '}
                     <P>

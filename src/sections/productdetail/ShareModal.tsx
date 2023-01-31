@@ -2,6 +2,8 @@ import { Divider, TextInput, Button } from '@/components'
 import React from 'react'
 import { BsFacebook, BsTwitter, BsLinkedin } from 'react-icons/bs'
 
+import { HiLink } from 'react-icons/hi'
+
 const ShareModal = () => {
   // TODO: Change links
   return (
@@ -9,7 +11,7 @@ const ShareModal = () => {
       <div className={'flex justify-around gap-4'}>
         <a
           className="flex cursor-pointer items-center justify-center rounded-full border p-3 transition-all hover:bg-gray-50"
-          href="https://twitter.com/intent/tweet?text=Hello%20world"
+          href="https://www.facebook.com/"
           target={'_blank'}
           rel="noreferrer"
         >
@@ -25,7 +27,7 @@ const ShareModal = () => {
         </a>
         <a
           className="flex cursor-pointer items-center justify-center rounded-full border p-3 transition-all hover:bg-gray-50"
-          href="https://twitter.com/intent/tweet?text=Hello%20world"
+          href="https://www.linkedin.com/"
           target={'_blank'}
           rel="noreferrer"
         >
@@ -51,7 +53,7 @@ const ShareModal = () => {
               void navigator.clipboard.writeText(location.href)
             }}
           >
-            Copy
+            <HiLink /> Copy
           </Button>
         </div>
       </div>

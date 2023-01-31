@@ -98,9 +98,9 @@ const ProductPage: NextPage = () => {
 
   const totalReview = useGetTotalReview(pid as string)
   const voucherShop = useGetVoucherShopCheckout(
-    product.data?.data.products_info.shop_id
+    product.data?.data?.products_info.shop_id
   )
-  const seller = useGetSellerInfo(product.data?.data.products_info.shop_id)
+  const seller = useGetSellerInfo(product.data?.data?.products_info.shop_id)
   const productImage = useGetProductImagesByProductID(pid as string)
   const modal = useModal()
   const [isLoading] = useState(false)
@@ -110,35 +110,34 @@ const ProductPage: NextPage = () => {
     12,
     '',
     '',
-    seller.data?.data.id,
     '',
     '',
     0,
     0,
     0,
-    0
+    0,
+    seller.data?.data?.id
   )
 
   const similiarProduct = useGetSellerProduct(
     1,
     24,
     '',
-    product.data?.data.products_info.category_name,
     '',
     '',
     '',
     0,
     0,
     0,
-    0
+    0,
+    product.data?.data?.products_info.category_name
   )
 
   const recommendedProduct = useGetSellerProduct(
     1,
     24,
     '',
-    product.data?.data.products_info.category_name,
-    '',
+    product.data?.data?.products_info.category_name ?? '',
     'recommended',
     'desc',
     0,
@@ -160,59 +159,70 @@ const ProductPage: NextPage = () => {
     ProductDetail | undefined
   >()
   useEffect(() => {
-    if (product.isSuccess) {
-      const variantNames = Object.keys(
-        product.data.data.products_detail[0].variant
-      )
+    if (product.data?.data) {
+      const tempProductDetail = product.data.data.products_detail[0]
+      let variantNames: string[] = []
+
+      if (tempProductDetail !== undefined) {
+        variantNames = Object.keys(tempProductDetail.variant)
+      }
       setVariantNames(variantNames)
       setSelectMap(Array(variantNames.length).fill(-1))
 
       const variantTypes = {}
-      const variantMap = []
+      const variantMap: Array<Array<ProductDetail | undefined>> = []
 
       variantNames.forEach((name) => {
-        const types = []
-        product.data.data.products_detail.forEach((variant) => {
-          const varName = variant.variant[name]
-          if (!types.includes(varName)) {
-            types.push(varName)
-          }
-        })
+        const types: string[] = []
+        if (product.data?.data) {
+          product.data.data.products_detail.forEach((variant) => {
+            const varName = variant.variant[name] ?? ''
+            if (!types.includes(varName)) {
+              types.push(varName)
+            }
+          })
+        }
+
         variantTypes[name] = types
       })
 
-      variantTypes[variantNames[0]].forEach((typeNameZero) => {
-        const variantTypeNameMap = []
-        if (variantNames.length > 1) {
-          variantTypes[variantNames[1]].forEach((typeNameOne) => {
-            const filtered = product.data.data.products_detail.filter(
-              (variant) => {
-                return (
-                  variant.variant[variantNames[0]] === typeNameZero &&
-                  variant.variant[variantNames[1]] === typeNameOne
-                )
+      const name0 = variantNames[0]
+      const name1 = variantNames[1]
+
+      if (name0 !== undefined) {
+        variantTypes[name0].forEach((typeNameZero) => {
+          const variantTypeNameMap: Array<ProductDetail | undefined> = []
+          if (name1 !== undefined) {
+            variantTypes[name1].forEach((typeNameOne) => {
+              const filtered = product.data?.data
+                ? product.data.data.products_detail.filter((variant) => {
+                    return (
+                      variant.variant[name0] === typeNameZero &&
+                      variant.variant[name1] === typeNameOne
+                    )
+                  })
+                : []
+              if (filtered.length > 0) {
+                variantTypeNameMap.push(filtered[0])
+              } else {
+                variantTypeNameMap.push(undefined)
               }
-            )
+            })
+          } else {
+            const filtered = product.data?.data
+              ? product.data.data.products_detail.filter((variant) => {
+                  return variant.variant[name0] === typeNameZero
+                })
+              : []
             if (filtered.length > 0) {
               variantTypeNameMap.push(filtered[0])
             } else {
               variantTypeNameMap.push(undefined)
             }
-          })
-        } else {
-          const filtered = product.data.data.products_detail.filter(
-            (variant) => {
-              return variant.variant[variantNames[0]] === typeNameZero
-            }
-          )
-          if (filtered.length > 0) {
-            variantTypeNameMap.push(filtered[0])
-          } else {
-            variantTypeNameMap.push(undefined)
           }
-        }
-        variantMap.push(variantTypeNameMap)
-      })
+          variantMap.push(variantTypeNameMap)
+        })
+      }
 
       setVariantTypes(variantTypes)
       setVariantMap(variantMap)
@@ -222,9 +232,16 @@ const ProductPage: NextPage = () => {
   useEffect(() => {
     if (!selectMap.includes(-1)) {
       if (variantMapState.length > 0) {
-        if (selectMap.length > 1) {
-          setSelectVariant(variantMapState[selectMap[0]][selectMap[1]])
-        } else {
+        if (
+          selectMap[0] &&
+          variantMapState[selectMap[0]] !== undefined &&
+          selectMap[1]
+        ) {
+          const tempMapState = variantMapState[selectMap[0]]
+          if (tempMapState !== undefined) {
+            setSelectVariant(tempMapState[selectMap[1]])
+          }
+        } else if (variantMapState[0] && selectMap[0]) {
           setSelectVariant(variantMapState[0][selectMap[0]])
         }
       }
@@ -235,12 +252,12 @@ const ProductPage: NextPage = () => {
 
   useEffect(() => {
     if (checkFavorite.isSuccess) {
-      setCheckFav(checkFavorite.data.data.data)
+      setCheckFav(Boolean(checkFavorite.data.data.data))
     }
   }, [checkFavorite.isSuccess])
   useEffect(() => {
-    if (countFavorite.isSuccess) {
-      setCountFav(countFavorite.data.data.data)
+    if (countFavorite.data?.data) {
+      setCountFav(countFavorite.data.data.data ?? 0)
     }
   }, [countFavorite.isSuccess])
 
@@ -263,20 +280,28 @@ const ProductPage: NextPage = () => {
               <ProductImageCarousel isLoading data={undefined} />
             ) : (
               <div>
-                <ProductImageCarousel
-                  data={{
-                    images: productImage.data?.data,
-                    alt: product.data?.data.products_info.title,
-                  }}
-                  isLoading={false}
-                  selectedImageUrl={
-                    selectVariant !== undefined
-                      ? productImage.data?.data.filter((image) => {
-                          return image.product_detail_id === selectVariant?.id
-                        })[0].url
-                      : productImage.data?.data[0].url
-                  }
-                />
+                {productImage.data?.data && product.data?.data ? (
+                  <ProductImageCarousel
+                    data={{
+                      images: productImage.data?.data,
+                      alt: product.data?.data.products_info.title,
+                    }}
+                    isLoading={false}
+                    selectedImageUrl={
+                      selectVariant !== undefined
+                        ? productImage.data?.data[0] !== undefined
+                          ? productImage.data?.data.find((image) => {
+                              return (
+                                image.product_detail_id === selectVariant?.id
+                              )
+                            })?.url ?? productImage.data?.data[0].url
+                          : undefined
+                        : undefined
+                    }
+                  />
+                ) : (
+                  <></>
+                )}
                 <div className="mt-4 md:pl-[2.8rem] xl:pl-[4rem]">
                   <div className="flex items-center gap-3 text-gray-500 md:pl-2">
                     <A
@@ -339,7 +364,7 @@ const ProductPage: NextPage = () => {
                 selectMap={selectMap}
                 setSelectMap={setSelectMap}
                 selectVariant={selectVariant}
-                productInfo={product.data?.data.products_info}
+                productInfo={product.data?.data?.products_info}
                 totalReview={totalReview.data?.data?.total_rating ?? 0}
               />
               <div className="mt-4 md:mx-4 xl:col-span-3">
@@ -348,8 +373,8 @@ const ProductPage: NextPage = () => {
                     weight={
                       selectVariant !== undefined ? selectVariant.weight : 0
                     }
-                    shopID={product.data?.data?.products_info.shop_id}
-                    productID={product.data?.data?.products_info.id}
+                    shopID={product.data?.data?.products_info.shop_id ?? ''}
+                    productID={product.data?.data?.products_info.id ?? ''}
                   />
                 ) : (
                   <></>
@@ -384,11 +409,11 @@ const ProductPage: NextPage = () => {
         </div>
         <Divider />
 
-        {voucherShop.isLoading ? (
+        {!voucherShop.data?.data ? (
           <></>
         ) : (
           <>
-            {voucherShop.data?.data.rows?.length > 0 ? (
+            {voucherShop.data?.data?.rows.length > 0 ? (
               <div className="mt-8 lg:mt-0 lg:pl-6 xl:col-span-2">
                 {' '}
                 <H3>Voucher Shop</H3>
@@ -426,7 +451,7 @@ const ProductPage: NextPage = () => {
                 </div>
               </div>
             ) : (
-              <P className="italic text-gray-400">
+              <P className="mx-5 italic text-gray-400">
                 There are no voucher for this product, yet.
               </P>
             )}
@@ -436,18 +461,22 @@ const ProductPage: NextPage = () => {
         <Divider />
         <div className="">
           <div className="mt-8 lg:mt-0 lg:pl-6 xl:col-span-2">
-            <ProductReview
-              productID={pid as string}
-              rating={totalReview.data?.data}
-            />
+            {totalReview.data?.data ? (
+              <ProductReview
+                productID={pid as string}
+                rating={totalReview.data.data}
+              />
+            ) : (
+              <></>
+            )}
           </div>
         </div>
         <Divider />
         <H3>Another Products from Seller</H3>
-        <ProductCarousel product={sellerProduct.data?.data.rows} />
+        <ProductCarousel product={sellerProduct.data?.data?.rows ?? []} />
         <Divider />
         <H3>Recommended Product</H3>
-        <ProductCarousel product={recommendedProduct.data?.data.rows} />
+        <ProductCarousel product={recommendedProduct.data?.data?.rows ?? []} />
         <Divider />
         <H3>Similiar Products</H3>
         <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
@@ -457,7 +486,7 @@ const ProductPage: NextPage = () => {
               .map((_, idx) => {
                 return <ProductCard key={`${idx}`} data={undefined} isLoading />
               })
-          ) : similiarProduct.isSuccess ? (
+          ) : similiarProduct.data?.data ? (
             similiarProduct.data.data.rows.map((product, idx) => {
               return (
                 <ProductCard
@@ -480,7 +509,7 @@ const ProductPage: NextPage = () => {
 export default ProductPage
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { pid } = context.params
+  const { pid } = context.params as { pid: string }
   const queryClient = new QueryClient()
   let isError = false
 

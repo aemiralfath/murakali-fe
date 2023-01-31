@@ -150,11 +150,14 @@ const AddProduct = () => {
       products_detail: [],
     }
 
-    const tempProductDetail = []
+    const tempProductDetail: Array<ProductDetailReq> = []
     Object.keys(productDetailData).forEach((key) => {
       const data = productDetailData[key]
-      const tempData: ProductDetailReq = { ...data }
-      if (data) {
+      let tempData: ProductDetailReq | undefined
+      if (data !== undefined) {
+        tempData = data
+      }
+      if (data && tempData !== undefined) {
         tempData.bulk_price = false
         tempData.condition = condition
         tempData.hazardous = hazardous
@@ -170,17 +173,26 @@ const AddProduct = () => {
           const reqEditBody: EditProductReq = {
             products_info_update: reqBody.products_info,
             products_detail_update: reqBody.products_detail.map((r, idx) => {
+              let tempProductDetail = ''
+              if (productDetail.data?.data) {
+                const tempidxProductDetail =
+                  productDetail.data.data.products_detail[idx]
+                if (tempidxProductDetail !== undefined) {
+                  tempProductDetail = tempidxProductDetail.id
+                }
+              }
               return {
                 ...r,
-                product_detail_id:
-                  productDetail.data.data.products_detail[idx].id,
+                product_detail_id: tempProductDetail,
                 variant_id_remove: [],
                 variant_info_update: [],
               }
             }),
             products_detail_id_remove: [],
           }
-          editProduct.mutate({ id: id, data: reqEditBody })
+          if (id !== undefined) {
+            editProduct.mutate({ id: id, data: reqEditBody })
+          }
         } else {
           createProduct.mutate(reqBody)
         }
@@ -193,18 +205,18 @@ const AddProduct = () => {
   }
 
   useEffect(() => {
-    if (productDetail.isSuccess) {
+    if (productDetail.data?.data) {
       if (intent === 'add' && typeof product_id === 'string') {
         toast.success('Data has been filled!')
       }
 
       const data = productDetail.data.data
       updateData((draft) => {
-        draft.title = data.products_info.title
-        draft.description = data.products_info.description
+        draft.title = data?.products_info.title
+        draft.description = data?.products_info.description
       })
-      setCondition(data.products_detail[0]?.condition)
-      setHazardous(data.products_detail[0]?.hazardous)
+      setCondition(data.products_detail[0]?.condition ?? 'new')
+      setHazardous(data.products_detail[0]?.hazardous ?? false)
     }
   }, [productDetail.isSuccess])
 
@@ -266,14 +278,14 @@ const AddProduct = () => {
           }
           categoryData={allCategory.data?.data}
           defaultCategory={
-            productDetail.data?.data.products_info?.category_name
+            productDetail.data?.data?.products_info?.category_name
           }
           isEditing={intent === 'edit'}
         />
         <ProductVariants
           productDetailData={productDetailData}
           updateProductDetailData={updateProductDetailData}
-          defaultProductDetail={productDetail.data?.data.products_detail}
+          defaultProductDetail={productDetail.data?.data?.products_detail}
           isEditing={intent === 'edit'}
         />
         <ProductShipping hazardous={hazardous} setHazardous={setHazardous} />

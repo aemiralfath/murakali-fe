@@ -20,18 +20,22 @@ export const useGetAllSellers = (search: string, page: number) => {
   )
 }
 
-const getSellerInfo = async (shopID: string) => {
+const getSellerInfo = async (shopID?: string) => {
   const response = await unauthorizedClient.get<APIResponse<SellerInfo>>(
     '/seller/' + shopID
   )
   return response.data
 }
 
-export const useGetSellerInfo = (shopID: string) => {
-  return useQuery([profileKey, shopID], async () => await getSellerInfo(shopID))
+export const useGetSellerInfo = (shopID?: string) => {
+  return useQuery({
+    queryKey: [profileKey, shopID],
+    queryFn: async () => await getSellerInfo(shopID),
+    enabled: Boolean(shopID),
+  })
 }
 
-const getSellerInfoByUserID = async (userID: string) => {
+const getSellerInfoByUserID = async (userID?: string) => {
   const response = await authorizedClient.get<APIResponse<SellerInfo>>(
     '/seller/user/' + userID
   )

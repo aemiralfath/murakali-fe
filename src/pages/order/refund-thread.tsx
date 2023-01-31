@@ -53,11 +53,13 @@ function RefundThread() {
   }, [createRefundThreadUser.isError])
 
   const handleSubmit = () => {
-    const req: CreateRefundThreadRequest = {
-      refund_id: refundThreadData.data.data.refund_data.id,
-      text: text,
+    if (refundThreadData.data?.data) {
+      const req: CreateRefundThreadRequest = {
+        refund_id: refundThreadData.data.data.refund_data.id,
+        text: text,
+      }
+      createRefundThreadUser.mutate(req)
     }
-    createRefundThreadUser.mutate(req)
   }
 
   return (
@@ -83,7 +85,7 @@ function RefundThread() {
         <div className="mt-3 flex h-full w-full flex-col bg-white">
           {order.isLoading ? (
             <P className="flex w-full justify-center">Loading</P>
-          ) : order.isSuccess ? (
+          ) : order.data?.data ? (
             <>
               <RefundOrderDetail order={order.data.data} />
             </>
@@ -92,7 +94,7 @@ function RefundThread() {
           )}
           {refundThreadData.isLoading ? (
             <div>loading</div>
-          ) : refundThreadData.isSuccess ? (
+          ) : refundThreadData.data?.data ? (
             <>
               <RefundThreadSaction
                 refundThreadData={refundThreadData.data.data}

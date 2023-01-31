@@ -69,7 +69,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div
         className="min-h-full"
         onClick={() => {
-          if (data.id) {
+          if (data?.id) {
             router.push('/p/' + data.id)
           }
         }}
@@ -121,9 +121,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                         <span className="text-[0.6rem]">Rp.</span>
                         {formatMoney(data.min_price)}-
                         <span className="text-[0.6rem]">Rp.</span>
-                        <span className="bg-green-200">
-                          {formatMoney(data.max_price)}
-                        </span>
+                        <span>{formatMoney(data.max_price)}</span>
                       </>
                     )}
                   </P>
@@ -205,7 +203,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
                                 type="button"
                                 buttonType="gray"
                                 onClick={() => {
-                                  useDeleteFavoriteProduct.mutate(data.id)
+                                  if (data) {
+                                    useDeleteFavoriteProduct.mutate(data.id)
+                                  }
                                 }}
                               >
                                 Delete
@@ -226,7 +226,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     buttonType="ghost"
                     className="w-full text-white"
                     onClick={() => {
-                      router.push('/p/' + data.id)
+                      if (data) {
+                        router.push('/p/' + data.id)
+                      }
                     }}
                   >
                     Detail<br></br>Product
@@ -246,7 +248,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     buttonType="ghost"
                     className="w-full text-white"
                     onClick={() => {
-                      router.push('/p/' + data.id)
+                      if (data) {
+                        router.push('/p/' + data.id)
+                      }
                     }}
                   >
                     See Details

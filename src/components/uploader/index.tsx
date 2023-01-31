@@ -20,7 +20,7 @@ const Uploader: React.FC<{
   const [option, setOption] = useState(-1)
 
   useEffect(() => {
-    onChange(image)
+    onChange(image ?? '')
   }, [image])
 
   useEffect(() => {

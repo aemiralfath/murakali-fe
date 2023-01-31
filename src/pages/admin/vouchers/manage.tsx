@@ -19,13 +19,24 @@ import toast from 'react-hot-toast'
 function ManageVouchersAdmin() {
   const router = useRouter()
 
-  const [id, setId] = useState<string>()
+  const [id, setId] = useState<string>('')
   const [edit, setEdit] = useState<boolean>(false)
   const [duplicate, setDuplicate] = useState<boolean>(false)
   const adminVoucher = useAdminVoucherDetail(id)
   const createVoucher = useCreateAdminVouchers()
   const updateVoucher = useUpdateAdminVouchers(id)
   const [selected, setSelected] = useState<'P' | 'F'>('P')
+
+  const [input, setInput] = useState<CreateUpdateVoucher>({
+    code: '',
+    quota: 0,
+    actived_date: '',
+    expired_date: '',
+    discount_percentage: 0,
+    discount_fix_price: 0,
+    min_product_price: 0,
+    max_discount_price: 0,
+  })
 
   const voucherId = router.query.voucher
   const typeManage = router.query.type
@@ -39,54 +50,48 @@ function ManageVouchersAdmin() {
     if (adminVoucher.isSuccess) {
       if (typeManage === 'update') {
         setInput({
-          code: adminVoucher.data?.data?.code,
-          quota: adminVoucher.data?.data?.quota,
+          code: adminVoucher.data?.data?.code ?? '',
+          quota: adminVoucher.data?.data?.quota ?? 0,
           actived_date: moment(adminVoucher.data?.data?.actived_date).format(
             'YYYY-MM-DD HH:mm'
           ),
           expired_date: moment(adminVoucher.data?.data?.expired_date).format(
             'YYYY-MM-DD HH:mm'
           ),
-          discount_percentage: adminVoucher.data?.data?.discount_percentage,
-          discount_fix_price: adminVoucher.data?.data?.discount_fix_price,
-          min_product_price: adminVoucher.data?.data?.min_product_price,
-          max_discount_price: adminVoucher.data?.data?.max_discount_price,
+          discount_percentage:
+            adminVoucher.data?.data?.discount_percentage ?? 0,
+          discount_fix_price: adminVoucher.data?.data?.discount_fix_price ?? 0,
+          min_product_price: adminVoucher.data?.data?.min_product_price ?? 0,
+          max_discount_price: adminVoucher.data?.data?.max_discount_price ?? 0,
         })
         setEdit(true)
       } else if (typeManage === 'duplicate') {
         setInput({
           code: '',
-          quota: adminVoucher.data?.data?.quota,
+          quota: adminVoucher.data?.data?.quota ?? 0,
           actived_date: moment(adminVoucher.data?.data?.actived_date).format(
             'YYYY-MM-DD HH:mm'
           ),
           expired_date: moment(adminVoucher.data?.data?.expired_date).format(
             'YYYY-MM-DD HH:mm'
           ),
-          discount_percentage: adminVoucher.data?.data?.discount_percentage,
-          discount_fix_price: adminVoucher.data?.data?.discount_fix_price,
-          min_product_price: adminVoucher.data?.data?.min_product_price,
-          max_discount_price: adminVoucher.data?.data?.max_discount_price,
+          discount_percentage:
+            adminVoucher.data?.data?.discount_percentage ?? 0,
+          discount_fix_price: adminVoucher.data?.data?.discount_fix_price ?? 0,
+          min_product_price: adminVoucher.data?.data?.min_product_price ?? 0,
+          max_discount_price: adminVoucher.data?.data?.max_discount_price ?? 0,
         })
         setDuplicate(true)
       }
 
-      if (adminVoucher.data?.data?.discount_fix_price > 0) {
+      if (
+        typeof adminVoucher.data?.data?.discount_fix_price === 'number' &&
+        adminVoucher.data?.data?.discount_fix_price > 0
+      ) {
         setSelected('F')
       }
     }
   }, [adminVoucher.isSuccess])
-
-  const [input, setInput] = useState<CreateUpdateVoucher>({
-    code: '',
-    quota: 0,
-    actived_date: '',
-    expired_date: '',
-    discount_percentage: 0,
-    discount_fix_price: 0,
-    min_product_price: 0,
-    max_discount_price: 0,
-  })
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     const inputName = event.currentTarget.name

@@ -176,7 +176,7 @@ const SearchPage: NextPage = () => {
       })
       let num1 = 0
       let num2 = 0
-      if (SearchProductList.isSuccess) {
+      if (SearchProductList.data?.data) {
         num1 =
           (SearchProductList.data.data.page - 1) *
             SearchProductList.data.data.limit +

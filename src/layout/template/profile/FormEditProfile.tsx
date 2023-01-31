@@ -83,19 +83,6 @@ const FormEditProfile: React.FC = () => {
   const handleEditProfile = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     editUserProfile.mutate(input)
-
-    void dispatch(closeModal())
-    setInput({
-      email: '',
-      full_name: '',
-      user_name: '',
-      phone_number: '',
-      birth_date: '',
-      id: '',
-      photo_url: '',
-      gender: 'M',
-      role: 1,
-    })
   }
 
   //TODO: Still buggy, fix later
@@ -156,7 +143,9 @@ const FormEditProfile: React.FC = () => {
               type="date"
               name="birth_date"
               onChange={handleChange}
-              max={moment(Date.now()).format('YYYY-MM-DD')}
+              max={moment(
+                new Date(new Date().setDate(new Date().getDate() - 1))
+              ).format('YYYY-MM-DD')}
               placeholder={String(Date.now())}
               value={moment(input.birth_date).format('YYYY-MM-DD')}
               full

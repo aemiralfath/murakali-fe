@@ -71,7 +71,7 @@ function Cart() {
       <div className="container my-8 mx-auto mb-10 h-fit min-h-screen w-full px-2">
         <div className="grid grid-cols-1 gap-2 xl:grid-cols-4">
           <div className="col-span-3  flex flex-col gap-5">
-            <div className="flex justify-between rounded-lg border-[1px] border-solid border-gray-300 py-5 px-8">
+            <div className="flex  justify-between rounded-lg border-[1px] border-solid border-gray-300 py-5 px-8">
               <label className="flex-start flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -133,7 +133,11 @@ function Cart() {
                                     y < sh.product_details.length;
                                     y++
                                   ) {
-                                    deleteCart.mutate(sh.product_details[y].id)
+                                    const tempProductDetails =
+                                      sh.product_details[y]
+                                    if (tempProductDetails !== undefined) {
+                                      deleteCart.mutate(tempProductDetails.id)
+                                    }
                                   }
                                 })
                               }
@@ -153,10 +157,10 @@ function Cart() {
             </div>
             {!cartList.isLoading ? (
               <>
-                {cartList.data?.data.rows ? (
+                {cartList.data?.data?.rows ? (
                   cartList.data.data.rows.map((cart, index) => (
                     <div
-                      className="z-10 h-full rounded-lg border-[1px] border-solid border-gray-300 py-7 px-8"
+                      className="z-0 h-full rounded-lg border-[1px] border-solid border-gray-300 py-7 px-8"
                       key={`${cart.id} ${index}`}
                     >
                       <label className="flex-start mb-5 flex items-center gap-2">
@@ -293,7 +297,7 @@ function Cart() {
             )}
 
             {cartList.data?.data?.total_pages === 0 ? (
-              <div className="z-10 flex h-full items-center rounded-lg border-[1px] border-solid border-gray-300 py-7 px-8">
+              <div className="z-0 flex h-full items-center rounded-lg border-[1px] border-solid border-gray-300 py-7 px-8">
                 <P className="flex w-full items-center justify-center font-extrabold">
                   Cart is Empty!
                 </P>

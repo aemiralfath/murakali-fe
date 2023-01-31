@@ -58,7 +58,7 @@ const SellerLayout: React.FC<SellerLayoutProps> = ({
         </>
       ) : (
         <>
-          {data.length > 0 ? (
+          {data && data.length > 0 ? (
             <>
               {data.map((shop, index) => (
                 <div key={index}>
@@ -114,11 +114,11 @@ const SellerLayout: React.FC<SellerLayoutProps> = ({
                   </div>
                 </div>
               ))}
-              {!isLoading && data?.length !== 0 ? (
+              {!isLoading && data?.length !== 0 && setPageShop ? (
                 <div className="mt-4 flex w-full justify-center">
                   <PaginationNav
                     total={totalPage ?? 1}
-                    page={pageShop}
+                    page={pageShop ?? 1}
                     onChange={setPageShop}
                     size="sm"
                   />

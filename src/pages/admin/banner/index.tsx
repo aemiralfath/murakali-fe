@@ -76,7 +76,7 @@ function BannerAdmin() {
           {banner.isLoading ? (
             <>Loading...</>
           ) : (
-            banner.data?.data.map((item, index) => {
+            banner.data?.data?.map((item, index) => {
               return (
                 <div
                   key={index}

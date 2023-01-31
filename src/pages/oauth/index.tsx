@@ -38,9 +38,11 @@ function OauthPage() {
         reason.response ? reason.response.data.message : reason.message
       )
 
-      router.push(
-        reason.response.data.data ? reason.response.data.data.path_url : '/'
-      )
+      if (reason.response?.data?.data !== undefined) {
+        router.push(
+          reason.response.data.data ? reason.response.data.data.path_url : '/'
+        )
+      }
     }
   }, [googleAuth.isError])
 }

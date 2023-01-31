@@ -7,18 +7,19 @@ import { useQuery } from '@tanstack/react-query'
 const voucherShop = 'voucher-shop'
 const voucherMarketplace = 'voucher-marketplace'
 
-const getVoucherShopCheckout = async (id: string) => {
+const getVoucherShopCheckout = async (id?: string) => {
   const response = await unauthorizedClient.get<
     APIResponse<PaginationData<VoucherData>>
   >('/cart/voucher/' + id + '?limit=100')
   return response.data
 }
 
-export const useGetVoucherShopCheckout = (id: string) => {
-  return useQuery(
-    [voucherShop, id],
-    async () => await getVoucherShopCheckout(id)
-  )
+export const useGetVoucherShopCheckout = (id?: string) => {
+  return useQuery({
+    queryKey: [voucherShop, id],
+    queryFn: async () => await getVoucherShopCheckout(id),
+    enabled: Boolean(id),
+  })
 }
 
 const getVoucherMarketplaceCheckout = async () => {

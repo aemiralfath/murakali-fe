@@ -42,7 +42,7 @@ const PromotionDetailSeller = () => {
   }, [promotionDetail.isLoading])
 
   useEffect(() => {
-    if (promotionDetail.isSuccess) {
+    if (promotionDetail.data?.data) {
       setInput({
         ...input,
         name: promotionDetail.data?.data.promotion_name,

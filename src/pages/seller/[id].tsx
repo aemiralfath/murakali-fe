@@ -88,7 +88,7 @@ const CategoryTab: React.FC<{
       <>
         {sm ? (
           categories.length > 4 ? (
-            <div className="dropdown-end dropdown dropdown-hover mx-auto w-full">
+            <div className="dropdown dropdown-end dropdown-hover mx-auto w-full">
               <label
                 tabIndex={0}
                 className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
@@ -103,7 +103,7 @@ const CategoryTab: React.FC<{
 
               <ul
                 tabIndex={0}
-                className="dropdown-end dropdown-content dropdown-hover menu rounded-box w-52 bg-base-100 p-2 shadow"
+                className="dropdown-content dropdown-end dropdown-hover menu rounded-box w-52 bg-base-100 p-2 shadow"
               >
                 {categories.slice(3, 999).map((item, index) => {
                   return (
@@ -127,7 +127,7 @@ const CategoryTab: React.FC<{
           )
         ) : (
           <>
-            <div className="dropdown-end dropdown dropdown-hover mx-auto w-full">
+            <div className="dropdown dropdown-end dropdown-hover mx-auto w-full">
               <label
                 tabIndex={0}
                 className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
@@ -142,7 +142,7 @@ const CategoryTab: React.FC<{
 
               <ul
                 tabIndex={0}
-                className="dropdown-end dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
+                className="dropdown-content dropdown-end menu rounded-box w-52 bg-base-100 p-2 shadow"
               >
                 {categories.slice(0, 999).map((item, index) => {
                   return (
@@ -186,13 +186,13 @@ function Seller() {
     6,
     '',
     '',
-    param.query.id as string,
     'unit_sold',
     'desc',
     0,
     0,
     0,
-    0
+    0,
+    param.query.id as string
   )
 
   const {
@@ -392,13 +392,14 @@ function Seller() {
               <a href="#allproducts">See All</a>
             </H4>
           </div>
-          <ProductCarousel product={product.data?.data.rows} />
+          <ProductCarousel product={product.data?.data?.rows ?? []} />
           <div id="allproducts"></div>
           <Divider />
           <H3>Seller Products</H3>
           {SearchProductList.isLoading ? (
             <ProductListingLayout controller={controller} isLoading={true} />
-          ) : SearchProductList.data.data.rows ? (
+          ) : SearchProductList.data?.data &&
+            SearchProductList.data.data.rows ? (
             <ProductListingLayout
               controller={controller}
               isLoading={false}

@@ -16,8 +16,10 @@ const NumberInput: React.FC<NumberInputProps> = ({
   ...rest
 }) => {
   useEffect(() => {
-    if (value >= maxValue) {
-      setValue(maxValue)
+    if (typeof value === 'number') {
+      if (value >= maxValue) {
+        setValue(maxValue)
+      }
     }
   }, [maxValue])
 

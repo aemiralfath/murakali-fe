@@ -163,15 +163,14 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
                   <ProgressBar index={2} value={0} />
                   <ProgressBar index={1} value={0} />
                 </>
-              ) : (
+              ) : rating ? (
                 <>
                   <ProgressBar
                     index={5}
                     value={parseFloat(
                       (
-                        (rating?.rating_product[4].count /
-                          rating?.total_rating) *
-                        100
+                        (rating?.rating_product[4]?.count ??
+                          0 / rating?.total_rating) * 100
                       ).toFixed(1)
                     )}
                     onClick={() => {
@@ -183,9 +182,8 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
                     index={4}
                     value={parseFloat(
                       (
-                        (rating?.rating_product[3].count /
-                          rating?.total_rating) *
-                        100
+                        (rating?.rating_product[3]?.count ??
+                          0 / rating?.total_rating) * 100
                       ).toFixed(1)
                     )}
                     onClick={() => {
@@ -197,9 +195,8 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
                     index={3}
                     value={parseFloat(
                       (
-                        (rating?.rating_product[2].count /
-                          rating?.total_rating) *
-                        100
+                        (rating?.rating_product[2]?.count ??
+                          0 / rating?.total_rating) * 100
                       ).toFixed(1)
                     )}
                     onClick={() => {
@@ -211,9 +208,8 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
                     index={2}
                     value={parseFloat(
                       (
-                        (rating?.rating_product[1].count /
-                          rating?.total_rating) *
-                        100
+                        (rating?.rating_product[1]?.count ??
+                          0 / rating?.total_rating) * 100
                       ).toFixed(1)
                     )}
                     onClick={() => {
@@ -225,9 +221,8 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
                     index={1}
                     value={parseFloat(
                       (
-                        (rating?.rating_product[0].count /
-                          rating?.total_rating) *
-                        100
+                        (rating?.rating_product[0]?.count ??
+                          0 / rating?.total_rating) * 100
                       ).toFixed(1)
                     )}
                     onClick={() => {
@@ -236,6 +231,8 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
                     }}
                   />
                 </>
+              ) : (
+                <></>
               )}
             </div>
             <div className="flex items-center gap-x-2">
@@ -307,7 +304,7 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          {review.data?.data.rows?.length > 0 ? (
+          {review.data?.data?.rows && review.data?.data.rows.length > 0 ? (
             <>
               {review.data?.data.rows?.map((item, index) => {
                 return (

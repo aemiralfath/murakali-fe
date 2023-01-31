@@ -134,7 +134,9 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
 
   useEffect(() => {
     if (useCategory.isSuccess) {
-      setCategoryList(useCategory.data?.data)
+      if (useCategory.data.data) {
+        setCategoryList(useCategory.data.data)
+      }
     }
   }, [useCategory.isSuccess])
 
