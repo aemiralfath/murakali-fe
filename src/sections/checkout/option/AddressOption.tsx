@@ -130,7 +130,10 @@ const AddressOption: React.FC<AddressOptionProps> = ({ is_shop_address }) => {
             ))}
           </>
         ) : (
-          <P></P>
+          <P className="italic text-gray-400">
+            You dont have any address, please go to profile page and make
+            shipping address
+          </P>
         )
       ) : (
         <P>Loading</P>

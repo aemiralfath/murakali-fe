@@ -921,27 +921,31 @@ const ManagePromotionSeller = () => {
           </div>
         </div>
         <div className="mt-6 flex justify-end gap-3">
-          <Button onClick={handleSubmit} buttonType="primary">
-            {intent === 'edit' ? 'Edit' : 'Save'}
-          </Button>
           <Button onClick={() => router.back()} buttonType="primary" outlined>
             Cancel
+          </Button>
+          <Button onClick={handleSubmit} buttonType="primary">
+            {intent === 'edit' ? 'Edit' : 'Save'}
           </Button>
         </div>
 
         {intent === 'add' ? (
-          <div className="mt-3 flex max-w-full flex-col overflow-auto rounded border bg-white px-6 pt-6">
+          <div className="mt-3 flex max-w-full flex-col  rounded border bg-white px-6 pt-6">
             <div className="flex w-full flex-wrap items-center justify-between gap-2 py-5">
               <H2>Select Products</H2>
             </div>
-            <Table
-              empty={
-                getProductNoPromotionSeller.isLoading ||
-                getProductNoPromotionSeller.isError
-              }
-              data={formatData(getProductNoPromotionSeller.data?.data)}
-              isLoading={getProductNoPromotionSeller.isLoading}
-            />
+            <div className=" overflow-auto">
+              {' '}
+              <Table
+                empty={
+                  getProductNoPromotionSeller.isLoading ||
+                  getProductNoPromotionSeller.isError
+                }
+                data={formatData(getProductNoPromotionSeller.data?.data)}
+                isLoading={getProductNoPromotionSeller.isLoading}
+              />
+            </div>
+
             <div className="mt-8 flex items-center gap-2">
               <P>Showing</P>
               {getProductNoPromotionSeller.data?.data ? (

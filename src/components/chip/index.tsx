@@ -21,7 +21,7 @@ const Chip: React.FC<ChipProps> = ({
     <div
       className={cx(
         className ?? '',
-        'max-w-fit whitespace-nowrap rounded-full px-2 py-1 text-xs font-semibold uppercase',
+        'block max-w-fit truncate whitespace-nowrap rounded-full px-2 py-1 text-xs font-semibold uppercase ',
         type === 'primary'
           ? 'bg-primary text-white'
           : type === 'secondary'

@@ -451,7 +451,7 @@ const ProductPage: NextPage = () => {
                 </div>
               </div>
             ) : (
-              <P className="italic text-gray-400">
+              <P className="mx-5 italic text-gray-400">
                 There are no voucher for this product, yet.
               </P>
             )}

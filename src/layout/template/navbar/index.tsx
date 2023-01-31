@@ -34,7 +34,7 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
   const [cartRef, isCartHover] = useHover()
   const router = useRouter()
   return (
-    <div className="nav-item relative" ref={cartRef}>
+    <div className="nav-item relative z-50 " ref={cartRef}>
       <Link
         href={`/cart`}
         className="flex items-center px-3 py-2 text-xs font-bold uppercase leading-snug text-white hover:opacity-75"
@@ -74,7 +74,7 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                             alt={data.title}
                             className={'aspect-square h-[4.5rem] w-[4.5rem]'}
                           />
-                          <div className="flex flex-1 flex-col gap-2 px-2">
+                          <div className="flex flex-1 flex-col flex-wrap gap-2 px-1">
                             <div className="mt-1 font-semibold leading-4 line-clamp-2">
                               {data.title}
                             </div>
@@ -84,8 +84,8 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                               })}
                             </div>
                           </div>
-                          <div className="flex w-[6rem] flex-col overflow-ellipsis text-right">
-                            <div className="text-lg font-semibold">
+                          <div className="flex w-[9rem] flex-col overflow-ellipsis text-right">
+                            <div className="block truncate text-lg font-semibold">
                               {data.sub_price === 0
                                 ? 'Rp.' + formatMoney(data.price)
                                 : 'Rp.' + formatMoney(data.sub_price)}

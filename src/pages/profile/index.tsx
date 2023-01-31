@@ -74,7 +74,7 @@ function ManageProfile() {
                         Phone Number
                       </P>
                       <P className="text-lg font-semibold">
-                        {userProfile.data.data.phone_number ?? '-'}
+                        {'+62 ' + userProfile.data.data.phone_number ?? '-'}
                       </P>
                     </div>
                     <div className="">

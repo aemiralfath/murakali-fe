@@ -1,3 +1,4 @@
+import { Button } from '@/components'
 import { Dialog, Transition } from '@headlessui/react'
 
 import React, { Fragment, useEffect, useState } from 'react'
@@ -28,7 +29,7 @@ const ModalPicture: React.FC<ModalPictureProps> = ({
   }, [])
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+      <Dialog as="div" className="relative z-20" onClose={closeModal}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -52,7 +53,17 @@ const ModalPicture: React.FC<ModalPictureProps> = ({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className=" h-full w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white p-1 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className=" h-full w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white p-1 pb-14 text-left align-middle shadow-xl transition-all">
+                <div className="flex w-full justify-end">
+                  <Button
+                    buttonType="ghost"
+                    onClick={() => {
+                      closeModal()
+                    }}
+                  >
+                    X
+                  </Button>
+                </div>
                 <div className="m-1 flex items-center justify-center ">
                   <img
                     width={imageSize}

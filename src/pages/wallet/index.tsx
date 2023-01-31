@@ -37,7 +37,7 @@ function Wallet() {
             </div>
           ) : userWallet.isError ? (
             <div className="flex flex-col items-center justify-center">
-              <P className="text-center font-bold text-gray-500">
+              <P className="text-center italic text-gray-500">
                 You Dont Have Wallet, Click Button Bellow and input your pin to
                 activated wallet
               </P>
@@ -63,7 +63,7 @@ function Wallet() {
                 <div>
                   <P className="font-bold">Wallet Number</P>
                   <P className="font-bold text-primary">
-                    {userWallet.data.data.id}
+                    {userWallet.data?.data.id}
                   </P>
                 </div>
               </div>
@@ -71,7 +71,7 @@ function Wallet() {
                 <div>
                   <P className="font-bold">Ballance</P>
                   <H1 className="text-primary">
-                    Rp. {formatMoney(userWallet.data.data.balance)}
+                    Rp. {formatMoney(userWallet.data?.data?.balance)}
                   </H1>
                 </div>
                 <div>

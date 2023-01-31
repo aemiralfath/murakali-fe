@@ -44,7 +44,7 @@ const ProductDescription = ({ seller, productInfo }: ProductDescription) => {
       </div>
       <div className="mt-4 items-center rounded border p-2 sm:flex sm:divide-x">
         <div className="flex items-center gap-4 pr-4">
-          <Avatar size="lg" />
+          <Avatar size="lg" url={seller.photo_url} />
           <div className="w-fit overflow-ellipsis xl:w-[10rem]">
             <A
               className="font-semibold"

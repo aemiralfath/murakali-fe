@@ -183,14 +183,14 @@ function Checkout() {
             <div className="flex h-fit flex-wrap items-center justify-between gap-10 rounded-lg border-[1px] border-solid border-gray-300 py-5 px-8">
               <div>
                 <>
-                  {addresInfo ? (
+                  {addresInfo.fullAddress != '' ? (
                     <div>
                       <H3 className="mb-1 font-bold">Shipping Address:</H3>
                       <P className="font-bold">{addresInfo.name}</P>
                       <P>{addresInfo.fullAddress}</P>
                     </div>
                   ) : (
-                    <P className="font-bold">
+                    <P className="italic text-gray-400">
                       You dont have default address, please choose your default
                       address
                     </P>
@@ -439,8 +439,8 @@ function Checkout() {
                 <CheckoutSummary
                   mapPriceQuantity={mapPriceQuantitys}
                   postCheckout={checkoutItems}
-                  userWallet={userWallet.data.data}
-                  userSLP={userSLP.data.data}
+                  userWallet={userWallet.data?.data}
+                  userSLP={userSLP.data?.data}
                 />
               ) : (
                 <></>
