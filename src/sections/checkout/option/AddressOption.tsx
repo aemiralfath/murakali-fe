@@ -42,33 +42,40 @@ const AddressOption: React.FC<AddressOptionProps> = ({ is_shop_address }) => {
     let index = 0
     if (userAllAddress.data?.data?.rows.length) {
       for (let i = 0; i < userAllAddress.data?.data?.rows.length; i++) {
-        if (userAllAddress.data?.data?.rows[i].id === selected) {
+        if (userAllAddress.data?.data?.rows[i]?.id === selected) {
           index = i
         }
       }
 
-      let isDefault = userAllAddress.data?.data?.rows[index].is_default
-      let isShopDefault = userAllAddress.data?.data?.rows[index].is_shop_default
+      let isDefault = Boolean(
+        userAllAddress.data?.data?.rows[index]?.is_default
+      )
+      let isShopDefault = Boolean(
+        userAllAddress.data?.data?.rows[index]?.is_shop_default
+      )
 
       is_shop_address ? (isShopDefault = true) : (isDefault = true)
 
-      const temp: AddressDetail = {
-        id: selected,
-        user_id: '',
-        name: userAllAddress.data?.data?.rows[index].name,
-        province_id: userAllAddress.data?.data?.rows[index].province_id,
-        city_id: userAllAddress.data?.data?.rows[index].city_id,
-        province: userAllAddress.data?.data?.rows[index].province,
-        city: userAllAddress.data?.data?.rows[index].city,
-        district: userAllAddress.data?.data?.rows[index].district,
-        sub_district: userAllAddress.data?.data?.rows[index].sub_district,
-        zip_code: userAllAddress.data?.data?.rows[index].zip_code,
-        address_detail: userAllAddress.data?.data?.rows[index].address_detail,
-        is_default: isDefault,
-        is_shop_default: isShopDefault,
-      }
+      const tempAddress = userAllAddress.data?.data?.rows[index]
+      if (tempAddress !== undefined) {
+        const temp: AddressDetail = {
+          id: selected,
+          user_id: '',
+          name: tempAddress.name,
+          province_id: tempAddress.province_id,
+          city_id: tempAddress.city_id,
+          province: tempAddress.province,
+          city: tempAddress.city,
+          district: tempAddress.district,
+          sub_district: tempAddress.sub_district,
+          zip_code: tempAddress.zip_code,
+          address_detail: tempAddress.address_detail,
+          is_default: isDefault,
+          is_shop_default: isShopDefault,
+        }
 
-      editAddress.mutate(temp)
+        editAddress.mutate(temp)
+      }
     }
   }
 
@@ -130,7 +137,8 @@ const AddressOption: React.FC<AddressOptionProps> = ({ is_shop_address }) => {
       )}
       <div className="my-2 flex justify-end">
         <div className="btn-group">
-          {userAllAddress.data?.data?.total_rows > 2 ? (
+          {userAllAddress.data?.data &&
+          userAllAddress.data?.data?.total_rows > 2 ? (
             Array.from(Array(userAllAddress.data?.data?.total_pages)).map(
               (_, index) => {
                 return (

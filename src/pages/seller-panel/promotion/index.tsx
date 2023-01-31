@@ -29,7 +29,7 @@ function PromotionSeller() {
   const [limit, setLimit] = useState(10)
 
   const formatData = (data?: PaginationData<SellerPromotion>) => {
-    if (data?.rows?.length > 0) {
+    if (data && data?.rows?.length > 0) {
       return data.rows.map((row) => ({
         'Promotion Name': <P className="font-semibold">{row.promotion_name}</P>,
         Product: (

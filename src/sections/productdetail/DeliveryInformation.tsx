@@ -24,7 +24,7 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
   const defaultAddress = useGetDefaultAddress(
     true,
     false,
-    Boolean(user.data?.data.id)
+    Boolean(user.data?.data?.id)
   )
 
   const locationCost = useLocationCost()
@@ -47,28 +47,34 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
   }, [destination, weight])
 
   useEffect(() => {
-    if (locationCost.data?.data) {
-      let max = locationCost.data?.data.data.shipping_option[0].fee
-      let min = locationCost.data?.data.data.shipping_option[0].fee
+    if (locationCost.data?.data?.data) {
+      const tempShippingOption = locationCost.data?.data.data.shipping_option[0]
 
-      locationCost.data?.data.data.shipping_option.forEach(function (location) {
-        if (location.fee > max) {
-          max = location.fee
-        }
-        if (min > location.fee) {
-          min = location.fee
-        }
-      })
+      if (tempShippingOption !== undefined) {
+        let max = tempShippingOption.fee
+        let min = tempShippingOption.fee
 
-      setMinMax({ min: min, max: max })
+        locationCost.data?.data.data.shipping_option.forEach(function (
+          location
+        ) {
+          if (location.fee > max) {
+            max = location.fee
+          }
+          if (min > location.fee) {
+            min = location.fee
+          }
+        })
+
+        setMinMax({ min: min, max: max })
+      }
     }
   }, [locationCost.isSuccess])
 
   useEffect(() => {
-    if (defaultAddress.isSuccess) {
+    if (defaultAddress.data?.data) {
       setDestination({
-        city: defaultAddress.data?.data?.rows[0].city,
-        city_id: defaultAddress.data?.data?.rows[0].city_id,
+        city: defaultAddress.data?.data?.rows[0]?.city ?? '',
+        city_id: defaultAddress.data?.data?.rows[0]?.city_id ?? 0,
       })
     }
   }, [defaultAddress.isSuccess])
@@ -121,7 +127,7 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
               </Menu.Button>
 
               {!locationCost.isLoading ? (
-                locationCost.isSuccess ? (
+                locationCost.data?.data?.data ? (
                   locationCost.data?.data?.data?.shipping_option.length > 0 ? (
                     <div>
                       <Menu.Items className="absolute max-h-44 w-56 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">

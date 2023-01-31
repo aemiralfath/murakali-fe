@@ -41,7 +41,7 @@ function ManageVouchers() {
   }, [voucherId])
 
   useEffect(() => {
-    if (sellerVoucher.isSuccess) {
+    if (sellerVoucher.data?.data) {
       if (typeManage === 'update') {
         setInput({
           code: sellerVoucher.data?.data?.code,

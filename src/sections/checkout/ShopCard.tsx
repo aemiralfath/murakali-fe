@@ -45,7 +45,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
       setProductD(
         postCheckout.cart_items.filter(
           (item) => cart.shop.id === item.shop_id
-        )[0].product_details
+        )[0]?.product_details ?? []
       )
     }
   }, [postCheckout])
@@ -172,7 +172,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
               )}
             </Menu.Button>
 
-            {locationCost.isSuccess ? (
+            {locationCost.data?.data?.data ? (
               locationCost.data.data.data.shipping_option.length > 0 ? (
                 <div>
                   <Menu.Items className="absolute w-44 origin-top-left  divide-y divide-gray-100 rounded-md bg-white shadow-lg focus:outline-none ">
@@ -251,7 +251,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
               )}
             </Menu.Button>
 
-            {voucherShop.isSuccess ? (
+            {voucherShop.data?.data ? (
               voucherShop.data?.data?.rows?.length > 0 ? (
                 <div>
                   <Menu.Items className="absolute max-h-64 w-56 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">

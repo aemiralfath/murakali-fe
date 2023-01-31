@@ -34,7 +34,7 @@ const OrderPerProvinceMap: React.FC<{
                 geography={geo}
                 fill={colorScale
                   .getColor(
-                    foundIndex === -1 ? 0 : orders[foundIndex].num_orders
+                    foundIndex === -1 ? 0 : orders[foundIndex]?.num_orders ?? 0
                   )
                   .toHexString()}
                 className={'transition-all hover:fill-primary-focus'}

@@ -28,7 +28,8 @@ function Category() {
             <>Loading</>
           ) : (
             <>
-              {useCategory.data?.data?.length > 0 ? (
+              {typeof useCategory.data?.data?.length === 'number' &&
+              useCategory.data.data.length > 0 ? (
                 <>
                   {useCategory.data?.data?.map((levelOne, index) => (
                     <div

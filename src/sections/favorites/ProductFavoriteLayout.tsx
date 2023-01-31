@@ -87,7 +87,7 @@ const ProductFavoriteLayout: React.FC<ProductFavoriteLayoutProps> = ({
   const useCategory = useGetAllCategory()
 
   useEffect(() => {
-    if (useCategory.isSuccess) {
+    if (useCategory.data?.data) {
       setCategoryList(useCategory.data?.data)
     }
   }, [useCategory.isSuccess])

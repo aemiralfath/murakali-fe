@@ -62,7 +62,7 @@ const SellerPanelHome = () => {
   }, [sellerPerformance.isSuccess])
 
   useEffect(() => {
-    if (sellerPerformance.data?.data.num_order_by_province) {
+    if (sellerPerformance.data?.data?.num_order_by_province) {
       setMaxOrder(
         sellerPerformance.data.data.num_order_by_province.reduce(
           (prev, current) =>
@@ -91,7 +91,7 @@ const SellerPanelHome = () => {
               <div className="col-span-12 lg:col-span-7 xl:col-span-9">
                 <H2>Daily Order</H2>
                 <div className="h-[24rem] w-full">
-                  {sellerPerformance.isSuccess ? (
+                  {sellerPerformance.data?.data ? (
                     <DailyOrderLineChart
                       dailyOrder={sellerPerformance.data.data.daily_order}
                     />
@@ -102,7 +102,7 @@ const SellerPanelHome = () => {
                   )}
                 </div>
                 <div className="h-[8rem] w-full">
-                  {sellerPerformance.isSuccess ? (
+                  {sellerPerformance.data?.data ? (
                     <DailySalesAreaChart
                       dailySales={sellerPerformance.data.data.daily_sales}
                     />
@@ -117,7 +117,7 @@ const SellerPanelHome = () => {
                 <div className="flex flex-col gap-2">
                   <H2>Total Rating</H2>
                   <div className="w-full flex-1 py-2">
-                    {sellerPerformance.isSuccess ? (
+                    {sellerPerformance.data?.data ? (
                       <TotalRatingAreaChart
                         totalRating={sellerPerformance.data.data.total_rating}
                       />
@@ -141,7 +141,7 @@ const SellerPanelHome = () => {
                   </div>
                   <H2>Total Sales</H2>
                   <div className="w-full flex-1 p-2">
-                    {sellerPerformance.isSuccess ? (
+                    {sellerPerformance.data?.data ? (
                       <TotalSalesPieChart
                         totalSales={sellerPerformance.data.data.total_sales}
                       />
@@ -206,7 +206,7 @@ const SellerPanelHome = () => {
               <div>
                 <H3>Order per Province</H3>
                 <>
-                  {sellerPerformance.isSuccess ? (
+                  {sellerPerformance.data?.data ? (
                     <OrderPerProvinceMap
                       maxOrder={maxOrder}
                       orders={sellerPerformance.data.data.num_order_by_province}
@@ -219,14 +219,14 @@ const SellerPanelHome = () => {
                   {sellerPerformance.data?.data
                     ? sellerPerformance.data.data.num_order_by_province
                         .slice(0, 5)
-                        .map((order) => (
+                        .map((order, idx) => (
                           <ProgressBar
                             key={order.province_id}
                             label={
                               provinces.data?.data
                                 ? provinces.data.data.rows[
                                     order.province_id - 1
-                                  ].province
+                                  ]?.province ?? String(idx)
                                 : `${order.province_id}`
                             }
                             value={order.num_orders}

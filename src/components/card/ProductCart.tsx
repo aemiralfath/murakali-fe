@@ -73,7 +73,7 @@ const ProductCart: React.FC<ProductCartProps> = ({
   }
 
   useEffect(() => {
-    if (input.note != '') {
+    if (input.note != '' && productNote) {
       productNote(listProduct.id, input.note)
     }
   }, [input])

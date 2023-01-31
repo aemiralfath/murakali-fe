@@ -20,7 +20,7 @@ const SubImage: React.FC<{
   alt: string
   isSelected: boolean
   mainImage: string
-  setMainImage: React.Dispatch<React.SetStateAction<string>>
+  setMainImage: (s: string) => void
   setMainID: React.Dispatch<React.SetStateAction<number>>
 }> = ({ id, url, alt, isSelected, mainImage, setMainImage, setMainID }) => {
   const [ref, isHovered] = useHover()
@@ -64,10 +64,14 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   const [ref, isHovered] = useHover()
 
   const handleNextImage = () => {
-    setMainID(mainID === data.images.length - 1 ? 0 : mainID + 1)
+    setMainID(
+      data?.images && mainID === data.images.length - 1 ? 0 : mainID + 1
+    )
   }
   const handlePreviousImage = () => {
-    setMainID(mainID === 0 ? data.images.length - 1 : mainID - 1)
+    setMainID(
+      data?.images && mainID === 0 ? data.images.length - 1 : mainID - 1
+    )
   }
 
   const swipeHandler = useSwipeable({
@@ -82,8 +86,8 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   }, [selectedImageUrl, data])
 
   useEffect(() => {
-    if (data.images) {
-      setMainImage(data.images[mainID].url)
+    if (data?.images) {
+      setMainImage(data.images[mainID]?.url)
     }
   }, [mainID])
 
@@ -102,10 +106,10 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
               <div key={idx}>
                 <SubImage
                   id={idx}
-                  alt={data.alt}
+                  alt={data.alt ?? 'Sub Image'}
                   isSelected={img.product_detail_id === mainImage}
                   url={img.url}
-                  mainImage={mainImage}
+                  mainImage={mainImage ?? '/asset/image-empty.jpg'}
                   setMainID={setMainID}
                   setMainImage={setMainImage}
                 />
@@ -159,10 +163,10 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
                 setIsOpen(true)
               }}
               {...swipeHandler}
-              src={mainImage}
+              src={mainImage ?? '/asset/image-empty.jpg'}
               width={400}
               height={400}
-              alt={data.alt}
+              alt={data.alt ?? 'Product Main Image'}
               className={'w-full rounded'}
               onError={({ currentTarget }) => {
                 currentTarget.onerror = null
@@ -171,8 +175,8 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
             />
             <ModalPicture
               isOpen={isOpen}
-              productImage={selectedImageUrl}
-              productTitle={data.alt}
+              productImage={selectedImageUrl ?? '/asset/image-empty.jpg'}
+              productTitle={data.alt ?? 'Product Image'}
               closeModal={() => {
                 setIsOpen(false)
               }}

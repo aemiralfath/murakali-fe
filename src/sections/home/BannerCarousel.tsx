@@ -93,17 +93,19 @@ const BannerCarousel: React.FC<{
 
   useEffect(() => {
     const carouselContainer = carouselRef.current
-    const interval = setInterval(() => {
-      if (
-        carouselContainer.scrollLeft + carouselContainer.clientWidth ===
-        carouselContainer.scrollWidth
-      ) {
-        carouselContainer.scrollLeft = 0
-      } else {
-        setScroll('right')
-      }
-    }, 7000)
-    return () => clearInterval(interval)
+    if (carouselContainer !== null) {
+      const interval = setInterval(() => {
+        if (
+          carouselContainer.scrollLeft + carouselContainer.clientWidth ===
+          carouselContainer.scrollWidth
+        ) {
+          carouselContainer.scrollLeft = 0
+        } else {
+          setScroll('right')
+        }
+      }, 7000)
+      return () => clearInterval(interval)
+    }
   }, [])
 
   return (

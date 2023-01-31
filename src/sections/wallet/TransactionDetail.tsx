@@ -43,7 +43,9 @@ const TransactionDetail: React.FC<TransactionDetailProps> = ({
             )}
           </P>
 
-          {useWalletHistoryDetail.data?.data?.transaction?.orders.length > 0 ? (
+          {Number(
+            useWalletHistoryDetail.data?.data?.transaction?.orders.length
+          ) > 0 ? (
             <div>
               <div className="mt-4 border-t-4 border-dashed border-gray-400 pt-3 ">
                 <P className="font-bold">Transaction ID :</P>
@@ -81,7 +83,7 @@ const TransactionDetail: React.FC<TransactionDetailProps> = ({
                         (accumulator, currentValue) =>
                           accumulator + currentValue.delivery_fee,
                         0
-                      )
+                      ) ?? 0
                     )}
                   </P>
                 </div>
@@ -92,7 +94,8 @@ const TransactionDetail: React.FC<TransactionDetailProps> = ({
                 <P className="flex justify-start sm:justify-end">
                   Rp.{' '}
                   {formatMoney(
-                    useWalletHistoryDetail.data?.data?.transaction.total_price
+                    useWalletHistoryDetail.data?.data?.transaction
+                      .total_price ?? 0
                   )}
                 </P>
               </div>
