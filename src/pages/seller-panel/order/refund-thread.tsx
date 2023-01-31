@@ -160,7 +160,13 @@ function RefundThread() {
             <P className="flex w-full justify-center">Loading</P>
           ) : order.isSuccess ? (
             <>
-              <RefundOrderDetail order={order.data.data} />
+              <RefundOrderDetail
+                order={order.data.data}
+                refundThreadData={refundThreadData.data.data}
+                handleActionAccept={handleActionAccept}
+                handleActionRejected={handleActionRejected}
+                isSeller={true}
+              />
             </>
           ) : (
             <div>{'Error'}</div>
@@ -204,34 +210,6 @@ function RefundThread() {
                   <div>
                     <Button buttonType="secondary" onClick={handleSubmit}>
                       send
-                    </Button>
-                  </div>
-                  <div className="flex gap-3 ">
-                    <Button
-                      buttonType="primary"
-                      className="text-white"
-                      onClick={handleActionAccept}
-                      disabled={
-                        refundThreadData.data?.data?.refund_data.accepted_at
-                          .Valid ||
-                        refundThreadData.data?.data?.refund_data.rejected_at
-                          .Valid
-                      }
-                    >
-                      Accepted
-                    </Button>
-                    <Button
-                      buttonType="error"
-                      className="text-white"
-                      onClick={handleActionRejected}
-                      disabled={
-                        refundThreadData.data?.data?.refund_data.accepted_at
-                          .Valid ||
-                        refundThreadData.data?.data?.refund_data.rejected_at
-                          .Valid
-                      }
-                    >
-                      Rejected
                     </Button>
                   </div>
                 </div>

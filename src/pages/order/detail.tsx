@@ -5,6 +5,7 @@ import {
   useGetReviewByUserID,
 } from '@/api/product/review'
 import { useGetUserProfile } from '@/api/user/profile'
+import { useGetRefundThread } from '@/api/user/refund'
 import { useGetUserWallet } from '@/api/user/wallet'
 import {
   A,
@@ -44,7 +45,6 @@ import {
   HiPlus,
   HiTrash,
 } from 'react-icons/hi'
-import Wallet from '../wallet'
 
 const OrderDetailCardSection: React.FC<{
   detail: BuyerOrderDetail
@@ -367,6 +367,7 @@ const OrderDetail = () => {
   }, [id])
 
   const order = useGetOrderByID(orderID)
+  const getRefundThread = useGetRefundThread(order.data?.data?.order_id)
   const receiveOrder = useReceiveOrder()
   const completeOrder = useCompleteOrder()
 
@@ -537,87 +538,181 @@ const OrderDetail = () => {
                   )}
                   {order.data.data.order_status === 6 ? (
                     <>
-                      <Button
-                        buttonType="primary"
-                        onClick={() => {
-                          modal.info({
-                            title: 'Confirmation',
-                            closeButton: false,
-                            content: (
-                              <ConfirmationModal
-                                msg={`Complete Order & Release Rp${formatMoney(
-                                  order.data.data.total_price
-                                )} to the Seller?`}
-                                onConfirm={() => {
-                                  completeOrder.mutate({
-                                    order_id: order.data.data.order_id,
-                                  })
-                                }}
-                              />
-                            ),
-                          })
-                        }}
-                      >
-                        <HiCheck /> Complete Order
-                      </Button>
+                      {order.data.data.is_refund ? (
+                        <>
+                          <Button
+                            buttonType="gray"
+                            outlined
+                            isLoading={receiveOrder.isLoading}
+                            className="text-white"
+                            onClick={() => {
+                              router.push(
+                                '/order/refund-thread?id=' +
+                                  order.data.data.order_id
+                              )
+                            }}
+                          >
+                            Refund Thread
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            buttonType="primary"
+                            onClick={() => {
+                              modal.info({
+                                title: 'Confirmation',
+                                closeButton: false,
+                                content: (
+                                  <ConfirmationModal
+                                    msg={`Complete Order & Release Rp${formatMoney(
+                                      order.data.data.total_price
+                                    )} to the Seller?`}
+                                    onConfirm={() => {
+                                      completeOrder.mutate({
+                                        order_id: order.data.data.order_id,
+                                      })
+                                    }}
+                                  />
+                                ),
+                              })
+                            }}
+                          >
+                            <HiCheck /> Complete Order
+                          </Button>
+                        </>
+                      )}
                       <div className="mt-2 flex items-baseline gap-1">
-                        <P className="text-xs opacity-50">Or</P>
-                        <A
-                          className="text-xs opacity-50 hover:opacity-100"
-                          underline
-                          onClick={() => {
-                            modal.info({
-                              title: 'Confirmation',
-                              closeButton: false,
-                              content: (
-                                <ConfirmationModal
-                                  msg={
-                                    'Are you sure Want to Complaint the Order and Refund?'
-                                  }
-                                  onConfirm={() => {
-                                    if (
-                                      userWallet.data.data.active_date.Valid ===
-                                        true &&
-                                      new Date(
-                                        Date.parse(
-                                          userWallet.data.data.active_date.Time
-                                        )
-                                      ) > new Date()
-                                    ) {
-                                      router.push(
-                                        '/order/complaint?id=' +
-                                          order.data.data.order_id
-                                      )
-                                      return
-                                    }
-                                    toast.error('wallet is not active')
+                        {getRefundThread.data?.data?.refund_data.rejected_at
+                          .Valid ? (
+                          <>
+                            <P className="text-xs opacity-50">
+                              your previous File Complaint Form has been
+                              rejected at{' '}
+                              {moment(
+                                getRefundThread.data?.data?.refund_data
+                                  .rejected_at.Time
+                              )
+                                .utcOffset(420)
+                                .format('DD MMMM YYYY HH:mm:ss')
+                                .toString()}
+                              {'.'}
+                              <P>
+                                you can create new File Complaint to refund
+                                before 24 hours rejected.
+                              </P>
+                              <P>
+                                <A
+                                  className="text-xs hover:opacity-100"
+                                  underline
+                                  onClick={() => {
+                                    modal.info({
+                                      title: 'Confirmation',
+                                      closeButton: false,
+                                      content: (
+                                        <ConfirmationModal
+                                          msg={
+                                            'Are you sure Want to Complaint the Order and Refund?'
+                                          }
+                                          onConfirm={() => {
+                                            if (
+                                              userWallet.data.data.active_date
+                                                .Valid === true &&
+                                              new Date(
+                                                Date.parse(
+                                                  userWallet.data.data
+                                                    .active_date.Time
+                                                )
+                                              ) < new Date()
+                                            ) {
+                                              router.push(
+                                                '/order/complaint?id=' +
+                                                  order.data.data.order_id
+                                              )
+                                              return
+                                            }
+                                            toast.error('wallet is not active')
+                                          }}
+                                        />
+                                      ),
+                                    })
                                   }}
-                                />
-                              ),
-                            })
-                          }}
-                        >
-                          File a Complaint
-                        </A>
+                                >
+                                  File a Complaint
+                                </A>
+                              </P>
+                            </P>
+                          </>
+                        ) : (
+                          <>
+                            {getRefundThread.data?.data?.refund_data.accepted_at
+                              .Valid ? (
+                              <>
+                                <P className="text-xs opacity-50">
+                                  your File Complaint has been accepted at{' '}
+                                  {moment(
+                                    getRefundThread.data?.data?.refund_data
+                                      .accepted_at.Time
+                                  )
+                                    .utcOffset(420)
+                                    .format('DD MMMM YYYY HH:mm:ss')
+                                    .toString()}
+                                  {'.'}
+                                  <P>
+                                    please wait the system to process refund
+                                    order.
+                                  </P>
+                                </P>
+                              </>
+                            ) : (
+                              <>
+                                <P className="text-xs opacity-50">Or</P>
+                                <A
+                                  className="text-xs opacity-50 hover:opacity-100"
+                                  underline
+                                  onClick={() => {
+                                    modal.info({
+                                      title: 'Confirmation',
+                                      closeButton: false,
+                                      content: (
+                                        <ConfirmationModal
+                                          msg={
+                                            'Are you sure Want to Complaint the Order and Refund?'
+                                          }
+                                          onConfirm={() => {
+                                            if (
+                                              userWallet.data.data.active_date
+                                                .Valid === true &&
+                                              new Date(
+                                                Date.parse(
+                                                  userWallet.data.data
+                                                    .active_date.Time
+                                                )
+                                              ) < new Date()
+                                            ) {
+                                              router.push(
+                                                '/order/complaint?id=' +
+                                                  order.data.data.order_id
+                                              )
+                                              return
+                                            }
+                                            toast.error('wallet is not active')
+                                          }}
+                                        />
+                                      ),
+                                    })
+                                  }}
+                                >
+                                  File a Complaint
+                                </A>
+                              </>
+                            )}
+                          </>
+                        )}
                       </div>
                     </>
                   ) : (
-                    <>
-                      <Button
-                        buttonType="gray"
-                        outlined
-                        isLoading={receiveOrder.isLoading}
-                        className="text-white"
-                        onClick={() => {
-                          router.push(
-                            '/order/refund-thread?id=' +
-                              order.data.data.order_id
-                          )
-                        }}
-                      >
-                        Refund Thread
-                      </Button>
-                    </>
+                    <></>
                   )}
                 </div>
               </div>

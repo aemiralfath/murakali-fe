@@ -9,12 +9,9 @@ const RefundThreadConversation: React.FC<{ refundThreads: RefundThread[] }> = ({
     <div className="flex flex-col gap-5">
       {refundThreads.map((thread, index) => {
         return (
-          <>
+          <div key={index}>
             {thread.is_buyer ? (
-              <div
-                className="flex h-full flex-col rounded border bg-slate-100 px-4 py-2"
-                key={index}
-              >
+              <div className="flex h-full flex-col rounded border bg-slate-100 px-4 py-2">
                 <div className="flex">
                   <div className="min-h-[5rem] w-[20%] min-w-[20%] border-r-4 border-blue-500">
                     <div className="flex gap-3">
@@ -44,10 +41,7 @@ const RefundThreadConversation: React.FC<{ refundThreads: RefundThread[] }> = ({
                 </div>
               </div>
             ) : thread.is_seller ? (
-              <div
-                className="flex h-full flex-col rounded border bg-slate-200 px-4 py-2"
-                key={index}
-              >
+              <div className="flex h-full flex-col rounded border bg-slate-200 px-4 py-2">
                 <div className="flex">
                   <div className="min-h-[5rem] w-[20%] min-w-[20%] border-r-4 border-green-500">
                     <div className="flex gap-3">
@@ -79,7 +73,7 @@ const RefundThreadConversation: React.FC<{ refundThreads: RefundThread[] }> = ({
             ) : (
               <></>
             )}
-          </>
+          </div>
         )
       })}
     </div>
@@ -103,7 +97,7 @@ const RefundThreadSaction: React.FC<{
               </div>
             </div>
           </div>
-          <div className="flex w-full flex-col rounded border bg-white p-4">
+          <div className="w-[80%] rounded border bg-white p-4">
             <div className="-z-0 flex-1">
               <div className="flex justify-between">
                 <div>
@@ -165,7 +159,9 @@ const RefundThreadSaction: React.FC<{
                 />
               </div>
               <Divider />
-              <div className="py-2">{refundThreadData.refund_data.reason}</div>
+              <div className="max-w-full break-words py-2">
+                {refundThreadData.refund_data.reason}
+              </div>
             </div>
           </div>
         </div>
