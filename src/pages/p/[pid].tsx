@@ -413,7 +413,7 @@ const ProductPage: NextPage = () => {
           <></>
         ) : (
           <>
-            {voucherShop.data?.data?.rows.length > 0 ? (
+            {voucherShop.data?.data?.rows?.length > 0 ? (
               <div className="mt-8 lg:mt-0 lg:pl-6 xl:col-span-2">
                 {' '}
                 <H3>Voucher Shop</H3>

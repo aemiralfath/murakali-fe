@@ -98,6 +98,7 @@ type ProductListingLayoutProps = LoadingDataWrapper<BriefProduct[]> & {
   totalPage?: number
   noCategory?: boolean
   isCategoryPage?: boolean
+  sellerCategory?: CategoryData[]
 }
 
 const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
@@ -106,6 +107,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   controller,
   totalPage,
   noCategory,
+  sellerCategory,
   isCategoryPage,
 }) => {
   const {
@@ -181,7 +183,18 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
             setFilterRating={setFilterRating}
           />
           {noCategory ? (
-            <></>
+            sellerCategory?.length === 0 ? (
+              <></>
+            ) : (
+              <>
+                <Divider />
+                <CategoryFilter
+                  categories={sellerCategory ? sellerCategory : []}
+                  filterCategory={filterCategory}
+                  setFilterCategory={setFilterCategory}
+                />
+              </>
+            )
           ) : (
             <>
               <Divider />

@@ -7,7 +7,7 @@ const OrderPerProvinceMap: React.FC<{
   orders: OrdersByProvince[]
   maxOrder: number
 }> = ({ orders, maxOrder }) => {
-  const colorScale = new ColorScale(0, maxOrder, ['#accafa', '#3b82f6'])
+  const colorScale = new ColorScale(-1, maxOrder, ['#accafa', '#3b82f6'])
 
   return (
     <ComposableMap

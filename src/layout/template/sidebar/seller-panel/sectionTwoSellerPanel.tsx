@@ -15,6 +15,7 @@ import {
 } from 'react-icons/hi'
 
 export type ValidPage =
+  | 'dashboard'
   | 'order'
   | 'promotion'
   | 'voucher'
@@ -69,6 +70,12 @@ const SectionTwoSideBarSellerPanel: React.FC<SellerSideBarProps> = ({
   const router = useRouter()
 
   const items: Array<SideBarMenuProps> = [
+    {
+      link: '',
+      title: 'Dashboard',
+      icon: <HiArchive />,
+      active: selectedPage === 'dashboard',
+    },
     {
       link: 'order',
       title: 'Order',

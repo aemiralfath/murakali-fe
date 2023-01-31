@@ -78,7 +78,7 @@ const SellerPanelHome = () => {
       <Head>
         <title>Murakali | Seller Panel</title>
       </Head>
-      <SellerPanelLayout>
+      <SellerPanelLayout selectedPage="dashboard">
         <div className="flex items-baseline justify-between px-3 py-5 sm:px-0">
           <H1>
             Good{' '}

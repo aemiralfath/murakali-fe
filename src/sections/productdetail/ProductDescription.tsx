@@ -44,7 +44,14 @@ const ProductDescription = ({ seller, productInfo }: ProductDescription) => {
       </div>
       <div className="mt-4 items-center rounded border p-2 sm:flex sm:divide-x">
         <div className="flex items-center gap-4 pr-4">
-          <Avatar size="lg" url={seller.photo_url} />
+          <A
+            className="font-semibold"
+            onClick={() => {
+              router.push('/seller/' + seller.id)
+            }}
+          >
+            <Avatar size="lg" url={seller.photo_url} />
+          </A>
           <div className="w-fit overflow-ellipsis xl:w-[10rem]">
             <A
               className="font-semibold"

@@ -68,7 +68,7 @@ const MenuItems: React.FC<MenuItemsProps> = ({ icon, title, link, active }) => {
         if (link === 'logout') {
           logout.mutate()
         } else if (link === 'merchant') {
-          router.push('/seller-panel/order')
+          router.push('/seller-panel')
         } else if (!active) {
           router.push('/profile' + (link === 'profile' ? '' : `/${link}`))
         }

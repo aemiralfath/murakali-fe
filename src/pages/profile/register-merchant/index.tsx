@@ -28,7 +28,7 @@ function MerchantRegistration() {
   useEffect(() => {
     if (userProfile.data?.data) {
       if (userProfile.data.data.role === 2) {
-        router.push('/merchant')
+        router.push('/seller-panel')
       }
     }
   }, [userProfile.isSuccess])
@@ -50,7 +50,7 @@ function MerchantRegistration() {
   useEffect(() => {
     if (registerMerchant.isSuccess) {
       toast.success('Registration Merchant Success')
-      router.push('/seller-panel')
+      router.push('/profile')
     }
   }, [registerMerchant.isSuccess])
 
