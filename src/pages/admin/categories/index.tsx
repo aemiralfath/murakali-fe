@@ -73,7 +73,7 @@ function CategoriesAdmin() {
           {category.isLoading ? (
             <>Loading...</>
           ) : (
-            category.data?.data.map((item, index) => {
+            category.data?.data?.map((item, index) => {
               return (
                 <div
                   key={index}

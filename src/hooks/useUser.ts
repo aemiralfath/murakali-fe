@@ -14,7 +14,9 @@ const useUser = () => {
 
   useEffect(() => {
     if (userProfile.isSuccess) {
-      setUser(userProfile.data.data)
+      if (userProfile.data.data) {
+        setUser(userProfile.data.data)
+      }
     }
   }, [userProfile.data])
 

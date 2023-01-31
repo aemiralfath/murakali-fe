@@ -7,7 +7,6 @@ import React from 'react'
 import {
   HiArchive,
   HiInbox,
-  HiNewspaper,
   HiReceiptTax,
   HiShoppingBag,
   HiTruck,
@@ -26,7 +25,7 @@ export type ValidPage =
   | 'wallet'
 
 interface SellerSideBarProps {
-  selectedPage: ValidPage
+  selectedPage?: ValidPage
 }
 
 interface SideBarMenuProps {

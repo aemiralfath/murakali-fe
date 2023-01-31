@@ -154,16 +154,18 @@ function Wallet() {
                 key={index}
                 className=" bg-white py-3 hover:bg-slate-300"
                 onClick={() => {
-                  modal.info({
-                    title: 'Transaction Detail',
-                    content: (
-                      <TransactionDetail
-                        walletID={userWallet.data?.data?.id}
-                        walletHistoryID={data.id}
-                      />
-                    ),
-                    closeButton: true,
-                  })
+                  if (userWallet.data?.data) {
+                    modal.info({
+                      title: 'Transaction Detail',
+                      content: (
+                        <TransactionDetail
+                          walletID={userWallet.data.data.id}
+                          walletHistoryID={data.id}
+                        />
+                      ),
+                      closeButton: true,
+                    })
+                  }
                 }}
               >
                 <div className="mx-6 grid grid-cols-1 border-b-[0.5px] border-gray-400 pb-3 md:grid-cols-2">
@@ -207,7 +209,8 @@ function Wallet() {
           )}
 
           {(userWalletHistory.isError && !userWalletHistory.isLoading) ||
-          userWalletHistory.data?.data?.rows.length <= 0 ? (
+          (userWalletHistory.data?.data &&
+            userWalletHistory.data?.data?.rows.length <= 0) ? (
             <>
               <P className="text-center font-bold text-gray-500">
                 History is Empty

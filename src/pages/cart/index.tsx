@@ -133,7 +133,11 @@ function Cart() {
                                     y < sh.product_details.length;
                                     y++
                                   ) {
-                                    deleteCart.mutate(sh.product_details[y].id)
+                                    const tempProductDetails =
+                                      sh.product_details[y]
+                                    if (tempProductDetails !== undefined) {
+                                      deleteCart.mutate(tempProductDetails.id)
+                                    }
                                   }
                                 })
                               }
@@ -153,7 +157,7 @@ function Cart() {
             </div>
             {!cartList.isLoading ? (
               <>
-                {cartList.data?.data.rows ? (
+                {cartList.data?.data?.rows ? (
                   cartList.data.data.rows.map((cart, index) => (
                     <div
                       className="z-0 h-full rounded-lg border-[1px] border-solid border-gray-300 py-7 px-8"

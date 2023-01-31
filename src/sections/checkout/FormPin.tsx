@@ -29,13 +29,17 @@ const FormPIN: React.FC<FormPINProps> = ({ postCheckout, amount }) => {
   useEffect(() => {
     if (verifyPIN.isSuccess) {
       setPin('')
-      pinInputRef.clear()
-      createTransaction.mutate(postCheckout)
+      if (pinInputRef) {
+        pinInputRef.clear()
+      }
+      if (postCheckout) {
+        createTransaction.mutate(postCheckout)
+      }
     }
   }, [verifyPIN.isSuccess])
 
   useEffect(() => {
-    if (createTransaction.isSuccess) {
+    if (createTransaction.data?.data) {
       toast.success('Checkout Success')
       walletPayment.mutate(createTransaction.data.data.transaction_id)
     }
@@ -52,12 +56,14 @@ const FormPIN: React.FC<FormPINProps> = ({ postCheckout, amount }) => {
   useEffect(() => {
     if (verifyPIN.isError) {
       setPin('')
-      pinInputRef.clear()
+      if (pinInputRef) {
+        pinInputRef.clear()
+      }
       const errMsg = verifyPIN.failureReason as AxiosError<APIResponse<null>>
-      toast.error(errMsg.response.data.message as string)
+      toast.error(errMsg.response?.data.message as string)
 
       if (
-        errMsg.response.data.message ===
+        errMsg.response?.data.message ===
         'Wallet is temporarily blocked, please wait.'
       ) {
         dispatch(closeModal())

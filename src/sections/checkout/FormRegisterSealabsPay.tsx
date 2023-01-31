@@ -54,7 +54,7 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
       const errMsg = registerSealabsPay.failureReason as AxiosError<
         APIResponse<null>
       >
-      toast.error(errMsg.response.data.message as string)
+      toast.error(errMsg.response?.data.message as string)
     }
   }, [registerSealabsPay.isError])
 
@@ -137,7 +137,7 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
             onClick={() => {
               if (!isCheckout) {
                 dispatch(closeModal())
-              } else {
+              } else if (userWallet && userSLP) {
                 modal.edit({
                   title: 'Choose Payment Option',
                   content: (

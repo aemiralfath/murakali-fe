@@ -56,7 +56,7 @@ const ProductInfo: React.FC<{
   }
   useEffect(() => {
     if (selectedCategory.length > 0) {
-      setCategoryID(selectedCategory.at(-1)?.id)
+      setCategoryID(selectedCategory.at(-1)?.id ?? '')
     }
   }, [selectedCategory])
 

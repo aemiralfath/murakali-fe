@@ -41,7 +41,7 @@ function OrderDetailPage() {
         <div className="mt-3 flex h-full w-[90rem] max-w-full flex-col rounded border bg-white p-6">
           {getSellerOrderDetail.isLoading ? (
             <P className="flex w-full justify-center">Loading</P>
-          ) : getSellerOrderDetail.isSuccess ? (
+          ) : getSellerOrderDetail.data?.data ? (
             <>
               <div className=" mt-3 flex h-full flex-col justify-center gap-4 rounded border p-6 md:flex-row">
                 <div className="flex flex-auto flex-col gap-6">
@@ -100,8 +100,8 @@ function OrderDetailPage() {
                         orderStatusData.find(
                           (s) =>
                             s.id ===
-                            `${getSellerOrderDetail.data.data.order_status}`
-                        ).name
+                            `${getSellerOrderDetail.data?.data?.order_status}`
+                        )?.name
                       }
                     </P>
                   </div>
@@ -110,34 +110,38 @@ function OrderDetailPage() {
 
               <div className=" mt-5 h-full w-full max-w-full rounded border bg-white p-6">
                 <div className="flex justify-center ">
-                  <ul className="steps  steps-vertical w-fit min-w-fit py-5 text-start lg:steps-horizontal">
+                  <ul className="steps steps-vertical w-fit min-w-fit py-5 lg:steps-horizontal ">
                     {sellerOrderStatus.map((status, index) => {
-                      return (
-                        <li
-                          key={index}
-                          data-content={
-                            getSellerOrderDetail.data.data.order_status >= 8
-                              ? '✕'
-                              : status.id <=
-                                getSellerOrderDetail.data.data.order_status
-                              ? '✓'
-                              : '●'
-                          }
-                          className={cx(
-                            'min-w-[12rem]',
-                            getSellerOrderDetail.data.data.order_status >= 8
-                              ? 'step-error step'
-                              : status.id <=
-                                getSellerOrderDetail.data.data.order_status
-                              ? 'step-primary step'
-                              : 'step'
-                          )}
-                        >
-                          <span className="mx-1 text-start text-sm line-clamp-2 md:text-center">
-                            {status.name}
-                          </span>
-                        </li>
-                      )
+                      if (getSellerOrderDetail.data?.data) {
+                        return (
+                          <li
+                            key={index}
+                            data-content={
+                              getSellerOrderDetail.data.data.order_status >= 8
+                                ? '✕'
+                                : status.id <=
+                                  getSellerOrderDetail.data.data.order_status
+                                ? '✓'
+                                : '●'
+                            }
+                            className={cx(
+                              'min-w-[12rem]',
+                              getSellerOrderDetail.data.data.order_status >= 8
+                                ? 'step-error step'
+                                : status.id <=
+                                  getSellerOrderDetail.data.data.order_status
+                                ? 'step-primary step'
+                                : 'step'
+                            )}
+                          >
+                            <span className="mx-1 text-sm line-clamp-2">
+                              {status.name}
+                            </span>
+                          </li>
+                        )
+                      }
+
+                      return <li key={index} />
                     })}
                   </ul>
                 </div>

@@ -5,17 +5,17 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const useGetReviewByUserID = (
   productId: string,
-  userId: string,
-  enabled: boolean
+  userId?: string,
+  enabled?: boolean
 ) => {
   return useQuery({
     queryKey: ['review', productId, userId],
     queryFn: async () => await getProductReview(productId, userId),
-    enabled: enabled,
+    enabled: enabled && Boolean(userId),
   })
 }
 
-const getProductReview = async (productId: string, userId: string) => {
+const getProductReview = async (productId: string, userId?: string) => {
   const response = await authorizedClient.get<
     APIResponse<PaginationData<ProductReview>>
   >(`/product/${productId}/review?user_id=` + userId)

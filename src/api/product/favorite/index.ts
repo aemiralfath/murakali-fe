@@ -96,7 +96,7 @@ export const useCountSpecificFavoriteProduct = () => {
 
   return useMutation(
     async (id: string) => {
-      return await authorizedClient.post<APIResponse<null>>(
+      return await authorizedClient.post<APIResponse<number>>(
         '/product/favorite/count',
         {
           product_id: id,

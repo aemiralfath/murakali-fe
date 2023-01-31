@@ -31,8 +31,9 @@ const Home: NextPage = () => {
       <div className="absolute z-20 w-full translate-y-[4rem] overflow-x-hidden md:translate-y-[4.5rem]">
         {banner.isLoading ? (
           <BannerCarousel banners={bannerData} isLoading={true} />
-        ) : banner.data?.data?.filter((item) => item.is_active === true)
-            .length > 0 ? (
+        ) : banner.data?.data &&
+          banner.data?.data?.filter((item) => item.is_active === true).length >
+            0 ? (
           <BannerCarousel
             banners={banner.data?.data.filter(
               (item) => item.is_active === true
@@ -94,7 +95,7 @@ const Home: NextPage = () => {
                     <ProductCard key={`${idx}`} data={undefined} isLoading />
                   )
                 })
-            ) : recommendedProduct.isSuccess ? (
+            ) : recommendedProduct.data?.data ? (
               recommendedProduct.data.data.rows.map((product, idx) => {
                 return (
                   <ProductCard

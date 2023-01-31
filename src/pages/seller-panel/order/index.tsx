@@ -109,8 +109,9 @@ function ListOrderDeliveryService() {
                 Rp{formatMoney(data.total_price)}
               </div>
             ),
-            Status: orderStatusData.find((s) => s.id === `${data.order_status}`)
-              .name,
+            Status:
+              orderStatusData.find((s) => s.id === `${data.order_status}`)
+                ?.name ?? '',
             'Transaction Date': (
               <div>{moment(data.created_at).format('DD MMMM YYYY')}</div>
             ),
@@ -333,7 +334,7 @@ function ListOrderDeliveryService() {
           <div className="max-w-full overflow-auto">
             {sellerOrders.isLoading ? (
               <Table data={formatSub()} isLoading />
-            ) : sellerOrders.isSuccess ? (
+            ) : sellerOrders.data?.data ? (
               <Table
                 data={formatSub(sellerOrders.data.data)}
                 isLoading={false}

@@ -34,7 +34,7 @@ export const useAdminVouchers = (
   )
 }
 
-const getAdminVoucherDetail = async (id: string) => {
+const getAdminVoucherDetail = async (id?: string) => {
   const response = await authorizedClient.get<APIResponse<VoucherData>>(
     '/admin/voucher/' + id
   )

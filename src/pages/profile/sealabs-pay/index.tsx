@@ -94,7 +94,7 @@ function SealabsPay() {
           </div>
           <div className="my-4 h-full">
             <Divider />
-            {sealabspay.isSuccess &&
+            {sealabspay.data?.data &&
               sealabspay.data.data.map((slp, index) => (
                 <div className="my-2 rounded border-[1px] p-2" key={index}>
                   <div className=" my-4 mx-2 grid grid-cols-1 gap-2 md:grid-cols-4">
@@ -200,7 +200,7 @@ function SealabsPay() {
                   </div>
                 </div>
               ))}
-            {sealabspay.isSuccess && sealabspay.data.data.length === 0 && (
+            {sealabspay.data?.data && sealabspay.data.data.length === 0 && (
               <div className="flex h-full items-center justify-center">
                 <H2 className="text-primary">No Sealabs-Pay</H2>
               </div>

@@ -57,7 +57,9 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType }) => {
 
   useEffect(() => {
     if (userVerivyOTPChangePassword.isError) {
-      pinInputRef.clear()
+      if (pinInputRef) {
+        pinInputRef.clear()
+      }
       const errmsg = userVerivyOTPChangePassword.failureReason as AxiosError<
         APIResponse<null>
       >

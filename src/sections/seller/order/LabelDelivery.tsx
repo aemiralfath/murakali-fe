@@ -12,7 +12,7 @@ interface LabelDeliveryProps {
 
 const LabelDelivery: React.FC<LabelDeliveryProps> = ({ allData }) => {
   const dispatch = useDispatch()
-  const componentRef = useRef()
+  const componentRef = useRef<HTMLDivElement>(null)
   return (
     <div>
       <div

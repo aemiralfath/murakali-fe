@@ -48,7 +48,7 @@ function ManageAddress() {
   }, [deleteAddress.isError])
 
   useEffect(() => {
-    if (userProfile.isSuccess) {
+    if (userProfile.data?.data) {
       setRole(userProfile.data.data.role)
     }
   }, [userProfile.isSuccess])
@@ -181,7 +181,7 @@ function ManageAddress() {
                 <div className="mt-4 flex justify-end">
                   <PaginationNav
                     page={page}
-                    total={userAllAddress.data?.data?.total_pages}
+                    total={userAllAddress.data?.data?.total_pages ?? 1}
                     onChange={(p) => {
                       setPage(p)
                     }}
