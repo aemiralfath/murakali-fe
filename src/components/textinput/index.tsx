@@ -43,6 +43,11 @@ const TextInput: React.FC<TextInputProps> = ({
       {label ? (
         <label className="py-0.5 px-1" htmlFor={rest.name}>
           <span className="label-text">{label}</span>
+          {rest.required ? (
+            <span className="label-text font-semibold text-error">*</span>
+          ) : (
+            <></>
+          )}
         </label>
       ) : (
         <></>

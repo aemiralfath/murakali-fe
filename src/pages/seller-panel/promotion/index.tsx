@@ -11,7 +11,12 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import type { MouseEvent } from 'react'
-import { HiDuplicate, HiPencil, HiPlus } from 'react-icons/hi'
+import {
+  HiDuplicate,
+  HiInformationCircle,
+  HiPencil,
+  HiPlus,
+} from 'react-icons/hi'
 import formatMoney from '@/helper/formatMoney'
 
 function PromotionSeller() {
@@ -26,17 +31,16 @@ function PromotionSeller() {
   const formatData = (data?: PaginationData<SellerPromotion>) => {
     if (data?.rows?.length > 0) {
       return data.rows.map((row) => ({
-        'Promotion Name': <div>{row.promotion_name}</div>,
+        'Promotion Name': <P className="font-semibold">{row.promotion_name}</P>,
         Product: (
-          <div className="flex gap-3">
-            <div className="w-[96px] flex-1">
+          <div className="flex w-[24rem] items-center gap-3">
+            <div className="min-w-[45px] flex-1">
               {row.product_thumbnail_url !== null ? (
                 <img
                   width={96}
                   height={96}
                   src={row.product_thumbnail_url}
                   alt={row.product_name}
-                  className={'aspect-square h-24 w-24'}
                 />
               ) : (
                 <img
@@ -44,15 +48,12 @@ function PromotionSeller() {
                   height={96}
                   src={'/asset/image-empty.jpg'}
                   alt={row.product_name}
-                  className={'aspect-square h-24 w-24'}
                 />
               )}
             </div>
-            <div className="flex flex-1 flex-col gap-2 p-1">
-              <P className="w-[15rem] font-semibold line-clamp-2">
-                {row.product_name}
-              </P>
-            </div>
+            <P className="max-w-full whitespace-pre-wrap line-clamp-2">
+              {row.product_name}
+            </P>
           </div>
         ),
         Quantity: (
@@ -72,7 +73,7 @@ function PromotionSeller() {
             ) : new Date() > new Date(row.actived_date) &&
               new Date() < new Date(row.expired_date) ? (
               <div>
-                <Chip type="primary">OnGoing</Chip>
+                <Chip type="primary">Ongoing</Chip>
               </div>
             ) : new Date() > new Date(row.actived_date) &&
               new Date() > new Date(row.expired_date) ? (
@@ -111,34 +112,38 @@ function PromotionSeller() {
 
         Action: (
           <div className="flex flex-col gap-2">
-            <Button
-              buttonType="gray"
-              size="sm"
-              className="rounded"
-              onClick={() => {
-                router.push({
-                  pathname: '/seller-panel/promotion/' + row.promotion_id,
-                })
-              }}
-            >
-              Look Detail
-            </Button>
+            {new Date() > new Date(row.expired_date) ? (
+              <Button
+                buttonType="primary"
+                size="sm"
+                outlined
+                onClick={() => {
+                  router.push({
+                    pathname: '/seller-panel/promotion/' + row.promotion_id,
+                  })
+                }}
+              >
+                <HiInformationCircle /> Detail
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                buttonType="primary"
+                outlined
+                onClick={() => {
+                  router.push(
+                    '/seller-panel/promotion/manage?intent=edit&id=' +
+                      row.promotion_id
+                  )
+                }}
+              >
+                <HiPencil /> Edit
+              </Button>
+            )}
             <Button
               size="sm"
               buttonType="ghost"
-              outlined
-              onClick={() => {
-                router.push(
-                  '/seller-panel/promotion/manage?intent=edit&id=' +
-                    row.promotion_id
-                )
-              }}
-            >
-              <HiPencil /> Edit
-            </Button>
-            <Button
-              size="sm"
-              buttonType="ghost"
+              className="text-primary"
               onClick={() => {
                 router.push(
                   '/seller-panel/promotion/manage?intent=add&id=' +
@@ -189,8 +194,8 @@ function PromotionSeller() {
         <title>Murakali | Seller Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="promotion">
-        <div className="flex w-full items-center justify-between">
-          <H2>Promotion List</H2>
+        <div className="flex flex-col items-baseline justify-between gap-2 px-3 py-5 sm:flex-row sm:px-0">
+          <H2>Promotions</H2>
           <Button
             size={'sm'}
             buttonType="primary"

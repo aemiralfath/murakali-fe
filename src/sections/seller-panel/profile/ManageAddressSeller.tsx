@@ -52,10 +52,11 @@ function ManageAddressSeller() {
 
   return (
     <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
-      <div className="flex justify-between">
+      <div className="flex flex-wrap items-end justify-between">
         <H3>Manage Address</H3>
         <Button
           buttonType="primary"
+          size="sm"
           onClick={() => {
             modal.edit({
               title: 'Add Address',

@@ -229,8 +229,9 @@ function ListOrderDeliveryService() {
         <title>Murakali | Seller Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="order">
-        <H2>Orders</H2>
-
+        <div className="flex items-baseline justify-between px-3 py-5 sm:px-0">
+          <H2>Orders</H2>
+        </div>
         <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
           <div className="my-4 flex h-fit w-fit max-w-full space-x-10 overflow-x-auto overflow-y-hidden whitespace-nowrap border-b-[2px]">
             <button
