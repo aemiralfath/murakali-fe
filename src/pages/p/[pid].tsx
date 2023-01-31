@@ -224,7 +224,7 @@ const useVariants = (
 
   useEffect(() => {
     if (!selectMap.includes(-1)) {
-      if (variantMapState.length > 0) {
+      if (selectMap.length > 1) {
         if (variantMapState[Number(selectMap[0])] !== undefined) {
           const tempMapState = variantMapState[Number(selectMap[0])]
           if (tempMapState !== undefined) {
@@ -232,6 +232,11 @@ const useVariants = (
           }
         } else if (variantMapState[0] && selectMap[0]) {
           setSelectVariant(variantMapState[0][selectMap[0]])
+        }
+      } else {
+        const tempMapState = variantMapState[0]
+        if (tempMapState !== undefined) {
+          setSelectVariant(tempMapState[Number(selectMap[0])])
         }
       }
     } else {

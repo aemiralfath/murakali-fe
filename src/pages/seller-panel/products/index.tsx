@@ -9,6 +9,7 @@ import {
   HiOutlineEye,
   HiPencil,
   HiPlus,
+  HiSearch,
 } from 'react-icons/hi'
 
 import Head from 'next/head'
@@ -50,6 +51,8 @@ const Products = () => {
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(10)
   const debouncedLimit = useDebounce(limit, 300)
+  const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search, 300)
   const [sortBy, setSortBy] = useState<SortBy>({ sort_by: '', sort: '' })
   const [params, setParams] = useState<ProductPaginationParams>()
   const [enabled, setEnabled] = useState(false)
@@ -162,6 +165,13 @@ const Products = () => {
   }, [debouncedLimit])
 
   useEffect(() => {
+    setParams({
+      ...params,
+      search: debouncedSearch,
+    })
+  }, [debouncedSearch])
+
+  useEffect(() => {
     if (sortBy.sort_by === '') {
       setParams({
         ...params,
@@ -194,10 +204,7 @@ const Products = () => {
               {moment(row.created_at).format('dddd, DD MMM YYYY')}
             </P>
             <P className="text-xs text-gray-500">
-              Updated:{' '}
-              {row.updated_at.Valid
-                ? moment(row.updated_at.Time).format('DD MMM YYYY')
-                : '-'}
+              {moment(row.created_at).format('hh:mm A')}
             </P>
           </div>
         ),
@@ -327,78 +334,89 @@ const Products = () => {
           </Button>
         </div>
         <div className="mt-3 flex max-w-full flex-col overflow-auto rounded border bg-white px-6 pt-6">
-          <div className="mb-3 flex w-fit items-center justify-between rounded border py-2 px-3">
-            <div className="flex items-center gap-2">
-              <H4>Sort</H4>
-              <div className="ml-2 h-[1px] w-8 bg-base-300" />
-              <div className="flex flex-wrap items-center gap-2">
-                {ButtonSortData.map((sorting, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className={cx(
-                        ' flex items-center gap-1 rounded-full py-1 pl-2 pr-1 font-medium',
-                        sortBy.sort_by === sorting.sort_by
-                          ? 'bg-primary bg-opacity-10 text-primary-focus'
-                          : ''
-                      )}
-                    >
-                      {sorting.name}
-                      <button
+          <div className="grid mb-3 gap-3 lg:grid-cols-2 grid-cols-1">
+            <div className=" flex w-fit items-center justify-between rounded border py-2 px-3">
+              <div className="flex items-center gap-2">
+                <H4>Sort</H4>
+                <div className="ml-2 h-[1px] w-8 bg-base-300" />
+                <div className="flex flex-wrap items-center gap-2">
+                  {ButtonSortData.map((sorting, index) => {
+                    return (
+                      <div
+                        key={index}
                         className={cx(
-                          'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
-                          sortBy.sort_by === sorting.sort_by &&
-                            sortBy.sort === 'ASC'
-                            ? 'bg-primary text-xs text-white'
+                          ' flex items-center gap-1 rounded-full py-1 pl-2 pr-1 font-medium',
+                          sortBy.sort_by === sorting.sort_by
+                            ? 'bg-primary bg-opacity-10 text-primary-focus'
                             : ''
                         )}
-                        onClick={() => {
-                          if (
-                            sortBy.sort_by === sorting.sort_by &&
-                            sortBy.sort === 'ASC'
-                          ) {
-                            setSortBy({ ...sortBy, sort_by: '', sort: '' })
-                          } else {
-                            setSortBy({
-                              ...sortBy,
-                              sort_by: sorting.sort_by,
-                              sort: 'ASC',
-                            })
-                          }
-                        }}
                       >
-                        <HiArrowUp />
-                      </button>
-                      <button
-                        className={cx(
-                          'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
-                          sortBy.sort_by === sorting.sort_by &&
-                            sortBy.sort === 'DESC'
-                            ? 'bg-primary text-xs text-white'
-                            : ''
-                        )}
-                        onClick={() => {
-                          if (
+                        {sorting.name}
+                        <button
+                          className={cx(
+                            'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
                             sortBy.sort_by === sorting.sort_by &&
-                            sortBy.sort === 'DESC'
-                          ) {
-                            setSortBy({ ...sortBy, sort_by: '', sort: '' })
-                          } else {
-                            setSortBy({
-                              ...sortBy,
-                              sort_by: sorting.sort_by,
-                              sort: 'DESC',
-                            })
-                          }
-                        }}
-                      >
-                        <HiArrowDown />
-                      </button>
-                    </div>
-                  )
-                })}
+                              sortBy.sort === 'ASC'
+                              ? 'bg-primary text-xs text-white'
+                              : ''
+                          )}
+                          onClick={() => {
+                            if (
+                              sortBy.sort_by === sorting.sort_by &&
+                              sortBy.sort === 'ASC'
+                            ) {
+                              setSortBy({ ...sortBy, sort_by: '', sort: '' })
+                            } else {
+                              setSortBy({
+                                ...sortBy,
+                                sort_by: sorting.sort_by,
+                                sort: 'ASC',
+                              })
+                            }
+                          }}
+                        >
+                          <HiArrowUp />
+                        </button>
+                        <button
+                          className={cx(
+                            'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                            sortBy.sort_by === sorting.sort_by &&
+                              sortBy.sort === 'DESC'
+                              ? 'bg-primary text-xs text-white'
+                              : ''
+                          )}
+                          onClick={() => {
+                            if (
+                              sortBy.sort_by === sorting.sort_by &&
+                              sortBy.sort === 'DESC'
+                            ) {
+                              setSortBy({ ...sortBy, sort_by: '', sort: '' })
+                            } else {
+                              setSortBy({
+                                ...sortBy,
+                                sort_by: sorting.sort_by,
+                                sort: 'DESC',
+                              })
+                            }
+                          }}
+                        >
+                          <HiArrowDown />
+                        </button>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             </div>
+            <TextInput
+              full
+              className="rounded"
+              leftIcon={<HiSearch className="text-gray-400" />}
+              placeholder={'Search'}
+              value={search === '' ? undefined : search}
+              state={debouncedSearch !== search ? 'loading' : undefined}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
           {selectedId.length > 0 ? (
             <div className="mb-3 flex items-center gap-2">

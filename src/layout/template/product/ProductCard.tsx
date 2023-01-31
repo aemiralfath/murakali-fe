@@ -130,8 +130,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   </P>
                 ) : (
                   <>
-                    <div className="flex flex-wrap items-center justify-start ">
-                      <P className="mr-2 items-center text-slate-400 ">
+                    <div className="flex flex-col -mt-2 justify-start ">
+                      <P className="-mb-1 items-center text-slate-400 ">
                         <span className="text-[0.6rem] line-through">Rp.</span>
                         <span className="text-[0.8rem] line-through">
                           {formatMoney(data.min_price)}
