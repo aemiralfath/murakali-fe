@@ -1,9 +1,10 @@
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+
 import { useGetAllCity, useGetAllProvince } from '@/api/user/address/extra'
 import { Button } from '@/components'
 import SelectComboBox from '@/components/selectinput/SelectCombobox'
 import { closeModal } from '@/redux/reducer/modalReducer'
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
 
 interface ChooseDestinationProps {
   setDestination: (city_id: number, city: string) => void

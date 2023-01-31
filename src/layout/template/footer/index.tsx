@@ -1,4 +1,3 @@
-import { Icon, P } from '@/components'
 import React from 'react'
 import {
   FaFacebookF,
@@ -6,6 +5,8 @@ import {
   FaLinkedinIn,
   FaTwitter,
 } from 'react-icons/fa'
+
+import { Icon, P } from '@/components'
 
 const SocialMediaBtn: React.FC<{ icon: React.ReactNode; href: string }> = ({
   icon,

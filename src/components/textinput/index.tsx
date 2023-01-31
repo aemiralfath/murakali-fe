@@ -1,6 +1,8 @@
-import cx from '@/helper/cx'
 import React, { useState } from 'react'
 import { HiCheck, HiEye, HiEyeOff, HiX } from 'react-icons/hi'
+
+import cx from '@/helper/cx'
+
 import Spinner from '../spinner'
 
 interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {

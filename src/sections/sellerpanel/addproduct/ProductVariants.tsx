@@ -1,26 +1,29 @@
-import { Button, Chip, Divider, H3, H4, P, TextInput } from '@/components'
-import cx from '@/helper/cx'
-import toTitleCase from '@/helper/toTitleCase'
 import React, { useEffect, useState } from 'react'
-import type { Updater } from 'use-immer'
+import { toast } from 'react-hot-toast'
 import {
   HiExclamationCircle,
   HiOutlineLightBulb,
   HiPlus,
   HiTrash,
 } from 'react-icons/hi'
+
+import { Button, Chip, Divider, H3, H4, P, TextInput } from '@/components'
+import Uploader from '@/components/uploader'
+import cx from '@/helper/cx'
+import getKey from '@/helper/getKey'
+import toTitleCase from '@/helper/toTitleCase'
 import type {
   ProductDetail,
   ProductDetailReq,
   VariantDetailReq,
 } from '@/types/api/product'
-import VariantSelectionDropdown from './subsections/VariantSelectionDropdown'
-import getKey from '@/helper/getKey'
-import VariationSelector from './subsections/VariationSelector'
-import VariantChip from './subsections/VariantChip'
+
+import type { Updater } from 'use-immer'
+
 import EmptyData from './subsections/EmptyData'
-import { toast } from 'react-hot-toast'
-import Uploader from '@/components/uploader'
+import VariantChip from './subsections/VariantChip'
+import VariantSelectionDropdown from './subsections/VariantSelectionDropdown'
+import VariationSelector from './subsections/VariationSelector'
 
 const ProductVariants: React.FC<{
   productDetailData: {
@@ -284,8 +287,8 @@ const ProductVariants: React.FC<{
           tempVariantType.forEach((type) => {
             if (type !== '') {
               tempVariantDetail.push({
-                name: type,
-                type: detail.variant[type] ?? '',
+                name: detail.variant[type] ?? '',
+                type: type,
               })
             }
           })

@@ -1,4 +1,8 @@
-import ProductCard from './template/product/ProductCard'
+import React, { useEffect, useState } from 'react'
+import { HiArrowDown, HiArrowUp, HiFilter, HiX } from 'react-icons/hi'
+
+import Image from 'next/image'
+
 import { useGetAllCategory } from '@/api/category'
 import { useGetAllProvince } from '@/api/user/address/extra'
 import { A, Button, Divider, H4, P, PaginationNav } from '@/components'
@@ -14,10 +18,10 @@ import type { ProvinceDetail } from '@/types/api/address'
 import type { CategoryData } from '@/types/api/category'
 import type { BriefProduct } from '@/types/api/product'
 import type { SortBy } from '@/types/helper/sort'
+
 import { Transition } from '@headlessui/react'
-import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
-import { HiArrowDown, HiArrowUp, HiFilter, HiX } from 'react-icons/hi'
+
+import ProductCard from './template/product/ProductCard'
 
 const defaultShownProvince = [
   'DKI Jakarta',

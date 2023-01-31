@@ -1,8 +1,8 @@
-import { Button, H4, P } from '@/components'
-
 import React from 'react'
-import { closeModal } from '@/redux/reducer/modalReducer'
 import { useDispatch } from 'react-redux'
+
+import { Button, H4, P } from '@/components'
+import { closeModal } from '@/redux/reducer/modalReducer'
 
 const ModalChooseAddress: React.FC<{
   address: Array<{

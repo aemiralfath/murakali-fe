@@ -1,16 +1,16 @@
-import { Button, P, TextInput } from '@/components'
-import type { APIResponse } from '@/types/api/response'
-import type { AxiosError } from 'axios'
-import { useFormik } from 'formik'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
-
-import * as Yup from 'yup'
 import { useDispatch } from 'react-redux'
-import { closeModal } from '@/redux/reducer/modalReducer'
 
 import { useSendVerrificationEmail } from '@/api/auth/changeemail'
+import { Button, P, TextInput } from '@/components'
 import { useModal } from '@/hooks'
+import { closeModal } from '@/redux/reducer/modalReducer'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
 
 function FormChangeEmail() {
   const dispatch = useDispatch()

@@ -1,12 +1,14 @@
-import { Button, H1, Icon, P } from '@/components'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
+
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 
-import type { APIResponse } from '@/types/api/response'
-import type { AxiosError } from 'axios'
-import Head from 'next/head'
 import { useGetUserVerifyChangeEmail } from '@/api/auth/changeemail'
+import { Button, H1, Icon, P } from '@/components'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
 
 function VerifyPage() {
   const router = useRouter()

@@ -1,7 +1,9 @@
+import React from 'react'
+
 import { useMediaQuery } from '@/hooks'
 import type { DailySales } from '@/types/api/sellerperformance'
+
 import moment from 'moment'
-import React from 'react'
 import { ResponsiveContainer, AreaChart, XAxis, Tooltip, Area } from 'recharts'
 
 const DailySalesAreaChart: React.FC<{ dailySales: DailySales[] }> = ({

@@ -1,15 +1,16 @@
-import { useLogout } from '@/api/auth/logout'
-import { Avatar } from '@/components'
-
-import { useMediaQuery, useUser } from '@/hooks'
-import type { APIResponse } from '@/types/api/response'
-import { Menu, Transition } from '@headlessui/react'
-import type { AxiosError } from 'axios'
-import { useRouter } from 'next/router'
-
 import React, { Fragment, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { HiMenu } from 'react-icons/hi'
+
+import { useRouter } from 'next/router'
+
+import { useLogout } from '@/api/auth/logout'
+import { Avatar } from '@/components'
+import { useMediaQuery, useUser } from '@/hooks'
+import type { APIResponse } from '@/types/api/response'
+
+import { Menu, Transition } from '@headlessui/react'
+import type { AxiosError } from 'axios'
 
 const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
   const router = useRouter()

@@ -1,3 +1,9 @@
+import { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useGetOrderByID } from '@/api/order'
 import {
   useCreateRefundThreadSeller,
@@ -12,16 +18,10 @@ import MainLayout from '@/layout/MainLayout'
 import ConfirmationModal from '@/layout/template/confirmation/confirmationModal'
 import RefundOrderDetail from '@/sections/refund/RefundOrderDetail'
 import RefundThreadSaction from '@/sections/refund/RefundThreadSaction'
-import type {
-  CreateRefundThreadRequest,
-  RefundThread,
-} from '@/types/api/refund'
+import type { CreateRefundThreadRequest } from '@/types/api/refund'
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { toast } from 'react-hot-toast'
 
 function RefundThread() {
   const router = useRouter()

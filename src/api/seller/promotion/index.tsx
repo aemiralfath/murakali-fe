@@ -6,6 +6,7 @@ import type {
   SellerPromotion,
 } from '@/types/api/promotion'
 import type { APIResponse, PaginationData } from '@/types/api/response'
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const profileKey = 'promotion'

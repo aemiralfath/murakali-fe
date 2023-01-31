@@ -1,9 +1,12 @@
+import React, { Fragment } from 'react'
+import { HiCheck, HiInformationCircle, HiPencil, HiX } from 'react-icons/hi'
+
 import cx from '@/helper/cx'
 import { useDispatch, useSelector } from '@/hooks'
 import { closeModal } from '@/redux/reducer/modalReducer'
+
 import { Dialog, Transition } from '@headlessui/react'
-import React, { Fragment } from 'react'
-import { HiCheck, HiInformationCircle, HiPencil, HiX } from 'react-icons/hi'
+
 import Button from '../button'
 
 const Modal: React.FC = () => {

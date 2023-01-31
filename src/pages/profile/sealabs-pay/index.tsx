@@ -1,3 +1,9 @@
+import React, { useEffect } from 'react'
+import toast from 'react-hot-toast'
+import { HiPencil, HiTrash } from 'react-icons/hi'
+
+import Head from 'next/head'
+
 import {
   useDeleteSealabsPay,
   useGetUserSLP,
@@ -9,12 +15,9 @@ import ProfileLayout from '@/layout/ProfileLayout'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import FormRegisterSealabsPay from '@/sections/checkout/FormRegisterSealabsPay'
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
 import moment from 'moment'
-import Head from 'next/head'
-import React, { useEffect } from 'react'
-import toast from 'react-hot-toast'
-import { HiPencil, HiTrash } from 'react-icons/hi'
 
 function SealabsPay() {
   const modal = useModal()

@@ -1,3 +1,6 @@
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useAdminBanner } from '@/api/admin/banner'
 import { useGetAllCategory } from '@/api/category'
 import { useRecommendedProduct } from '@/api/product/recommended'
@@ -8,9 +11,8 @@ import ProductCard from '@/layout/template/product/ProductCard'
 import BannerCarousel from '@/sections/home/BannerCarousel'
 import CategoriesCarousel from '@/sections/home/CategoriesCarousel'
 import CategorySearch from '@/sections/home/CategorySearch'
+
 import { type NextPage } from 'next'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
 
 const Home: NextPage = () => {
   const router = useRouter()

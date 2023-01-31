@@ -1,3 +1,9 @@
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+
+import Router from 'next/router'
+
 import { useDeleteCart, useGetCart } from '@/api/user/cart'
 import { Button, H2, H4, P } from '@/components'
 import ProductCart from '@/components/card/ProductCart'
@@ -8,11 +14,9 @@ import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import SummaryCart from '@/sections/cart/SummaryCart'
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import Router from 'next/router'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
+
 function Cart() {
   const { user, isLoading } = useUser()
   const cartList = useGetCart()

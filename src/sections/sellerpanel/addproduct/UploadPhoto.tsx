@@ -1,7 +1,7 @@
-import { H3, P, Chip } from '@/components'
 import React from 'react'
 import { HiOutlineLightBulb } from 'react-icons/hi'
 
+import { H3, P, Chip } from '@/components'
 import Uploader from '@/components/uploader'
 import { useMediaQuery } from '@/hooks'
 

@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
-import { useUncontrolled } from './useUncontrolled'
+
 import { range } from '@/helper/range'
+
+import { useUncontrolled } from './useUncontrolled'
 
 export const DOTS = 'dots'
 

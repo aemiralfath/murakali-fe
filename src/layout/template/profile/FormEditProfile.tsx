@@ -1,15 +1,15 @@
-import { Button, TextInput } from '@/components'
-import type { UserDetail } from '@/types/api/user'
-import type { APIResponse } from '@/types/api/response'
-
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from '@/hooks'
-import { closeModal } from '@/redux/reducer/modalReducer'
-import { useGetUserProfile, useEditUserProfile } from '@/api/user/profile'
 import { toast } from 'react-hot-toast'
 
-import moment from 'moment'
+import { useGetUserProfile, useEditUserProfile } from '@/api/user/profile'
+import { Button, TextInput } from '@/components'
+import { useDispatch } from '@/hooks'
+import { closeModal } from '@/redux/reducer/modalReducer'
+import type { APIResponse } from '@/types/api/response'
+import type { UserDetail } from '@/types/api/user'
+
 import type { AxiosError } from 'axios'
+import moment from 'moment'
 
 const FormEditProfile: React.FC = () => {
   const userProfile = useGetUserProfile()

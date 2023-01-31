@@ -1,3 +1,8 @@
+import React, { useState } from 'react'
+import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
+
+import { useRouter } from 'next/router'
+
 import { useGetProductReview } from '@/api/product'
 import {
   H3,
@@ -11,10 +16,8 @@ import cx from '@/helper/cx'
 import { useModal } from '@/hooks'
 import type { TotalRating } from '@/types/api/review'
 import type { ProductReview as ProductReviewType } from '@/types/api/review'
+
 import moment from 'moment'
-import { useRouter } from 'next/router'
-import React, { useState } from 'react'
-import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
 
 type ProgressBarProps = React.HTMLAttributes<HTMLProgressElement> & {
   index: number

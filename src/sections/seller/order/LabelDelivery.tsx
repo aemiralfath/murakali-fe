@@ -1,11 +1,14 @@
-import { Button, H2, H3, Icon, P } from '@/components'
-import { closeModal } from '@/redux/reducer/modalReducer'
-import type { OrderData } from '@/types/api/order'
 import React, { useRef } from 'react'
 import Barcode from 'react-barcode'
 import { useDispatch } from 'react-redux'
-import OrderAddressDetail from './orderAddressDetail'
 import ReactToPrint from 'react-to-print'
+
+import { Button, H2, H3, Icon, P } from '@/components'
+import { closeModal } from '@/redux/reducer/modalReducer'
+import type { OrderData } from '@/types/api/order'
+
+import OrderAddressDetail from './orderAddressDetail'
+
 interface LabelDeliveryProps {
   allData: OrderData
 }

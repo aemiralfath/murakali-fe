@@ -1,16 +1,19 @@
-import { useSellerOrderDetail } from '@/api/seller/order'
-import { Button, H2, P } from '@/components'
-import SellerPanelLayout from '@/layout/SellerPanelLayout'
-import moment from 'moment'
+import React from 'react'
+import { HiArrowLeft } from 'react-icons/hi'
+
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React from 'react'
+
+import { useSellerOrderDetail } from '@/api/seller/order'
+import { Button, H2, P } from '@/components'
 import orderStatusData, { sellerOrderStatusData } from '@/dummy/orderStatusData'
+import cx from '@/helper/cx'
+import SellerPanelLayout from '@/layout/SellerPanelLayout'
+import OrderAddressDetail from '@/sections/seller/order/orderAddressDetail'
 import OrderDetailProduct from '@/sections/seller/order/orderDetailProduct'
 import SummaryOrderDetailProduct from '@/sections/seller/order/summaryOrderDetailProduct'
-import OrderAddressDetail from '@/sections/seller/order/orderAddressDetail'
-import cx from '@/helper/cx'
-import { HiArrowLeft } from 'react-icons/hi'
+
+import moment from 'moment'
 
 function OrderDetailPage() {
   const router = useRouter()

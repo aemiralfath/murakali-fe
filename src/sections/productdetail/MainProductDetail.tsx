@@ -1,8 +1,9 @@
+import React from 'react'
+
 import { H1, H2, H4, P, RatingStars, Spinner } from '@/components'
 import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
 import type { ProductDetail, ProductInfo } from '@/types/api/product'
-import React from 'react'
 
 // TODO: Add interface to Rating, Sold Count, Title, Prices
 interface MainProductDetailProps {

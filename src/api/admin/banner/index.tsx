@@ -1,6 +1,7 @@
 import { authorizedClient, unauthorizedClient } from '@/api/apiClient'
 import type { BannerData, UpdateBannerData } from '@/types/api/banner'
 import type { APIResponse } from '@/types/api/response'
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const profileKey = 'banner-admin'

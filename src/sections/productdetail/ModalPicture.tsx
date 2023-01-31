@@ -1,7 +1,8 @@
-import { Button } from '@/components'
-import { Dialog, Transition } from '@headlessui/react'
-
 import React, { Fragment, useEffect, useState } from 'react'
+
+import { Button } from '@/components'
+
+import { Dialog, Transition } from '@headlessui/react'
 
 interface ModalPictureProps {
   isOpen: boolean

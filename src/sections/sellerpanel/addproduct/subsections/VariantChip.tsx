@@ -1,5 +1,6 @@
-import { Chip } from '@/components'
 import { HiX } from 'react-icons/hi'
+
+import { Chip } from '@/components'
 
 const VariantChip: React.FC<{
   content: string

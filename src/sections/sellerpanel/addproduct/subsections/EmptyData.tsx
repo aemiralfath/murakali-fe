@@ -1,5 +1,6 @@
-import { P } from '@/components'
 import Image from 'next/image'
+
+import { P } from '@/components'
 
 const EmptyData = () => {
   return (

@@ -1,16 +1,18 @@
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+
+import { useRouter } from 'next/router'
+
 import { useGetUserSLP } from '@/api/user/slp'
 import { useSLPPayment } from '@/api/user/transaction'
 import { useTopUpWallet } from '@/api/user/wallet'
 import { Button, H4, P, Spinner, TextInput } from '@/components'
-
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { APIResponse } from '@/types/api/response'
 import type { TopUpWallet } from '@/types/api/wallet'
+
 import type { AxiosError } from 'axios'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
 
 const FormTopUp: React.FC = () => {
   const useSlp = useGetUserSLP()

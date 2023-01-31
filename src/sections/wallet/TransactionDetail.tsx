@@ -1,8 +1,10 @@
+import React from 'react'
+
 import { useGetUserWalletHistoryDetail } from '@/api/user/wallet'
 import { H1, H4, P, Spinner } from '@/components'
 import formatMoney from '@/helper/formatMoney'
+
 import moment from 'moment'
-import React from 'react'
 
 interface TransactionDetailProps {
   walletHistoryID: string

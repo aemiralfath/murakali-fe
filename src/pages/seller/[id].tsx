@@ -1,3 +1,9 @@
+import { useEffect, useState } from 'react'
+import { AiFillStar } from 'react-icons/ai'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useGetSellerProduct } from '@/api/product'
 import { useSearchQueryProduct } from '@/api/product/search'
 import { useGetSellerInfo } from '@/api/seller'
@@ -12,10 +18,6 @@ import ProductListingLayout, {
 import ProductCarousel from '@/sections/home/ProductCarousel'
 import type { CategoryData } from '@/types/api/category'
 import type { ProductQuery } from '@/types/api/product'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { AiFillStar } from 'react-icons/ai'
 
 const CategoryTab: React.FC<{
   categories: CategoryData[]
@@ -182,17 +184,14 @@ function Seller() {
   const sellerProfile = useGetSellerInfo(param.query.id as string)
   const sellerCategory = useGetSellerCategory(param.query.id as string)
   const product = useGetSellerProduct(
-    1,
-    6,
-    '',
-    '',
-    'unit_sold',
-    'desc',
-    0,
-    0,
-    0,
-    0,
-    param.query.id as string
+    {
+      page: 1,
+      limit: 6,
+      sort_by: 'unit_sold',
+      sort: 'desc',
+      shop_id: String(param.query.id),
+    },
+    Boolean(param.query.id)
   )
 
   const {

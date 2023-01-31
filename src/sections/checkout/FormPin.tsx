@@ -1,3 +1,10 @@
+import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import PinInput from 'react-pin-input'
+import { useDispatch } from 'react-redux'
+
+import router from 'next/router'
+
 import { useCreateTransaction, useWalletPayment } from '@/api/user/transaction'
 import { useVerifyPIN } from '@/api/user/wallet'
 import { Button } from '@/components'
@@ -5,12 +12,8 @@ import { closeModal } from '@/redux/reducer/modalReducer'
 import type { PostCheckout } from '@/types/api/checkout'
 import type { APIResponse } from '@/types/api/response'
 import type { Transaction } from '@/types/api/transaction'
+
 import type { AxiosError } from 'axios'
-import router from 'next/router'
-import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import PinInput from 'react-pin-input'
-import { useDispatch } from 'react-redux'
 
 interface FormPINProps extends React.InputHTMLAttributes<HTMLSelectElement> {
   amount: number
