@@ -12,6 +12,9 @@ import { ProductReview } from '@/types/api/review'
 import React, { useState } from 'react'
 import { useModal } from '@/hooks'
 import moment from 'moment'
+import cx from '@/helper/cx'
+import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
+import { useRouter } from 'next/router'
 
 type ProgressBarProps = React.HTMLAttributes<HTMLProgressElement> & {
   index: number
@@ -105,25 +108,31 @@ export const ReviewCard: React.FC<ReviewProps> = ({ item }) => {
 const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
   const [withImage, setWithImage] = useState(true)
   const [withComment, setWithComment] = useState(true)
+  const [sorts, setSorts] = useState('asc')
+  const [filterRating, setFilterRating] = useState(0)
   const [page, setPage] = useState(1)
   const review = useGetProductReview(
     productID,
-    0,
+    filterRating,
     withComment,
     withImage,
-    'asc',
+    sorts,
     6,
     page
   )
+  const router = useRouter()
 
   return (
-    <>
+    <div id="product-review">
       <H3>Reviews</H3>
       <div className="mt-4 flex flex-col gap-4">
         <div className="flex h-fit max-w-lg flex-col gap-4 rounded bg-base-200 p-4 sm:flex-row">
           <div>
             {rating ? (
-              <RatingStars size="lg" rating={rating?.avg_rating} />
+              <RatingStars
+                size="lg"
+                rating={parseFloat(rating?.avg_rating.toFixed(1))}
+              />
             ) : (
               <></>
             )}
@@ -133,7 +142,9 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
               rating?.avg_rating === undefined ? (
                 <span className="text-xl font-bold">0</span>
               ) : (
-                <span className="text-xl font-bold">{rating?.avg_rating}</span>
+                <span className="text-xl font-bold">
+                  {rating?.avg_rating.toFixed(1)}
+                </span>
               )}
               out of 5
             </div>
@@ -156,40 +167,116 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
                 <>
                   <ProgressBar
                     index={5}
-                    value={
-                      (rating?.rating_product[4].count / rating?.total_rating) *
-                      100
-                    }
+                    value={parseFloat(
+                      (
+                        (rating?.rating_product[4].count /
+                          rating?.total_rating) *
+                        100
+                      ).toFixed(1)
+                    )}
+                    onClick={() => {
+                      setFilterRating(5)
+                      setPage(1)
+                    }}
                   />
                   <ProgressBar
                     index={4}
-                    value={
-                      (rating?.rating_product[3].count / rating?.total_rating) *
-                      100
-                    }
+                    value={parseFloat(
+                      (
+                        (rating?.rating_product[3].count /
+                          rating?.total_rating) *
+                        100
+                      ).toFixed(1)
+                    )}
+                    onClick={() => {
+                      setFilterRating(4)
+                      setPage(1)
+                    }}
                   />
                   <ProgressBar
                     index={3}
-                    value={
-                      (rating?.rating_product[2].count / rating?.total_rating) *
-                      100
-                    }
+                    value={parseFloat(
+                      (
+                        (rating?.rating_product[2].count /
+                          rating?.total_rating) *
+                        100
+                      ).toFixed(1)
+                    )}
+                    onClick={() => {
+                      setFilterRating(3)
+                      setPage(1)
+                    }}
                   />
                   <ProgressBar
                     index={2}
-                    value={
-                      (rating?.rating_product[1].count / rating?.total_rating) *
-                      100
-                    }
+                    value={parseFloat(
+                      (
+                        (rating?.rating_product[1].count /
+                          rating?.total_rating) *
+                        100
+                      ).toFixed(1)
+                    )}
+                    onClick={() => {
+                      setFilterRating(2)
+                      setPage(1)
+                    }}
                   />
                   <ProgressBar
                     index={1}
-                    value={
-                      (rating?.rating_product[0].count / rating?.total_rating) *
-                      100
-                    }
+                    value={parseFloat(
+                      (
+                        (rating?.rating_product[0].count /
+                          rating?.total_rating) *
+                        100
+                      ).toFixed(1)
+                    )}
+                    onClick={() => {
+                      setFilterRating(1)
+                      setPage(1)
+                    }}
                   />
                 </>
+              )}
+            </div>
+            <div className="flex items-center gap-x-2">
+              <P className="my-3  font-bold">Sort</P>
+              <button
+                className={cx(
+                  'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                  sorts === 'ASC' ? 'bg-black text-xs text-white' : ''
+                )}
+                onClick={() => {
+                  setSorts('ASC')
+                }}
+              >
+                <HiArrowUp />
+              </button>
+              <button
+                className={cx(
+                  'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                  sorts === 'DESC' ? 'bg-black text-xs text-white' : ''
+                )}
+                onClick={() => {
+                  setSorts('DESC')
+                }}
+              >
+                <HiArrowDown />
+              </button>
+              {filterRating > 0 && filterRating < 6 ? (
+                <>
+                  <div className="text-sm">Rating {filterRating}</div>
+                  <button
+                    className="flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs"
+                    onClick={() => {
+                      setFilterRating(0)
+                      setPage(1)
+                    }}
+                  >
+                    x
+                  </button>
+                </>
+              ) : (
+                <></>
               )}
             </div>
           </div>
@@ -220,7 +307,7 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          {review.data?.data.rows.length > 0 ? (
+          {review.data?.data.rows?.length > 0 ? (
             <>
               {review.data?.data.rows?.map((item, index) => {
                 return (
@@ -237,6 +324,7 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
                   total={review.data?.data.total_pages}
                   onChange={(n) => {
                     setPage(n)
+                    router.push(`#product-review`)
                   }}
                 />
               </div>
@@ -248,7 +336,7 @@ const ProductReview: React.FC<ProductReviewProps> = ({ productID, rating }) => {
           )}
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

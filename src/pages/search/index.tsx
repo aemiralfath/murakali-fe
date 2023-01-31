@@ -15,7 +15,7 @@ import { P } from '@/components'
 
 const SearchPage: NextPage = () => {
   const router = useRouter()
-  const { catName, keyword, sort_by, sort } = router.query
+  const { catName, keyword, sort_by, sort, rating } = router.query
 
   const INF = 1000000000
 
@@ -44,6 +44,7 @@ const SearchPage: NextPage = () => {
     setSortBy,
     filterPrice,
     filterRating,
+    setFilterRating,
     filterLocation,
     filterCategory,
     setFilterCategory,
@@ -131,13 +132,16 @@ const SearchPage: NextPage = () => {
   useEffect(() => {
     if (keyword === undefined) {
       setFilterKeyword('')
-      handleDeleteQuery('keyword')
     } else {
       setFilterKeyword(String(keyword))
-      handleUpdateQuery('keyword', String(keyword))
     }
-    setFlag(true)
   }, [keyword])
+
+  useEffect(() => {
+    if (rating !== undefined) {
+      setFilterRating(Number(rating))
+    }
+  }, [rating])
 
   const productQuery: ProductQuery = {
     search: filterKeyword,
