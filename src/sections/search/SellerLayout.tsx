@@ -1,6 +1,5 @@
 import { Button, H2, P, PaginationNav } from '@/components'
 import type { SellerInfo } from '@/types/api/seller'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { HiStar } from 'react-icons/hi'
@@ -71,7 +70,7 @@ const SellerLayout: React.FC<SellerLayoutProps> = ({
                   >
                     <div className="flex flex-wrap justify-around gap-3 ">
                       <div className="align-center  flex flex-wrap  items-center justify-between gap-x-4 ">
-                        <Image
+                        <img
                           className="mx-auto h-24 w-24 rounded-full  object-contain"
                           width={100}
                           height={100}

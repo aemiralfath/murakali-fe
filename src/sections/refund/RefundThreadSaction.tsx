@@ -1,7 +1,6 @@
 import { Avatar, Chip, Divider, H2, H4, P } from '@/components'
 import type { ConversationRefundThread, RefundThread } from '@/types/api/refund'
 import moment from 'moment'
-import Image from 'next/image'
 
 const RefundThreadConversation: React.FC<{ refundThreads: RefundThread[] }> = ({
   refundThreads,
@@ -158,7 +157,7 @@ const RefundThreadSaction: React.FC<{
                 )}
               </div>
               <div className="py-3">
-                <Image
+                <img
                   alt={'image'}
                   src={refundThreadData.refund_data.image}
                   width={150}

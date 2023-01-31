@@ -12,7 +12,6 @@ import type { APIResponse } from '@/types/api/response'
 import type { AxiosError } from 'axios'
 import moment from 'moment'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
@@ -41,7 +40,7 @@ const OrderDetailCard: React.FC<
             <>
               <div className="flex gap-2.5">
                 <div>
-                  <Image
+                  <img
                     alt={detail.product_title}
                     src={detail.product_detail_url}
                     width={100}

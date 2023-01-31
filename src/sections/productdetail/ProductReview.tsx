@@ -10,7 +10,6 @@ import {
 import type { TotalRating } from '@/types/api/review'
 import { ProductReview } from '@/types/api/review'
 import React, { useState } from 'react'
-import Image from 'next/image'
 import { useModal } from '@/hooks'
 import moment from 'moment'
 
@@ -74,7 +73,7 @@ export const ReviewCard: React.FC<ReviewProps> = ({ item }) => {
           {item.image_url === null ? (
             <></>
           ) : (
-            <Image
+            <img
               src={item.image_url}
               width={100}
               height={100}
@@ -84,7 +83,7 @@ export const ReviewCard: React.FC<ReviewProps> = ({ item }) => {
                   title: '',
                   content: (
                     <div>
-                      <Image
+                      <img
                         src={item.image_url}
                         width={500}
                         height={500}

@@ -10,6 +10,7 @@
     "prettier"
   ],
   "rules": {
+    "@next/next/no-img-element": "off",
     "@typescript-eslint/consistent-type-imports": "warn",
     "no-console": "warn",
     "@typescript-eslint/explicit-function-return-type": "off",

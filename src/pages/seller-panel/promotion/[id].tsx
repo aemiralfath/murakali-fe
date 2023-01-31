@@ -5,7 +5,6 @@ import React, { useEffect, useState } from 'react'
 import { useLoadingModal } from '@/hooks'
 import { useRouter } from 'next/router'
 import { HiArrowLeft, HiDuplicate, HiPencil } from 'react-icons/hi'
-import Image from 'next/image'
 import type {
   CreatePromotionSellerRequest,
   ProductPromotion,
@@ -141,7 +140,7 @@ const PromotionDetailSeller = () => {
                       <div className=" ml-10 flex w-fit p-1 align-middle">
                         <div className="flex flex-1 gap-3">
                           <div className="flex-1">
-                            <Image
+                            <img
                               src={sp.product_thumbnail_url}
                               className={'rounded-lg'}
                               width={200}
