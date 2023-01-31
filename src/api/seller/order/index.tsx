@@ -15,7 +15,9 @@ const profileKey = 'order'
 const getSellerOrders = async (
   orderStatusID: string,
   voucherShop: string,
-  page: number
+  page: number,
+  sortBy: string,
+  sort: string
 ) => {
   const response = await authorizedClient.get<
     APIResponse<PaginationData<OrderData>>
@@ -25,7 +27,11 @@ const getSellerOrders = async (
       '&voucher_shop=' +
       voucherShop +
       '&page=' +
-      page
+      page +
+      '&sort_by=' +
+      sortBy +
+      '&sort=' +
+      sort
   )
   return response.data
 }
@@ -33,11 +39,14 @@ const getSellerOrders = async (
 export const useSellerOrders = (
   orderStatusID: string,
   voucherShop: string,
-  page: number
+  page: number,
+  sortBy: string,
+  sort: string
 ) => {
   return useQuery(
-    [profileKey, orderStatusID, voucherShop, page],
-    async () => await getSellerOrders(orderStatusID, voucherShop, page)
+    [profileKey, orderStatusID, voucherShop, page, sortBy, sort],
+    async () =>
+      await getSellerOrders(orderStatusID, voucherShop, page, sortBy, sort)
   )
 }
 

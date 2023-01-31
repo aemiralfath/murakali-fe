@@ -17,8 +17,15 @@ function VoucherDetail() {
   const router = useRouter()
   const { id } = router.query
   const sellerVoucher = useSellerVoucherDetail(String(id))
+
   const [page, setPage] = useState<number>(1)
-  const sellerOrders = useSellerOrders('', String(id), page)
+  const sellerOrders = useSellerOrders(
+    '',
+    String(id),
+    page,
+    'created_at',
+    'desc'
+  )
 
   const formatSub = (pagination?: PaginationData<OrderData>) => {
     if (pagination) {

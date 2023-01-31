@@ -172,7 +172,8 @@ function Vouchers() {
                   <></>
                 )}
                 <Button
-                  buttonType="primary"
+                  buttonType="ghost"
+                  className="btn-primary border-none"
                   outlined
                   size="sm"
                   onClick={() => {
