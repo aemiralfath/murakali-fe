@@ -5,6 +5,7 @@ import {
   useGetReviewByUserID,
 } from '@/api/product/review'
 import { useGetUserProfile } from '@/api/user/profile'
+import { useGetUserWallet } from '@/api/user/wallet'
 import {
   A,
   Button,
@@ -43,6 +44,7 @@ import {
   HiPlus,
   HiTrash,
 } from 'react-icons/hi'
+import Wallet from '../wallet'
 
 const OrderDetailCardSection: React.FC<{
   detail: BuyerOrderDetail
@@ -368,6 +370,7 @@ const OrderDetail = () => {
   const receiveOrder = useReceiveOrder()
   const completeOrder = useCompleteOrder()
 
+  const userWallet = useGetUserWallet()
   useEffect(() => {
     setIsLoadingModal(receiveOrder.isLoading)
   }, [receiveOrder.isLoading])
@@ -562,13 +565,59 @@ const OrderDetail = () => {
                         <A
                           className="text-xs opacity-50 hover:opacity-100"
                           underline
+                          onClick={() => {
+                            modal.info({
+                              title: 'Confirmation',
+                              closeButton: false,
+                              content: (
+                                <ConfirmationModal
+                                  msg={
+                                    'Are you sure Want to Complaint the Order and Refund?'
+                                  }
+                                  onConfirm={() => {
+                                    if (
+                                      userWallet.data.data.active_date.Valid ===
+                                        true &&
+                                      new Date(
+                                        Date.parse(
+                                          userWallet.data.data.active_date.Time
+                                        )
+                                      ) > new Date()
+                                    ) {
+                                      router.push(
+                                        '/order/complaint?id=' +
+                                          order.data.data.order_id
+                                      )
+                                      return
+                                    }
+                                    toast.error('wallet is not active')
+                                  }}
+                                />
+                              ),
+                            })
+                          }}
                         >
                           File a Complaint
                         </A>
                       </div>
                     </>
                   ) : (
-                    <></>
+                    <>
+                      <Button
+                        buttonType="gray"
+                        outlined
+                        isLoading={receiveOrder.isLoading}
+                        className="text-white"
+                        onClick={() => {
+                          router.push(
+                            '/order/refund-thread?id=' +
+                              order.data.data.order_id
+                          )
+                        }}
+                      >
+                        Refund Thread
+                      </Button>
+                    </>
                   )}
                 </div>
               </div>
