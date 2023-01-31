@@ -271,10 +271,10 @@ const ProductPage: NextPage = () => {
                   isLoading={false}
                   selectedImageUrl={
                     selectVariant !== undefined
-                      ? productImage.data?.data.filter((image) => {
+                      ? productImage.data?.data?.filter((image) => {
                           return image.product_detail_id === selectVariant?.id
                         })[0].url
-                      : productImage.data?.data[0].url
+                      : productImage.data?.data[0]?.url
                   }
                 />
                 <div className="mt-4 md:pl-[2.8rem] xl:pl-[4rem]">

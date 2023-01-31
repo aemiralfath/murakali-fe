@@ -585,7 +585,7 @@ function TransactionHistory() {
                                       content: (
                                         <PaymentOption
                                           transaction={row}
-                                          userWallet={userWallet.data.data}
+                                          userWallet={userWallet.data?.data}
                                           userSLP={userSLP.data.data}
                                         />
                                       ),

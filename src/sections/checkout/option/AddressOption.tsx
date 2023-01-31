@@ -123,34 +123,41 @@ const AddressOption: React.FC<AddressOptionProps> = ({ is_shop_address }) => {
             ))}
           </>
         ) : (
-          <P></P>
+          <P className="italic text-gray-400">
+            You dont have any address, please go to profile page and make
+            shipping address
+          </P>
         )
       ) : (
         <P>Loading</P>
       )}
       <div className="my-2 flex justify-end">
         <div className="btn-group">
-          {userAllAddress.data?.data?.total_rows > 2 ? (
-            Array.from(Array(userAllAddress.data?.data?.total_pages)).map(
-              (_, index) => {
-                return (
-                  <button
-                    key={index}
-                    defaultValue={1}
-                    value={index + 1}
-                    onClick={() => {
-                      setPage(index + 1)
-                    }}
-                    className={
-                      index + 1 === page
-                        ? 'btn btn-active'
-                        : 'btn-outline btn btn-primary'
-                    }
-                  >
-                    {index + 1}
-                  </button>
-                )
-              }
+          {userAllAddress.data?.data?.total_rows !== undefined ? (
+            userAllAddress.data?.data?.total_rows > 2 ? (
+              Array.from(Array(userAllAddress.data?.data?.total_pages)).map(
+                (_, index) => {
+                  return (
+                    <button
+                      key={index}
+                      defaultValue={1}
+                      value={index + 1}
+                      onClick={() => {
+                        setPage(index + 1)
+                      }}
+                      className={
+                        index + 1 === page
+                          ? 'btn btn-active'
+                          : 'btn-outline btn btn-primary'
+                      }
+                    >
+                      {index + 1}
+                    </button>
+                  )
+                }
+              )
+            ) : (
+              <></>
             )
           ) : (
             <></>
