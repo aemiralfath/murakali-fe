@@ -138,7 +138,8 @@ function Vouchers() {
               <div className="flex w-fit flex-col gap-1">
                 {Date.now() > Date.parse(data.expired_date) ? (
                   <Button
-                    buttonType="gray"
+                    buttonType="primary"
+                    size="sm"
                     onClick={() => {
                       router.push({
                         pathname: '/seller-panel/vouchers/' + data.id,
@@ -153,6 +154,7 @@ function Vouchers() {
                 {Date.now() < Date.parse(data.expired_date) ? (
                   <Button
                     buttonType="primary"
+                    size="sm"
                     outlined
                     onClick={() => {
                       router.push({
@@ -164,7 +166,7 @@ function Vouchers() {
                       })
                     }}
                   >
-                    <HiPencilAlt /> Update
+                    <HiPencilAlt /> Edit
                   </Button>
                 ) : (
                   <></>
@@ -172,6 +174,7 @@ function Vouchers() {
                 <Button
                   buttonType="primary"
                   outlined
+                  size="sm"
                   onClick={() => {
                     router.push({
                       pathname: '/seller-panel/vouchers/manage',
@@ -188,6 +191,7 @@ function Vouchers() {
                   <Button
                     buttonType="primary"
                     outlined
+                    size="sm"
                     onClick={() => {
                       modal.edit({
                         title: 'Delete Voucher',
@@ -252,7 +256,7 @@ function Vouchers() {
         <title>Murakali | Voucher Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="voucher">
-        <div className="flex w-full items-center justify-between">
+        <div className="flex flex-col items-baseline justify-between gap-2 px-3 py-5 sm:flex-row sm:px-0">
           <H2>Voucher Shop List</H2>
           <Button
             size={'sm'}
@@ -305,7 +309,7 @@ function Vouchers() {
                 voucherStatus === '' ? 'border-primary' : 'border-transparent'
               )}
             >
-              All Order
+              All
             </button>
             {voucherData.map((status, index) => {
               return (

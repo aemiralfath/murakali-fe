@@ -1,7 +1,6 @@
 import cx from '@/helper/cx'
 import { useHover } from '@/hooks'
 import { Transition } from '@headlessui/react'
-import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { useSwipeable } from 'react-swipeable'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
@@ -48,7 +47,7 @@ const SubImage: React.FC<{
         setTempMainImage(url)
       }}
     >
-      <Image src={url} width={75} height={75} alt={alt} className={'rounded'} />
+      <img src={url} width={75} height={75} alt={alt} className={'rounded'} />
     </div>
   )
 }
@@ -155,7 +154,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
                 </button>
               </>
             </Transition>
-            <Image
+            <img
               onClick={() => {
                 setIsOpen(true)
               }}

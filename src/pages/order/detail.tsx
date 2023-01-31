@@ -32,7 +32,6 @@ import type { ProductReview } from '@/types/api/review'
 import type { AxiosError } from 'axios'
 import moment from 'moment'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
@@ -131,9 +130,9 @@ const OrderDetailCardSection: React.FC<{
   }
 
   return (
-    <div className="flex gap-2.5">
+    <div className="flex flex-wrap gap-2.5">
       <div>
-        <Image
+        <img
           alt={detail.product_title}
           src={detail.product_detail_url}
           width={100}
@@ -235,7 +234,11 @@ const OrderDetailCardSection: React.FC<{
                               buttonType="primary"
                               isLoading={createReview.isLoading}
                               onClick={() => {
-                                if (comment.length <= 160) {
+                                if (
+                                  typeof comment === 'string'
+                                    ? comment?.length <= 160
+                                    : true
+                                ) {
                                   createReview.mutate({
                                     product_id: detail.product_id,
                                     rating: star,
@@ -416,7 +419,7 @@ const OrderDetail = () => {
       </Head>
       <MainLayout>
         {order.data?.data ? (
-          <div className="flex items-baseline justify-between gap-2">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
             <H1 className="text-primary">Order Detail</H1>
             <P className="opacity-60">
               Created at{' '}
@@ -429,39 +432,41 @@ const OrderDetail = () => {
           <></>
         )}
         <Divider />
-        <ul className="steps w-full min-w-full py-5">
-          {order.data?.data ? (
-            orderStatus
-              .slice(1, orderStatus.length - 2)
-              .map((status, index) => {
-                const idx = index + 1
-                // TODO: handle on cancel
-                return (
-                  <li
-                    key={idx}
-                    data-content={
-                      idx <= order.data.data.order_status ? '✓' : '●'
-                    }
-                    className={
-                      idx <= order.data.data.order_status
-                        ? 'step-primary step'
-                        : 'step'
-                    }
-                  >
-                    {status}
-                  </li>
-                )
-              })
-          ) : (
-            <></>
-          )}
-        </ul>
+        <div className="flex justify-center ">
+          <ul className="steps steps-vertical w-fit min-w-fit py-5 lg:steps-horizontal ">
+            {order.data?.data ? (
+              orderStatus
+                .slice(1, orderStatus.length - 2)
+                .map((status, index) => {
+                  const idx = index + 1
+                  return (
+                    <li
+                      key={idx}
+                      data-content={
+                        idx <= order.data.data.order_status ? '✓' : '●'
+                      }
+                      className={
+                        idx <= order.data.data.order_status
+                          ? 'step-primary step '
+                          : 'step '
+                      }
+                    >
+                      <span className="block w-fit truncate">{status}</span>
+                    </li>
+                  )
+                })
+            ) : (
+              <></>
+            )}
+          </ul>
+        </div>
+
         <div className="mt-3 flex h-full w-full flex-col bg-white">
           {order.isLoading ? (
             <P className="flex w-full justify-center">Loading</P>
           ) : order.isSuccess ? (
             <>
-              <div className="grid grid-cols-4 justify-center gap-4 rounded border p-4">
+              <div className="grid grid-cols-1 justify-center gap-4 rounded border p-4 lg:grid-cols-4">
                 <div className="flex-auto">
                   <P className="text-sm">Shop Name</P>
                   <A
@@ -570,7 +575,7 @@ const OrderDetail = () => {
                 </div>
               </div>
 
-              <div className=" mt-5 grid h-full w-full max-w-full grid-cols-2 rounded border bg-white p-6">
+              <div className=" mt-5 grid h-full w-full max-w-full grid-cols-1 gap-y-5 rounded border bg-white p-6 md:grid-cols-2">
                 <AddressDetailCard
                   title="Sender"
                   name={order.data.data.shop_name}
@@ -592,7 +597,7 @@ const OrderDetail = () => {
                   isReview={order.data.data.order_status >= 7}
                 />
                 <Divider />
-                <div className={'flex items-center justify-between'}>
+                <div className={'flex flex-wrap items-center justify-between'}>
                   <>
                     <P className="opacity-60">Total:</P>
                     <div className="flex items-center gap-2">

@@ -181,7 +181,7 @@ const ProductPage: NextPage = () => {
         variantTypes[name] = types
       })
 
-      variantTypes[variantNames[0]].forEach((typeNameZero) => {
+      variantTypes[variantNames[0]]?.forEach((typeNameZero) => {
         const variantTypeNameMap = []
         if (variantNames.length > 1) {
           variantTypes[variantNames[1]].forEach((typeNameOne) => {

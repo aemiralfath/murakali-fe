@@ -11,9 +11,24 @@ export const useCreateProduct = () => {
 
   return useMutation(
     async (data: CreateProductReq) => {
-      return await authorizedClient.post<APIResponse<null>>('/product/', {
+      const tempData: CreateProductReq = {
         ...data,
-      })
+        products_detail: data.products_detail.map((prev) => {
+          return {
+            ...prev,
+            variant_detail: prev.variant_detail.map((prev_var_detail) => {
+              return {
+                name: prev_var_detail.type,
+                type: prev_var_detail.name,
+              }
+            }),
+          }
+        }),
+      }
+      return await authorizedClient.post<APIResponse<null>>(
+        '/product/',
+        tempData
+      )
     },
     {
       onSuccess: () => {

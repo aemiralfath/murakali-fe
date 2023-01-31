@@ -6,7 +6,6 @@ import type { OrderData } from '@/types/api/order'
 import type { APIResponse, PaginationData } from '@/types/api/response'
 import moment from 'moment'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import type { MouseEvent } from 'react'
@@ -72,7 +71,7 @@ function ListOrderDeliveryService() {
                       <div key={index} className="flex justify-between">
                         <div className="mr-5 flex-none">
                           {productDetail.product_detail_url !== null ? (
-                            <Image
+                            <img
                               width={96}
                               height={96}
                               src={productDetail.product_detail_url}
@@ -80,7 +79,7 @@ function ListOrderDeliveryService() {
                               className={'aspect-square h-24 w-24'}
                             />
                           ) : (
-                            <Image
+                            <img
                               width={96}
                               height={96}
                               src={'/asset/image-empty.jpg'}
@@ -230,8 +229,9 @@ function ListOrderDeliveryService() {
         <title>Murakali | Seller Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="order">
-        <H2>Orders</H2>
-
+        <div className="flex items-baseline justify-between px-3 py-5 sm:px-0">
+          <H2>Orders</H2>
+        </div>
         <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
           <div className="my-4 flex h-fit w-fit max-w-full space-x-10 overflow-x-auto overflow-y-hidden whitespace-nowrap border-b-[2px]">
             <button
