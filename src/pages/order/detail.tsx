@@ -1,3 +1,17 @@
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+import {
+  HiCheck,
+  HiInboxIn,
+  HiInformationCircle,
+  HiMinus,
+  HiPlus,
+  HiTrash,
+} from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useCompleteOrder, useGetOrderByID, useReceiveOrder } from '@/api/order'
 import {
   useCreateProductReview,
@@ -29,20 +43,9 @@ import type { AddressDetail } from '@/types/api/address'
 import type { BuyerOrder, BuyerOrderDetail } from '@/types/api/order'
 import type { APIResponse } from '@/types/api/response'
 import type { ProductReview } from '@/types/api/review'
+
 import type { AxiosError } from 'axios'
 import moment from 'moment'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
-import { toast } from 'react-hot-toast'
-import {
-  HiCheck,
-  HiInboxIn,
-  HiInformationCircle,
-  HiMinus,
-  HiPlus,
-  HiTrash,
-} from 'react-icons/hi'
 
 const OrderDetailCardSection: React.FC<{
   detail: BuyerOrderDetail

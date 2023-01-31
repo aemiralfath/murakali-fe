@@ -1,3 +1,8 @@
+import React, { useState } from 'react'
+import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
+
+import { useRouter } from 'next/router'
+
 import { useGetProductReview } from '@/api/product'
 import {
   H3,
@@ -7,14 +12,12 @@ import {
   Divider,
   PaginationNav,
 } from '@/components'
-import type { TotalRating } from '@/types/api/review'
-import { ProductReview } from '@/types/api/review'
-import React, { useState } from 'react'
-import { useModal } from '@/hooks'
-import moment from 'moment'
 import cx from '@/helper/cx'
-import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
-import { useRouter } from 'next/router'
+import { useModal } from '@/hooks'
+import type { TotalRating } from '@/types/api/review'
+import type { ProductReview as ProductReviewType } from '@/types/api/review'
+
+import moment from 'moment'
 
 type ProgressBarProps = React.HTMLAttributes<HTMLProgressElement> & {
   index: number
@@ -27,7 +30,7 @@ interface ProductReviewProps {
 }
 
 interface ReviewProps {
-  item: ProductReview
+  item: ProductReviewType
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ index, value, ...rest }) => {

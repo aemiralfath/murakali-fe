@@ -5,4 +5,12 @@ module.exports = {
   tabWidth: 2,
   semi: false,
   singleQuote: true,
+  importOrder: [
+    '^react(.*)',
+    'next/(.*)',
+    '@/(.*)',
+    '<THIRD_PARTY_MODULES>',
+    '^[./]',
+  ],
+  importOrderSeparation: true,
 }

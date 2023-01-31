@@ -1,20 +1,22 @@
+import React, { useState } from 'react'
+import { FaAngleDoubleRight, FaAngleDoubleLeft } from 'react-icons/fa'
+import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
+import { HiLockClosed, HiSave, HiStatusOnline } from 'react-icons/hi'
+
 import { useGetUserWallet, useGetUserWalletHistory } from '@/api/user/wallet'
 import { Button, H1, H2, P, PaginationNav, Spinner } from '@/components'
+import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
 import { useModal } from '@/hooks'
 import { Navbar } from '@/layout/template'
 import Footer from '@/layout/template/footer'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import FormPasswordVerification from '@/sections/wallet/FormPasswordVerification'
+import FormPINWallet from '@/sections/wallet/FormPinWallet'
 import FormTopUp from '@/sections/wallet/FormTopUp'
 import TransactionDetail from '@/sections/wallet/TransactionDetail'
+
 import moment from 'moment'
-import React, { useState } from 'react'
-import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
-import { FaAngleDoubleRight, FaAngleDoubleLeft } from 'react-icons/fa'
-import cx from '@/helper/cx'
-import FormPINWallet from '@/sections/wallet/FormPinWallet'
-import { HiLockClosed, HiSave, HiStatusOnline } from 'react-icons/hi'
 
 function Wallet() {
   const userWallet = useGetUserWallet()

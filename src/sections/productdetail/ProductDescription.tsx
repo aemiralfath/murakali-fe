@@ -1,10 +1,12 @@
+import React, { useState } from 'react'
+import { HiChevronUp, HiChevronDown } from 'react-icons/hi'
+
+import { useRouter } from 'next/router'
+
 import { H3, Avatar, A, P, Divider } from '@/components'
 import cx from '@/helper/cx'
 import type { ProductInfo } from '@/types/api/product'
 import type { SellerInfo } from '@/types/api/seller'
-import { useRouter } from 'next/router'
-import React, { useState } from 'react'
-import { HiChevronUp, HiChevronDown } from 'react-icons/hi'
 
 interface ProductDescription {
   seller: SellerInfo
