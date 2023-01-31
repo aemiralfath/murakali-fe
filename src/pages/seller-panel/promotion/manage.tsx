@@ -17,7 +17,6 @@ import type { APIResponse, PaginationData } from '@/types/api/response'
 import { useRouter } from 'next/router'
 import { HiArrowLeft } from 'react-icons/hi'
 import Table from '@/components/table'
-import Image from 'next/image'
 import formatMoney from '@/helper/formatMoney'
 import type {
   CreatePromotionSellerRequest,
@@ -443,7 +442,7 @@ const ManagePromotionSeller = () => {
         Product: (
           <div className="flex gap-3">
             <div className="w-[65px] flex-1">
-              <Image
+              <img
                 src={row.product_thumbnail_url}
                 className={'rounded-lg'}
                 width={65}
@@ -794,7 +793,7 @@ const ManagePromotionSeller = () => {
                         </div>
                         <div className="flex max-w-full flex-1 items-center gap-3 py-1">
                           <div className="flex">
-                            <Image
+                            <img
                               src={sp.product_thumbnail_url}
                               className={'min-w-[4rem] rounded-lg'}
                               width={50}

@@ -15,7 +15,6 @@ import type { PaginationData } from '@/types/api/response'
 import type { SortBy } from '@/types/helper/sort'
 import moment from 'moment'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
@@ -202,7 +201,7 @@ const Products = () => {
         Info: (
           <div className="flex gap-3">
             <div className="w-[65px] flex-1">
-              <Image
+              <img
                 src={row.thumbnail_url}
                 className={'rounded-lg'}
                 width={65}

@@ -8,7 +8,6 @@ import type { SellerPromotion } from '@/types/api/promotion'
 import type { PaginationData } from '@/types/api/response'
 import moment from 'moment'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import type { MouseEvent } from 'react'
@@ -37,16 +36,16 @@ function PromotionSeller() {
           <div className="flex w-[24rem] items-center gap-3">
             <div className="min-w-[45px] flex-1">
               {row.product_thumbnail_url !== null ? (
-                <Image
-                  width={45}
-                  height={45}
+                <img
+                  width={96}
+                  height={96}
                   src={row.product_thumbnail_url}
                   alt={row.product_name}
                 />
               ) : (
-                <Image
-                  width={45}
-                  height={45}
+                <img
+                  width={96}
+                  height={96}
                   src={'/asset/image-empty.jpg'}
                   alt={row.product_name}
                 />

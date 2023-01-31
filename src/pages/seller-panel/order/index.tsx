@@ -6,7 +6,6 @@ import type { OrderData } from '@/types/api/order'
 import type { APIResponse, PaginationData } from '@/types/api/response'
 import moment from 'moment'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import type { MouseEvent } from 'react'
@@ -72,7 +71,7 @@ function ListOrderDeliveryService() {
                       <div key={index} className="flex justify-between">
                         <div className="mr-5 flex-none">
                           {productDetail.product_detail_url !== null ? (
-                            <Image
+                            <img
                               width={96}
                               height={96}
                               src={productDetail.product_detail_url}
@@ -80,7 +79,7 @@ function ListOrderDeliveryService() {
                               className={'aspect-square h-24 w-24'}
                             />
                           ) : (
-                            <Image
+                            <img
                               width={96}
                               height={96}
                               src={'/asset/image-empty.jpg'}
