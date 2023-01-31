@@ -69,7 +69,7 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                             height={60}
                             src={
                               data.thumbnail_url === ' '
-                                ? undefined
+                                ? '/asset/image-empty.jpg'
                                 : data.thumbnail_url
                             }
                             alt={data.title}
@@ -317,7 +317,7 @@ const Navbar: React.FC = () => {
             >
               <ul className="flex list-none flex-col items-start md:ml-auto md:flex-row">
                 <HoverableCartButton
-                  cart={cart.data?.data.cart_items}
+                  cart={cart.data?.data?.cart_items ?? []}
                   isLogin={user ? true : false}
                 />
                 <li className="nav-item">
@@ -348,7 +348,7 @@ const Navbar: React.FC = () => {
             <div className={'hidden items-center md:flex'}>
               <ul className="flex list-none flex-col md:ml-auto md:flex-row">
                 <HoverableCartButton
-                  cart={cart.data?.data.cart_items}
+                  cart={cart.data?.data?.cart_items ?? []}
                   isLogin={user ? true : false}
                 />
 

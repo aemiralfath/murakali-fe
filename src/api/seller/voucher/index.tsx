@@ -34,7 +34,7 @@ export const useSellerVouchers = (
   )
 }
 
-const getSellerVoucherDetail = async (id: string) => {
+const getSellerVoucherDetail = async (id?: string) => {
   const response = await authorizedClient.get<APIResponse<VoucherData>>(
     '/seller/voucher/' + id
   )

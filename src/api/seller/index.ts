@@ -31,7 +31,7 @@ export const useGetSellerInfo = (shopID: string) => {
   return useQuery([profileKey, shopID], async () => await getSellerInfo(shopID))
 }
 
-const getSellerInfoByUserID = async (userID: string) => {
+const getSellerInfoByUserID = async (userID?: string) => {
   const response = await authorizedClient.get<APIResponse<SellerInfo>>(
     '/seller/user/' + userID
   )

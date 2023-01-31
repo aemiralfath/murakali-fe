@@ -71,7 +71,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div
         className="min-h-full"
         onClick={() => {
-          if (data.id) {
+          if (data?.id) {
             router.push('/p/' + data.id)
           }
         }}
@@ -207,7 +207,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
                                 type="button"
                                 buttonType="gray"
                                 onClick={() => {
-                                  useDeleteFavoriteProduct.mutate(data.id)
+                                  if (data) {
+                                    useDeleteFavoriteProduct.mutate(data.id)
+                                  }
                                 }}
                               >
                                 Delete
@@ -228,7 +230,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     buttonType="ghost"
                     className="w-full text-white"
                     onClick={() => {
-                      router.push('/p/' + data.id)
+                      if (data) {
+                        router.push('/p/' + data.id)
+                      }
                     }}
                   >
                     Detail<br></br>Product
@@ -248,7 +252,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     buttonType="ghost"
                     className="w-full text-white"
                     onClick={() => {
-                      router.push('/p/' + data.id)
+                      if (data) {
+                        router.push('/p/' + data.id)
+                      }
                     }}
                   >
                     See Details
