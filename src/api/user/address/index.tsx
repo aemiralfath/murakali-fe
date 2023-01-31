@@ -33,12 +33,14 @@ const getDefaultAddress = async (
 
 export const useGetDefaultAddress = (
   isDefault: boolean,
-  isShopDefault: boolean
+  isShopDefault: boolean,
+  enabled: boolean
 ) => {
   return useQuery({
     queryKey: [profileKey],
     queryFn: async () => await getDefaultAddress(isDefault, isShopDefault),
     retry: false,
+    enabled: enabled,
   })
 }
 

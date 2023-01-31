@@ -417,7 +417,7 @@ function ManageVouchers() {
                     name="Discount"
                     checked={selected === 'P'}
                   />
-                  Persentage
+                  Percentage
                 </label>
               </div>
               <div>

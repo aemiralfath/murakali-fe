@@ -31,7 +31,7 @@ function Checkout() {
   const cartList = useGetCart()
   const userWallet = useGetUserWallet()
   const userSLP = useGetUserSLP()
-  const defaultAddress = useGetDefaultAddress(true, false)
+  const defaultAddress = useGetDefaultAddress(true, false, true)
 
   const modal = useModal()
   const router = useRouter()
@@ -59,6 +59,7 @@ function Checkout() {
   }
 
   const [checkoutItems, setCheckoutItems] = useState<PostCheckout>()
+
   useEffect(() => {
     if (cartList.data?.data.rows && idShops) {
       const tempCheckoutItem: CartPostCheckout[] = cartList.data.data.rows
@@ -145,7 +146,7 @@ function Checkout() {
         cart_items: checkoutItems.cart_items,
       })
     }
-  }, [voucher, checkoutItems, addresInfo])
+  }, [voucher, addresInfo])
 
   useEffect(() => {
     if (defaultAddress.isSuccess) {

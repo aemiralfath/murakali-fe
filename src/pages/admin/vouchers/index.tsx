@@ -146,7 +146,7 @@ function VouchersAdmin() {
                       })
                     }}
                   >
-                    <HiPencilAlt />
+                    <HiPencilAlt /> Update
                   </Button>
                 ) : (
                   <></>

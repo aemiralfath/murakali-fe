@@ -54,7 +54,6 @@ const ProductDescription = ({ seller, productInfo }: ProductDescription) => {
             >
               {seller.name}
             </A>
-            {/* <P className="text-sm">DKI Jakarta</P> */}
           </div>
         </div>
         <div className="mt-4 flex w-full flex-wrap items-center justify-between px-4 sm:mt-0 sm:justify-around">
@@ -62,10 +61,7 @@ const ProductDescription = ({ seller, productInfo }: ProductDescription) => {
             <P className="text-sm line-clamp-1">Rating</P>
             <P className="text-primary line-clamp-1">{seller.total_rating}</P>
           </div>
-          {/* <div className="text-center">
-            <P className="text-sm line-clamp-1">Items Sold</P>
-            <P className="text-primary line-clamp-1">{seller.total_product}</P>
-          </div> */}
+
           <div className="text-center">
             <P className="text-sm line-clamp-1">Item</P>
             <P className="text-primary line-clamp-1">{seller.total_product}</P>

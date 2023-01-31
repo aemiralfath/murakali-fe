@@ -17,7 +17,7 @@ import { useGetUserProfile } from '@/api/user/profile'
 function MerchantRegistration() {
   const modal = useModal()
   const router = useRouter()
-  const address = useGetDefaultAddress(false, true)
+  const address = useGetDefaultAddress(false, true, true)
 
   const addresses = useGetAllAddress(1)
 

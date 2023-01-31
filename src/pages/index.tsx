@@ -31,8 +31,14 @@ const Home: NextPage = () => {
       <div className="absolute z-20 w-full translate-y-[4rem] overflow-x-hidden md:translate-y-[4.5rem]">
         {banner.isLoading ? (
           <BannerCarousel banners={bannerData} isLoading={true} />
-        ) : banner.data?.data?.length > 0 ? (
-          <BannerCarousel banners={banner.data?.data} isLoading={false} />
+        ) : banner.data?.data?.filter((item) => item.is_active === true)
+            .length > 0 ? (
+          <BannerCarousel
+            banners={banner.data?.data.filter(
+              (item) => item.is_active === true
+            )}
+            isLoading={false}
+          />
         ) : (
           <BannerCarousel banners={bannerData} isLoading={false} />
         )}
@@ -60,8 +66,8 @@ const Home: NextPage = () => {
           <Divider />
         </div>
         <div>
-          <div className="flex justify-between ">
-            <H1>Selected Products</H1>
+          <div className="flex justify-between " id="recommended-product-list">
+            <H1>Recommended Products</H1>
             <H4 className="self-end">
               <button
                 onClick={() => {
