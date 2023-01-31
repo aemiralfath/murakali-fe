@@ -6,7 +6,6 @@ import CategoryFilter from '@/sections/productslisting/CategoryFilter'
 import cx from '@/helper/cx'
 import { useMediaQuery } from '@/hooks'
 import { Transition } from '@headlessui/react'
-import Image from 'next/image'
 
 import type { SortBy } from '@/types/helper/sort'
 import type { BriefProduct } from '@/types/api/product'
@@ -242,7 +241,7 @@ const ProductFavoriteLayout: React.FC<ProductFavoriteLayoutProps> = ({
                 })
             ) : data.length === 0 ? (
               <div className="col-span-2 flex w-full flex-col items-center justify-center p-6 sm:col-span-3 md:col-span-4 xl:col-span-6">
-                <Image
+                <img
                   src={'/asset/sorry.svg'}
                   width={300}
                   height={300}

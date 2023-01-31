@@ -32,7 +32,6 @@ import type { ProductReview } from '@/types/api/review'
 import type { AxiosError } from 'axios'
 import moment from 'moment'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
@@ -133,7 +132,7 @@ const OrderDetailCardSection: React.FC<{
   return (
     <div className="flex gap-2.5">
       <div>
-        <Image
+        <img
           alt={detail.product_title}
           src={detail.product_detail_url}
           width={100}

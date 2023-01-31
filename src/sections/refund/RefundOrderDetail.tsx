@@ -3,7 +3,6 @@ import formatMoney from '@/helper/formatMoney'
 import type { AddressDetail } from '@/types/api/address'
 import type { BuyerOrder } from '@/types/api/order'
 import { Menu, Transition } from '@headlessui/react'
-import Image from 'next/image'
 import React from 'react'
 import { HiInformationCircle } from 'react-icons/hi'
 
@@ -64,7 +63,7 @@ const OrderDetailCard: React.FC<
                     <Menu.Item key={index}>
                       <div className="flex gap-2.5">
                         <div>
-                          <Image
+                          <img
                             alt={detail.product_title}
                             src={detail.product_detail_url}
                             width={100}

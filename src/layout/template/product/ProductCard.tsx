@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from 'react'
 import { Button, Chip, P } from '@/components'
 import formatMoney from '@/helper/formatMoney'
@@ -14,7 +13,6 @@ import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
 import { useDispatch } from 'react-redux'
 import { closeModal } from '@/redux/reducer/modalReducer'
-import Image from 'next/image'
 
 type ProductCardProps = LoadingDataWrapper<BriefProduct> & {
   hoverable?: boolean
@@ -79,7 +77,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         {isLoading ? (
           <div className="aspect-square animate-pulse rounded-t-lg bg-base-200 object-cover" />
         ) : (
-          <Image
+          <img
             className="aspect-square rounded-t-lg object-cover"
             src={src}
             alt={data.title}

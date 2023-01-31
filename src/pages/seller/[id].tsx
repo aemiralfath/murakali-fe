@@ -5,7 +5,6 @@ import cx from '@/helper/cx'
 import { useMediaQuery } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { AiFillStar } from 'react-icons/ai'
@@ -317,11 +316,14 @@ function Seller() {
               {sellerProfile.data?.data ? (
                 <>
                   <div className="relative -z-0 mb-6 flex h-[150px] w-[150px] justify-center rounded-full sm:mb-0 md:h-[200px] md:w-[200px]">
-                    <Image
+                    <img
                       src={sellerProfile.data.data.photo_url}
                       alt={sellerProfile.data.data.name}
-                      className={'z-10 rounded-full object-cover shadow-lg'}
-                      fill
+                      className={
+                        'z-10 aspect-square w-full rounded-full object-cover shadow-lg'
+                      }
+                      height={150}
+                      width={150}
                     />
                     <div className="absolute top-1/2 left-1/2 -z-0 hidden h-[200px] w-[200px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white sm:block md:h-[280px] md:w-[280px]" />
                     <div className="absolute top-1/2 left-0 -z-0 hidden h-[300px]  w-[150px] -translate-y-1/2 -translate-x-[50%] bg-white sm:block md:w-[300px]" />
