@@ -340,18 +340,15 @@ function ManageVouchers() {
                       : moment(input.expired_date).format('YYYY-MM-DD HH:mm')
                   }
                   min={
-                    !duplicate
-                      ? moment(Date.now()).format('YYYY-MM-DD HH:mm')
-                      : moment(sellerVoucher.data?.data?.actived_date).format(
+                    duplicate || edit
+                      ? moment(sellerVoucher.data?.data?.actived_date).format(
                           'YYYY-MM-DD HH:mm'
                         )
+                      : moment(Date.now()).format('YYYY-MM-DD HH:mm')
                   }
                   value={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
                   label={md ? undefined : 'Active Date'}
                   full
-                  disabled={
-                    Date.now() >= Date.parse(input.actived_date) && edit
-                  }
                   required
                 />
               </div>
