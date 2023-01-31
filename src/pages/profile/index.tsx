@@ -1,15 +1,16 @@
-import { A, Avatar, Button, Divider, H1, P } from '@/components'
+import React from 'react'
+import { HiPencil } from 'react-icons/hi'
+
+import Head from 'next/head'
+
 import { useGetUserProfile } from '@/api/user/profile'
+import { A, Avatar, Button, Divider, H1, P } from '@/components'
+import { useModal } from '@/hooks'
+import ProfileLayout from '@/layout/ProfileLayout'
+import FormChangeProfilePicture from '@/layout/template/profile/FormChangeProfilePicture'
+import FormEditProfile from '@/layout/template/profile/FormEditProfile'
 
 import moment from 'moment'
-
-import { useModal } from '@/hooks'
-import React from 'react'
-import Head from 'next/head'
-import FormEditProfile from '@/layout/template/profile/FormEditProfile'
-import FormChangeProfilePicture from '@/layout/template/profile/FormChangeProfilePicture'
-import ProfileLayout from '@/layout/ProfileLayout'
-import { HiPencil } from 'react-icons/hi'
 
 function ManageProfile() {
   const modal = useModal()
@@ -74,7 +75,7 @@ function ManageProfile() {
                         Phone Number
                       </P>
                       <P className="text-lg font-semibold">
-                        {userProfile.data.data.phone_number ?? '-'}
+                        {'+62 ' + userProfile.data.data.phone_number ?? '-'}
                       </P>
                     </div>
                     <div className="">

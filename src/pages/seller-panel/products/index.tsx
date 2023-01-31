@@ -1,3 +1,19 @@
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+import {
+  HiArrowDown,
+  HiArrowUp,
+  HiChevronDown,
+  HiDuplicate,
+  HiFilter,
+  HiOutlineEye,
+  HiPencil,
+  HiPlus,
+} from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import type { ProductPaginationParams } from '@/api/product'
 import { useGetAllProduct } from '@/api/product'
 import { useBulkEditStatus, useEditStatus } from '@/api/product/manage'
@@ -13,21 +29,8 @@ import { closeModal } from '@/redux/reducer/modalReducer'
 import type { BriefProduct } from '@/types/api/product'
 import type { PaginationData } from '@/types/api/response'
 import type { SortBy } from '@/types/helper/sort'
+
 import moment from 'moment'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
-import { toast } from 'react-hot-toast'
-import {
-  HiArrowDown,
-  HiArrowUp,
-  HiChevronDown,
-  HiDuplicate,
-  HiFilter,
-  HiOutlineEye,
-  HiPencil,
-  HiPlus,
-} from 'react-icons/hi'
 
 const Products = () => {
   const ButtonSortData = [
@@ -400,7 +403,7 @@ const Products = () => {
           {selectedId.length > 0 ? (
             <div className="mb-3 flex items-center gap-2">
               <span>Selected {selectedId.length} products</span>
-              <div className="dropdown dropdown-bottom">
+              <div className="dropdown-bottom dropdown">
                 <label
                   tabIndex={0}
                   className="btn-outline btn-ghost btn-xs btn flex cursor-pointer items-center gap-1"
@@ -444,7 +447,7 @@ const Products = () => {
                     {
                       colName: 'Select',
                       component: (
-                        <div className="dropdown dropdown-bottom">
+                        <div className="dropdown-bottom dropdown">
                           <label tabIndex={0} className="cursor-pointer">
                             <HiChevronDown />
                           </label>

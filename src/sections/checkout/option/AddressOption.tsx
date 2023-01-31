@@ -1,14 +1,15 @@
-import { useEditAddress, useGetAllAddress } from '@/api/user/address'
-import { Button, Chip, H4, P } from '@/components'
-
-import { closeModal } from '@/redux/reducer/modalReducer'
-import type { AddressDetail } from '@/types/api/address'
-import type { APIResponse } from '@/types/api/response'
-import type { AxiosError } from 'axios'
-
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
+
+import { useEditAddress, useGetAllAddress } from '@/api/user/address'
+import { Button, Chip, H4, P } from '@/components'
+import { closeModal } from '@/redux/reducer/modalReducer'
+import type { AddressDetail } from '@/types/api/address'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
+
 interface AddressOptionProps {
   is_shop_address: boolean
 }
@@ -130,7 +131,10 @@ const AddressOption: React.FC<AddressOptionProps> = ({ is_shop_address }) => {
             ))}
           </>
         ) : (
-          <P></P>
+          <P className="italic text-gray-400">
+            You dont have any address, please go to profile page and make
+            shipping address
+          </P>
         )
       ) : (
         <P>Loading</P>

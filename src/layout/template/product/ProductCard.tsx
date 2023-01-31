@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Chip, P } from '@/components'
-import formatMoney from '@/helper/formatMoney'
-import { HiStar } from 'react-icons/hi'
-import type { BriefProduct } from '@/types/api/product'
-import { useHover, useModal } from '@/hooks'
-import { Transition } from '@headlessui/react'
-import { useRouter } from 'next/router'
-import cx from '@/helper/cx'
-import { useDeleteFavProduct } from '@/api/product/favorite'
 import toast from 'react-hot-toast'
-import type { AxiosError } from 'axios'
-import type { APIResponse } from '@/types/api/response'
+import { HiStar } from 'react-icons/hi'
 import { useDispatch } from 'react-redux'
+
+import { useRouter } from 'next/router'
+
+import { useDeleteFavProduct } from '@/api/product/favorite'
+import { Button, Chip, P } from '@/components'
+import cx from '@/helper/cx'
+import formatMoney from '@/helper/formatMoney'
+import { useHover, useModal } from '@/hooks'
 import { closeModal } from '@/redux/reducer/modalReducer'
+import type { BriefProduct } from '@/types/api/product'
+import type { APIResponse } from '@/types/api/response'
+
+import { Transition } from '@headlessui/react'
+import type { AxiosError } from 'axios'
 
 type ProductCardProps = LoadingDataWrapper<BriefProduct> & {
   hoverable?: boolean
@@ -121,9 +124,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                         <span className="text-[0.6rem]">Rp.</span>
                         {formatMoney(data.min_price)}-
                         <span className="text-[0.6rem]">Rp.</span>
-                        <span className="bg-green-200">
-                          {formatMoney(data.max_price)}
-                        </span>
+                        <span>{formatMoney(data.max_price)}</span>
                       </>
                     )}
                   </P>

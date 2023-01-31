@@ -1,23 +1,34 @@
+import React, { useState } from 'react'
+import { HiArrowLeft } from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useSellerOrders } from '@/api/seller/order'
 import { useSellerVoucherDetail } from '@/api/seller/voucher'
-import { Button, Chip, H2, H4, P } from '@/components'
+import { Button, Chip, H2, H4, P, PaginationNav } from '@/components'
 import Table from '@/components/table'
 import orderStatusData from '@/dummy/orderStatusData'
 import formatMoney from '@/helper/formatMoney'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
 import type { OrderData } from '@/types/api/order'
 import type { PaginationData } from '@/types/api/response'
+
 import moment from 'moment'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React from 'react'
-import { HiArrowLeft } from 'react-icons/hi'
 
 function VoucherDetail() {
   const router = useRouter()
   const { id } = router.query
   const sellerVoucher = useSellerVoucherDetail(String(id))
-  const sellerOrders = useSellerOrders('', String(id))
+
+  const [page, setPage] = useState<number>(1)
+  const sellerOrders = useSellerOrders(
+    '',
+    String(id),
+    page,
+    'created_at',
+    'desc'
+  )
 
   const formatSub = (pagination?: PaginationData<OrderData>) => {
     if (pagination) {
@@ -226,6 +237,19 @@ function VoucherDetail() {
                 />
               ) : (
                 <div>{'Error'}</div>
+              )}
+            </div>
+            <div>
+              {sellerOrders.data?.data ? (
+                <div className="mt-4 flex h-[8rem] w-full justify-center">
+                  <PaginationNav
+                    page={page}
+                    total={sellerOrders.data?.data?.total_pages}
+                    onChange={(p) => setPage(p)}
+                  />
+                </div>
+              ) : (
+                <></>
               )}
             </div>
           </div>

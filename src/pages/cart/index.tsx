@@ -1,3 +1,9 @@
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+
+import Router from 'next/router'
+
 import { useDeleteCart, useGetCart } from '@/api/user/cart'
 import { Button, H2, H4, P } from '@/components'
 import ProductCart from '@/components/card/ProductCart'
@@ -8,11 +14,9 @@ import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import SummaryCart from '@/sections/cart/SummaryCart'
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import Router from 'next/router'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
+
 function Cart() {
   const { user, isLoading } = useUser()
   const cartList = useGetCart()
@@ -71,7 +75,7 @@ function Cart() {
       <div className="container my-8 mx-auto mb-10 h-fit min-h-screen w-full px-2">
         <div className="grid grid-cols-1 gap-2 xl:grid-cols-4">
           <div className="col-span-3  flex flex-col gap-5">
-            <div className="flex justify-between rounded-lg border-[1px] border-solid border-gray-300 py-5 px-8">
+            <div className="flex  justify-between rounded-lg border-[1px] border-solid border-gray-300 py-5 px-8">
               <label className="flex-start flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -160,7 +164,7 @@ function Cart() {
                 {cartList.data?.data?.rows ? (
                   cartList.data.data.rows.map((cart, index) => (
                     <div
-                      className="z-10 h-full rounded-lg border-[1px] border-solid border-gray-300 py-7 px-8"
+                      className="z-0 h-full rounded-lg border-[1px] border-solid border-gray-300 py-7 px-8"
                       key={`${cart.id} ${index}`}
                     >
                       <label className="flex-start mb-5 flex items-center gap-2">
@@ -297,7 +301,7 @@ function Cart() {
             )}
 
             {cartList.data?.data?.total_pages === 0 ? (
-              <div className="z-10 flex h-full items-center rounded-lg border-[1px] border-solid border-gray-300 py-7 px-8">
+              <div className="z-0 flex h-full items-center rounded-lg border-[1px] border-solid border-gray-300 py-7 px-8">
                 <P className="flex w-full items-center justify-center font-extrabold">
                   Cart is Empty!
                 </P>

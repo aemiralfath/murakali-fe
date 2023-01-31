@@ -1,10 +1,12 @@
+import React from 'react'
+import { HiInformationCircle } from 'react-icons/hi'
+
 import { Divider, H3, P } from '@/components'
 import formatMoney from '@/helper/formatMoney'
 import type { AddressDetail } from '@/types/api/address'
 import type { BuyerOrder } from '@/types/api/order'
+
 import { Menu, Transition } from '@headlessui/react'
-import React from 'react'
-import { HiInformationCircle } from 'react-icons/hi'
 
 const OrderDetailCard: React.FC<
   LoadingDataWrapper<BuyerOrder> & {
@@ -106,7 +108,7 @@ const OrderDetailCard: React.FC<
                         Rp
                         {formatMoney(order.total_price + order.delivery_fee)}
                       </P>
-                      <div className="dropdown-end dropdown">
+                      <div className="dropdown dropdown-end">
                         <label tabIndex={0}>
                           <HiInformationCircle className="cursor-pointer text-gray-400" />
                         </label>

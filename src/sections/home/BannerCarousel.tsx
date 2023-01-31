@@ -1,9 +1,12 @@
+import React, { useEffect, useRef, useState } from 'react'
+
+import Link from 'next/link'
+
 import { Button, P } from '@/components'
 import bannerData from '@/dummy/bannerData'
 import { useMediaQuery } from '@/hooks'
 import type { BannerData } from '@/types/api/banner'
-import Link from 'next/link'
-import React, { useEffect, useRef, useState } from 'react'
+
 import style from './carousel.module.css'
 
 const Banner: React.FC<{
@@ -49,9 +52,7 @@ const Banner: React.FC<{
             </div>
 
             <div className="mt-3">
-              <Link
-                href={pageUrl === '' ? '#recommended-product-list' : pageUrl}
-              >
+              <a href={pageUrl === '' ? '#recommended-product-list' : pageUrl}>
                 <Button
                   buttonType="white"
                   size={lg ? 'md' : 'sm'}
@@ -59,7 +60,7 @@ const Banner: React.FC<{
                 >
                   Click here
                 </Button>
-              </Link>
+              </a>
             </div>
           </div>
         </div>

@@ -1,20 +1,22 @@
+import React, { useState } from 'react'
+import { FaAngleDoubleRight, FaAngleDoubleLeft } from 'react-icons/fa'
+import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
+import { HiLockClosed, HiSave, HiStatusOnline } from 'react-icons/hi'
+
 import { useGetUserWallet, useGetUserWalletHistory } from '@/api/user/wallet'
 import { Button, H1, H2, P, PaginationNav, Spinner } from '@/components'
+import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
 import { useModal } from '@/hooks'
 import { Navbar } from '@/layout/template'
 import Footer from '@/layout/template/footer'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import FormPasswordVerification from '@/sections/wallet/FormPasswordVerification'
+import FormPINWallet from '@/sections/wallet/FormPinWallet'
 import FormTopUp from '@/sections/wallet/FormTopUp'
 import TransactionDetail from '@/sections/wallet/TransactionDetail'
+
 import moment from 'moment'
-import React, { useState } from 'react'
-import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
-import { FaAngleDoubleRight, FaAngleDoubleLeft } from 'react-icons/fa'
-import cx from '@/helper/cx'
-import FormPINWallet from '@/sections/wallet/FormPinWallet'
-import { HiLockClosed, HiSave, HiStatusOnline } from 'react-icons/hi'
 
 function Wallet() {
   const userWallet = useGetUserWallet()
@@ -37,7 +39,7 @@ function Wallet() {
             </div>
           ) : userWallet.isError ? (
             <div className="flex flex-col items-center justify-center">
-              <P className="text-center font-bold text-gray-500">
+              <P className="text-center italic text-gray-500">
                 You Dont Have Wallet, Click Button Bellow and input your pin to
                 activated wallet
               </P>
@@ -63,7 +65,7 @@ function Wallet() {
                 <div>
                   <P className="font-bold">Wallet Number</P>
                   <P className="font-bold text-primary">
-                    {userWallet.data.data.id}
+                    {userWallet.data?.data.id}
                   </P>
                 </div>
               </div>
@@ -71,7 +73,7 @@ function Wallet() {
                 <div>
                   <P className="font-bold">Ballance</P>
                   <H1 className="text-primary">
-                    Rp. {formatMoney(userWallet.data.data.balance)}
+                    Rp. {formatMoney(userWallet.data?.data?.balance)}
                   </H1>
                 </div>
                 <div>

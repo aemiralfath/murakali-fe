@@ -1,16 +1,19 @@
-import { useSellerOrderDetail } from '@/api/seller/order'
-import { Button, H2, P } from '@/components'
-import SellerPanelLayout from '@/layout/SellerPanelLayout'
-import moment from 'moment'
+import React from 'react'
+import { HiArrowLeft } from 'react-icons/hi'
+
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React from 'react'
+
+import { useSellerOrderDetail } from '@/api/seller/order'
+import { Button, H2, P } from '@/components'
 import orderStatusData, { sellerOrderStatusData } from '@/dummy/orderStatusData'
+import cx from '@/helper/cx'
+import SellerPanelLayout from '@/layout/SellerPanelLayout'
+import OrderAddressDetail from '@/sections/seller/order/orderAddressDetail'
 import OrderDetailProduct from '@/sections/seller/order/orderDetailProduct'
 import SummaryOrderDetailProduct from '@/sections/seller/order/summaryOrderDetailProduct'
-import OrderAddressDetail from '@/sections/seller/order/orderAddressDetail'
-import cx from '@/helper/cx'
-import { HiArrowLeft } from 'react-icons/hi'
+
+import moment from 'moment'
 
 function OrderDetailPage() {
   const router = useRouter()
@@ -109,40 +112,42 @@ function OrderDetailPage() {
               </div>
 
               <div className=" mt-5 h-full w-full max-w-full rounded border bg-white p-6">
-                <ul className="steps w-full min-w-full py-5">
-                  {sellerOrderStatus.map((status, index) => {
-                    if (getSellerOrderDetail.data?.data) {
-                      return (
-                        <li
-                          key={index}
-                          data-content={
-                            getSellerOrderDetail.data.data.order_status >= 8
-                              ? '✕'
-                              : status.id <=
-                                getSellerOrderDetail.data.data.order_status
-                              ? '✓'
-                              : '●'
-                          }
-                          className={cx(
-                            'min-w-[12rem]',
-                            getSellerOrderDetail.data.data.order_status >= 8
-                              ? 'step-error step'
-                              : status.id <=
-                                getSellerOrderDetail.data.data.order_status
-                              ? 'step-primary step'
-                              : 'step'
-                          )}
-                        >
-                          <span className="mx-1 text-sm line-clamp-2">
-                            {status.name}
-                          </span>
-                        </li>
-                      )
-                    }
+                <div className="flex justify-center ">
+                  <ul className="steps steps-vertical w-fit min-w-fit py-5 lg:steps-horizontal ">
+                    {sellerOrderStatus.map((status, index) => {
+                      if (getSellerOrderDetail.data?.data) {
+                        return (
+                          <li
+                            key={index}
+                            data-content={
+                              getSellerOrderDetail.data.data.order_status >= 8
+                                ? '✕'
+                                : status.id <=
+                                  getSellerOrderDetail.data.data.order_status
+                                ? '✓'
+                                : '●'
+                            }
+                            className={cx(
+                              'min-w-[12rem]',
+                              getSellerOrderDetail.data.data.order_status >= 8
+                                ? 'step-error step'
+                                : status.id <=
+                                  getSellerOrderDetail.data.data.order_status
+                                ? 'step-primary step'
+                                : 'step'
+                            )}
+                          >
+                            <span className="mx-1 text-sm line-clamp-2">
+                              {status.name}
+                            </span>
+                          </li>
+                        )
+                      }
 
-                    return <li key={index} />
-                  })}
-                </ul>
+                      return <li key={index} />
+                    })}
+                  </ul>
+                </div>
 
                 <div className="mt-9 flex h-full w-full flex-col overflow-auto rounded border bg-white py-3 md:flex-row">
                   <OrderDetailProduct
