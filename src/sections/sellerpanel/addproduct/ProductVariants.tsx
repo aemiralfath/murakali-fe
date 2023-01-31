@@ -278,14 +278,14 @@ const ProductVariants: React.FC<{
         <H3>Product Variants</H3>
         <Chip type={'gray'}>Required</Chip>
       </div>
-      <P className="mt-2 flex items-center gap-1 text-sm">
-        <HiOutlineLightBulb className="text-accent" /> Add product variants so
-        your buyer can get the right product. (Max. 2 variant types)
+      <P className="mt-2 flex items-baseline gap-1 text-sm">
+        <HiOutlineLightBulb className="min-w-[1rem] text-accent" /> Add product
+        variants so your buyer can get the right product. (Max. 2 variant types)
       </P>
       <div className="mt-6 rounded border p-6">
         <H4>Variation 1</H4>
-        <div className="mt-2 flex gap-3">
-          <div className="flex w-[30%]">
+        <div className="mt-2 flex flex-col gap-3 md:flex-row">
+          <div className="flex md:w-[30%]">
             <VariationSelector
               defaultVariation={
                 defaultProductDetail ? variantType[0] : undefined
@@ -351,8 +351,8 @@ const ProductVariants: React.FC<{
               onClick={handleCloseVariantTwo}
             />
           </H4>
-          <div className="mt-2 flex gap-3">
-            <div className="flex w-[30%]">
+          <div className="mt-2 flex flex-col gap-3 md:flex-row">
+            <div className="flex md:w-[30%]">
               <VariationSelector
                 defaultVariation={
                   defaultProductDetail ? variantType[1] : undefined
@@ -441,7 +441,7 @@ const ProductVariants: React.FC<{
           />
           {selectKey.length > 0 ? (
             <div className="w-full">
-              <div className="flex h-12 w-full items-center gap-3 rounded-lg bg-base-200 px-2">
+              <div className="min-h-12 flex w-full flex-wrap items-center gap-3 rounded-lg bg-base-200 px-2 py-2 md:py-0">
                 <div className="flex max-w-[9rem] items-center gap-1">
                   <P>Price</P>
                   <TextInput

@@ -11,7 +11,6 @@ import type { ProductQuery } from '@/types/api/product'
 import cx from '@/helper/cx'
 import { useGetAllSellers } from '@/api/seller'
 import SellerLayout from '@/sections/search/SellerLayout'
-import Image from 'next/image'
 import { P } from '@/components'
 
 const SearchPage: NextPage = () => {
@@ -256,7 +255,7 @@ const SearchPage: NextPage = () => {
               <>
                 {' '}
                 <div className="col-span-2 flex w-full flex-col items-center justify-center p-6 sm:col-span-3 md:col-span-4 xl:col-span-6">
-                  <Image
+                  <img
                     src={'/asset/sorry.svg'}
                     width={300}
                     height={300}

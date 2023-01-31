@@ -1,7 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react'
 
 import React, { Fragment, useEffect, useState } from 'react'
-import Image from 'next/image'
 
 interface ModalPictureProps {
   isOpen: boolean
@@ -55,7 +54,7 @@ const ModalPicture: React.FC<ModalPictureProps> = ({
             >
               <Dialog.Panel className=" h-full w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white p-1 text-left align-middle shadow-xl transition-all">
                 <div className="m-1 flex items-center justify-center ">
-                  <Image
+                  <img
                     width={imageSize}
                     height={imageSize}
                     alt={productTitle}

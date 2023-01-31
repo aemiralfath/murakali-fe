@@ -1,5 +1,5 @@
 import { useSellerOrderDetail } from '@/api/seller/order'
-import { H2, P } from '@/components'
+import { Button, H2, P } from '@/components'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
 import moment from 'moment'
 import Head from 'next/head'
@@ -9,6 +9,8 @@ import orderStatusData, { sellerOrderStatusData } from '@/dummy/orderStatusData'
 import OrderDetailProduct from '@/sections/seller/order/orderDetailProduct'
 import SummaryOrderDetailProduct from '@/sections/seller/order/summaryOrderDetailProduct'
 import OrderAddressDetail from '@/sections/seller/order/orderAddressDetail'
+import cx from '@/helper/cx'
+import { HiArrowLeft } from 'react-icons/hi'
 
 function OrderDetailPage() {
   const router = useRouter()
@@ -23,7 +25,19 @@ function OrderDetailPage() {
         <title>Murakali | Seller Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="order">
-        <H2>Order Detail</H2>
+        <div className="flex items-baseline justify-between px-3 py-5 sm:px-0">
+          <H2>Order Detail</H2>
+          <Button
+            size="sm"
+            buttonType="primary"
+            outlined
+            onClick={() => {
+              router.back()
+            }}
+          >
+            <HiArrowLeft /> Back
+          </Button>
+        </div>
         <div className="mt-3 flex h-full w-[90rem] max-w-full flex-col rounded border bg-white p-6">
           {getSellerOrderDetail.isLoading ? (
             <P className="flex w-full justify-center">Loading</P>
@@ -32,7 +46,7 @@ function OrderDetailPage() {
               <div className=" mt-3 flex h-full flex-col justify-center gap-4 rounded border p-6 md:flex-row">
                 <div className="flex flex-auto flex-col gap-6">
                   <div className="flex-auto">
-                    <P>Order Date</P>
+                    <P className="text-sm">Order Date</P>
                     <P className="font-bold">
                       {moment(getSellerOrderDetail.data.data.created_at).format(
                         'DD MMM YYYY'
@@ -40,7 +54,7 @@ function OrderDetailPage() {
                     </P>
                   </div>
                   <div className="flex-auto">
-                    <P>Supplier Name</P>
+                    <P className="text-sm">Supplier Name</P>
                     <P className="font-bold text-primary">
                       {getSellerOrderDetail.data.data.shop_name}
                     </P>
@@ -48,13 +62,13 @@ function OrderDetailPage() {
                 </div>
                 <div className="flex flex-auto flex-col gap-6">
                   <div className="flex-auto">
-                    <P>Resi Number</P>
+                    <P className="text-sm">Resi Number</P>
                     <P className="font-bold">
                       {getSellerOrderDetail.data.data.resi_no}
                     </P>
                   </div>
                   <div className="flex-auto">
-                    <P>Invoice</P>
+                    <P className="text-sm">Invoice</P>
                     <P className="font-bold">
                       {getSellerOrderDetail.data.data.invoice}
                     </P>
@@ -62,7 +76,7 @@ function OrderDetailPage() {
                 </div>
                 <div className="flex flex-auto flex-col gap-6">
                   <div className="flex-auto">
-                    <P>Delivery</P>
+                    <P className="text-sm">Delivery Service</P>
                     <P className="font-bold">
                       {getSellerOrderDetail.data.data.courier_name}
                     </P>
@@ -80,7 +94,7 @@ function OrderDetailPage() {
                 </div>
                 <div className="flex flex-auto flex-col gap-6">
                   <div className="flex-auto">
-                    <P>Status</P>
+                    <P className="text-sm">Status</P>
                     <P className="font-bold">
                       {
                         orderStatusData.find(
@@ -108,16 +122,19 @@ function OrderDetailPage() {
                             ? '✓'
                             : '●'
                         }
-                        className={
+                        className={cx(
+                          'min-w-[12rem]',
                           getSellerOrderDetail.data.data.order_status >= 8
                             ? 'step-error step'
                             : status.id <=
                               getSellerOrderDetail.data.data.order_status
                             ? 'step-primary step'
                             : 'step'
-                        }
+                        )}
                       >
-                        {status.name}
+                        <span className="mx-1 text-sm line-clamp-2">
+                          {status.name}
+                        </span>
                       </li>
                     )
                   })}

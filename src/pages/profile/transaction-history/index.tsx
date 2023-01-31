@@ -16,7 +16,6 @@ import type { Transaction } from '@/types/api/transaction'
 import type { AxiosError } from 'axios'
 import moment from 'moment'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 
 import React, { useEffect, useState } from 'react'
@@ -35,9 +34,8 @@ const EmptyLayout = () => {
   return (
     <div className="flex flex-col items-center justify-center py-6">
       <div className="relative aspect-video w-full sm:w-96 md:w-[28rem]">
-        <Image
+        <img
           src={'/asset/tour.png'}
-          fill
           className="object-cover"
           alt="Buy your first product"
         />
@@ -200,7 +198,7 @@ const OrderCard: React.FC<
               className="flex flex-wrap gap-2.5"
               key={`${detail.product_detail_id}-${order.order_id}`}
             >
-              <Image
+              <img
                 alt={detail.product_title}
                 src={detail.product_detail_url}
                 width={100}

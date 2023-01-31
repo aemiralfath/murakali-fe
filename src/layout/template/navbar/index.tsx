@@ -19,7 +19,6 @@ import {
 } from 'react-icons/hi'
 
 import type { CartData } from '@/types/api/cart'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useLogout } from '@/api/auth/logout'
 import toast from 'react-hot-toast'
@@ -64,7 +63,7 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                     cart.map((data, idx) => {
                       return (
                         <div key={idx} className="flex py-2">
-                          <Image
+                          <img
                             width={60}
                             height={60}
                             src={

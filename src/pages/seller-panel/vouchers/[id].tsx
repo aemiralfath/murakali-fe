@@ -1,6 +1,6 @@
 import { useSellerOrders } from '@/api/seller/order'
 import { useSellerVoucherDetail } from '@/api/seller/voucher'
-import { Chip, H2, H4, P } from '@/components'
+import { Button, Chip, H2, H4, P } from '@/components'
 import Table from '@/components/table'
 import orderStatusData from '@/dummy/orderStatusData'
 import formatMoney from '@/helper/formatMoney'
@@ -9,9 +9,9 @@ import type { OrderData } from '@/types/api/order'
 import type { PaginationData } from '@/types/api/response'
 import moment from 'moment'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import React from 'react'
+import { HiArrowLeft } from 'react-icons/hi'
 
 function VoucherDetail() {
   const router = useRouter()
@@ -32,7 +32,7 @@ function VoucherDetail() {
                       <div key={index} className="flex justify-between">
                         <div className="mr-5 flex-none">
                           {productDetail.product_detail_url !== null ? (
-                            <Image
+                            <img
                               width={96}
                               height={96}
                               src={productDetail.product_detail_url}
@@ -40,7 +40,7 @@ function VoucherDetail() {
                               className={'aspect-square h-24 w-24'}
                             />
                           ) : (
-                            <Image
+                            <img
                               width={96}
                               height={96}
                               src={'/asset/image-empty.jpg'}
@@ -91,17 +91,29 @@ function VoucherDetail() {
         <title>Murakali | Seller Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="voucher">
-        <H2>Voucher Detail</H2>
+        <div className="flex flex-col items-baseline justify-between gap-2 px-3 py-5 sm:flex-row sm:px-0">
+          <H2>Voucher Detail</H2>
+          <Button
+            size="sm"
+            buttonType="primary"
+            outlined
+            onClick={() => {
+              router.back()
+            }}
+          >
+            <HiArrowLeft /> Back{' '}
+          </Button>
+        </div>
         <div className="mt-3 flex h-full w-[90rem] max-w-full flex-col rounded border bg-white p-6">
           {sellerVoucher.isSuccess ? (
             <div className=" mt-3 flex h-full flex-col justify-center gap-4 rounded border p-6 md:flex-row">
               <div className="flex flex-auto flex-col gap-6">
                 <div className="flex-auto">
-                  <P>Voucher Code</P>
+                  <P className="text-sm">Voucher Code</P>
                   <P className="font-bold">{sellerVoucher.data?.data?.code}</P>
                 </div>
                 <div className="flex-auto">
-                  <P>Status Code</P>
+                  <P className="text-sm">Status Code</P>
                   <P className="font-bold text-primary">
                     {Date.now() >=
                       Date.parse(sellerVoucher.data?.data?.actived_date) &&
@@ -128,7 +140,7 @@ function VoucherDetail() {
               </div>
               <div className="flex flex-auto flex-col gap-6">
                 <div className="flex-auto">
-                  <P>Active Date</P>
+                  <P className="text-sm">Active Date</P>
                   <P className="font-bold">
                     {moment(sellerVoucher.data?.data?.actived_date)
                       .utc()
@@ -136,7 +148,7 @@ function VoucherDetail() {
                   </P>
                 </div>
                 <div className="flex-auto">
-                  <P>Expired Date</P>
+                  <P className="text-sm">Expired Date</P>
                   <P className="font-bold">
                     {moment(sellerVoucher.data?.data?.expired_date)
                       .utc()
@@ -146,7 +158,7 @@ function VoucherDetail() {
               </div>
               <div className="flex flex-auto flex-col gap-6">
                 <div className="flex-auto">
-                  <P>Discount Detail</P>
+                  <P className="text-sm">Discount Detail</P>
                   <P className="font-bold">
                     {sellerVoucher.data?.data?.discount_percentage > 0 &&
                     sellerVoucher.data?.data?.discount_fix_price <= 0 ? (
@@ -168,23 +180,23 @@ function VoucherDetail() {
                   </P>
                 </div>
                 <div className="flex-auto">
-                  <P>Quantity </P>
-                  <P className="text-sm font-bold">
+                  <P className="text-sm">Quantity </P>
+                  <P className="font-mono text-sm font-bold">
                     {sellerVoucher.data?.data?.quota}
                   </P>
                 </div>
               </div>
               <div className="flex flex-auto flex-col gap-6">
                 <div className="flex-auto">
-                  <P>Min Product price </P>
+                  <P className="text-sm">Min Product price </P>
                   <P className="text-sm font-bold">
-                    {formatMoney(sellerVoucher.data?.data?.min_product_price)}
+                    Rp{formatMoney(sellerVoucher.data?.data?.min_product_price)}
                   </P>
                 </div>
                 <div className="flex-auto">
-                  <P>Max Discount Price</P>
+                  <P className="text-sm">Max Discount Price</P>
                   <P className="text-sm font-bold">
-                    {formatMoney(sellerVoucher.data?.data?.min_product_price)}
+                    Rp{formatMoney(sellerVoucher.data?.data?.min_product_price)}
                   </P>
                 </div>
               </div>
@@ -196,7 +208,11 @@ function VoucherDetail() {
 
           <div className="mt-10 flex max-w-full flex-col gap-3 overflow-auto">
             <H4>
-              Order Using Voucher {sellerVoucher.data?.data?.code} History
+              Order Using Voucher{' '}
+              <span className="font-mono font-light">
+                &quot;{sellerVoucher.data?.data?.code}&quot;
+              </span>{' '}
+              History
             </H4>
             <div>
               {sellerOrders.isLoading ? (

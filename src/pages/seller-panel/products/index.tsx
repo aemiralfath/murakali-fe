@@ -15,7 +15,6 @@ import type { PaginationData } from '@/types/api/response'
 import type { SortBy } from '@/types/helper/sort'
 import moment from 'moment'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
@@ -202,7 +201,7 @@ const Products = () => {
         Info: (
           <div className="flex gap-3">
             <div className="w-[65px] flex-1">
-              <Image
+              <img
                 src={row.thumbnail_url}
                 className={'rounded-lg'}
                 width={65}
@@ -311,8 +310,8 @@ const Products = () => {
         <title>Murakali | Seller Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="product">
-        <div className="flex w-full items-center justify-between">
-          <H2>Product List</H2>
+        <div className="flex flex-col items-baseline justify-between gap-2 px-3 py-5 sm:flex-row sm:px-0">
+          <H2>Products</H2>
           <Button
             size={'sm'}
             buttonType="primary"
@@ -401,7 +400,7 @@ const Products = () => {
           {selectedId.length > 0 ? (
             <div className="mb-3 flex items-center gap-2">
               <span>Selected {selectedId.length} products</span>
-              <div className="dropdown-bottom dropdown">
+              <div className="dropdown dropdown-bottom">
                 <label
                   tabIndex={0}
                   className="btn-outline btn-ghost btn-xs btn flex cursor-pointer items-center gap-1"
@@ -445,7 +444,7 @@ const Products = () => {
                     {
                       colName: 'Select',
                       component: (
-                        <div className="dropdown-bottom dropdown">
+                        <div className="dropdown dropdown-bottom">
                           <label tabIndex={0} className="cursor-pointer">
                             <HiChevronDown />
                           </label>
