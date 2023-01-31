@@ -347,7 +347,7 @@ function Vouchers() {
               <div className="mt-4 flex h-[8rem] w-full justify-center">
                 <PaginationNav
                   page={page}
-                  total={sellerVoucher.data.data.total_pages}
+                  total={sellerVoucher.data?.data?.total_pages}
                   onChange={(p) => setPage(p)}
                 />
               </div>

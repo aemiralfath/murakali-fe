@@ -1,5 +1,5 @@
 import { useSellerOrders, useWithdrawOrderBalance } from '@/api/seller/order'
-import { Button, H2 } from '@/components'
+import { Button, H2, PaginationNav } from '@/components'
 import Table from '@/components/table'
 import orderStatusData from '@/dummy/orderStatusData'
 import type { OrderData } from '@/types/api/order'
@@ -20,9 +20,9 @@ import type { AxiosError } from 'axios'
 
 function ListOrderDeliveryService() {
   const router = useRouter()
-
+  const [page, setPage] = useState<number>(1)
   const [orderStatusID, setOrderStatusID] = useState('')
-  const sellerOrders = useSellerOrders(orderStatusID, '')
+  const sellerOrders = useSellerOrders(orderStatusID, '', page)
   const withdrawOrderBalance = useWithdrawOrderBalance()
   const orderStatuses = orderStatusData
   const modal = useModal()
@@ -272,6 +272,19 @@ function ListOrderDeliveryService() {
               />
             ) : (
               <div>{'Error'}</div>
+            )}
+          </div>
+          <div>
+            {sellerOrders.data?.data ? (
+              <div className="mt-4 flex h-[8rem] w-full justify-center">
+                <PaginationNav
+                  page={page}
+                  total={sellerOrders.data?.data?.total_pages}
+                  onChange={(p) => setPage(p)}
+                />
+              </div>
+            ) : (
+              <></>
             )}
           </div>
         </div>
