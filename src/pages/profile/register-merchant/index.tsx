@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
+import { useLogout } from '@/api/auth/logout'
 import { useRegistrationMerchant } from '@/api/auth/register-merchant'
 import { useGetAllAddress, useGetDefaultAddress } from '@/api/user/address'
 import { useGetUserProfile } from '@/api/user/profile'
@@ -20,6 +21,8 @@ import * as Yup from 'yup'
 function MerchantRegistration() {
   const modal = useModal()
   const router = useRouter()
+  const logout = useLogout()
+
   const address = useGetDefaultAddress(false, true, true)
 
   const addresses = useGetAllAddress(1)
@@ -53,9 +56,23 @@ function MerchantRegistration() {
   useEffect(() => {
     if (registerMerchant.isSuccess) {
       toast.success('Registration Merchant Success')
-      router.push('/profile')
+      logout.mutate()
     }
   }, [registerMerchant.isSuccess])
+
+  useEffect(() => {
+    if (logout.isSuccess) {
+      router.push('/login')
+    }
+  }, [logout.isSuccess])
+  useEffect(() => {
+    if (logout.isError) {
+      const reason = logout.failureReason as AxiosError<APIResponse<null>>
+      toast.error(
+        reason.response ? reason.response.data.message : reason.message
+      )
+    }
+  }, [logout.isError])
 
   useEffect(() => {
     if (registerMerchant.isError) {
