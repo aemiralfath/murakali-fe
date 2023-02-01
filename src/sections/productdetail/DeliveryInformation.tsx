@@ -93,7 +93,7 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
     <div className="rounded border px-2 py-2">
       <P className="font-semibold">Delivery Estimation</P>
       <div>
-        <div className="flex flex-row items-center flex-wrap ">
+        <div className="flex flex-row flex-wrap items-center ">
           <Button
             onClick={() => {
               if (weight !== 0) {
@@ -110,7 +110,7 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
                 })
               }
             }}
-            className="flex-start font-normal btn btn-sm btn-ghost flex w-fit py-0 hover:bg-white hover:text-primary"
+            className="flex-start btn-ghost btn-sm btn flex w-fit py-0 font-normal hover:bg-white hover:text-primary"
           >
             <span className="flex items-center gap-3">
               <HiOutlineTruck /> To {destination.city}
@@ -119,7 +119,7 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
           <HiArrowNarrowRight />
           <div className="block">
             <Menu>
-              <Menu.Button className="btn btn-sm btn-ghost w-fit gap-2 bg-white py-0 text-start hover:bg-white hover:text-primary">
+              <Menu.Button className="btn-ghost btn-sm btn w-fit gap-2 bg-white py-0 text-start hover:bg-white hover:text-primary">
                 Delivery Fee Rp.{' '}
                 {minMax.max === 0 && minMax.min === 0 ? (
                   <>
@@ -141,21 +141,21 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
                 locationCost.data?.data?.data ? (
                   locationCost.data?.data?.data?.shipping_option.length > 0 ? (
                     <div>
-                      <Menu.Items className="customscroll absolute max-h-64 w-fit p-2 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
+                      <Menu.Items className="customscroll absolute max-h-64 w-fit origin-top-left divide-y divide-gray-100 overflow-x-hidden  overflow-y-scroll rounded-md bg-white p-2 shadow-lg focus:outline-none ">
                         {locationCost.data.data.data.shipping_option.map(
                           (shipping, index) => (
                             <div key={index} className={'flex justify-center'}>
                               <Menu.Item>
                                 {() => (
-                                  <Button className="btn m-1 mx-auto h-fit w-44 gap-2 justify-start border-gray-300 bg-white text-base-content hover:border-white hover:bg-primary hover:text-white">
-                                    <a className="flex justify-start text-start w-full py-2 flex-col gap-1">
+                                  <Button className="btn m-1 mx-auto h-fit w-44 justify-start gap-2 border-gray-300 bg-white text-base-content hover:border-white hover:bg-primary hover:text-white">
+                                    <a className="flex w-full flex-col justify-start gap-1 py-2 text-start">
                                       <span className="text-lg font-semibold">
                                         {shipping.courier.name}
                                       </span>
-                                      <span className="text-sm -mt-1 font-normal">
+                                      <span className="-mt-1 text-sm font-normal">
                                         Rp. {shipping.fee}
                                       </span>
-                                      <span className="text-xs -mt-1 font-normal">
+                                      <span className="-mt-1 text-xs font-normal">
                                         {shipping.etd.replace(/\D/g, '')} Days
                                       </span>
                                     </a>

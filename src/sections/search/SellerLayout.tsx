@@ -131,7 +131,17 @@ const SellerLayout: React.FC<SellerLayoutProps> = ({
               )}
             </>
           ) : (
-            <></>
+            <div className="col-span-2 flex w-full flex-col items-center justify-center p-6 sm:col-span-3 md:col-span-4 xl:col-span-6">
+              <img
+                src={'/asset/sorry.svg'}
+                width={300}
+                height={300}
+                alt={'Sorry'}
+              />
+              <P className="text-sm italic text-gray-400">
+                Sorry, shop you requested is not found.
+              </P>
+            </div>
           )}
         </>
       )}

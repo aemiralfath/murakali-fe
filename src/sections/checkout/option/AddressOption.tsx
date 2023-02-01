@@ -156,7 +156,7 @@ const AddressOption: React.FC<AddressOptionProps> = ({ is_shop_address }) => {
                     className={
                       index + 1 === page
                         ? 'btn btn-active'
-                        : 'btn-outline btn btn-primary'
+                        : 'btn-primary btn btn-outline'
                     }
                   >
                     {index + 1}

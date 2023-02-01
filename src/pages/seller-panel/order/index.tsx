@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { MouseEvent } from 'react'
 import { toast } from 'react-hot-toast'
-import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
+import { HiArrowDown, HiArrowUp, HiInformationCircle } from 'react-icons/hi'
 
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -183,7 +183,8 @@ function ListOrderDeliveryService() {
             Action: (
               <div className="flex w-fit flex-col gap-1">
                 <Button
-                  buttonType="gray"
+                  buttonType="primary"
+                  outlined
                   size="sm"
                   className="rounded"
                   onClick={() => {
@@ -192,7 +193,7 @@ function ListOrderDeliveryService() {
                     })
                   }}
                 >
-                  Look Detail
+                  <HiInformationCircle /> Detail
                 </Button>
                 {data.order_status === 7 ? (
                   <>
