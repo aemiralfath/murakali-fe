@@ -1,28 +1,31 @@
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+import { HiArrowLeft } from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useGetAllCategory } from '@/api/category'
+import { useGetProductById } from '@/api/product'
+import { useCreateProduct, useEditProduct } from '@/api/product/manage'
 import { Button, H2 } from '@/components'
+import { useLoadingModal } from '@/hooks'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
 import ProductInfo from '@/sections/sellerpanel/addproduct/ProductInfo'
 import ProductShipping from '@/sections/sellerpanel/addproduct/ProductShipping'
 import ProductVariants from '@/sections/sellerpanel/addproduct/ProductVariants'
 import UploadPhoto from '@/sections/sellerpanel/addproduct/UploadPhoto'
-import Head from 'next/head'
-import * as Yup from 'yup'
-import React, { useEffect, useState } from 'react'
 import type {
   CreateProductReq,
   EditProductReq,
   ProductDetailReq,
   ProductInfoReq,
 } from '@/types/api/product'
-import { useImmer } from 'use-immer'
-import { toast } from 'react-hot-toast'
-import { useCreateProduct, useEditProduct } from '@/api/product/manage'
-import { useLoadingModal } from '@/hooks'
-import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
-import { useRouter } from 'next/router'
-import { useGetProductById } from '@/api/product'
-import { HiArrowLeft } from 'react-icons/hi'
+
+import type { AxiosError } from 'axios'
+import { useImmer } from 'use-immer'
+import * as Yup from 'yup'
 
 const AddProduct = () => {
   const router = useRouter()
@@ -158,11 +161,12 @@ const AddProduct = () => {
         tempData = data
       }
       if (data && tempData !== undefined) {
-        tempData.bulk_price = false
-        tempData.condition = condition
-        tempData.hazardous = hazardous
-
-        tempProductDetail.push(tempData)
+        tempProductDetail.push({
+          ...tempData,
+          bulk_price: false,
+          condition,
+          hazardous,
+        })
       }
     })
     reqBody.products_detail = tempProductDetail

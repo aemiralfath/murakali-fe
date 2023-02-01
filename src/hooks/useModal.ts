@@ -1,3 +1,5 @@
+import type React from 'react'
+
 import {
   openModal,
   setContent,
@@ -5,7 +7,7 @@ import {
   setTitle,
   setCloseButton,
 } from '@/redux/reducer/modalReducer'
-import type React from 'react'
+
 import { useDispatch } from '.'
 
 function useModal() {

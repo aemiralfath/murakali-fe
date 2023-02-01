@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import type { APIResponse } from '@/types/api/response'
+
 import type { AccessTokenData } from '@/types/api/auth'
-import { env } from './env/client.mjs'
+import type { APIResponse } from '@/types/api/response'
+
 import jwt_decode from 'jwt-decode'
+
+import { env } from './env/client.mjs'
 import type { Jwt } from './types/api/user.js'
 
 export async function middleware(req: NextRequest) {

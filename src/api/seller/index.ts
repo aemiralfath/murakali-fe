@@ -1,8 +1,8 @@
 import { authorizedClient, unauthorizedClient } from '@/api/apiClient'
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
-
 import type { APIResponse, PaginationData } from '@/types/api/response'
 import type { SellerDetailInfomation, SellerInfo } from '@/types/api/seller'
+
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 
 const profileKey = 'sellerinfo'
 

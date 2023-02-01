@@ -1,7 +1,7 @@
 import { unauthorizedClient } from '@/api/apiClient'
-import { useQueryClient, useMutation } from '@tanstack/react-query'
-
 import type { APIResponse } from '@/types/api/response'
+
+import { useQueryClient, useMutation } from '@tanstack/react-query'
 
 const profileKey = ['auth']
 

@@ -1,5 +1,7 @@
-import type { TotalRating } from '@/types/api/sellerperformance'
 import React from 'react'
+
+import type { TotalRating } from '@/types/api/sellerperformance'
+
 import {
   ResponsiveContainer,
   BarChart,

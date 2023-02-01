@@ -1,15 +1,18 @@
+import React, { useRef, useState } from 'react'
+import { useEffect } from 'react'
+import toast from 'react-hot-toast'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useSLPPayment } from '@/api/user/transaction'
 import { P } from '@/components'
 import { useLoadingModal } from '@/hooks'
 import { Navbar } from '@/layout/template'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React, { useRef, useState } from 'react'
-import { useEffect } from 'react'
-import toast from 'react-hot-toast'
 
 const SLPPayment = () => {
   const router = useRouter()

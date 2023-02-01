@@ -1,17 +1,20 @@
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { FaGoogle } from 'react-icons/fa'
+
+import Head from 'next/head'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+
+import { useLogin } from '@/api/auth/login'
 import { TextInput, Button, Icon, H1, Divider, A } from '@/components'
+import { getGoogleUrl } from '@/helper/googleoauth'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import YupPassword from 'yup-password'
-import React, { useEffect, useState } from 'react'
-import { FaGoogle } from 'react-icons/fa'
-import { useLogin } from '@/api/auth/login'
-import toast from 'react-hot-toast'
-import type { AxiosError } from 'axios'
-import type { APIResponse } from '@/types/api/response'
-import { useRouter } from 'next/router'
-import Head from 'next/head'
-import { getGoogleUrl } from '@/helper/googleoauth'
-import Link from 'next/link'
 
 YupPassword(Yup)
 

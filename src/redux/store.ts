@@ -1,12 +1,12 @@
+import { useDispatch, useSelector } from 'react-redux'
+import type { TypedUseSelectorHook } from 'react-redux'
+
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/dist/query'
-import { useDispatch, useSelector } from 'react-redux'
 
-import modalReducer from './reducer/modalReducer'
 import loadingModalReducer from './reducer/loadingModalReducer'
+import modalReducer from './reducer/modalReducer'
 import searchKeywordReducer from './reducer/searchKeywordReducer'
-
-import type { TypedUseSelectorHook } from 'react-redux'
 
 export const store = configureStore({
   reducer: {

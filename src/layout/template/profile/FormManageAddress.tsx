@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+
 import { useCreateAddress, useEditAddress } from '@/api/user/address'
 import {
   useGetAllCity,
@@ -8,12 +11,11 @@ import {
 import { Button, TextArea, TextInput } from '@/components'
 import SelectComboBox from '@/components/selectinput/SelectCombobox'
 import { useDispatch } from '@/hooks'
+import { closeModal } from '@/redux/reducer/modalReducer'
 import type { AddressDetail, FetchParamInfo } from '@/types/api/address'
 import type { APIResponse } from '@/types/api/response'
-import { closeModal } from '@/redux/reducer/modalReducer'
+
 import type { AxiosError } from 'axios'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
 
 interface FormManageAddressProps {
   isEdit: boolean

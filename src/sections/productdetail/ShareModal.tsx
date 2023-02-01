@@ -1,8 +1,8 @@
-import { Divider, TextInput, Button } from '@/components'
 import React from 'react'
 import { BsFacebook, BsTwitter, BsLinkedin } from 'react-icons/bs'
-
 import { HiLink } from 'react-icons/hi'
+
+import { Divider, TextInput, Button } from '@/components'
 
 const ShareModal = () => {
   // TODO: Change links

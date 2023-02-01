@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react'
+
 import {
   closeLoadingModal,
   openLoadingModal,
 } from '@/redux/reducer/loadingModalReducer'
-import { useEffect, useState } from 'react'
+
 import { useDispatch } from '.'
 
 function useLoadingModal() {

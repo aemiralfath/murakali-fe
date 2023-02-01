@@ -1,21 +1,23 @@
+import { useEffect, useState } from 'react'
+import { AiFillStar } from 'react-icons/ai'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { useGetSellerProduct } from '@/api/product'
+import { useSearchQueryProduct } from '@/api/product/search'
 import { useGetSellerInfo } from '@/api/seller'
 import { useGetSellerCategory } from '@/api/seller/category'
 import { Divider, H2, H3, H4, P } from '@/components'
 import cx from '@/helper/cx'
 import { useMediaQuery } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { AiFillStar } from 'react-icons/ai'
-import type { CategoryData } from '@/types/api/category'
-import { useGetSellerProduct } from '@/api/product'
-import ProductCarousel from '@/sections/home/ProductCarousel'
-import type { ProductQuery } from '@/types/api/product'
 import ProductListingLayout, {
   useProductListing,
 } from '@/layout/ProductListingLayout'
-import { useSearchQueryProduct } from '@/api/product/search'
+import ProductCarousel from '@/sections/home/ProductCarousel'
+import type { CategoryData } from '@/types/api/category'
+import type { ProductQuery } from '@/types/api/product'
 
 const CategoryTab: React.FC<{
   categories: CategoryData[]
@@ -88,10 +90,10 @@ const CategoryTab: React.FC<{
       <>
         {sm ? (
           categories.length > 4 ? (
-            <div className="dropdown dropdown-end dropdown-hover mx-auto w-full">
+            <div className="dropdown-end dropdown dropdown-hover mx-auto w-full">
               <label
                 tabIndex={0}
-                className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
+                className="btn-primary btn-outline btn w-full border-0 text-base font-normal"
               >
                 Other Category
               </label>
@@ -103,7 +105,7 @@ const CategoryTab: React.FC<{
 
               <ul
                 tabIndex={0}
-                className="dropdown-end dropdown-hover dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
+                className="dropdown-end dropdown-content dropdown-hover menu rounded-box w-52 bg-base-100 p-2 shadow"
               >
                 {categories.slice(3, 999).map((item, index) => {
                   return (
@@ -127,10 +129,10 @@ const CategoryTab: React.FC<{
           )
         ) : (
           <>
-            <div className="dropdown-end dropdown-hover dropdown mx-auto w-full">
+            <div className="dropdown-end dropdown dropdown-hover mx-auto w-full">
               <label
                 tabIndex={0}
-                className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
+                className="btn-primary btn-outline btn w-full border-0 text-base font-normal"
               >
                 Other Category
               </label>
@@ -182,17 +184,14 @@ function Seller() {
   const sellerProfile = useGetSellerInfo(param.query.id as string)
   const sellerCategory = useGetSellerCategory(param.query.id as string)
   const product = useGetSellerProduct(
-    1,
-    6,
-    '',
-    '',
-    'unit_sold',
-    'desc',
-    0,
-    0,
-    0,
-    0,
-    param.query.id as string
+    {
+      page: 1,
+      limit: 6,
+      sort_by: 'unit_sold',
+      sort: 'desc',
+      shop_id: String(param.query.id),
+    },
+    Boolean(param.query.id)
   )
 
   const {

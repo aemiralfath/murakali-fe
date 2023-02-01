@@ -1,10 +1,12 @@
+import React from 'react'
+import { HiInformationCircle } from 'react-icons/hi'
+
 import { Divider, H3, P } from '@/components'
 import formatMoney from '@/helper/formatMoney'
 import type { AddressDetail } from '@/types/api/address'
 import type { BuyerOrder } from '@/types/api/order'
+
 import { Menu, Transition } from '@headlessui/react'
-import React from 'react'
-import { HiInformationCircle } from 'react-icons/hi'
 
 const OrderDetailCard: React.FC<
   LoadingDataWrapper<BuyerOrder> & {

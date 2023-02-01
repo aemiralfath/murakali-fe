@@ -1,3 +1,10 @@
+import React, { useEffect, useState } from 'react'
+import {
+  HiArrowNarrowRight,
+  HiChevronDown,
+  HiOutlineTruck,
+} from 'react-icons/hi'
+
 import { useGetDefaultAddress } from '@/api/user/address'
 import { useLocationCost } from '@/api/user/location'
 import { useGetUserProfile } from '@/api/user/profile'
@@ -5,8 +12,9 @@ import { Button, P, Spinner } from '@/components'
 import formatMoney from '@/helper/formatMoney'
 import { useModal } from '@/hooks'
 import type { LocationCostRequest } from '@/types/api/location'
+
 import { Menu } from '@headlessui/react'
-import React, { useEffect, useState } from 'react'
+
 import ChooseDestination from './ChooseDestination'
 
 interface DeliveryInformationProps {
@@ -82,10 +90,10 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
   const modal = useModal()
 
   return (
-    <div className="rounded-md border-2 border-solid border-gray-200 px-2 py-2">
-      <P className="font-bold">Delivery Estimation</P>
+    <div className="rounded border px-2 py-2">
+      <P className="font-semibold">Delivery Estimation</P>
       <div>
-        <div className="flex flex-row flex-wrap ">
+        <div className="flex flex-row flex-wrap items-center ">
           <Button
             onClick={() => {
               if (weight !== 0) {
@@ -102,14 +110,16 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
                 })
               }
             }}
-            className="flex-start btn flex w-fit  gap-4 border-none bg-white py-0 text-black hover:bg-white hover:text-primary"
+            className="flex-start btn btn-ghost btn-sm flex w-fit py-0 font-normal hover:bg-white hover:text-primary"
           >
-            {' '}
-            To {destination.city}
+            <span className="flex items-center gap-3">
+              <HiOutlineTruck /> To {destination.city}
+            </span>
           </Button>
+          <HiArrowNarrowRight />
           <div className="block">
             <Menu>
-              <Menu.Button className="btn  w-fit gap-2  border-none bg-white py-0 text-start text-black hover:bg-white hover:text-primary">
+              <Menu.Button className="btn btn-ghost btn-sm w-fit gap-2 bg-white py-0 text-start hover:bg-white hover:text-primary">
                 Delivery Fee Rp.{' '}
                 {minMax.max === 0 && minMax.min === 0 ? (
                   <>
@@ -124,27 +134,28 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
                     {formatMoney(minMax.min)} - Rp. {formatMoney(minMax.max)}
                   </>
                 )}
+                <HiChevronDown />
               </Menu.Button>
 
               {!locationCost.isLoading ? (
                 locationCost.data?.data?.data ? (
                   locationCost.data?.data?.data?.shipping_option.length > 0 ? (
                     <div>
-                      <Menu.Items className="absolute max-h-44 w-56 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
+                      <Menu.Items className="customscroll absolute max-h-64 w-fit origin-top-left divide-y divide-gray-100 overflow-x-hidden  overflow-y-scroll rounded-md bg-white p-2 shadow-lg focus:outline-none ">
                         {locationCost.data.data.data.shipping_option.map(
                           (shipping, index) => (
                             <div key={index} className={'flex justify-center'}>
                               <Menu.Item>
                                 {() => (
-                                  <Button className="btn m-1 mx-auto  h-20 w-44 gap-2 border-gray-300 bg-white text-primary outline hover:border-white hover:bg-primary hover:text-white">
-                                    <a className="flex flex-col gap-1">
-                                      <span className="text-lg font-bold">
+                                  <Button className="btn m-1 mx-auto h-fit w-44 justify-start gap-2 border-gray-300 bg-white text-base-content hover:border-white hover:bg-primary hover:text-white">
+                                    <a className="flex w-full flex-col justify-start gap-1 py-2 text-start">
+                                      <span className="text-lg font-semibold">
                                         {shipping.courier.name}
                                       </span>
-                                      <span className="">
+                                      <span className="-mt-1 text-sm font-normal">
                                         Rp. {shipping.fee}
                                       </span>
-                                      <span>
+                                      <span className="-mt-1 text-xs font-normal">
                                         {shipping.etd.replace(/\D/g, '')} Days
                                       </span>
                                     </a>

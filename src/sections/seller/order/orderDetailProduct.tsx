@@ -1,7 +1,8 @@
 import React from 'react'
-import type { OrderProductDetail } from '@/types/api/order'
+
 import { H4, P } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
+import type { OrderProductDetail } from '@/types/api/order'
 
 interface OrderDetailProductProps {
   detail: OrderProductDetail[]

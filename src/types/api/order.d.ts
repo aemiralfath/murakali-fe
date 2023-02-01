@@ -1,5 +1,7 @@
 import type { AddressDetail } from '@/types/api/address'
+
 import type { NullableTime } from './time'
+
 export interface OrderData {
   order_id: string
   order_status: number

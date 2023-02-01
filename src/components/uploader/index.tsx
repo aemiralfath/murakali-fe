@@ -1,12 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
+import React, { useCallback, useEffect, useState } from 'react'
+import type { ChangeEvent } from 'react'
+import { HiTrash, HiUpload } from 'react-icons/hi'
+
 import cx from '@/helper/cx'
 import { useModal } from '@/hooks'
 import CropperComponent from '@/layout/template/cropper'
-import React, { useCallback, useEffect, useState } from 'react'
-import { HiTrash, HiUpload } from 'react-icons/hi'
-import Button from '../button'
 
-import type { ChangeEvent } from 'react'
+import Button from '../button'
 
 const Uploader: React.FC<{
   id: string

@@ -1,15 +1,18 @@
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import PinInput from 'react-pin-input'
+
 import {
   useSendEmailChangePassword,
   useVerifyOTPChangePassword,
 } from '@/api/auth/changepassword'
 import { useModal } from '@/hooks'
-import type { APIResponse } from '@/types/api/response'
 import FormChangePassword from '@/layout/template/profile/FormChangePassword'
+import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+
 import Button from '../button'
-import PinInput from 'react-pin-input'
 
 interface FormOTPProps extends React.InputHTMLAttributes<HTMLSelectElement> {
   OTPType: string

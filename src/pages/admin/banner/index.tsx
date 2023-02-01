@@ -1,3 +1,10 @@
+import React, { useEffect } from 'react'
+import toast from 'react-hot-toast'
+import { HiPlus, HiTrash } from 'react-icons/hi'
+
+import Head from 'next/head'
+import router from 'next/router'
+
 import {
   useAdminBanner,
   useDeleteAdminBanner,
@@ -5,15 +12,11 @@ import {
 } from '@/api/admin/banner'
 import { Button, H3 } from '@/components'
 import { useDispatch } from '@/hooks'
-import { closeModal } from '@/redux/reducer/modalReducer'
 import AdminPanelLayout from '@/layout/AdminPanelLayout'
-import Head from 'next/head'
-import router from 'next/router'
-import React, { useEffect } from 'react'
-import toast from 'react-hot-toast'
-import { HiPlus, HiTrash } from 'react-icons/hi'
-import type { AxiosError } from 'axios'
+import { closeModal } from '@/redux/reducer/modalReducer'
 import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
 
 function BannerAdmin() {
   const banner = useAdminBanner()

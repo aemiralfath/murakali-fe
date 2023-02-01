@@ -1,11 +1,13 @@
+import React, { useEffect, useState } from 'react'
+import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
+import { useSwipeable } from 'react-swipeable'
+
 import cx from '@/helper/cx'
 import { useHover } from '@/hooks'
-import { Transition } from '@headlessui/react'
-import React, { useEffect, useState } from 'react'
-import { useSwipeable } from 'react-swipeable'
-import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
-import type { ProductImages } from '@/types/api/product'
 import ModalPicture from '@/sections/productdetail/ModalPicture'
+import type { ProductImages } from '@/types/api/product'
+
+import { Transition } from '@headlessui/react'
 
 type ProductImageCarouselProps = LoadingDataWrapper<{
   images?: ProductImages[]
@@ -107,7 +109,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
                 <SubImage
                   id={idx}
                   alt={data.alt ?? 'Sub Image'}
-                  isSelected={img.product_detail_id === mainImage}
+                  isSelected={img.url === mainImage}
                   url={img.url}
                   mainImage={mainImage ?? '/asset/image-empty.jpg'}
                   setMainID={setMainID}
@@ -175,7 +177,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
             />
             <ModalPicture
               isOpen={isOpen}
-              productImage={selectedImageUrl ?? '/asset/image-empty.jpg'}
+              productImage={mainImage ?? '/asset/image-empty.jpg'}
               productTitle={data.alt ?? 'Product Image'}
               closeModal={() => {
                 setIsOpen(false)

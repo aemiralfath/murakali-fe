@@ -1,5 +1,6 @@
-import cx from '@/helper/cx'
 import React from 'react'
+
+import cx from '@/helper/cx'
 
 interface ChipProps extends React.HTMLAttributes<HTMLDivElement> {
   type?:
