@@ -182,7 +182,8 @@ const ShopCard: React.FC<ShopCardProps> = ({
               )}
             </Menu.Button>
 
-            {locationCost.data?.data?.data ? (
+            {locationCost.data?.data?.data &&
+            locationCost.data.data.data.shipping_option !== null ? (
               locationCost.data.data.data.shipping_option.length > 0 ? (
                 <div>
                   <Menu.Items className="absolute w-44 origin-top-left  divide-y divide-gray-100 rounded-md bg-white shadow-lg focus:outline-none ">
