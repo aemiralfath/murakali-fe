@@ -51,7 +51,7 @@ function Cart() {
     let countQuantity = 0
     if (cartList.data?.data?.rows) {
       cartList.data.data.rows.forEach(function (shop) {
-        shop.product_details.forEach(function () {
+        shop.product_details?.forEach(function () {
           countQuantity = countQuantity + 1
         })
       })
@@ -87,7 +87,7 @@ function Cart() {
                         const resultProduct: string[] = []
                         const resultShop: string[] = []
                         cartList.data.data.rows.forEach(function (shop) {
-                          shop.product_details.forEach(function (
+                          shop.product_details?.forEach(function (
                             productDetail
                           ) {
                             resultProduct.push(productDetail.id)
@@ -134,11 +134,13 @@ function Cart() {
                                 cartList.data.data.rows.forEach(function (sh) {
                                   for (
                                     let y = 0;
-                                    y < sh.product_details.length;
+                                    y < Number(sh.product_details?.length);
                                     y++
                                   ) {
                                     const tempProductDetails =
-                                      sh.product_details[y]
+                                      sh.product_details === null
+                                        ? undefined
+                                        : sh.product_details[y]
                                     if (tempProductDetails !== undefined) {
                                       deleteCart.mutate(tempProductDetails.id)
                                     }
@@ -181,7 +183,7 @@ function Cart() {
                             let resultShop: string[] = []
                             const value = cart.shop.id
 
-                            cart.product_details.forEach(function (pd) {
+                            cart.product_details?.forEach(function (pd) {
                               resultProduct = selectedProducts.filter(
                                 (productId) => {
                                   return productId !== pd.id
@@ -196,7 +198,7 @@ function Cart() {
                             // unselect shop checkbox
                             for (let i = 0; i < selectedShop.length; i++) {
                               if (selectedShop[i] === value) {
-                                cart.product_details.forEach(function (pd) {
+                                cart.product_details?.forEach(function (pd) {
                                   for (
                                     let j = 0;
                                     j < resultProduct.length;
@@ -215,7 +217,7 @@ function Cart() {
                             }
 
                             // select shop checkbox
-                            cart.product_details.forEach(function (pd) {
+                            cart.product_details?.forEach(function (pd) {
                               resultProduct.push(pd.id)
                             })
                             setSelectedProduct(resultProduct)
@@ -226,7 +228,7 @@ function Cart() {
                         />
                         <H2>{cart.shop.name}</H2>
                       </label>
-                      {cart.product_details.map((product, index) => (
+                      {cart.product_details?.map((product, index) => (
                         <div
                           className="flex flex-col gap-5"
                           key={`${index} ${product.id}`}
@@ -263,7 +265,7 @@ function Cart() {
 
                                   let unCheck = false
                                   result.forEach(function (p) {
-                                    cart.product_details.forEach(function (c) {
+                                    cart.product_details?.forEach(function (c) {
                                       if (p === c.id) {
                                         unCheck = true
                                       }

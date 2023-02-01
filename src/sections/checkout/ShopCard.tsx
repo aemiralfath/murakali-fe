@@ -86,9 +86,12 @@ const ShopCard: React.FC<ShopCardProps> = ({
 
   useEffect(() => {
     if (cart && destination) {
-      const tempProductIds: string[] = cart.product_details
-        .filter((item) => idProducts.includes(item.id))
-        .map((product) => product.id)
+      const tempProductIds: string[] =
+        cart.product_details === null
+          ? []
+          : cart.product_details
+              .filter((item) => idProducts.includes(item.id))
+              .map((product) => product.id)
       const temp: LocationCostRequest = {
         destination: destination,
         weight: cart.weight,
@@ -98,7 +101,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
       locationCost.mutate(temp)
     }
 
-    if (cart) {
+    if (cart.product_details !== null) {
       setTotalPrice(
         cart.product_details
           .filter((item) => idProducts.includes(item.id))
@@ -118,43 +121,47 @@ const ShopCard: React.FC<ShopCardProps> = ({
       <H2 className="mb-8">
         {index + 1}. {cart.shop.name}
       </H2>
-      {cart.product_details
-        .filter((item) => idProducts.includes(item.id))
-        .map((product) => (
-          <div className="flex flex-col gap-5" key={product.id}>
-            <ProductCart
-              forCart={false}
-              listProduct={product}
-              productNote={(idProduct, note) => {
-                postCheckout.cart_items
-                  .filter((item) => cart.shop.id === item.shop_id)
-                  .map((shop) => {
-                    const temp: ProductPostCheckout[] =
-                      shop.product_details.map((product) => {
-                        let tempNote: string = product.note
-                        if (product.id === idProduct) {
-                          tempNote = note
-                        }
-                        return {
-                          id: product.id,
-                          cart_id: product.cart_id,
-                          quantity: product.quantity,
-                          note: tempNote,
-                        }
-                      })
-                    setProductD(temp)
-                    courierID(
-                      delivery.id,
-                      delivery.delivery_fee,
-                      voucher.id,
-                      voucherPrice,
-                      temp
-                    )
-                  })
-              }}
-            />
-          </div>
-        ))}
+      {cart.product_details !== null ? (
+        cart.product_details
+          .filter((item) => idProducts.includes(item.id))
+          .map((product) => (
+            <div className="flex flex-col gap-5" key={product.id}>
+              <ProductCart
+                forCart={false}
+                listProduct={product}
+                productNote={(idProduct, note) => {
+                  postCheckout.cart_items
+                    .filter((item) => cart.shop.id === item.shop_id)
+                    .map((shop) => {
+                      const temp: ProductPostCheckout[] =
+                        shop.product_details.map((product) => {
+                          let tempNote: string = product.note
+                          if (product.id === idProduct) {
+                            tempNote = note
+                          }
+                          return {
+                            id: product.id,
+                            cart_id: product.cart_id,
+                            quantity: product.quantity,
+                            note: tempNote,
+                          }
+                        })
+                      setProductD(temp)
+                      courierID(
+                        delivery.id,
+                        delivery.delivery_fee,
+                        voucher.id,
+                        voucherPrice,
+                        temp
+                      )
+                    })
+                }}
+              />
+            </div>
+          ))
+      ) : (
+        <></>
+      )}
 
       <div className="flex flex-wrap items-center justify-center gap-y-2 md:justify-end">
         <div className="block">

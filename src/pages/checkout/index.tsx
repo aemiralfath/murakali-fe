@@ -68,16 +68,18 @@ function Checkout() {
         .filter((item) => idShops.includes(item.shop.id))
         .map((cartDetail) => {
           const product_details: ProductPostCheckout[] =
-            cartDetail.product_details
-              .filter((item) => idProducts?.includes(item.id))
-              .map((product) => {
-                return {
-                  id: product.id,
-                  cart_id: '',
-                  quantity: product.quantity,
-                  note: '',
-                }
-              })
+            cartDetail.product_details === null
+              ? []
+              : cartDetail.product_details
+                  .filter((item) => idProducts?.includes(item.id))
+                  .map((product) => {
+                    return {
+                      id: product.id,
+                      cart_id: '',
+                      quantity: product.quantity,
+                      note: '',
+                    }
+                  })
           return {
             shop_id: cartDetail.shop.id,
             voucher_shop_id: '',
