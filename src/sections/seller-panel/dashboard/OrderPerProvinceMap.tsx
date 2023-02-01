@@ -1,7 +1,9 @@
-import type { OrdersByProvince } from '@/types/api/sellerperformance'
-import ColorScale from 'color-scales'
 import React from 'react'
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps'
+
+import type { OrdersByProvince } from '@/types/api/sellerperformance'
+
+import ColorScale from 'color-scales'
 
 const OrderPerProvinceMap: React.FC<{
   orders: OrdersByProvince[]

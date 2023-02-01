@@ -1,3 +1,10 @@
+import { useEffect } from 'react'
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+
+import Head from 'next/head'
+import Image from 'next/image'
+
 import {
   useCreateDeliverySeller,
   useDeleteDeliverySeller,
@@ -8,12 +15,8 @@ import { useModal } from '@/hooks'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import Head from 'next/head'
-import Image from 'next/image'
-import { useEffect } from 'react'
-import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
 
 function SellerDeliveryService() {
   const useCouriers = useDeliveryServiceSeller()

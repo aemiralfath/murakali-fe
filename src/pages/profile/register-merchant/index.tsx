@@ -1,18 +1,21 @@
-import { Button, H2, H4, P, TextInput } from '@/components'
 import React, { useEffect } from 'react'
-import { useModal } from '@/hooks'
-import Head from 'next/head'
-import MainLayout from '@/layout/MainLayout'
-import { useGetAllAddress, useGetDefaultAddress } from '@/api/user/address'
 import { toast } from 'react-hot-toast'
+
+import Head from 'next/head'
 import { useRouter } from 'next/router'
-import AddressOption from '@/sections/checkout/option/AddressOption'
+
 import { useRegistrationMerchant } from '@/api/auth/register-merchant'
+import { useGetAllAddress, useGetDefaultAddress } from '@/api/user/address'
+import { useGetUserProfile } from '@/api/user/profile'
+import { Button, H2, H4, P, TextInput } from '@/components'
+import { useModal } from '@/hooks'
+import MainLayout from '@/layout/MainLayout'
+import AddressOption from '@/sections/checkout/option/AddressOption'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import type { AxiosError } from 'axios'
-import type { APIResponse } from '@/types/api/response'
-import { useGetUserProfile } from '@/api/user/profile'
 
 function MerchantRegistration() {
   const modal = useModal()

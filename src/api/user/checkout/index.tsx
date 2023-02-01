@@ -19,6 +19,7 @@ export const useGetVoucherShopCheckout = (id?: string) => {
     queryKey: [voucherShop, id],
     queryFn: async () => await getVoucherShopCheckout(id),
     enabled: Boolean(id),
+    retry: 2,
   })
 }
 

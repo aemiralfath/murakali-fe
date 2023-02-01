@@ -1,7 +1,8 @@
 import { authorizedClient } from '@/api/apiClient'
-import { useMutation } from '@tanstack/react-query'
 import type { AccessTokenData } from '@/types/api/auth'
 import type { APIResponse } from '@/types/api/response'
+
+import { useMutation } from '@tanstack/react-query'
 import { deleteCookie } from 'cookies-next'
 
 export const useRegistrationMerchant = () => {

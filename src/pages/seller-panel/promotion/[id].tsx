@@ -1,17 +1,21 @@
-import { Button, Divider, H2, H4, P } from '@/components'
-import SellerPanelLayout from '@/layout/SellerPanelLayout'
-import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
-import { useLoadingModal } from '@/hooks'
-import { useRouter } from 'next/router'
 import { HiArrowLeft, HiDuplicate, HiPencil } from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { useSellerPromotionDetail } from '@/api/seller/promotion'
+import { Button, Divider, H2, H4, P } from '@/components'
+import { ConvertShowMoney } from '@/helper/convertshowmoney'
+import { useLoadingModal } from '@/hooks'
+import SellerPanelLayout from '@/layout/SellerPanelLayout'
 import type {
   CreatePromotionSellerRequest,
   ProductPromotion,
 } from '@/types/api/promotion'
+
 import moment from 'moment'
-import { ConvertShowMoney } from '@/helper/convertshowmoney'
-import { useSellerPromotionDetail } from '@/api/seller/promotion'
+
 const PromotionDetailSeller = () => {
   const router = useRouter()
   const { id } = router.query

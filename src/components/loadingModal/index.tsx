@@ -1,6 +1,8 @@
+import React from 'react'
+
 import cx from '@/helper/cx'
 import { useSelector } from '@/hooks'
-import React from 'react'
+
 import IconLoading from '../iconLoading'
 import { P } from '../typography'
 

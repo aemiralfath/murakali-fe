@@ -1,8 +1,8 @@
 import { unauthorizedClient } from '@/api/apiClient'
-import { useQuery } from '@tanstack/react-query'
-
-import type { APIResponse } from '@/types/api/response'
 import type { CategoryData } from '@/types/api/category'
+import type { APIResponse } from '@/types/api/response'
+
+import { useQuery } from '@tanstack/react-query'
 
 const profileKey = 'sellercategory'
 

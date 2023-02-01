@@ -1,32 +1,34 @@
-import { Button, H3, P } from '@/components'
 import React, { useEffect, useState } from 'react'
 import { FaTicketAlt } from 'react-icons/fa'
-import { useModal } from '@/hooks'
+import { FaAddressCard } from 'react-icons/fa'
+
+import { useRouter } from 'next/router'
+
 import { useGetDefaultAddress } from '@/api/user/address'
 import { useGetCart } from '@/api/user/cart'
+import { useGetVoucherMarketplaceCheckout } from '@/api/user/checkout'
+import { useGetUserSLP } from '@/api/user/slp'
+import { useGetUserWallet } from '@/api/user/wallet'
+import { Button, H3, P } from '@/components'
+import formatMoney from '@/helper/formatMoney'
+import { useModal } from '@/hooks'
 import { Navbar } from '@/layout/template'
+import Footer from '@/layout/template/footer'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import CheckoutSummary from '@/sections/checkout/CheckoutSummary'
+import ShopCard from '@/sections/checkout/ShopCard'
 import AddressOption from '@/sections/checkout/option/AddressOption'
-import { useRouter } from 'next/router'
 import type {
   CartPostCheckout,
   PostCheckout,
   ProductPostCheckout,
 } from '@/types/api/checkout'
-
-import { FaAddressCard } from 'react-icons/fa'
-
-import { decrypt } from 'n-krypta'
-import ShopCard from '@/sections/checkout/ShopCard'
-import { useGetUserWallet } from '@/api/user/wallet'
-import { useGetUserSLP } from '@/api/user/slp'
-import Footer from '@/layout/template/footer'
-import { Menu } from '@headlessui/react'
 import type { VoucherData } from '@/types/api/voucher'
-import { useGetVoucherMarketplaceCheckout } from '@/api/user/checkout'
-import formatMoney from '@/helper/formatMoney'
+
+import { Menu } from '@headlessui/react'
 import moment from 'moment'
+import { decrypt } from 'n-krypta'
+
 function Checkout() {
   const cartList = useGetCart()
   const userWallet = useGetUserWallet()

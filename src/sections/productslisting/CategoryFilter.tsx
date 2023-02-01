@@ -1,8 +1,11 @@
-import { H4 } from '@/components'
-import type { CategoryData } from '@/types/api/category'
-import { Disclosure } from '@headlessui/react'
 import React, { useState } from 'react'
 import { HiChevronUp, HiChevronDown } from 'react-icons/hi'
+
+import { H4 } from '@/components'
+import type { CategoryData } from '@/types/api/category'
+
+import { Disclosure } from '@headlessui/react'
+
 import RecursionCategory from './RecursionCategory'
 
 const CategoryFilter: React.FC<{

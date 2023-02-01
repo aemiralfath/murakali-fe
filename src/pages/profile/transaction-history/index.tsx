@@ -1,3 +1,18 @@
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+import { FaStore } from 'react-icons/fa'
+import {
+  HiArrowRight,
+  HiCheck,
+  HiInboxIn,
+  HiInformationCircle,
+  HiOutlineShieldCheck,
+  HiShoppingCart,
+} from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useCompleteOrder, useGetOrders, useReceiveOrder } from '@/api/order'
 import { useGetTransactions } from '@/api/transaction'
 import { useGetUserSLP } from '@/api/user/slp'
@@ -13,22 +28,9 @@ import PaymentOption from '@/sections/checkout/option/PaymentOption'
 import type { BuyerOrder } from '@/types/api/order'
 import type { APIResponse } from '@/types/api/response'
 import type { Transaction } from '@/types/api/transaction'
+
 import type { AxiosError } from 'axios'
 import moment from 'moment'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-
-import React, { useEffect, useState } from 'react'
-import { toast } from 'react-hot-toast'
-import { FaStore } from 'react-icons/fa'
-import {
-  HiArrowRight,
-  HiCheck,
-  HiInboxIn,
-  HiInformationCircle,
-  HiOutlineShieldCheck,
-  HiShoppingCart,
-} from 'react-icons/hi'
 
 const EmptyLayout = () => {
   return (

@@ -1,3 +1,7 @@
+import React, { useEffect, useState } from 'react'
+import { FaTicketAlt } from 'react-icons/fa'
+import { FaShippingFast } from 'react-icons/fa'
+
 import { useGetVoucherShopCheckout } from '@/api/user/checkout'
 import { useLocationCost } from '@/api/user/location'
 import { Button, H2, P } from '@/components'
@@ -7,11 +11,10 @@ import type { CartDetail } from '@/types/api/cart'
 import type { PostCheckout, ProductPostCheckout } from '@/types/api/checkout'
 import type { LocationCostRequest } from '@/types/api/location'
 import type { VoucherData } from '@/types/api/voucher'
+
 import { Menu } from '@headlessui/react'
 import moment from 'moment'
-import React, { useEffect, useState } from 'react'
-import { FaTicketAlt } from 'react-icons/fa'
-import { FaShippingFast } from 'react-icons/fa'
+
 interface ShopCardProps {
   cart: CartDetail
   index: number

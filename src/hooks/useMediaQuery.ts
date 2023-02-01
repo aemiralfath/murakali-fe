@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+
 import defaultTheme from 'tailwindcss/defaultTheme'
 
 const screens = { xs: '500px', ...defaultTheme.screens }

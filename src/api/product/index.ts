@@ -1,11 +1,11 @@
 import { unauthorizedClient } from '@/api/apiClient'
+import type { Product, ProductImages } from '@/types/api/product'
+import type { BriefProduct } from '@/types/api/product'
+import type { APIResponse, PaginationData } from '@/types/api/response'
+import type { ProductReview, TotalRating } from '@/types/api/review'
+
 import { useQuery } from '@tanstack/react-query'
 import qs from 'qs'
-
-import type { Product, ProductImages } from '@/types/api/product'
-import type { ProductReview, TotalRating } from '@/types/api/review'
-import type { APIResponse, PaginationData } from '@/types/api/response'
-import type { BriefProduct } from '@/types/api/product'
 
 const profileKey = 'seller'
 const productKey = 'product'
@@ -23,92 +23,36 @@ export type ProductPaginationParams = {
   max_rating?: number
   listed_status?: 0 | 1 | 2
 }
-
-const getSellerProduct = async (
-  page: number,
-  limit: number,
-  search: string,
-  category: string,
-  sort_by: string,
-  sort: string,
-  min_price: number,
-  max_price: number,
-  min_rating: number,
-  max_rating: number,
+export type SellerProductParams = {
+  page?: number
+  limit?: number
+  search?: string
+  category?: string
+  sort_by?: string
+  sort?: string
+  min_price?: number
+  max_price?: number
+  min_rating?: number
+  max_rating?: number
   shop_id?: string
-) => {
+}
+
+const getSellerProduct = async (p: SellerProductParams) => {
+  const query = qs.stringify(p)
   const response = await unauthorizedClient.get<
     APIResponse<PaginationData<BriefProduct>>
-  >(
-    '/product/?limit=' +
-      String(limit) +
-      '&page=' +
-      String(page) +
-      '&search=' +
-      search +
-      '&category=' +
-      category +
-      '&shop_id=' +
-      shop_id +
-      '&sort_by=' +
-      sort_by +
-      '&sort=' +
-      sort +
-      '&min_price=' +
-      String(min_price) +
-      '&max_price=' +
-      String(max_price) +
-      '&min_rating=' +
-      String(min_rating) +
-      '&max_rating=' +
-      String(max_rating)
-  )
+  >('/product/?' + query)
   return response.data
 }
 
 export const useGetSellerProduct = (
-  page: number,
-  limit: number,
-  search: string,
-  category: string,
-  sort_by: string,
-  sort: string,
-  min_price: number,
-  max_price: number,
-  min_rating: number,
-  max_rating: number,
-  shop_id?: string
+  params: SellerProductParams,
+  enabled?: boolean
 ) => {
   return useQuery({
-    queryKey: [
-      profileKey,
-      page,
-      limit,
-      search,
-      category,
-      shop_id,
-      sort_by,
-      sort,
-      min_price,
-      max_price,
-      min_rating,
-      max_rating,
-    ],
-    queryFn: async () =>
-      await getSellerProduct(
-        page,
-        limit,
-        search,
-        category,
-        sort_by,
-        sort,
-        min_price,
-        max_price,
-        min_rating,
-        max_rating,
-        shop_id
-      ),
-    enabled: Boolean(shop_id),
+    queryKey: [profileKey, params],
+    queryFn: async () => await getSellerProduct(params),
+    enabled: enabled,
   })
 }
 

@@ -1,3 +1,17 @@
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+import { BsTrash } from 'react-icons/bs'
+import { HiArrowLeft } from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import {
+  useCreatePromotion,
+  useProductNoPromotionSeller,
+  useSellerPromotionDetail,
+  useUpdatePromotion,
+} from '@/api/seller/promotion'
 import {
   Button,
   Chip,
@@ -8,31 +22,21 @@ import {
   PaginationNav,
   TextInput,
 } from '@/components'
-import SellerPanelLayout from '@/layout/SellerPanelLayout'
-import Head from 'next/head'
-import React, { useEffect, useState } from 'react'
-import { toast } from 'react-hot-toast'
-import { useLoadingModal, useMediaQuery } from '@/hooks'
-import type { APIResponse, PaginationData } from '@/types/api/response'
-import { useRouter } from 'next/router'
-import { HiArrowLeft } from 'react-icons/hi'
 import Table from '@/components/table'
+import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import formatMoney from '@/helper/formatMoney'
+import { useLoadingModal, useMediaQuery } from '@/hooks'
+import SellerPanelLayout from '@/layout/SellerPanelLayout'
 import type {
   CreatePromotionSellerRequest,
   ProductPromotion,
   SellerPromotion,
 } from '@/types/api/promotion'
-import moment from 'moment'
-import { ConvertShowMoney } from '@/helper/convertshowmoney'
-import {
-  useCreatePromotion,
-  useProductNoPromotionSeller,
-  useSellerPromotionDetail,
-  useUpdatePromotion,
-} from '@/api/seller/promotion'
+import type { APIResponse, PaginationData } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import { BsTrash } from 'react-icons/bs'
+import moment from 'moment'
+
 const ManagePromotionSeller = () => {
   const router = useRouter()
   const { intent, id } = router.query

@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react'
+
 import useSsr from './useSSR'
 
 function useHover(): [React.RefObject<HTMLDivElement>, boolean] {

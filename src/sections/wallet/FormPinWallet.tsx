@@ -1,13 +1,14 @@
-import { useActivatePin, useUpdatePinWallet } from '@/api/user/wallet'
-import { Button } from '@/components'
-import { closeModal } from '@/redux/reducer/modalReducer'
-import type { APIResponse } from '@/types/api/response'
-import type { AxiosError } from 'axios'
-
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import PinInput from 'react-pin-input'
 import { useDispatch } from 'react-redux'
+
+import { useActivatePin, useUpdatePinWallet } from '@/api/user/wallet'
+import { Button } from '@/components'
+import { closeModal } from '@/redux/reducer/modalReducer'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
 
 interface FormPINWalletProps {
   createPin: boolean

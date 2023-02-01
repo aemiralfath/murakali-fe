@@ -1,16 +1,19 @@
-import { useUpdatePasswordAfterLogin } from '@/api/auth/changepassword'
-import { Button, TextInput } from '@/components'
-import type { APIResponse } from '@/types/api/response'
-import type { AxiosError } from 'axios'
-import { useFormik } from 'formik'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
-import YupPassword from 'yup-password'
-import * as Yup from 'yup'
 import { useDispatch } from 'react-redux'
-import { closeModal } from '@/redux/reducer/modalReducer'
+
 import { useRouter } from 'next/router'
+
+import { useUpdatePasswordAfterLogin } from '@/api/auth/changepassword'
 import { useLogout } from '@/api/auth/logout'
+import { Button, TextInput } from '@/components'
+import { closeModal } from '@/redux/reducer/modalReducer'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import YupPassword from 'yup-password'
 
 YupPassword(Yup)
 

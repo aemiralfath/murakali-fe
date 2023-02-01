@@ -1,7 +1,8 @@
+import React from 'react'
+
+import MainLayout from '@/layout/MainLayout'
 import type { ValidPage } from '@/layout/template/profile/ProfileMenu'
 import ProfileMenu from '@/layout/template/profile/ProfileMenu'
-import React from 'react'
-import MainLayout from '@/layout/MainLayout'
 
 const ProfileLayout: React.FC<{
   children: React.ReactNode

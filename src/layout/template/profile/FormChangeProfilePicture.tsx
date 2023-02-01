@@ -1,14 +1,15 @@
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+import { HiExclamationCircle } from 'react-icons/hi'
+
 import { useEditProfilePicture } from '@/api/user/profile'
 import { Button, P } from '@/components'
 import { useDispatch } from '@/hooks'
 import { closeModal } from '@/redux/reducer/modalReducer'
-import React, { useEffect, useState } from 'react'
-import { toast } from 'react-hot-toast'
-
-import type { IUserUploadPhotoProfile } from '@/types/api/user'
-import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
-import { HiExclamationCircle } from 'react-icons/hi'
+import type { IUserUploadPhotoProfile } from '@/types/api/user'
+
+import type { AxiosError } from 'axios'
 
 function FormChangeProfilePicture() {
   const dispatch = useDispatch()

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useRouter } from 'next/router'
+import toast from 'react-hot-toast'
 import {
   HiHome,
   HiIdentification,
@@ -9,11 +9,14 @@ import {
   HiTable,
   HiUser,
 } from 'react-icons/hi'
-import cx from '@/helper/cx'
+
+import { useRouter } from 'next/router'
+
 import { useLogout } from '@/api/auth/logout'
-import toast from 'react-hot-toast'
-import type { AxiosError } from 'axios'
+import cx from '@/helper/cx'
 import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
 
 export type ValidPage =
   | 'profile'

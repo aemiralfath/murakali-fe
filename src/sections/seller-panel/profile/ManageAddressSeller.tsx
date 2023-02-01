@@ -1,3 +1,7 @@
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { HiPencilAlt, HiTrash } from 'react-icons/hi'
+
 import { useDeleteAddress, useGetAllAddress } from '@/api/user/address'
 import { useGetUserProfile } from '@/api/user/profile'
 import {
@@ -14,10 +18,8 @@ import { useDispatch, useModal } from '@/hooks'
 import FormManageAddress from '@/layout/template/profile/FormManageAddress'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { HiPencilAlt, HiTrash } from 'react-icons/hi'
 
 function ManageAddressSeller() {
   const modal = useModal()

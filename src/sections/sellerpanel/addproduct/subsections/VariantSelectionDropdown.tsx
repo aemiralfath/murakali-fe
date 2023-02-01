@@ -1,9 +1,11 @@
+import React, { Fragment, useEffect, useRef } from 'react'
+import { HiChevronRight, HiChevronDown } from 'react-icons/hi'
+
 import { Divider } from '@/components'
 import cx from '@/helper/cx'
 import getKey from '@/helper/getKey'
+
 import { Popover, Transition } from '@headlessui/react'
-import React, { Fragment, useEffect, useRef } from 'react'
-import { HiChevronRight, HiChevronDown } from 'react-icons/hi'
 
 const VariantSelectionDropdown: React.FC<{
   variantType: string[]

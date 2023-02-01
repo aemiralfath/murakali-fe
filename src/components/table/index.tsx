@@ -1,6 +1,9 @@
-import cx from '@/helper/cx'
-import Image from 'next/image'
 import React from 'react'
+
+import Image from 'next/image'
+
+import cx from '@/helper/cx'
+
 import Spinner from '../spinner'
 import { P } from '../typography'
 

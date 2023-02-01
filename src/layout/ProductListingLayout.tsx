@@ -1,25 +1,27 @@
-import { useGetAllProvince } from '@/api/user/address/extra'
-import { A, Button, Divider, H4, P, PaginationNav } from '@/components'
-import LocationFilter from '@/sections/productslisting/LocationFilter'
 import React, { useEffect, useState } from 'react'
 import { HiArrowDown, HiArrowUp, HiFilter, HiX } from 'react-icons/hi'
-import PriceFilter from '@/sections/productslisting/PriceFilter'
-import RatingFilter from '@/sections/productslisting/RatingFilter'
-import CategoryFilter from '@/sections/productslisting/CategoryFilter'
-import formatMoney from '@/helper/formatMoney'
-import cx from '@/helper/cx'
-import { useMediaQuery } from '@/hooks'
-import { Transition } from '@headlessui/react'
-import ProductCard from './template/product/ProductCard'
+
 import Image from 'next/image'
 
-import type { FilterPrice } from '@/sections/productslisting/PriceFilter'
-import type { ProvinceDetail } from '@/types/api/address'
-import type { SortBy } from '@/types/helper/sort'
-import type { BriefProduct } from '@/types/api/product'
 import { useGetAllCategory } from '@/api/category'
-
+import { useGetAllProvince } from '@/api/user/address/extra'
+import { A, Button, Divider, H4, P, PaginationNav } from '@/components'
+import cx from '@/helper/cx'
+import formatMoney from '@/helper/formatMoney'
+import { useMediaQuery } from '@/hooks'
+import CategoryFilter from '@/sections/productslisting/CategoryFilter'
+import LocationFilter from '@/sections/productslisting/LocationFilter'
+import PriceFilter from '@/sections/productslisting/PriceFilter'
+import type { FilterPrice } from '@/sections/productslisting/PriceFilter'
+import RatingFilter from '@/sections/productslisting/RatingFilter'
+import type { ProvinceDetail } from '@/types/api/address'
 import type { CategoryData } from '@/types/api/category'
+import type { BriefProduct } from '@/types/api/product'
+import type { SortBy } from '@/types/helper/sort'
+
+import { Transition } from '@headlessui/react'
+
+import ProductCard from './template/product/ProductCard'
 
 const defaultShownProvince = [
   'DKI Jakarta',

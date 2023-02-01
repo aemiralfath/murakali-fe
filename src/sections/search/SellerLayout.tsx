@@ -1,8 +1,11 @@
-import { Button, H2, P, PaginationNav } from '@/components'
-import type { SellerInfo } from '@/types/api/seller'
-import { useRouter } from 'next/router'
 import React from 'react'
 import { HiStar } from 'react-icons/hi'
+
+import { useRouter } from 'next/router'
+
+import { Button, H2, P, PaginationNav } from '@/components'
+import type { SellerInfo } from '@/types/api/seller'
+
 interface SellerLayoutProps {
   isLoading: boolean
   data?: SellerInfo[]

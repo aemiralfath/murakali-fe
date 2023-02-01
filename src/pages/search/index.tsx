@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import type { NextPage } from 'next'
-import { useRouter } from 'next/router'
+
 import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { useSearchQueryProduct } from '@/api/product/search'
+import { useGetAllSellers } from '@/api/seller'
+import { P } from '@/components'
+import cx from '@/helper/cx'
 import MainLayout from '@/layout/MainLayout'
 import ProductListingLayout, {
   useProductListing,
 } from '@/layout/ProductListingLayout'
-import { useSearchQueryProduct } from '@/api/product/search'
-import type { ProductQuery } from '@/types/api/product'
-import cx from '@/helper/cx'
-import { useGetAllSellers } from '@/api/seller'
 import SellerLayout from '@/sections/search/SellerLayout'
-import { P } from '@/components'
+import type { ProductQuery } from '@/types/api/product'
+
+import type { NextPage } from 'next'
 
 const SearchPage: NextPage = () => {
   const router = useRouter()
