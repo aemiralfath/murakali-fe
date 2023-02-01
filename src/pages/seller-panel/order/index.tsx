@@ -7,6 +7,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import { useSellerOrders, useWithdrawOrderBalance } from '@/api/seller/order'
+import { useGetRefundThreadSeller } from '@/api/seller/refund'
 import { Button, H2, P, PaginationNav } from '@/components'
 import Table from '@/components/table'
 import orderStatusData from '@/dummy/orderStatusData'
@@ -21,6 +22,67 @@ import type { APIResponse, PaginationData } from '@/types/api/response'
 
 import type { AxiosError } from 'axios'
 import moment from 'moment'
+
+const CheckOrderRefund: React.FC<{ data?: OrderData }> = ({ data }) => {
+  const router = useRouter()
+  const getRefundThread = useGetRefundThreadSeller(data?.order_id)
+  return (
+    <>
+      <Button
+        size="sm"
+        buttonType="ghost"
+        outlined
+        className="min-w-full text-gray-500"
+        onClick={() => {
+          router.push('/seller-panel/order/refund-thread?id=' + data?.order_id)
+        }}
+      >
+        Refund Thread
+      </Button>
+      {data?.is_refund ? (
+        <>
+          {getRefundThread.data?.data?.refund_data.accepted_at.Valid ? (
+            <div className="whitespace-pre-line">
+              <P className="text-xs opacity-50">
+                This File Complaint has been accepted at{' '}
+                {moment(
+                  getRefundThread.data?.data?.refund_data.accepted_at.Time
+                )
+                  .utcOffset(420)
+                  .format('DD MMMM YYYY HH:mm:ss')
+                  .toString()}
+                {'.'}
+                <P>please wait the system to process refund order.</P>
+              </P>
+            </div>
+          ) : (
+            <></>
+          )}
+        </>
+      ) : (
+        <>
+          {getRefundThread.data?.data?.refund_data.rejected_at.Valid ? (
+            <div className="whitespace-pre-line">
+              <P className="text-xs opacity-50">
+                File Complaint has been rejected at{' '}
+                {moment(
+                  getRefundThread.data?.data?.refund_data.rejected_at.Time
+                )
+                  .utcOffset(420)
+                  .format('DD MMMM YYYY HH:mm:ss')
+                  .toString()}
+                {'.'}
+                <P>please wait the system to process refund order.</P>
+              </P>
+            </div>
+          ) : (
+            <></>
+          )}
+        </>
+      )}
+    </>
+  )
+}
 
 function ListOrderDeliveryService() {
   const router = useRouter()
@@ -147,22 +209,9 @@ function ListOrderDeliveryService() {
                     </Button>
                   </>
                 ) : data.order_status === 6 ? (
-                  <>
-                    <Button
-                      size="sm"
-                      buttonType="ghost"
-                      outlined
-                      className="text-gray-500"
-                      onClick={() => {
-                        router.push(
-                          '/seller-panel/order/refund-thread?id=' +
-                            data.order_id
-                        )
-                      }}
-                    >
-                      Refund Thread
-                    </Button>
-                  </>
+                  <div className="">
+                    <CheckOrderRefund data={data} />
+                  </div>
                 ) : (
                   <></>
                 )}
