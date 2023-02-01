@@ -97,7 +97,7 @@ const Home: NextPage = () => {
                   )
                 })
             ) : recommendedProduct.data?.data ? (
-              recommendedProduct.data.data.rows.map((product, idx) => {
+              recommendedProduct.data.data.rows?.map((product, idx) => {
                 return (
                   <ProductCard
                     key={`${product.title} ${idx}`}

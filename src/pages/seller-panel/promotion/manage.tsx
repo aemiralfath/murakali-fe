@@ -432,7 +432,7 @@ const ManagePromotionSeller = () => {
   }
 
   const formatData = (data?: PaginationData<ProductPromotion>) => {
-    if (data && data?.rows.length > 0) {
+    if (data?.rows && data?.rows.length > 0) {
       return data.rows.map((row) => ({
         Select: (
           <div>

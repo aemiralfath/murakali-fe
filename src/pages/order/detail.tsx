@@ -72,7 +72,10 @@ const OrderDetailCardSection: React.FC<{
 
   useEffect(() => {
     if (gotReview.data?.data) {
-      if (gotReview.data.data.rows.length > 0) {
+      if (
+        gotReview.data.data.rows !== null &&
+        Number(gotReview.data.data.rows?.length) > 0
+      ) {
         setReview(gotReview.data.data.rows[0])
       }
     }

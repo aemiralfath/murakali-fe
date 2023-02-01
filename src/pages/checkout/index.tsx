@@ -315,7 +315,8 @@ function Checkout() {
                     </Menu.Button>
 
                     {voucherMarketplace.isSuccess &&
-                    voucherMarketplace.data?.data ? (
+                    voucherMarketplace.data?.data &&
+                    voucherMarketplace.data.data.rows !== null ? (
                       voucherMarketplace.data.data.rows.length > 0 ? (
                         <div>
                           <Menu.Items className="absolute max-h-64 w-56 origin-top-left divide-y divide-gray-100  overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">

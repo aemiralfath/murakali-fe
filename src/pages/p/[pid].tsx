@@ -563,7 +563,8 @@ const ProductPage: NextPage = () => {
               .map((_, idx) => {
                 return <ProductCard key={`${idx}`} data={undefined} isLoading />
               })
-          ) : similiarProduct.data?.data ? (
+          ) : similiarProduct.data?.data &&
+            similiarProduct.data.data.rows !== null ? (
             similiarProduct.data.data.rows.map((product, idx) => {
               return (
                 <ProductCard

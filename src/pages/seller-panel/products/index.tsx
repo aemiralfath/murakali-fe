@@ -187,7 +187,7 @@ const Products = () => {
   }, [sortBy])
 
   const formatData = (data?: PaginationData<BriefProduct>) => {
-    if (data && data.rows.length > 0) {
+    if (data && data.rows !== null && data.rows.length > 0) {
       return data.rows.map((row) => ({
         Select: (
           <input
@@ -474,9 +474,9 @@ const Products = () => {
                             className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 font-medium shadow"
                             onClick={() => {
                               if (
-                                allProduct.data?.data &&
+                                allProduct.data?.data?.rows &&
                                 selectedId.length <
-                                  allProduct.data.data.rows.length
+                                  allProduct.data.data.rows?.length
                               ) {
                                 const tempSelect =
                                   allProduct.data.data.rows.map((p) => p.id)
@@ -489,7 +489,7 @@ const Products = () => {
                             <li>
                               <a>
                                 {selectedId.length <
-                                allProduct.data.data.rows.length
+                                Number(allProduct.data.data.rows?.length)
                                   ? 'Select All'
                                   : 'Clear Selection'}
                               </a>
