@@ -87,7 +87,10 @@ function RefundThread() {
             <P className="flex w-full justify-center">Loading</P>
           ) : order.data?.data ? (
             <>
-              <RefundOrderDetail order={order.data.data} />
+              <RefundOrderDetail
+                order={order.data.data}
+                refundThreadData={refundThreadData?.data?.data}
+              />
             </>
           ) : (
             <div>{'Error'}</div>
