@@ -1,3 +1,7 @@
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+
 import { useRegisterSealabsPay } from '@/api/user/slp'
 import { Button, TextInput } from '@/components'
 import { useModal } from '@/hooks'
@@ -7,11 +11,10 @@ import type { APIResponse } from '@/types/api/response'
 import type { SLPUser } from '@/types/api/slp'
 import type { Transaction } from '@/types/api/transaction'
 import type { WalletUser } from '@/types/api/wallet'
+
 import type { AxiosError } from 'axios'
 import moment from 'moment'
-import React, { useEffect, useState } from 'react'
-import { toast } from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
+
 import PaymentOption from './option/PaymentOption'
 
 interface FormRegisterSealabsPayProps {
@@ -54,7 +57,7 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
       const errMsg = registerSealabsPay.failureReason as AxiosError<
         APIResponse<null>
       >
-      toast.error(errMsg.response.data.message as string)
+      toast.error(errMsg.response?.data.message as string)
     }
   }, [registerSealabsPay.isError])
 
@@ -137,7 +140,7 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
             onClick={() => {
               if (!isCheckout) {
                 dispatch(closeModal())
-              } else {
+              } else if (userWallet && userSLP) {
                 modal.edit({
                   title: 'Choose Payment Option',
                   content: (

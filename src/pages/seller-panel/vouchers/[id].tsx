@@ -1,23 +1,34 @@
+import React, { useState } from 'react'
+import { HiArrowLeft } from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useSellerOrders } from '@/api/seller/order'
 import { useSellerVoucherDetail } from '@/api/seller/voucher'
-import { Button, Chip, H2, H4, P } from '@/components'
+import { Button, Chip, H2, H4, P, PaginationNav } from '@/components'
 import Table from '@/components/table'
 import orderStatusData from '@/dummy/orderStatusData'
 import formatMoney from '@/helper/formatMoney'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
 import type { OrderData } from '@/types/api/order'
 import type { PaginationData } from '@/types/api/response'
+
 import moment from 'moment'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React from 'react'
-import { HiArrowLeft } from 'react-icons/hi'
 
 function VoucherDetail() {
   const router = useRouter()
   const { id } = router.query
   const sellerVoucher = useSellerVoucherDetail(String(id))
-  const sellerOrders = useSellerOrders('', String(id))
+
+  const [page, setPage] = useState<number>(1)
+  const sellerOrders = useSellerOrders(
+    '',
+    String(id),
+    page,
+    'created_at',
+    'desc'
+  )
 
   const formatSub = (pagination?: PaginationData<OrderData>) => {
     if (pagination) {
@@ -66,8 +77,9 @@ function VoucherDetail() {
                 Rp{formatMoney(data.total_price)}
               </div>
             ),
-            Status: orderStatusData.find((s) => s.id === `${data.order_status}`)
-              .name,
+            Status:
+              orderStatusData.find((s) => s.id === `${data.order_status}`)
+                ?.name ?? '',
             'Transaction Date': (
               <div>{moment(data.created_at).format('DD MMMM YYYY')}</div>
             ),
@@ -105,7 +117,7 @@ function VoucherDetail() {
           </Button>
         </div>
         <div className="mt-3 flex h-full w-[90rem] max-w-full flex-col rounded border bg-white p-6">
-          {sellerVoucher.isSuccess ? (
+          {sellerVoucher.data?.data ? (
             <div className=" mt-3 flex h-full flex-col justify-center gap-4 rounded border p-6 md:flex-row">
               <div className="flex flex-auto flex-col gap-6">
                 <div className="flex-auto">
@@ -217,7 +229,7 @@ function VoucherDetail() {
             <div>
               {sellerOrders.isLoading ? (
                 <Table data={formatSub()} isLoading />
-              ) : sellerOrders.isSuccess ? (
+              ) : sellerOrders.data?.data ? (
                 <Table
                   data={formatSub(sellerOrders.data.data)}
                   isLoading={false}
@@ -225,6 +237,19 @@ function VoucherDetail() {
                 />
               ) : (
                 <div>{'Error'}</div>
+              )}
+            </div>
+            <div>
+              {sellerOrders.data?.data ? (
+                <div className="mt-4 flex h-[8rem] w-full justify-center">
+                  <PaginationNav
+                    page={page}
+                    total={sellerOrders.data?.data?.total_pages}
+                    onChange={(p) => setPage(p)}
+                  />
+                </div>
+              ) : (
+                <></>
               )}
             </div>
           </div>

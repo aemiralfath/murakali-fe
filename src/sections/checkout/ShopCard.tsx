@@ -1,3 +1,7 @@
+import React, { useEffect, useState } from 'react'
+import { FaTicketAlt } from 'react-icons/fa'
+import { FaShippingFast } from 'react-icons/fa'
+
 import { useGetVoucherShopCheckout } from '@/api/user/checkout'
 import { useLocationCost } from '@/api/user/location'
 import { Button, H2, P } from '@/components'
@@ -7,11 +11,10 @@ import type { CartDetail } from '@/types/api/cart'
 import type { PostCheckout, ProductPostCheckout } from '@/types/api/checkout'
 import type { LocationCostRequest } from '@/types/api/location'
 import type { VoucherData } from '@/types/api/voucher'
+
 import { Menu } from '@headlessui/react'
 import moment from 'moment'
-import React, { useEffect, useState } from 'react'
-import { FaTicketAlt } from 'react-icons/fa'
-import { FaShippingFast } from 'react-icons/fa'
+
 interface ShopCardProps {
   cart: CartDetail
   index: number
@@ -45,7 +48,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
       setProductD(
         postCheckout.cart_items.filter(
           (item) => cart.shop.id === item.shop_id
-        )[0].product_details
+        )[0]?.product_details ?? []
       )
     }
   }, [postCheckout])
@@ -83,9 +86,12 @@ const ShopCard: React.FC<ShopCardProps> = ({
 
   useEffect(() => {
     if (cart && destination) {
-      const tempProductIds: string[] = cart.product_details
-        .filter((item) => idProducts.includes(item.id))
-        .map((product) => product.id)
+      const tempProductIds: string[] =
+        cart.product_details === null
+          ? []
+          : cart.product_details
+              .filter((item) => idProducts.includes(item.id))
+              .map((product) => product.id)
       const temp: LocationCostRequest = {
         destination: destination,
         weight: cart.weight,
@@ -95,7 +101,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
       locationCost.mutate(temp)
     }
 
-    if (cart) {
+    if (cart.product_details !== null) {
       setTotalPrice(
         cart.product_details
           .filter((item) => idProducts.includes(item.id))
@@ -115,43 +121,47 @@ const ShopCard: React.FC<ShopCardProps> = ({
       <H2 className="mb-8">
         {index + 1}. {cart.shop.name}
       </H2>
-      {cart.product_details
-        .filter((item) => idProducts.includes(item.id))
-        .map((product) => (
-          <div className="flex flex-col gap-5" key={product.id}>
-            <ProductCart
-              forCart={false}
-              listProduct={product}
-              productNote={(idProduct, note) => {
-                postCheckout.cart_items
-                  .filter((item) => cart.shop.id === item.shop_id)
-                  .map((shop) => {
-                    const temp: ProductPostCheckout[] =
-                      shop.product_details.map((product) => {
-                        let tempNote: string = product.note
-                        if (product.id === idProduct) {
-                          tempNote = note
-                        }
-                        return {
-                          id: product.id,
-                          cart_id: product.cart_id,
-                          quantity: product.quantity,
-                          note: tempNote,
-                        }
-                      })
-                    setProductD(temp)
-                    courierID(
-                      delivery.id,
-                      delivery.delivery_fee,
-                      voucher.id,
-                      voucherPrice,
-                      temp
-                    )
-                  })
-              }}
-            />
-          </div>
-        ))}
+      {cart.product_details !== null ? (
+        cart.product_details
+          .filter((item) => idProducts.includes(item.id))
+          .map((product) => (
+            <div className="flex flex-col gap-5" key={product.id}>
+              <ProductCart
+                forCart={false}
+                listProduct={product}
+                productNote={(idProduct, note) => {
+                  postCheckout.cart_items
+                    .filter((item) => cart.shop.id === item.shop_id)
+                    .map((shop) => {
+                      const temp: ProductPostCheckout[] =
+                        shop.product_details.map((product) => {
+                          let tempNote: string = product.note
+                          if (product.id === idProduct) {
+                            tempNote = note
+                          }
+                          return {
+                            id: product.id,
+                            cart_id: product.cart_id,
+                            quantity: product.quantity,
+                            note: tempNote,
+                          }
+                        })
+                      setProductD(temp)
+                      courierID(
+                        delivery.id,
+                        delivery.delivery_fee,
+                        voucher.id,
+                        voucherPrice,
+                        temp
+                      )
+                    })
+                }}
+              />
+            </div>
+          ))
+      ) : (
+        <></>
+      )}
 
       <div className="flex flex-wrap items-center justify-center gap-y-2 md:justify-end">
         <div className="block">
@@ -172,7 +182,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
               )}
             </Menu.Button>
 
-            {locationCost.isSuccess ? (
+            {locationCost.data?.data?.data ? (
               locationCost.data.data.data.shipping_option.length > 0 ? (
                 <div>
                   <Menu.Items className="absolute w-44 origin-top-left  divide-y divide-gray-100 rounded-md bg-white shadow-lg focus:outline-none ">
@@ -251,7 +261,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
               )}
             </Menu.Button>
 
-            {voucherShop.isSuccess ? (
+            {voucherShop.data?.data ? (
               voucherShop.data?.data?.rows?.length > 0 ? (
                 <div>
                   <Menu.Items className="absolute max-h-64 w-56 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">

@@ -1,8 +1,8 @@
 import { authorizedClient } from '@/api/apiClient'
-import { useQueryClient, useMutation } from '@tanstack/react-query'
-
 import type { CreateProductReq, EditProductReq } from '@/types/api/product'
 import type { APIResponse } from '@/types/api/response'
+
+import { useQueryClient, useMutation } from '@tanstack/react-query'
 
 const productKey = 'product'
 

@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+
 import { useCreateAddress, useEditAddress } from '@/api/user/address'
 import {
   useGetAllCity,
@@ -8,12 +11,11 @@ import {
 import { Button, TextArea, TextInput } from '@/components'
 import SelectComboBox from '@/components/selectinput/SelectCombobox'
 import { useDispatch } from '@/hooks'
+import { closeModal } from '@/redux/reducer/modalReducer'
 import type { AddressDetail, FetchParamInfo } from '@/types/api/address'
 import type { APIResponse } from '@/types/api/response'
-import { closeModal } from '@/redux/reducer/modalReducer'
+
 import type { AxiosError } from 'axios'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
 
 interface FormManageAddressProps {
   isEdit: boolean
@@ -132,8 +134,8 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
     let id = ''
     if (allProvince.data?.data?.rows) {
       for (let i = 0; i < allProvince.data?.data?.rows.length; i++) {
-        if (allProvince.data.data.rows[i].province === province) {
-          id = allProvince.data.data.rows[i].province_id
+        if (allProvince.data?.data?.rows[i]?.province === province) {
+          id = allProvince.data.data.rows[i]?.province_id ?? ''
         }
       }
     }
@@ -177,8 +179,8 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
     let provinceId = 0
     if (allProvince.data?.data?.rows) {
       for (let i = 0; i < allProvince.data?.data?.rows.length; i++) {
-        if (allProvince.data.data.rows[i].province === input.province) {
-          provinceId = Number(allProvince.data.data.rows[i].province_id)
+        if (allProvince.data?.data?.rows[i]?.province === input.province) {
+          provinceId = Number(allProvince.data.data.rows[i]?.province_id) ?? 0
         }
       }
     }
@@ -188,19 +190,20 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
     if (allCity.data?.data?.data?.rows) {
       for (let i = 0; i < allCity.data.data.data.rows.length; i++) {
         if (
-          removeFirstWord(allCity.data.data.data.rows[i].city) === input.city
+          removeFirstWord(allCity.data?.data?.data?.rows[i]?.city ?? '') ===
+          input.city
         ) {
-          cityId = Number(allCity.data.data.data.rows[i].city_id)
+          cityId = Number(allCity.data?.data?.data?.rows[i]?.city_id) ?? 0
         }
       }
     }
 
     let isDefault = selected[0]
-    if (isInShop && isEdit) {
+    if (isInShop && isEdit && editData) {
       isDefault = editData.is_default
     }
     let isShopDefault = selected[1]
-    if (!isInShop && isEdit) {
+    if (!isInShop && isEdit && editData) {
       isShopDefault = editData.is_shop_default
     }
 
@@ -216,8 +219,8 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
       sub_district: input.sub_district,
       zip_code: input.zip_code,
       address_detail: input.address_detail,
-      is_default: isDefault,
-      is_shop_default: isShopDefault,
+      is_default: Boolean(isDefault),
+      is_shop_default: Boolean(isShopDefault),
     }
 
     if (!isEdit) {
@@ -372,8 +375,9 @@ const FormManageAddress: React.FC<FormManageAddressProps> = ({
                     i < allUrban.data?.data?.data?.rows.length;
                     i++
                   ) {
-                    if (allUrban.data.data.data.rows[i].urban === data) {
-                      postalcode = allUrban.data.data.data.rows[i].postal_code
+                    if (allUrban.data?.data?.data?.rows[i]?.urban === data) {
+                      postalcode =
+                        allUrban.data.data.data.rows[i]?.postal_code ?? ''
                     }
                   }
                 }

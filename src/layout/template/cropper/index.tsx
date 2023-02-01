@@ -1,20 +1,21 @@
+import React, { useCallback, useEffect, useState } from 'react'
+import Cropper from 'react-easy-crop'
+import type { Point, Area } from 'react-easy-crop'
+import { toast } from 'react-hot-toast'
+
 import { useUploadProductPicture } from '@/api/product/picture'
 import { Button, Divider } from '@/components'
 import { useDispatch } from '@/hooks'
 import { closeModal } from '@/redux/reducer/modalReducer'
-
-import React, { useCallback, useEffect, useState } from 'react'
-import Cropper from 'react-easy-crop'
-import { toast } from 'react-hot-toast'
-import type { Point, Area } from 'react-easy-crop'
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
 
 function base64ToBlob(base64: string, mime: string) {
   mime = mime || ''
   const sliceSize = 512
   const byteChars = window.atob(base64)
-  const byteArrays = []
+  const byteArrays: Array<Uint8Array> = []
 
   for (
     let offset = 0, len = byteChars.length;
@@ -57,6 +58,14 @@ function rotateSize(width: number, height: number, rotation: number) {
     height:
       Math.abs(Math.sin(rotRad) * width) + Math.abs(Math.cos(rotRad) * height),
   }
+}
+
+const calculateSize = (base64Image: string): number => {
+  const base64Str = base64Image.substring(base64Image.indexOf(',') + 1)
+  const bits = base64Str.length * 6
+  const bytes = bits / 8
+
+  return Math.ceil(bytes / 1000)
 }
 
 async function getCroppedImg(
@@ -103,7 +112,14 @@ async function getCroppedImg(
 
   ctx.putImageData(data, 0, 0)
 
-  const jpegFile = canvas.toDataURL('image/jpg')
+  const qualities = [1, 0.8, 0.5, 0.2, 0.1]
+  let jpegFile = ''
+
+  qualities.every((quality) => {
+    jpegFile = canvas.toDataURL('image/jpg', quality)
+    return calculateSize(jpegFile) > 512
+  })
+
   const jpegFile64 = jpegFile.replace(/^data:image\/(png|jpg);base64,/, '')
   const jpegBlob = base64ToBlob(jpegFile64, 'image/jpeg')
 
@@ -111,8 +127,8 @@ async function getCroppedImg(
 }
 
 const CropperComponent: React.FC<{
-  src: string
-  setImage: (s: string) => void
+  src?: string
+  setImage: (s: string | undefined) => void
   setOption: (s: number) => void
 }> = ({ src, setImage, setOption }) => {
   const dispatch = useDispatch()
@@ -130,7 +146,7 @@ const CropperComponent: React.FC<{
 
   useEffect(() => {
     if (uploadProductPicture.isSuccess) {
-      setImage(uploadProductPicture.data.data.data)
+      setImage(uploadProductPicture.data.data.data ?? '')
       dispatch(closeModal())
       setIsLoading(false)
     }
@@ -196,13 +212,15 @@ const CropperComponent: React.FC<{
           isLoading={isLoading}
           onClick={async () => {
             if (typeof document !== 'undefined') {
-              if (area) {
+              if (area && src) {
                 setIsLoading(true)
                 const croppedImg = await getCroppedImg(src, area)
-                const imageFile = new File([croppedImg], 'img.jpg', {
-                  type: 'image/jpg',
-                })
-                await uploadProductPicture.mutateAsync(imageFile)
+                if (croppedImg !== null) {
+                  const imageFile = new File([croppedImg], 'img.jpg', {
+                    type: 'image/jpg',
+                  })
+                  await uploadProductPicture.mutateAsync(imageFile)
+                }
               }
             }
           }}

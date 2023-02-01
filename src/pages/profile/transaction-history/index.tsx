@@ -1,3 +1,18 @@
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+import { FaStore } from 'react-icons/fa'
+import {
+  HiArrowRight,
+  HiCheck,
+  HiInboxIn,
+  HiInformationCircle,
+  HiOutlineShieldCheck,
+  HiShoppingCart,
+} from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useCompleteOrder, useGetOrders, useReceiveOrder } from '@/api/order'
 import { useGetTransactions } from '@/api/transaction'
 import { useGetRefundThread } from '@/api/user/refund'
@@ -14,22 +29,9 @@ import PaymentOption from '@/sections/checkout/option/PaymentOption'
 import type { BuyerOrder } from '@/types/api/order'
 import type { APIResponse } from '@/types/api/response'
 import type { Transaction } from '@/types/api/transaction'
+
 import type { AxiosError } from 'axios'
 import moment from 'moment'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-
-import React, { useEffect, useState } from 'react'
-import { toast } from 'react-hot-toast'
-import { FaStore } from 'react-icons/fa'
-import {
-  HiArrowRight,
-  HiCheck,
-  HiInboxIn,
-  HiInformationCircle,
-  HiOutlineShieldCheck,
-  HiShoppingCart,
-} from 'react-icons/hi'
 
 const EmptyLayout = () => {
   return (
@@ -165,28 +167,34 @@ const OrderCard: React.FC<
         <div className="h-[1.5rem] w-[6rem] animate-pulse rounded bg-base-300" />
       ) : (
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <FaStore className="opacity-70" />
-            <A
-              className="line-clamp-1"
-              onClick={() => {
-                router.push('/seller/' + order.shop_id)
-              }}
-            >
-              {order.shop_name}
-            </A>
-          </div>
-          <div className="flex flex-wrap items-center gap-1">
-            <P className="text-xs opacity-60">
-              {moment(order.created_at).format('DD MMMM YYYY')}
-            </P>
-            <P className="text-xs opacity-60">•</P>
-            <Chip type="gray">{orderStatus[order.order_status]}</Chip>
-          </div>
+          {order ? (
+            <>
+              <div className="flex items-center gap-2">
+                <FaStore className="opacity-70" />
+                <A
+                  className="line-clamp-1"
+                  onClick={() => {
+                    router.push('/seller/' + order.shop_id)
+                  }}
+                >
+                  {order.shop_name}
+                </A>
+              </div>
+              <div className="flex flex-wrap items-center gap-1">
+                <P className="text-xs opacity-60">
+                  {moment(order.created_at).format('DD MMMM YYYY')}
+                </P>
+                <P className="text-xs opacity-60">•</P>
+                <Chip type="gray">{orderStatus[order.order_status]}</Chip>
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
       )}
       <Divider />
-      {isLoading ? (
+      {!order ? (
         <div className="flex gap-2.5">
           <div className="h-[100px] w-[100px] animate-pulse rounded bg-base-300" />
           <div className="flex-1 px-2">
@@ -231,7 +239,7 @@ const OrderCard: React.FC<
       )}
       <Divider />
       <div className={'flex items-center justify-between'}>
-        {isLoading ? (
+        {!order ? (
           <div className="h-[1.5rem] w-[80%] animate-pulse rounded bg-base-300" />
         ) : (
           <>
@@ -430,7 +438,7 @@ const OrderCard: React.FC<
                                     }
                                     onConfirm={() => {
                                       if (
-                                        userWallet.data.data.active_date
+                                        userWallet?.data?.data?.active_date
                                           .Valid === true &&
                                         new Date(
                                           Date.parse(
@@ -474,8 +482,8 @@ const OrderCard: React.FC<
                                 }
                                 onConfirm={() => {
                                   if (
-                                    userWallet.data.data.active_date.Valid ===
-                                      true &&
+                                    userWallet?.data?.data?.active_date
+                                      .Valid === true &&
                                     new Date(
                                       Date.parse(
                                         userWallet.data.data.active_date.Time
@@ -591,7 +599,9 @@ function TransactionHistory() {
                     })
                   }}
                 >
-                  {idx === 1 && transactions.data?.data.rows.length > 0 ? (
+                  {idx === 1 &&
+                  transactions.data?.data?.rows &&
+                  transactions.data.data.rows.length > 0 ? (
                     <span className="indicator-item border-none bg-transparent">
                       <div className=" relative mt-2 mr-9">
                         <div
@@ -614,6 +624,7 @@ function TransactionHistory() {
           <div>
             <div className="flex flex-col gap-3">
               {qryStatus === 1 ? (
+                transactions.data?.data?.rows &&
                 transactions.data?.data.rows.length > 0 ? (
                   <>
                     {transactions.data.data.rows.map((row) => {
@@ -694,7 +705,7 @@ function TransactionHistory() {
                                       content: (
                                         <PaymentOption
                                           transaction={row}
-                                          userWallet={userWallet.data.data}
+                                          userWallet={userWallet.data?.data}
                                           userSLP={userSLP.data.data}
                                         />
                                       ),
@@ -735,7 +746,8 @@ function TransactionHistory() {
                 ) : (
                   <EmptyLayout />
                 )
-              ) : orders.data?.data.rows.length > 0 ? (
+              ) : orders.data?.data?.rows &&
+                orders.data?.data.rows.length > 0 ? (
                 orders.data?.data.rows.map((order) => {
                   return (
                     <OrderCard

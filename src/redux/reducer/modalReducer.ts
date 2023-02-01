@@ -1,6 +1,7 @@
+import type React from 'react'
+
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import type React from 'react'
 
 export interface ModalState {
   isOpen: boolean

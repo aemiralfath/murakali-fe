@@ -1,9 +1,9 @@
 import { env } from '@/env/client.mjs'
-import axios from 'axios'
-import { getCookie, setCookie } from 'cookies-next'
-
-import type { APIResponse } from '@/types/api/response'
 import type { AccessTokenData } from '@/types/api/auth'
+import type { APIResponse } from '@/types/api/response'
+
+import axios, { isAxiosError } from 'axios'
+import { getCookie, setCookie } from 'cookies-next'
 
 const baseURL = env.NEXT_PUBLIC_BE_URL
 
@@ -55,17 +55,28 @@ authorizedClient.interceptors.response.use(
                 withCredentials: true,
               }
             )
-            setCookie('access_token', res.data.data.access_token, {
-              expires: new Date(res.data.data.expired_at),
-            })
+            if (res.data.data) {
+              setCookie('access_token', res.data.data.access_token, {
+                expires: new Date(res.data.data.expired_at),
+              })
+            }
+            if (typeof originalConfig !== 'undefined') {
+              if (originalConfig.headers) {
+                originalConfig.headers.Authorization = `Bearer ${
+                  res.data.data ? res.data.data.access_token : ''
+                }`
+              }
 
-            originalConfig.headers.Authorization = `Bearer ${res.data.data.access_token}`
-            return authorizedClient(originalConfig)
-          } catch (_error) {
-            if (_error.response && _error.response.data) {
-              return Promise.reject(_error.response.data)
+              return authorizedClient(originalConfig)
             }
 
+            return authorizedClient
+          } catch (_error) {
+            if (isAxiosError(_error)) {
+              if (_error.response && _error.response.data) {
+                return Promise.reject(_error.response.data)
+              }
+            }
             return Promise.reject(_error)
           }
         }

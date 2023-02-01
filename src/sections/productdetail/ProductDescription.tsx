@@ -1,10 +1,12 @@
+import React, { useState } from 'react'
+import { HiChevronUp, HiChevronDown } from 'react-icons/hi'
+
+import { useRouter } from 'next/router'
+
 import { H3, Avatar, A, P, Divider } from '@/components'
 import cx from '@/helper/cx'
 import type { ProductInfo } from '@/types/api/product'
 import type { SellerInfo } from '@/types/api/seller'
-import { useRouter } from 'next/router'
-import React, { useState } from 'react'
-import { HiChevronUp, HiChevronDown } from 'react-icons/hi'
 
 interface ProductDescription {
   seller: SellerInfo
@@ -44,7 +46,7 @@ const ProductDescription = ({ seller, productInfo }: ProductDescription) => {
       </div>
       <div className="mt-4 items-center rounded border p-2 sm:flex sm:divide-x">
         <div className="flex items-center gap-4 pr-4">
-          <Avatar size="lg" />
+          <Avatar size="lg" url={seller.photo_url} />
           <div className="w-fit overflow-ellipsis xl:w-[10rem]">
             <A
               className="font-semibold"

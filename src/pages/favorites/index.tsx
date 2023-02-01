@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
 
+import Head from 'next/head'
+import Router from 'next/router'
+
+import { useFavoriteQueryProduct } from '@/api/product/favorite'
+import { Breadcrumbs } from '@/components'
+import { useUser } from '@/hooks'
+import MainLayout from '@/layout/MainLayout'
 import ProductFavoriteLayout, {
   useFavoriteProductListing,
 } from '@/sections/favorites/ProductFavoriteLayout'
-import { useFavoriteQueryProduct } from '@/api/product/favorite'
 import type { ProductQuery } from '@/types/api/product'
-import { Breadcrumbs } from '@/components'
-import Router from 'next/router'
-import { useUser } from '@/hooks'
-import Head from 'next/head'
-import MainLayout from '@/layout/MainLayout'
 
 const dummyBreadcrumbs = [
   { name: 'Home', link: '/' },

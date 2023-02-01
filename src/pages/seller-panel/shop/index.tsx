@@ -1,8 +1,9 @@
-import { H2 } from '@/components'
 import Head from 'next/head'
+
+import { H2 } from '@/components'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
-import ManageProfileSeller from '@/sections/seller-panel/profile/ManageProfileSeller'
 import ManageAddressSeller from '@/sections/seller-panel/profile/ManageAddressSeller'
+import ManageProfileSeller from '@/sections/seller-panel/profile/ManageProfileSeller'
 
 function Profile() {
   return (

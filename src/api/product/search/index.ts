@@ -1,8 +1,8 @@
 import { unauthorizedClient } from '@/api/apiClient'
-import { useQuery } from '@tanstack/react-query'
-
-import type { APIResponse, PaginationData } from '@/types/api/response'
 import type { BriefProduct, ProductQuery } from '@/types/api/product'
+import type { APIResponse, PaginationData } from '@/types/api/response'
+
+import { useQuery } from '@tanstack/react-query'
 
 const profileKey = ['search']
 

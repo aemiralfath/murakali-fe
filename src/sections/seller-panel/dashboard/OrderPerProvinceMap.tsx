@@ -1,7 +1,9 @@
-import type { OrdersByProvince } from '@/types/api/sellerperformance'
-import ColorScale from 'color-scales'
 import React from 'react'
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps'
+
+import type { OrdersByProvince } from '@/types/api/sellerperformance'
+
+import ColorScale from 'color-scales'
 
 const OrderPerProvinceMap: React.FC<{
   orders: OrdersByProvince[]
@@ -34,7 +36,7 @@ const OrderPerProvinceMap: React.FC<{
                 geography={geo}
                 fill={colorScale
                   .getColor(
-                    foundIndex === -1 ? 0 : orders[foundIndex].num_orders
+                    foundIndex === -1 ? 0 : orders[foundIndex]?.num_orders ?? 0
                   )
                   .toHexString()}
                 className={'transition-all hover:fill-primary-focus'}

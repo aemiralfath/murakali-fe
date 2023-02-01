@@ -1,18 +1,18 @@
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { useAdminBanner } from '@/api/admin/banner'
+import { useGetAllCategory } from '@/api/category'
 import { useRecommendedProduct } from '@/api/product/recommended'
 import { Divider, H1, H4 } from '@/components'
-
+import bannerData from '@/dummy/bannerData'
 import MainLayout from '@/layout/MainLayout'
 import ProductCard from '@/layout/template/product/ProductCard'
 import BannerCarousel from '@/sections/home/BannerCarousel'
 import CategoriesCarousel from '@/sections/home/CategoriesCarousel'
-import Head from 'next/head'
+import CategorySearch from '@/sections/home/CategorySearch'
 
 import { type NextPage } from 'next'
-import CategorySearch from '@/sections/home/CategorySearch'
-import { useGetAllCategory } from '@/api/category'
-import { useAdminBanner } from '@/api/admin/banner'
-import bannerData from '@/dummy/bannerData'
-import { useRouter } from 'next/router'
 
 const Home: NextPage = () => {
   const router = useRouter()
@@ -31,8 +31,9 @@ const Home: NextPage = () => {
       <div className="absolute z-20 w-full translate-y-[4rem] overflow-x-hidden md:translate-y-[4.5rem]">
         {banner.isLoading ? (
           <BannerCarousel banners={bannerData} isLoading={true} />
-        ) : banner.data?.data?.filter((item) => item.is_active === true)
-            .length > 0 ? (
+        ) : banner.data?.data &&
+          banner.data?.data?.filter((item) => item.is_active === true).length >
+            0 ? (
           <BannerCarousel
             banners={banner.data?.data.filter(
               (item) => item.is_active === true
@@ -75,7 +76,8 @@ const Home: NextPage = () => {
                     pathname: `/search`,
                     query: {
                       sort_by: 'unit_sold',
-                      sort: 'ASC',
+                      sort: 'DESC',
+                      rating: 4,
                     },
                   })
                 }}
@@ -94,7 +96,7 @@ const Home: NextPage = () => {
                     <ProductCard key={`${idx}`} data={undefined} isLoading />
                   )
                 })
-            ) : recommendedProduct.isSuccess ? (
+            ) : recommendedProduct.data?.data ? (
               recommendedProduct.data.data.rows.map((product, idx) => {
                 return (
                   <ProductCard

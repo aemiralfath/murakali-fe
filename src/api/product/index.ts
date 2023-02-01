@@ -1,11 +1,11 @@
 import { unauthorizedClient } from '@/api/apiClient'
+import type { Product, ProductImages } from '@/types/api/product'
+import type { BriefProduct } from '@/types/api/product'
+import type { APIResponse, PaginationData } from '@/types/api/response'
+import type { ProductReview, TotalRating } from '@/types/api/review'
+
 import { useQuery } from '@tanstack/react-query'
 import qs from 'qs'
-
-import type { Product, ProductImages } from '@/types/api/product'
-import type { ProductReview, TotalRating } from '@/types/api/review'
-import type { APIResponse, PaginationData } from '@/types/api/response'
-import type { BriefProduct } from '@/types/api/product'
 
 const profileKey = 'seller'
 const productKey = 'product'
@@ -23,92 +23,37 @@ export type ProductPaginationParams = {
   max_rating?: number
   listed_status?: 0 | 1 | 2
 }
+export type SellerProductParams = {
+  page?: number
+  limit?: number
+  search?: string
+  category?: string
+  sort_by?: string
+  sort?: string
+  min_price?: number
+  max_price?: number
+  min_rating?: number
+  max_rating?: number
+  shop_id?: string
+}
 
-const getSellerProduct = async (
-  page: number,
-  limit: number,
-  search: string,
-  category: string,
-  shop_id: string,
-  sort_by: string,
-  sort: string,
-  min_price: number,
-  max_price: number,
-  min_rating: number,
-  max_rating: number
-) => {
+const getSellerProduct = async (p: SellerProductParams) => {
+  const query = qs.stringify(p)
   const response = await unauthorizedClient.get<
     APIResponse<PaginationData<BriefProduct>>
-  >(
-    '/product/?limit=' +
-      String(limit) +
-      '&page=' +
-      String(page) +
-      '&search=' +
-      search +
-      '&category=' +
-      category +
-      '&shop_id=' +
-      shop_id +
-      '&sort_by=' +
-      sort_by +
-      '&sort=' +
-      sort +
-      '&min_price=' +
-      String(min_price) +
-      '&max_price=' +
-      String(max_price) +
-      '&min_rating=' +
-      String(min_rating) +
-      '&max_rating=' +
-      String(max_rating)
-  )
+  >('/product/?' + query)
   return response.data
 }
 
 export const useGetSellerProduct = (
-  page: number,
-  limit: number,
-  search: string,
-  category: string,
-  shop_id: string,
-  sort_by: string,
-  sort: string,
-  min_price: number,
-  max_price: number,
-  min_rating: number,
-  max_rating: number
+  params: SellerProductParams,
+  enabled?: boolean
 ) => {
-  return useQuery(
-    [
-      profileKey,
-      page,
-      limit,
-      search,
-      category,
-      shop_id,
-      sort_by,
-      sort,
-      min_price,
-      max_price,
-      min_rating,
-      max_rating,
-    ],
-    async () =>
-      await getSellerProduct(
-        page,
-        limit,
-        search,
-        category,
-        shop_id,
-        sort_by,
-        sort,
-        min_price,
-        max_price,
-        min_rating,
-        max_rating
-      )
-  )
+  return useQuery({
+    queryKey: [profileKey, params],
+    queryFn: async () => await getSellerProduct(params),
+    enabled: enabled,
+  })
 }
 
 export const useGetProductReview = (
@@ -163,7 +108,7 @@ const getProductReview = async (
   return response.data
 }
 
-const getAllProduct = async (params: ProductPaginationParams) => {
+const getAllProduct = async (params?: ProductPaginationParams) => {
   const query = qs.stringify(params)
   const response = await unauthorizedClient.get<
     APIResponse<PaginationData<BriefProduct>>
@@ -172,7 +117,7 @@ const getAllProduct = async (params: ProductPaginationParams) => {
 }
 
 export const useGetAllProduct = (
-  params: ProductPaginationParams,
+  params?: ProductPaginationParams,
   enabled?: boolean
 ) => {
   let tempParams: ProductPaginationParams = {
@@ -197,7 +142,7 @@ export const useGetAllProduct = (
       ...Object.keys(tempParams).map((key) => tempParams[key]),
     ],
     queryFn: async () => await getAllProduct(params),
-    enabled: enabled,
+    enabled: enabled && params !== undefined,
   })
 }
 
@@ -227,14 +172,15 @@ const getTotalReview = async (id: string) => {
   return response.data
 }
 
-export const useGetProductImagesByProductID = (id: string) => {
-  return useQuery(
-    ['productImage', id],
-    async () => await getProductImagesByProductID(id)
-  )
+export const useGetProductImagesByProductID = (id?: string) => {
+  return useQuery({
+    queryKey: ['productImage', id],
+    queryFn: async () => await getProductImagesByProductID(id),
+    enabled: Boolean(id),
+  })
 }
 
-const getProductImagesByProductID = async (id: string) => {
+const getProductImagesByProductID = async (id?: string) => {
   const response = await unauthorizedClient.get<APIResponse<ProductImages[]>>(
     `/product/${id}/picture`
   )

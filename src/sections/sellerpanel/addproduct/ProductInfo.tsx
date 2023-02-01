@@ -1,9 +1,12 @@
+import React, { useEffect, useState } from 'react'
+
 import { H3, H4, Chip, P, TextInput, TextArea } from '@/components'
 import toTitleCase from '@/helper/toTitleCase'
 import { useMediaQuery } from '@/hooks'
 import type { CategoryData } from '@/types/api/category'
+
 import { RadioGroup } from '@headlessui/react'
-import React, { useEffect, useState } from 'react'
+
 import CategorySelector from './subsections/CategorySelector'
 
 const ProductInfo: React.FC<{
@@ -56,7 +59,7 @@ const ProductInfo: React.FC<{
   }
   useEffect(() => {
     if (selectedCategory.length > 0) {
-      setCategoryID(selectedCategory.at(-1)?.id)
+      setCategoryID(selectedCategory.at(-1)?.id ?? '')
     }
   }, [selectedCategory])
 

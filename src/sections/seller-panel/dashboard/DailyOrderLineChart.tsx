@@ -1,7 +1,9 @@
+import React from 'react'
+
 import { useMediaQuery } from '@/hooks'
 import type { DailyOrder } from '@/types/api/sellerperformance'
+
 import moment from 'moment'
-import React from 'react'
 import {
   ResponsiveContainer,
   LineChart,

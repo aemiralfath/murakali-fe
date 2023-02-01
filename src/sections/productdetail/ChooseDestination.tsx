@@ -1,9 +1,10 @@
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+
 import { useGetAllCity, useGetAllProvince } from '@/api/user/address/extra'
 import { Button } from '@/components'
 import SelectComboBox from '@/components/selectinput/SelectCombobox'
 import { closeModal } from '@/redux/reducer/modalReducer'
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
 
 interface ChooseDestinationProps {
   setDestination: (city_id: number, city: string) => void
@@ -29,8 +30,9 @@ const ChooseDestination: React.FC<ChooseDestinationProps> = ({
     let id = ''
     if (allProvince.data?.data?.rows) {
       for (let i = 0; i < allProvince.data?.data?.rows.length; i++) {
-        if (allProvince.data.data.rows[i].province === province) {
-          id = allProvince.data.data.rows[i].province_id
+        const tempProvince = allProvince.data.data.rows[i]
+        if (tempProvince !== undefined && tempProvince.province === province) {
+          id = tempProvince.province_id
         }
       }
     }
@@ -108,13 +110,14 @@ const ChooseDestination: React.FC<ChooseDestinationProps> = ({
           buttonType="primary"
           onClick={() => {
             if (allCity.data?.data?.data?.rows) {
-              let cityId: number
+              let cityId = 0
               for (let i = 0; i < allCity.data.data.data.rows.length; i++) {
+                const tempCity = allCity.data.data.data.rows[i]
                 if (
-                  removeFirstWord(allCity.data.data.data.rows[i].city) ===
-                  input.city
+                  tempCity !== undefined &&
+                  removeFirstWord(tempCity.city) === input.city
                 ) {
-                  cityId = Number(allCity.data.data.data.rows[i].city_id)
+                  cityId = Number(tempCity.city_id)
                 }
               }
               setDestination(cityId, input.city)

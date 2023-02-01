@@ -1,13 +1,14 @@
-import { useActivatePin, useUpdatePinWallet } from '@/api/user/wallet'
-import { Button } from '@/components'
-import { closeModal } from '@/redux/reducer/modalReducer'
-import type { APIResponse } from '@/types/api/response'
-import type { AxiosError } from 'axios'
-
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import PinInput from 'react-pin-input'
 import { useDispatch } from 'react-redux'
+
+import { useActivatePin, useUpdatePinWallet } from '@/api/user/wallet'
+import { Button } from '@/components'
+import { closeModal } from '@/redux/reducer/modalReducer'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
 
 interface FormPINWalletProps {
   createPin: boolean
@@ -26,7 +27,9 @@ const FormPINWallet: React.FC<FormPINWalletProps> = ({ createPin }) => {
   useEffect(() => {
     if (updatePin.isSuccess) {
       setPin('')
-      pinInputRef.clear()
+      if (pinInputRef !== null) {
+        pinInputRef.clear()
+      }
       dispatch(closeModal())
       toast.success('Success Change Pin')
     }
@@ -35,12 +38,14 @@ const FormPINWallet: React.FC<FormPINWalletProps> = ({ createPin }) => {
   useEffect(() => {
     if (updatePin.isError) {
       setPin('')
-      pinInputRef.clear()
+      if (pinInputRef !== null) {
+        pinInputRef.clear()
+      }
       const errMsg = updatePin.failureReason as AxiosError<APIResponse<null>>
-      toast.error(errMsg.response.data.message as string)
+      toast.error(errMsg.response?.data.message as string)
 
       if (
-        errMsg.response.data.message ===
+        errMsg.response?.data.message ===
         'Wallet is temporarily blocked, please wait.'
       ) {
         dispatch(closeModal())
@@ -51,7 +56,9 @@ const FormPINWallet: React.FC<FormPINWalletProps> = ({ createPin }) => {
   useEffect(() => {
     if (activePin.isSuccess) {
       setPin('')
-      pinInputRef.clear()
+      if (pinInputRef !== null) {
+        pinInputRef.clear()
+      }
       dispatch(closeModal())
     }
   }, [activePin.isSuccess])
@@ -59,12 +66,14 @@ const FormPINWallet: React.FC<FormPINWalletProps> = ({ createPin }) => {
   useEffect(() => {
     if (activePin.isError) {
       setPin('')
-      pinInputRef.clear()
+      if (pinInputRef !== null) {
+        pinInputRef.clear()
+      }
       const errMsg = activePin.failureReason as AxiosError<APIResponse<null>>
-      toast.error(errMsg.response.data.message as string)
+      toast.error(errMsg.response?.data.message as string)
 
       if (
-        errMsg.response.data.message ===
+        errMsg.response?.data.message ===
         'Wallet is temporarily blocked, please wait.'
       ) {
         dispatch(closeModal())

@@ -1,30 +1,33 @@
 /* eslint-disable @next/next/no-img-element */
+import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { HiPlus } from 'react-icons/hi'
+import { useDispatch } from 'react-redux'
+
+import { useRouter } from 'next/router'
+
+import { useChangeTransactionPaymentMethod } from '@/api/transaction'
+import { useGetUserSLP } from '@/api/user/slp'
 import { useCreateTransaction } from '@/api/user/transaction'
 import { Button, P } from '@/components'
-
+import { ConvertShowMoney } from '@/helper/convertshowmoney'
+import cx from '@/helper/cx'
+import { validateUUID } from '@/helper/uuid'
+import { useModal } from '@/hooks'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { PostCheckout } from '@/types/api/checkout'
 import type { APIResponse } from '@/types/api/response'
-import type { AxiosError } from 'axios'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
-import walletImage from '../../../../public/asset/wallet.png'
-import sealabsImage from '../../../../public/asset/sealabs.png'
-import type { WalletUser } from '@/types/api/wallet'
 import type { SLPUser } from '@/types/api/slp'
-import { validateUUID } from '@/helper/uuid'
-import { ConvertShowMoney } from '@/helper/convertshowmoney'
-import { useModal } from '@/hooks'
-import FormPin from '../FormPin'
-import moment from 'moment'
-import FormRegisterSealabsPay from '../FormRegisterSealabsPay'
-import { useGetUserSLP } from '@/api/user/slp'
-import cx from '@/helper/cx'
-import { HiPlus } from 'react-icons/hi'
 import type { Transaction } from '@/types/api/transaction'
-import { useChangeTransactionPaymentMethod } from '@/api/transaction'
+import type { WalletUser } from '@/types/api/wallet'
+
+import type { AxiosError } from 'axios'
+import moment from 'moment'
+
+import sealabsImage from '../../../../public/asset/sealabs.png'
+import walletImage from '../../../../public/asset/wallet.png'
+import FormPin from '../FormPin'
+import FormRegisterSealabsPay from '../FormRegisterSealabsPay'
 
 interface CheckoutSummaryProps {
   userWallet: WalletUser
@@ -38,7 +41,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   postCheckout,
   userWallet,
   userSLP,
-  totalOrder,
+  totalOrder = 0,
   transaction,
 }) => {
   const modal = useModal()
@@ -63,10 +66,10 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   >([])
 
   useEffect(() => {
-    if (!getUserSLP.isLoading) {
+    if (getUserSLP.data?.data) {
       seUserSLPs(getUserSLP.data.data)
     }
-  }, [getUserSLP])
+  }, [getUserSLP.isSuccess])
 
   useEffect(() => {
     if (userWallet.unlocked_at.Valid) {
@@ -179,7 +182,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
     if (changeTransactionPaymentMethod.isSuccess) {
       router.push({
         pathname: '/slp-payment',
-        query: { id: transaction.id },
+        query: { id: transaction?.id },
       })
       dispatch(closeModal())
     }
@@ -200,7 +203,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   }, [totalOrder, blocked])
 
   useEffect(() => {
-    if (createTransaction.isSuccess) {
+    if (createTransaction.isSuccess && createTransaction.data?.data) {
       toast.success('Checkout Success')
       dispatch(closeModal())
       if (!validateUUID(selected)) {
@@ -264,7 +267,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
                       <P className="font-semibold">{paymentOption.name}</P>
                       {paymentOption.name === 'Wallet' ? (
                         <P className="text-sm">
-                          Rp{ConvertShowMoney(paymentOption.balance)}
+                          Rp{ConvertShowMoney(paymentOption.balance ?? 0)}
                         </P>
                       ) : (
                         <P className="text-sm">{paymentOption.id}</P>

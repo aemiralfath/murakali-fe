@@ -1,8 +1,8 @@
 import { authorizedClient } from '@/api/apiClient'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-
-import type { APIResponse, PaginationData } from '@/types/api/response'
 import type { BriefProduct, ProductQuery } from '@/types/api/product'
+import type { APIResponse, PaginationData } from '@/types/api/response'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const profileKey = ['favorite']
 
@@ -76,7 +76,7 @@ export const useCheckFavoriteProduct = () => {
 
   return useMutation(
     async (id: string) => {
-      return await authorizedClient.post<APIResponse<null>>(
+      return await authorizedClient.post<APIResponse<boolean>>(
         '/product/favorite/check',
         {
           product_id: id,
@@ -96,7 +96,7 @@ export const useCountSpecificFavoriteProduct = () => {
 
   return useMutation(
     async (id: string) => {
-      return await authorizedClient.post<APIResponse<null>>(
+      return await authorizedClient.post<APIResponse<number>>(
         '/product/favorite/count',
         {
           product_id: id,

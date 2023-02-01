@@ -1,3 +1,8 @@
+import React, { useEffect, useState } from 'react'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useSearchQueryProduct } from '@/api/product/search'
 import ProductListingLayout, {
   useProductListing,
@@ -6,10 +11,8 @@ import { Navbar } from '@/layout/template'
 import Footer from '@/layout/template/footer'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import type { ProductQuery } from '@/types/api/product'
+
 import type { NextPage } from 'next'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
 
 const FilterCategoryName: NextPage = () => {
   const router = useRouter()
@@ -150,7 +153,7 @@ const FilterCategoryName: NextPage = () => {
       <div className="container mx-auto mt-3">
         {SearchProductList.isLoading ? (
           <ProductListingLayout controller={controller} isLoading={true} />
-        ) : SearchProductList.data.data.rows ? (
+        ) : SearchProductList.data?.data?.rows ? (
           <ProductListingLayout
             controller={controller}
             isLoading={false}
@@ -159,7 +162,7 @@ const FilterCategoryName: NextPage = () => {
             totalPage={SearchProductList.data.data.total_pages}
           />
         ) : (
-          <div>handle error</div>
+          <></>
         )}
       </div>
       <Footer />

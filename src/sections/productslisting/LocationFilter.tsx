@@ -1,11 +1,13 @@
-import { H4 } from '@/components'
-import { useDebounce } from '@/hooks'
-import { Menu, Transition } from '@headlessui/react'
 import React, { Fragment, useState } from 'react'
 import { HiChevronDown, HiSearch } from 'react-icons/hi'
+
+import { H4 } from '@/components'
+import { useDebounce } from '@/hooks'
 import type { Province, ProvinceDetail } from '@/types/api/address'
-import type { UseQueryResult } from '@tanstack/react-query'
 import type { APIResponse } from '@/types/api/response'
+
+import { Menu, Transition } from '@headlessui/react'
+import type { UseQueryResult } from '@tanstack/react-query'
 
 const ProvinceBtnMenu: React.FC<{
   provinces: ProvinceDetail[]
@@ -128,18 +130,19 @@ const LocationFilter: React.FC<{
     <div>
       <H4>Location</H4>
       <div className="mt-1 flex flex-col gap-1">
-        {provinces.data?.data ? (
+        {provinces.data?.data?.rows ? (
           <>
             {shownProvince.map((data, idx) => {
-              const provinceIdx = provinces.data.data.rows.findIndex(
-                (province) => province.province === data
-              )
+              const provinceIdx =
+                provinces.data?.data?.rows.findIndex(
+                  (province) => province.province === data
+                ) ?? -1
               if (provinceIdx === -1) {
                 return <></>
               }
 
-              const province = provinces.data.data.rows[provinceIdx]
-              const checked = isProvinceSelected(province)
+              const province = provinces.data.data?.rows[provinceIdx]
+              const checked = province ? isProvinceSelected(province) : false
               return (
                 <label
                   className="flex cursor-pointer items-center gap-2 text-sm"
@@ -151,10 +154,12 @@ const LocationFilter: React.FC<{
                     defaultChecked={checked}
                     checked={checked}
                     onChange={() => {
-                      if (checked) {
-                        removeSelectedProvince(province)
-                      } else {
-                        addSelectedProvince(province)
+                      if (province) {
+                        if (checked) {
+                          removeSelectedProvince(province)
+                        } else {
+                          addSelectedProvince(province)
+                        }
                       }
                     }}
                   />

@@ -1,22 +1,29 @@
-import { Button, Chip, Divider, H3, H4, P, TextInput } from '@/components'
-import cx from '@/helper/cx'
-import toTitleCase from '@/helper/toTitleCase'
 import React, { useEffect, useState } from 'react'
-import type { Updater } from 'use-immer'
+import { toast } from 'react-hot-toast'
 import {
   HiExclamationCircle,
   HiOutlineLightBulb,
   HiPlus,
   HiTrash,
 } from 'react-icons/hi'
-import type { ProductDetail, ProductDetailReq } from '@/types/api/product'
-import VariantSelectionDropdown from './subsections/VariantSelectionDropdown'
-import getKey from '@/helper/getKey'
-import VariationSelector from './subsections/VariationSelector'
-import VariantChip from './subsections/VariantChip'
-import EmptyData from './subsections/EmptyData'
-import { toast } from 'react-hot-toast'
+
+import { Button, Chip, Divider, H3, H4, P, TextInput } from '@/components'
 import Uploader from '@/components/uploader'
+import cx from '@/helper/cx'
+import getKey from '@/helper/getKey'
+import toTitleCase from '@/helper/toTitleCase'
+import type {
+  ProductDetail,
+  ProductDetailReq,
+  VariantDetailReq,
+} from '@/types/api/product'
+
+import type { Updater } from 'use-immer'
+
+import EmptyData from './subsections/EmptyData'
+import VariantChip from './subsections/VariantChip'
+import VariantSelectionDropdown from './subsections/VariantSelectionDropdown'
+import VariationSelector from './subsections/VariationSelector'
 
 const ProductVariants: React.FC<{
   productDetailData: {
@@ -106,32 +113,90 @@ const ProductVariants: React.FC<{
 
   const handleChangePrice = (key: string, newVal: number) => {
     updateProductDetailData((draft) => {
-      draft[key].price = newVal
+      draft[key] = {
+        ...(draft[key] ?? {
+          stock: 0,
+          weight: 0,
+          size: 0,
+          hazardous: false,
+          condition: 'new',
+          bulk_price: false,
+          photo: [],
+          variant_detail: [],
+        }),
+        price: newVal,
+      }
     })
   }
 
   const handleChangeStock = (key: string, newVal: number) => {
     updateProductDetailData((draft) => {
-      draft[key].stock = newVal
+      draft[key] = {
+        ...(draft[key] ?? {
+          price: 0,
+          weight: 0,
+          size: 0,
+          hazardous: false,
+          condition: 'new',
+          bulk_price: false,
+          photo: [],
+          variant_detail: [],
+        }),
+        stock: newVal,
+      }
     })
   }
 
   const handleChangeWeight = (key: string, newVal: number) => {
     updateProductDetailData((draft) => {
-      draft[key].weight = newVal
+      draft[key] = {
+        ...(draft[key] ?? {
+          price: 0,
+          stock: 0,
+          size: 0,
+          hazardous: false,
+          condition: 'new',
+          bulk_price: false,
+          photo: [],
+          variant_detail: [],
+        }),
+        weight: newVal,
+      }
     })
   }
 
   const handleChangeVolume = (key: string, newVal: number) => {
     updateProductDetailData((draft) => {
-      draft[key].size = newVal
+      draft[key] = {
+        ...(draft[key] ?? {
+          price: 0,
+          weight: 0,
+          stock: 0,
+          hazardous: false,
+          condition: 'new',
+          bulk_price: false,
+          photo: [],
+          variant_detail: [],
+        }),
+        size: newVal,
+      }
     })
   }
 
   const handleChangeImage = (key: string, newVal: string) => {
     updateProductDetailData((draft) => {
-      if (draft[key]) {
-        draft[key].photo = [newVal]
+      draft[key] = {
+        ...(draft[key] ?? {
+          price: 0,
+          weight: 0,
+          size: 0,
+          stock: 0,
+          hazardous: false,
+          condition: 'new',
+          bulk_price: false,
+          variant_detail: [],
+        }),
+        photo: [newVal],
       }
     })
   }
@@ -145,10 +210,38 @@ const ProductVariants: React.FC<{
     setTempChangeWeight(null)
     setTempChangeVolume(null)
 
-    variantNames[0].forEach((vname1) => {
-      if (variantNames[1].length > 0) {
-        variantNames[1].forEach((vname2) => {
-          const key = getKey(vname1, vname2)
+    const tempVariantNames1 = variantNames[0]
+    if (tempVariantNames1 !== undefined) {
+      tempVariantNames1.forEach((vname1) => {
+        const tempVariantNames2 = variantNames[1]
+        if (tempVariantNames2 !== undefined && tempVariantNames2.length > 0) {
+          tempVariantNames2.forEach((vname2) => {
+            const key = getKey(vname1, vname2)
+            updateProductDetailData((draft) => {
+              draft[key] = lastData[key] ?? {
+                price: 0,
+                stock: 0,
+                weight: 0,
+                size: 0,
+                hazardous: false,
+                condition: 'new',
+                bulk_price: false,
+                photo: [],
+                variant_detail: [
+                  {
+                    name: vname1,
+                    type: variantType[0] ?? '',
+                  },
+                  {
+                    name: vname2,
+                    type: variantType[1] ?? '',
+                  },
+                ],
+              }
+            })
+          })
+        } else {
+          const key = getKey(vname1)
           updateProductDetailData((draft) => {
             draft[key] = lastData[key] ?? {
               price: 0,
@@ -162,38 +255,14 @@ const ProductVariants: React.FC<{
               variant_detail: [
                 {
                   name: vname1,
-                  type: variantType[0],
-                },
-                {
-                  name: vname2,
-                  type: variantType[1],
+                  type: variantType[0] ?? '',
                 },
               ],
             }
           })
-        })
-      } else {
-        const key = getKey(vname1)
-        updateProductDetailData((draft) => {
-          draft[key] = lastData[key] ?? {
-            price: 0,
-            stock: 0,
-            weight: 0,
-            size: 0,
-            hazardous: false,
-            condition: 'new',
-            bulk_price: false,
-            photo: [],
-            variant_detail: [
-              {
-                name: vname1,
-                type: variantType[0],
-              },
-            ],
-          }
-        })
-      }
-    })
+        }
+      })
+    }
   }, [variantType, variantNames])
 
   useEffect(() => {
@@ -201,7 +270,9 @@ const ProductVariants: React.FC<{
       if (defaultProductDetail.length > 0) {
         setOpenVariantTwo(defaultProductDetail.length > 1)
 
-        const tempVariantType = Object.keys(defaultProductDetail[0].variant)
+        const tempVariantType = Object.keys(
+          defaultProductDetail[0]?.variant ?? {}
+        )
         if (tempVariantType.length < 2) {
           tempVariantType.push('')
         }
@@ -209,15 +280,15 @@ const ProductVariants: React.FC<{
         const tempVariantNames: string[][] = [[], []]
         defaultProductDetail.forEach((detail) => {
           const key = getKey(
-            detail.variant[tempVariantType[0]],
+            detail.variant[tempVariantType[0] ?? 0] ?? '',
             tempVariantType[1] ? detail.variant[tempVariantType[1]] : undefined
           )
-          const tempVariantDetail = []
+          const tempVariantDetail: Array<VariantDetailReq> = []
           tempVariantType.forEach((type) => {
             if (type !== '') {
               tempVariantDetail.push({
-                name: type,
-                type: detail.variant[type],
+                name: detail.variant[type] ?? '',
+                type: type,
               })
             }
           })
@@ -237,8 +308,13 @@ const ProductVariants: React.FC<{
           })
 
           tempVariantType.map((type, idx) => {
-            if (!tempVariantNames[idx].includes(detail.variant[type])) {
-              tempVariantNames[idx].push(detail.variant[type])
+            const tempTempVariantNames = tempVariantNames[idx]
+
+            if (
+              tempTempVariantNames !== undefined &&
+              !tempTempVariantNames.includes(detail.variant[type] ?? '')
+            ) {
+              tempVariantNames[idx]?.push(detail.variant[type] ?? '')
             }
           })
         })
@@ -290,7 +366,7 @@ const ProductVariants: React.FC<{
               defaultVariation={
                 defaultProductDetail ? variantType[0] : undefined
               }
-              disabledKeyword={variantType[1]}
+              disabledKeyword={variantType[1] ?? ''}
               onChange={(s) => {
                 setVariantType(
                   variantType.map((v, i) => {
@@ -312,7 +388,7 @@ const ProductVariants: React.FC<{
               isEditing ? 'input-disabled' : ''
             )}
           >
-            {variantNames[0].map((varNames, idx) => {
+            {variantNames[0]?.map((varNames, idx) => {
               return (
                 <VariantChip
                   isDefault={isEditing}
@@ -357,7 +433,7 @@ const ProductVariants: React.FC<{
                 defaultVariation={
                   defaultProductDetail ? variantType[1] : undefined
                 }
-                disabledKeyword={variantType[0]}
+                disabledKeyword={variantType[0] ?? ''}
                 onChange={(s) => {
                   if (variantType.length === 1) {
                     setVariantType([...variantType, s])
@@ -383,7 +459,7 @@ const ProductVariants: React.FC<{
                 isEditing ? 'input-disabled' : ''
               )}
             >
-              {variantNames[1].map((varNames, idx) => {
+              {variantNames[1]?.map((varNames, idx) => {
                 return (
                   <VariantChip
                     isDefault={isEditing}
@@ -430,8 +506,8 @@ const ProductVariants: React.FC<{
       <div className="py-6">
         <Divider />
       </div>
-      {variantNames[0].length > 0 &&
-      (openVariantTwo ? variantNames[1].length > 0 : true) ? (
+      {(variantNames[0]?.length ?? 0) > 0 &&
+      (openVariantTwo ? (variantNames[1]?.length ?? 0) > 0 : true) ? (
         <div className="flex items-start gap-2">
           <VariantSelectionDropdown
             variantNames={variantNames}
@@ -448,7 +524,9 @@ const ProductVariants: React.FC<{
                     inputSize="sm"
                     full
                     placeholder="Price (Rp.)"
-                    value={tempChangePrice}
+                    value={
+                      tempChangePrice === null ? undefined : tempChangePrice
+                    }
                     onChange={(e) => {
                       const parsed = parseInt(e.target.value)
                       setTempChangePrice(Number.isNaN(parsed) ? 0 : parsed)
@@ -461,7 +539,9 @@ const ProductVariants: React.FC<{
                     inputSize="sm"
                     full
                     placeholder="Stock"
-                    value={tempChangeStock}
+                    value={
+                      tempChangeStock === null ? undefined : tempChangeStock
+                    }
                     onChange={(e) => {
                       const parsed = parseInt(e.target.value)
                       setTempChangeStock(Number.isNaN(parsed) ? 0 : parsed)
@@ -474,7 +554,9 @@ const ProductVariants: React.FC<{
                     inputSize="sm"
                     full
                     placeholder="Weight (grams)"
-                    value={tempChangeWeight}
+                    value={
+                      tempChangeWeight === null ? undefined : tempChangeWeight
+                    }
                     onChange={(e) => {
                       const parsed = parseInt(e.target.value)
                       setTempChangeWeight(Number.isNaN(parsed) ? 0 : parsed)
@@ -487,7 +569,9 @@ const ProductVariants: React.FC<{
                     inputSize="sm"
                     full
                     placeholder="Volume"
-                    value={tempChangeVolume}
+                    value={
+                      tempChangeVolume === null ? undefined : tempChangeVolume
+                    }
                     onChange={(e) => {
                       const parsed = parseInt(e.target.value)
                       setTempChangeVolume(Number.isNaN(parsed) ? 0 : parsed)
@@ -523,13 +607,13 @@ const ProductVariants: React.FC<{
         <></>
       )}
       <div className="mt-3 max-w-full flex-col divide-y-[1px] overflow-auto">
-        {variantNames[0].length > 0 ? (
+        {(variantNames[0]?.length ?? 0) > 0 ? (
           openVariantTwo ? (
-            variantNames[1].length > 0 ? (
-              variantNames[0].map((vname1) => {
+            (variantNames[1]?.length ?? 0) > 0 ? (
+              variantNames[0]?.map((vname1) => {
                 return (
                   <>
-                    {variantNames[1].map((vname2) => {
+                    {variantNames[1]?.map((vname2) => {
                       const key = getKey(vname1, vname2)
                       return (
                         <div className="flex w-fit justify-start p-6" key={key}>
@@ -549,7 +633,7 @@ const ProductVariants: React.FC<{
                               onChange={(s) => handleChangeImage(key, s)}
                               defaultImage={
                                 productDetailData[key]
-                                  ? productDetailData[key].photo[0]
+                                  ? productDetailData[key]?.photo[0]
                                   : undefined
                               }
                             />
@@ -645,7 +729,7 @@ const ProductVariants: React.FC<{
               <EmptyData />
             )
           ) : (
-            variantNames[0].map((vname) => {
+            variantNames[0]?.map((vname) => {
               const key = getKey(vname)
               return (
                 <div className="flex w-fit justify-start p-6" key={key}>
@@ -665,7 +749,7 @@ const ProductVariants: React.FC<{
                       onChange={(s) => handleChangeImage(key, s)}
                       defaultImage={
                         productDetailData[key]
-                          ? productDetailData[key].photo[0]
+                          ? productDetailData[key]?.photo[0]
                           : undefined
                       }
                     />

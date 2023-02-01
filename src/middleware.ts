@@ -1,15 +1,19 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import type { APIResponse } from '@/types/api/response'
+
 import type { AccessTokenData } from '@/types/api/auth'
-import { env } from './env/client.mjs'
+import type { APIResponse } from '@/types/api/response'
+
 import jwt_decode from 'jwt-decode'
+
+import { env } from './env/client.mjs'
 import type { Jwt } from './types/api/user.js'
 
 export async function middleware(req: NextRequest) {
   const response = NextResponse.next()
-  if (req.cookies.has('access_token')) {
-    const jwt = jwt_decode(req.cookies.get('access_token').value) as Jwt
+  const gotToken = req.cookies.get('access_token')
+  if (gotToken !== undefined) {
+    const jwt = jwt_decode(gotToken.value) as Jwt
     if (req.nextUrl.pathname.startsWith('/seller-panel')) {
       if (jwt.role_id !== 2) {
         const url = req.nextUrl.clone()
@@ -33,8 +37,9 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  if (req.cookies.has('access_token')) {
-    const jwt = jwt_decode(req.cookies.get('access_token').value) as Jwt
+  const newToken = req.cookies.get('access_token')
+  if (newToken !== undefined) {
+    const jwt = jwt_decode(newToken.value) as Jwt
     if (req.nextUrl.pathname.startsWith('/seller-panel')) {
       if (jwt.role_id !== 2) {
         const url = req.nextUrl.clone()

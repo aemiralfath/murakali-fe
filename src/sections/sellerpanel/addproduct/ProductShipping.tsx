@@ -1,7 +1,9 @@
+import React, { useEffect, useState } from 'react'
+
 import { H3, H4, P } from '@/components'
 import { useMediaQuery } from '@/hooks'
+
 import { RadioGroup } from '@headlessui/react'
-import React, { useEffect, useState } from 'react'
 
 const ProductShipping: React.FC<{
   hazardous: boolean

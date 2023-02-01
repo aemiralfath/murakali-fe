@@ -1,15 +1,5 @@
-import { Avatar, Button, H2, Icon, TextInput } from '@/components'
-import {
-  useHover,
-  useLoadingModal,
-  useMediaQuery,
-  useSearchKeyword,
-  useSelector,
-  useUser,
-} from '@/hooks'
-import { Menu, Transition } from '@headlessui/react'
-import Link from 'next/link'
 import React, { Fragment, useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 import {
   HiCurrencyDollar,
   HiHeart,
@@ -18,14 +8,26 @@ import {
   HiShoppingCart,
 } from 'react-icons/hi'
 
-import type { CartData } from '@/types/api/cart'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
+
 import { useLogout } from '@/api/auth/logout'
-import toast from 'react-hot-toast'
-import type { AxiosError } from 'axios'
-import type { APIResponse } from '@/types/api/response'
 import { useGetHoverCart } from '@/api/user/cart'
+import { Avatar, Button, H2, Icon, TextInput } from '@/components'
 import formatMoney from '@/helper/formatMoney'
+import {
+  useHover,
+  useLoadingModal,
+  useMediaQuery,
+  useSearchKeyword,
+  useSelector,
+  useUser,
+} from '@/hooks'
+import type { CartData } from '@/types/api/cart'
+import type { APIResponse } from '@/types/api/response'
+
+import { Menu, Transition } from '@headlessui/react'
+import type { AxiosError } from 'axios'
 
 const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
   cart,
@@ -34,7 +36,7 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
   const [cartRef, isCartHover] = useHover()
   const router = useRouter()
   return (
-    <div className="nav-item relative" ref={cartRef}>
+    <div className="nav-item relative z-50 " ref={cartRef}>
       <Link
         href={`/cart`}
         className="flex items-center px-3 py-2 text-xs font-bold uppercase leading-snug text-white hover:opacity-75"
@@ -68,13 +70,13 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                             height={60}
                             src={
                               data.thumbnail_url === ' '
-                                ? undefined
+                                ? '/asset/image-empty.jpg'
                                 : data.thumbnail_url
                             }
                             alt={data.title}
                             className={'aspect-square h-[4.5rem] w-[4.5rem]'}
                           />
-                          <div className="flex flex-1 flex-col gap-2 px-2">
+                          <div className="flex flex-1 flex-col flex-wrap gap-2 px-1">
                             <div className="mt-1 font-semibold leading-4 line-clamp-2">
                               {data.title}
                             </div>
@@ -84,8 +86,8 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                               })}
                             </div>
                           </div>
-                          <div className="flex w-[6rem] flex-col overflow-ellipsis text-right">
-                            <div className="text-lg font-semibold">
+                          <div className="flex w-[9rem] flex-col overflow-ellipsis text-right">
+                            <div className="block truncate text-lg font-semibold">
                               {data.sub_price === 0
                                 ? 'Rp.' + formatMoney(data.price)
                                 : 'Rp.' + formatMoney(data.sub_price)}
@@ -316,7 +318,7 @@ const Navbar: React.FC = () => {
             >
               <ul className="flex list-none flex-col items-start md:ml-auto md:flex-row">
                 <HoverableCartButton
-                  cart={cart.data?.data.cart_items}
+                  cart={cart.data?.data?.cart_items ?? []}
                   isLogin={user ? true : false}
                 />
                 <li className="nav-item">
@@ -347,7 +349,7 @@ const Navbar: React.FC = () => {
             <div className={'hidden items-center md:flex'}>
               <ul className="flex list-none flex-col md:ml-auto md:flex-row">
                 <HoverableCartButton
-                  cart={cart.data?.data.cart_items}
+                  cart={cart.data?.data?.cart_items ?? []}
                   isLogin={user ? true : false}
                 />
 

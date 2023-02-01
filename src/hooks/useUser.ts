@@ -1,6 +1,6 @@
-import { useGetUserProfile } from '@/api/user/profile'
 import { useEffect, useState } from 'react'
 
+import { useGetUserProfile } from '@/api/user/profile'
 import type { UserDetail } from '@/types/api/user'
 
 const useUser = () => {
@@ -14,7 +14,9 @@ const useUser = () => {
 
   useEffect(() => {
     if (userProfile.isSuccess) {
-      setUser(userProfile.data.data)
+      if (userProfile.data.data) {
+        setUser(userProfile.data.data)
+      }
     }
   }, [userProfile.data])
 

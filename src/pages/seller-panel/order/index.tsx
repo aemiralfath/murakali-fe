@@ -1,23 +1,27 @@
-import { useSellerOrders, useWithdrawOrderBalance } from '@/api/seller/order'
-import { Button, H2, P } from '@/components'
-import Table from '@/components/table'
-import orderStatusData from '@/dummy/orderStatusData'
-import type { OrderData } from '@/types/api/order'
-import type { APIResponse, PaginationData } from '@/types/api/response'
-import moment from 'moment'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import type { MouseEvent } from 'react'
-import SellerPanelLayout from '@/layout/SellerPanelLayout'
+import { toast } from 'react-hot-toast'
+import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { useSellerOrders, useWithdrawOrderBalance } from '@/api/seller/order'
+import { useGetRefundThreadSeller } from '@/api/seller/refund'
+import { Button, H2, P, PaginationNav } from '@/components'
+import Table from '@/components/table'
+import orderStatusData from '@/dummy/orderStatusData'
 import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
 import { useModal } from '@/hooks'
-import ProcessDelivery from '@/sections/seller-panel/delivery-servise/ProcessDelivery'
+import SellerPanelLayout from '@/layout/SellerPanelLayout'
 import CancelDelivery from '@/sections/seller-panel/delivery-servise/CancelDelivery'
-import { toast } from 'react-hot-toast'
+import ProcessDelivery from '@/sections/seller-panel/delivery-servise/ProcessDelivery'
+import type { OrderData } from '@/types/api/order'
+import type { APIResponse, PaginationData } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import { useGetRefundThreadSeller } from '@/api/seller/refund'
+import moment from 'moment'
 
 const CheckOrderRefund: React.FC<{ data?: OrderData }> = ({ data }) => {
   const router = useRouter()
@@ -30,12 +34,12 @@ const CheckOrderRefund: React.FC<{ data?: OrderData }> = ({ data }) => {
         outlined
         className="min-w-full text-gray-500"
         onClick={() => {
-          router.push('/seller-panel/order/refund-thread?id=' + data.order_id)
+          router.push('/seller-panel/order/refund-thread?id=' + data?.order_id)
         }}
       >
         Refund Thread
       </Button>
-      {data.is_refund ? (
+      {data?.is_refund ? (
         <>
           {getRefundThread.data?.data?.refund_data.accepted_at.Valid ? (
             <div className="whitespace-pre-line">
@@ -82,9 +86,12 @@ const CheckOrderRefund: React.FC<{ data?: OrderData }> = ({ data }) => {
 
 function ListOrderDeliveryService() {
   const router = useRouter()
-
+  const [page, setPage] = useState<number>(1)
   const [orderStatusID, setOrderStatusID] = useState('')
-  const sellerOrders = useSellerOrders(orderStatusID, '')
+
+  const [sortBy, setSortBy] = useState('created_at')
+  const [sorts, setSorts] = useState('DESC')
+  const sellerOrders = useSellerOrders(orderStatusID, '', page, sortBy, sorts)
   const withdrawOrderBalance = useWithdrawOrderBalance()
   const orderStatuses = orderStatusData
   const modal = useModal()
@@ -167,8 +174,9 @@ function ListOrderDeliveryService() {
                 Rp{formatMoney(data.total_price)}
               </div>
             ),
-            Status: orderStatusData.find((s) => s.id === `${data.order_status}`)
-              .name,
+            Status:
+              orderStatusData.find((s) => s.id === `${data.order_status}`)
+                ?.name ?? '',
             'Transaction Date': (
               <div>{moment(data.created_at).format('DD MMMM YYYY')}</div>
             ),
@@ -281,7 +289,72 @@ function ListOrderDeliveryService() {
         <div className="flex items-baseline justify-between px-3 py-5 sm:px-0">
           <H2>Orders</H2>
         </div>
+
         <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
+          <div className="flex flex-row gap-x-2">
+            <div className="flex items-center gap-x-2 px-5">
+              <P className="my-3  font-bold">Date</P>
+              <button
+                className={cx(
+                  'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                  sorts === 'ASC' && sortBy === 'created_at'
+                    ? 'bg-primary text-xs text-white'
+                    : ''
+                )}
+                onClick={() => {
+                  setSortBy('created_at')
+                  setSorts('ASC')
+                }}
+              >
+                <HiArrowUp />
+              </button>
+              <button
+                className={cx(
+                  'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                  sorts === 'DESC' && sortBy === 'created_at'
+                    ? 'bg-primary text-xs text-white'
+                    : ''
+                )}
+                onClick={() => {
+                  setSortBy('created_at')
+                  setSorts('DESC')
+                }}
+              >
+                <HiArrowDown />
+              </button>
+            </div>
+            <div className="flex items-center gap-x-2 px-5">
+              <P className="my-3  font-bold">Withdraw</P>
+              <button
+                className={cx(
+                  'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                  sorts === 'ASC' && sortBy === 'is_withdraw'
+                    ? 'bg-primary text-xs text-white'
+                    : ''
+                )}
+                onClick={() => {
+                  setSortBy('is_withdraw')
+                  setSorts('ASC')
+                }}
+              >
+                <HiArrowUp />
+              </button>
+              <button
+                className={cx(
+                  'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                  sorts === 'DESC' && sortBy === 'is_withdraw'
+                    ? 'bg-primary text-xs text-white'
+                    : ''
+                )}
+                onClick={() => {
+                  setSortBy('is_withdraw')
+                  setSorts('DESC')
+                }}
+              >
+                <HiArrowDown />
+              </button>
+            </div>
+          </div>
           <div className="my-4 flex h-fit w-fit max-w-full space-x-10 overflow-x-auto overflow-y-hidden whitespace-nowrap border-b-[2px]">
             <button
               onClick={(e) => ChangeOrderStatusPage(e)}
@@ -313,7 +386,7 @@ function ListOrderDeliveryService() {
           <div className="max-w-full overflow-auto">
             {sellerOrders.isLoading ? (
               <Table data={formatSub()} isLoading />
-            ) : sellerOrders.isSuccess ? (
+            ) : sellerOrders.data?.data ? (
               <Table
                 data={formatSub(sellerOrders.data.data)}
                 isLoading={false}
@@ -321,6 +394,19 @@ function ListOrderDeliveryService() {
               />
             ) : (
               <div>{'Error'}</div>
+            )}
+          </div>
+          <div>
+            {sellerOrders.data?.data ? (
+              <div className="mt-4 flex h-[8rem] w-full justify-center">
+                <PaginationNav
+                  page={page}
+                  total={sellerOrders.data?.data?.total_pages}
+                  onChange={(p) => setPage(p)}
+                />
+              </div>
+            ) : (
+              <></>
             )}
           </div>
         </div>

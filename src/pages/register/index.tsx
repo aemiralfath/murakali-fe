@@ -1,23 +1,24 @@
-import { TextInput, Button, Icon, H1, Divider } from '@/components'
-import * as Yup from 'yup'
-import YupPassword from 'yup-password'
-import { FaGoogle } from 'react-icons/fa'
+import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import FormOTP from '@/sections/registration/FormOTP'
-import Link from 'next/link'
+import { FaGoogle } from 'react-icons/fa'
 
-import { useFormik } from 'formik'
-import { useModal } from '@/hooks'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+
 import {
   useRegistrationCheckEmail,
   useRegistrationFull,
 } from '@/api/auth/registration'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import { TextInput, Button, Icon, H1, Divider } from '@/components'
+import { getGoogleUrl } from '@/helper/googleoauth'
+import { useModal } from '@/hooks'
+import FormOTP from '@/sections/registration/FormOTP'
+import type { APIResponse } from '@/types/api/response'
 
 import type { AxiosError } from 'axios'
-import type { APIResponse } from '@/types/api/response'
-import { getGoogleUrl } from '@/helper/googleoauth'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import YupPassword from 'yup-password'
 
 YupPassword(Yup)
 

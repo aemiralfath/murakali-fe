@@ -1,3 +1,8 @@
+import { useEffect } from 'react'
+import toast from 'react-hot-toast'
+
+import { useRouter } from 'next/router'
+
 import { useWithdrawOrderBalance } from '@/api/seller/order'
 import { useGetRefundThreadSeller } from '@/api/seller/refund'
 import { Button, P } from '@/components'
@@ -7,11 +12,9 @@ import CancelDelivery from '@/sections/seller-panel/delivery-servise/CancelDeliv
 import ProcessDelivery from '@/sections/seller-panel/delivery-servise/ProcessDelivery'
 import type { OrderData } from '@/types/api/order'
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
 import moment from 'moment'
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import toast from 'react-hot-toast'
 
 import InputResi from '../../seller-panel/delivery-servise/InputResi'
 import LabelDelivery from './LabelDelivery'
@@ -25,7 +28,7 @@ interface SummaryOrderDetailProductProps {
   allData: OrderData
 }
 
-const CheckOrderRefund: React.FC<{ data?: OrderData }> = ({ data }) => {
+const CheckOrderRefund: React.FC<{ data: OrderData }> = ({ data }) => {
   const router = useRouter()
   const getRefundThread = useGetRefundThreadSeller(data?.order_id)
   return (

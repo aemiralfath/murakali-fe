@@ -1,3 +1,17 @@
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+import {
+  HiCheck,
+  HiInboxIn,
+  HiInformationCircle,
+  HiMinus,
+  HiPlus,
+  HiTrash,
+} from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useCompleteOrder, useGetOrderByID, useReceiveOrder } from '@/api/order'
 import {
   useCreateProductReview,
@@ -31,20 +45,9 @@ import type { AddressDetail } from '@/types/api/address'
 import type { BuyerOrder, BuyerOrderDetail } from '@/types/api/order'
 import type { APIResponse } from '@/types/api/response'
 import type { ProductReview } from '@/types/api/review'
+
 import type { AxiosError } from 'axios'
 import moment from 'moment'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
-import { toast } from 'react-hot-toast'
-import {
-  HiCheck,
-  HiInboxIn,
-  HiInformationCircle,
-  HiMinus,
-  HiPlus,
-  HiTrash,
-} from 'react-icons/hi'
 
 const OrderDetailCardSection: React.FC<{
   detail: BuyerOrderDetail
@@ -70,18 +73,12 @@ const OrderDetailCardSection: React.FC<{
   const [comment, setComment] = useState<string>()
 
   useEffect(() => {
-    if (gotReview.isSuccess) {
+    if (gotReview.data?.data) {
       if (gotReview.data.data.rows.length > 0) {
         setReview(gotReview.data.data.rows[0])
       }
     }
   }, [gotReview.isSuccess])
-
-  useEffect(() => {
-    if (gotReview.data?.data.rows.length > 0) {
-      setReview(gotReview.data.data.rows[0])
-    }
-  }, [gotReview.isFetching])
 
   useEffect(() => {
     if (createReview.isSuccess) {
@@ -124,7 +121,9 @@ const OrderDetailCardSection: React.FC<{
         <ConfirmationModal
           msg="Do you want to delete this product review?"
           onConfirm={() => {
-            deleteReview.mutate(review.id)
+            if (review) {
+              deleteReview.mutate(review.id)
+            }
           }}
         />
       ),
@@ -132,7 +131,7 @@ const OrderDetailCardSection: React.FC<{
   }
 
   return (
-    <div className="flex gap-2.5">
+    <div className="flex flex-wrap gap-2.5">
       <div>
         <img
           alt={detail.product_title}
@@ -215,7 +214,8 @@ const OrderDetailCardSection: React.FC<{
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
                             errorMsg={
-                              comment?.length > 150
+                              typeof comment === 'string' &&
+                              comment.length > 150
                                 ? `${comment.length}/160`
                                 : undefined
                             }
@@ -302,17 +302,19 @@ const OrderDetailCard: React.FC<
             <div className="h-[1.5rem] w-[70%] animate-pulse rounded bg-base-300" />
           </div>
         </div>
-      ) : (
+      ) : order ? (
         order.detail.map((detail) => {
           return (
             <OrderDetailCardSection
               detail={detail}
-              key={`${detail.product_detail_id}-${order.order_id}`}
-              userId={userProfile.data?.data.id}
+              key={`${detail.product_detail_id}-${order?.order_id}`}
+              userId={userProfile.data?.data?.id}
               isReview={isReview}
             />
           )
         })
+      ) : (
+        <></>
       )}
     </div>
   )
@@ -321,8 +323,8 @@ const OrderDetailCard: React.FC<
 const AddressDetailCard: React.FC<{
   name: string
   title: string
-  address: AddressDetail
-  phone: number
+  address: AddressDetail | null
+  phone: number | null
   isSeller?: boolean
 }> = ({ name, title, address, phone, isSeller }) => {
   return (
@@ -330,7 +332,7 @@ const AddressDetailCard: React.FC<{
       <P className="text-sm">{title}</P>
       <H3>{name}</H3>
       <P className="mt-1">
-        {!isSeller ? (
+        {!isSeller && address ? (
           <>
             <span>{`${address.address_detail}, ${address.sub_district}, ${address.district}`}</span>
             <br />
@@ -338,8 +340,8 @@ const AddressDetailCard: React.FC<{
         ) : (
           <></>
         )}
-        {address.city}, {address.province}
-        {!isSeller ? (
+        {address ? `${address.city}, ${address.province}` : ''}
+        {!isSeller && address ? (
           <>
             <br />
             <span>{address.zip_code}</span>
@@ -423,7 +425,7 @@ const OrderDetail = () => {
       </Head>
       <MainLayout>
         {order.data?.data ? (
-          <div className="flex items-baseline justify-between gap-2">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
             <H1 className="text-primary">Order Detail</H1>
             <P className="opacity-60">
               Created at{' '}
@@ -436,45 +438,54 @@ const OrderDetail = () => {
           <></>
         )}
         <Divider />
-        <ul className="steps w-full min-w-full py-5">
-          {order.data?.data ? (
-            orderStatus
-              .slice(1, orderStatus.length - 2)
-              .map((status, index) => {
-                const idx = index + 1
-                // TODO: handle on cancel
-                return (
-                  <li
-                    key={idx}
-                    data-content={
-                      idx <= order.data.data.order_status ? '✓' : '●'
-                    }
-                    className={
-                      idx <= order.data.data.order_status
-                        ? 'step-primary step'
-                        : 'step'
-                    }
-                  >
-                    {status}
-                  </li>
-                )
-              })
-          ) : (
-            <></>
-          )}
-        </ul>
+        <div className="flex justify-center ">
+          <ul className="steps steps-vertical w-fit min-w-fit py-5 lg:steps-horizontal ">
+            {order.data?.data ? (
+              orderStatus
+                .slice(1, orderStatus.length - 2)
+                .map((status, index) => {
+                  const idx = index + 1
+                  if (order.data?.data) {
+                    return (
+                      <li
+                        key={idx}
+                        data-content={
+                          idx <= order.data.data.order_status ? '✓' : '●'
+                        }
+                        className={
+                          idx <= order.data.data.order_status
+                            ? 'step-primary step'
+                            : 'step'
+                        }
+                      >
+                        <span className="mx-1 text-sm line-clamp-2">
+                          {status}
+                        </span>
+                      </li>
+                    )
+                  }
+
+                  return <li key={idx}></li>
+                })
+            ) : (
+              <></>
+            )}
+          </ul>
+        </div>
         <div className="mt-3 flex h-full w-full flex-col bg-white">
           {order.isLoading ? (
             <P className="flex w-full justify-center">Loading</P>
-          ) : order.isSuccess ? (
+          ) : order.data?.data ? (
             <>
-              <div className="grid grid-cols-4 justify-center gap-4 rounded border p-4">
+              <div className="grid grid-cols-1 justify-center gap-4 rounded border p-4 lg:grid-cols-4">
                 <div className="flex-auto">
                   <P className="text-sm">Shop Name</P>
                   <A
                     className="font-semibold"
                     onClick={() => {
-                      router.push('/seller/' + order.data.data.shop_id)
+                      if (order.data?.data) {
+                        router.push('/seller/' + order.data.data.shop_id)
+                      }
                     }}
                   >
                     {order.data.data.shop_name}
@@ -521,9 +532,11 @@ const OrderDetail = () => {
                               <ConfirmationModal
                                 msg={'Have you receive these product(s)?'}
                                 onConfirm={() => {
-                                  receiveOrder.mutate({
-                                    order_id: order.data.data.order_id,
-                                  })
+                                  if (order.data?.data) {
+                                    receiveOrder.mutate({
+                                      order_id: order.data.data.order_id,
+                                    })
+                                  }
                                 }}
                               />
                             ),
@@ -548,7 +561,7 @@ const OrderDetail = () => {
                             onClick={() => {
                               router.push(
                                 '/order/refund-thread?id=' +
-                                  order.data.data.order_id
+                                  order?.data?.data?.order_id
                               )
                             }}
                           >
@@ -566,12 +579,14 @@ const OrderDetail = () => {
                                 content: (
                                   <ConfirmationModal
                                     msg={`Complete Order & Release Rp${formatMoney(
-                                      order.data.data.total_price
+                                      order.data?.data?.total_price ?? 0
                                     )} to the Seller?`}
                                     onConfirm={() => {
-                                      completeOrder.mutate({
-                                        order_id: order.data.data.order_id,
-                                      })
+                                      if (order.data?.data) {
+                                        completeOrder.mutate({
+                                          order_id: order.data.data.order_id,
+                                        })
+                                      }
                                     }}
                                   />
                                 ),
@@ -616,8 +631,8 @@ const OrderDetail = () => {
                                           }
                                           onConfirm={() => {
                                             if (
-                                              userWallet.data.data.active_date
-                                                .Valid === true &&
+                                              userWallet?.data?.data
+                                                ?.active_date.Valid === true &&
                                               new Date(
                                                 Date.parse(
                                                   userWallet.data.data
@@ -627,7 +642,7 @@ const OrderDetail = () => {
                                             ) {
                                               router.push(
                                                 '/order/complaint?id=' +
-                                                  order.data.data.order_id
+                                                  order?.data?.data?.order_id
                                               )
                                               return
                                             }
@@ -681,8 +696,8 @@ const OrderDetail = () => {
                                           }
                                           onConfirm={() => {
                                             if (
-                                              userWallet.data.data.active_date
-                                                .Valid === true &&
+                                              userWallet?.data?.data
+                                                ?.active_date.Valid === true &&
                                               new Date(
                                                 Date.parse(
                                                   userWallet.data.data
@@ -692,7 +707,7 @@ const OrderDetail = () => {
                                             ) {
                                               router.push(
                                                 '/order/complaint?id=' +
-                                                  order.data.data.order_id
+                                                  order?.data?.data?.order_id
                                               )
                                               return
                                             }
@@ -717,7 +732,7 @@ const OrderDetail = () => {
                 </div>
               </div>
 
-              <div className=" mt-5 grid h-full w-full max-w-full grid-cols-2 rounded border bg-white p-6">
+              <div className=" mt-5 grid h-full w-full max-w-full grid-cols-1 gap-y-5 rounded border bg-white p-6 md:grid-cols-2">
                 <AddressDetailCard
                   title="Sender"
                   name={order.data.data.shop_name}
@@ -739,7 +754,7 @@ const OrderDetail = () => {
                   isReview={order.data.data.order_status >= 7}
                 />
                 <Divider />
-                <div className={'flex items-center justify-between'}>
+                <div className={'flex flex-wrap items-center justify-between'}>
                   <>
                     <P className="opacity-60">Total:</P>
                     <div className="flex items-center gap-2">

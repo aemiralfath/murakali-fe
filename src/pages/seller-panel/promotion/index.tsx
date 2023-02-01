@@ -1,14 +1,3 @@
-import { useSellerPromotions } from '@/api/seller/promotion'
-import { Button, Chip, H2, P, PaginationNav, TextInput } from '@/components'
-import Table from '@/components/table'
-import PromotionStatusData from '@/dummy/promotionStatusData'
-import cx from '@/helper/cx'
-import SellerPanelLayout from '@/layout/SellerPanelLayout'
-import type { SellerPromotion } from '@/types/api/promotion'
-import type { PaginationData } from '@/types/api/response'
-import moment from 'moment'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import type { MouseEvent } from 'react'
 import {
@@ -17,7 +6,21 @@ import {
   HiPencil,
   HiPlus,
 } from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { useSellerPromotions } from '@/api/seller/promotion'
+import { Button, Chip, H2, P, PaginationNav, TextInput } from '@/components'
+import Table from '@/components/table'
+import PromotionStatusData from '@/dummy/promotionStatusData'
+import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
+import SellerPanelLayout from '@/layout/SellerPanelLayout'
+import type { SellerPromotion } from '@/types/api/promotion'
+import type { PaginationData } from '@/types/api/response'
+
+import moment from 'moment'
 
 function PromotionSeller() {
   const router = useRouter()
@@ -29,7 +32,7 @@ function PromotionSeller() {
   const [limit, setLimit] = useState(10)
 
   const formatData = (data?: PaginationData<SellerPromotion>) => {
-    if (data?.rows?.length > 0) {
+    if (data && data?.rows?.length > 0) {
       return data.rows.map((row) => ({
         'Promotion Name': <P className="font-semibold">{row.promotion_name}</P>,
         Product: (

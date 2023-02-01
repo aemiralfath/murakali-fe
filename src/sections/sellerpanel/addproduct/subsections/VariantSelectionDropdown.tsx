@@ -1,9 +1,11 @@
+import React, { Fragment, useEffect, useRef } from 'react'
+import { HiChevronRight, HiChevronDown } from 'react-icons/hi'
+
 import { Divider } from '@/components'
 import cx from '@/helper/cx'
 import getKey from '@/helper/getKey'
+
 import { Popover, Transition } from '@headlessui/react'
-import React, { Fragment, useEffect, useRef } from 'react'
-import { HiChevronRight, HiChevronDown } from 'react-icons/hi'
 
 const VariantSelectionDropdown: React.FC<{
   variantType: string[]
@@ -13,9 +15,9 @@ const VariantSelectionDropdown: React.FC<{
 }> = ({ variantType, variantNames, selectKey, setSelectKey }) => {
   const isSelected = (index: number, vname: string) => {
     if (index === 0) {
-      if (variantNames[1].length > 0) {
+      if ((variantNames[1]?.length ?? 0) > 0) {
         const selected = selectKey.filter((k) => k.includes(`1-${vname}`))
-        return selected.length === variantNames[1].length
+        return selected.length === variantNames[1]?.length
       } else {
         let ans = false
         selectKey.forEach((k) => {
@@ -27,7 +29,7 @@ const VariantSelectionDropdown: React.FC<{
       }
     } else {
       const selected = selectKey.filter((k) => k.includes(`2-${vname}`))
-      return selected.length === variantNames[0].length
+      return selected.length === variantNames[0]?.length
     }
   }
 
@@ -37,9 +39,9 @@ const VariantSelectionDropdown: React.FC<{
         selectKey.filter((k) => !k.includes(`${index + 1}-${vname}`))
       )
     } else {
-      if (variantNames[1].length > 0) {
-        const temp = []
-        variantNames[index === 0 ? 1 : 0].forEach((n) => {
+      if ((variantNames[1]?.length ?? 0) > 0) {
+        const temp: Array<string> = []
+        variantNames[index === 0 ? 1 : 0]?.forEach((n) => {
           const key = getKey(index === 0 ? vname : n, index === 0 ? n : vname)
           if (!selectKey.includes(key)) {
             temp.push(key)
@@ -58,15 +60,15 @@ const VariantSelectionDropdown: React.FC<{
   const toggleSelectAll = () => {
     if (
       selectKey.length ===
-      variantNames[0].length *
-        (variantNames[1].length === 0 ? 1 : variantNames[1].length)
+      Number(variantNames[0]?.length) *
+        Number(variantNames[1]?.length === 0 ? 1 : variantNames[1]?.length)
     ) {
       setSelectKey([])
     } else {
-      const temp = []
-      variantNames[0].forEach((vname1) => {
-        if (variantNames[1].length > 0) {
-          variantNames[1].forEach((vname2) => {
+      const temp: Array<string> = []
+      variantNames[0]?.forEach((vname1) => {
+        if ((variantNames[1]?.length ?? 0) > 0) {
+          variantNames[1]?.forEach((vname2) => {
             const key = getKey(vname1, vname2)
             temp.push(key)
           })
@@ -79,14 +81,14 @@ const VariantSelectionDropdown: React.FC<{
     }
   }
 
-  const topCheckboxRef = useRef<HTMLInputElement>()
+  const topCheckboxRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && topCheckboxRef?.current !== null) {
       if (selectKey.length > 0) {
         if (
           selectKey.length ===
-          variantNames[0].length *
-            (variantNames[1].length === 0 ? 1 : variantNames[1].length)
+          Number(variantNames[0]?.length) *
+            Number(variantNames[1]?.length === 0 ? 1 : variantNames[1]?.length)
         ) {
           topCheckboxRef.current.checked = true
           topCheckboxRef.current.indeterminate = false
@@ -114,7 +116,7 @@ const VariantSelectionDropdown: React.FC<{
           {({ open }) => (
             <>
               <Popover.Button
-                className={cx('btn-ghost btn-xs btn focus-within:outline-none')}
+                className={cx('btn btn-ghost btn-xs focus-within:outline-none')}
               >
                 <span className={cx('transform', open ? 'rotate-180' : '')}>
                   <HiChevronRight />
@@ -149,7 +151,7 @@ const VariantSelectionDropdown: React.FC<{
                                   </div>
                                   <Popover.Button
                                     className={cx(
-                                      'btn-ghost btn-xs btn px-3 focus-within:outline-none'
+                                      'btn btn-ghost btn-xs px-3 focus-within:outline-none'
                                     )}
                                   >
                                     <span
@@ -173,7 +175,7 @@ const VariantSelectionDropdown: React.FC<{
                                 >
                                   <Popover.Panel className="flex origin-top flex-col gap-2 px-4 pb-2 sm:px-0 ">
                                     <Divider />
-                                    {variantNames[idx].map((name) => {
+                                    {variantNames[idx]?.map((name) => {
                                       return (
                                         <div
                                           className="flex items-center gap-2 px-2 text-sm"

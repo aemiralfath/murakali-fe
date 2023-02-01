@@ -1,6 +1,7 @@
-import cx from '@/helper/cx'
 import React from 'react'
 import { AiFillStar, AiOutlineStar } from 'react-icons/ai'
+
+import cx from '@/helper/cx'
 
 const RatingStars: React.FC<{ rating: number; size?: 'md' | 'lg' }> = ({
   rating,

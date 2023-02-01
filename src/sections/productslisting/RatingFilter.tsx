@@ -1,6 +1,7 @@
+import React from 'react'
+
 import { H4, RatingStars, P } from '@/components'
 import cx from '@/helper/cx'
-import React from 'react'
 
 const RatingSelector: React.FC<{
   value: number

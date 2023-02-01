@@ -1,6 +1,6 @@
+import type { Voucher } from './Voucher'
 import type { BuyerOrder } from './order'
 import type { NullableTime } from './time'
-import type { Voucher } from './Voucher'
 
 export interface TransactionID {
   transaction_id: string

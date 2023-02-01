@@ -1,5 +1,6 @@
-import cx from '@/helper/cx'
 import React from 'react'
+
+import cx from '@/helper/cx'
 
 type HeadingProps = React.HTMLAttributes<HTMLHeadingElement>
 const H1: React.FC<HeadingProps> = ({ className, ...rest }) => {

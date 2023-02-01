@@ -1,5 +1,7 @@
-import { searchingKeyword } from '@/redux/reducer/searchKeywordReducer'
 import { useEffect, useState } from 'react'
+
+import { searchingKeyword } from '@/redux/reducer/searchKeywordReducer'
+
 import { useDispatch } from '.'
 
 function useSearchKeyword() {

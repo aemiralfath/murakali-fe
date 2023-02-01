@@ -1,8 +1,10 @@
-import { Button, P } from '@/components'
+import { HiArrowLeft } from 'react-icons/hi'
+
 import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { HiArrowLeft } from 'react-icons/hi'
+
+import { Button, P } from '@/components'
 
 export default function Custom404() {
   const router = useRouter()

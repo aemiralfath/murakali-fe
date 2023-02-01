@@ -1,16 +1,18 @@
-import { Button, TextInput } from '@/components'
-import type { APIResponse } from '@/types/api/response'
-import type { AxiosError } from 'axios'
-import { useFormik } from 'formik'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
-import YupPassword from 'yup-password'
-import * as Yup from 'yup'
 import { useDispatch } from 'react-redux'
-import { closeModal } from '@/redux/reducer/modalReducer'
 
 import { usePasswordConfirmToUpdateWallet } from '@/api/user/wallet'
+import { Button, TextInput } from '@/components'
 import { useModal } from '@/hooks'
+import { closeModal } from '@/redux/reducer/modalReducer'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import YupPassword from 'yup-password'
+
 import FormPINWallet from './FormPinWallet'
 
 YupPassword(Yup)

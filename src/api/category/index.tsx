@@ -1,6 +1,8 @@
 import type { CategoryData } from '@/types/api/category'
 import type { APIResponse } from '@/types/api/response'
+
 import { useQuery } from '@tanstack/react-query'
+
 import { authorizedClient } from '../apiClient'
 
 const profileKey = 'category'

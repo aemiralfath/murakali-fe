@@ -1,7 +1,9 @@
+import React from 'react'
+
 import { useGetSellerDetailInformation } from '@/api/seller'
 import { Avatar, Button, H3, P } from '@/components'
 import { useModal } from '@/hooks'
-import React from 'react'
+
 import FormEditSellerInformation from './FormEditProfile'
 
 function ManageProfileSeller() {

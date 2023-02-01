@@ -1,28 +1,31 @@
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+import { HiArrowLeft } from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useGetAllCategory } from '@/api/category'
+import { useGetProductById } from '@/api/product'
+import { useCreateProduct, useEditProduct } from '@/api/product/manage'
 import { Button, H2 } from '@/components'
+import { useLoadingModal } from '@/hooks'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
 import ProductInfo from '@/sections/sellerpanel/addproduct/ProductInfo'
 import ProductShipping from '@/sections/sellerpanel/addproduct/ProductShipping'
 import ProductVariants from '@/sections/sellerpanel/addproduct/ProductVariants'
 import UploadPhoto from '@/sections/sellerpanel/addproduct/UploadPhoto'
-import Head from 'next/head'
-import * as Yup from 'yup'
-import React, { useEffect, useState } from 'react'
 import type {
   CreateProductReq,
   EditProductReq,
   ProductDetailReq,
   ProductInfoReq,
 } from '@/types/api/product'
-import { useImmer } from 'use-immer'
-import { toast } from 'react-hot-toast'
-import { useCreateProduct, useEditProduct } from '@/api/product/manage'
-import { useLoadingModal } from '@/hooks'
-import type { AxiosError } from 'axios'
 import type { APIResponse } from '@/types/api/response'
-import { useRouter } from 'next/router'
-import { useGetProductById } from '@/api/product'
-import { HiArrowLeft } from 'react-icons/hi'
+
+import type { AxiosError } from 'axios'
+import { useImmer } from 'use-immer'
+import * as Yup from 'yup'
 
 const AddProduct = () => {
   const router = useRouter()
@@ -150,16 +153,20 @@ const AddProduct = () => {
       products_detail: [],
     }
 
-    const tempProductDetail = []
+    const tempProductDetail: Array<ProductDetailReq> = []
     Object.keys(productDetailData).forEach((key) => {
       const data = productDetailData[key]
-      const tempData: ProductDetailReq = { ...data }
-      if (data) {
-        tempData.bulk_price = false
-        tempData.condition = condition
-        tempData.hazardous = hazardous
-
-        tempProductDetail.push(tempData)
+      let tempData: ProductDetailReq | undefined
+      if (data !== undefined) {
+        tempData = data
+      }
+      if (data && tempData !== undefined) {
+        tempProductDetail.push({
+          ...tempData,
+          bulk_price: false,
+          condition,
+          hazardous,
+        })
       }
     })
     reqBody.products_detail = tempProductDetail
@@ -170,17 +177,26 @@ const AddProduct = () => {
           const reqEditBody: EditProductReq = {
             products_info_update: reqBody.products_info,
             products_detail_update: reqBody.products_detail.map((r, idx) => {
+              let tempProductDetail = ''
+              if (productDetail.data?.data) {
+                const tempidxProductDetail =
+                  productDetail.data.data.products_detail[idx]
+                if (tempidxProductDetail !== undefined) {
+                  tempProductDetail = tempidxProductDetail.id
+                }
+              }
               return {
                 ...r,
-                product_detail_id:
-                  productDetail.data.data.products_detail[idx].id,
+                product_detail_id: tempProductDetail,
                 variant_id_remove: [],
                 variant_info_update: [],
               }
             }),
             products_detail_id_remove: [],
           }
-          editProduct.mutate({ id: id, data: reqEditBody })
+          if (id !== undefined) {
+            editProduct.mutate({ id: id, data: reqEditBody })
+          }
         } else {
           createProduct.mutate(reqBody)
         }
@@ -193,18 +209,18 @@ const AddProduct = () => {
   }
 
   useEffect(() => {
-    if (productDetail.isSuccess) {
+    if (productDetail.data?.data) {
       if (intent === 'add' && typeof product_id === 'string') {
         toast.success('Data has been filled!')
       }
 
       const data = productDetail.data.data
       updateData((draft) => {
-        draft.title = data.products_info.title
-        draft.description = data.products_info.description
+        draft.title = data?.products_info.title
+        draft.description = data?.products_info.description
       })
-      setCondition(data.products_detail[0]?.condition)
-      setHazardous(data.products_detail[0]?.hazardous)
+      setCondition(data.products_detail[0]?.condition ?? 'new')
+      setHazardous(data.products_detail[0]?.hazardous ?? false)
     }
   }, [productDetail.isSuccess])
 
@@ -266,14 +282,14 @@ const AddProduct = () => {
           }
           categoryData={allCategory.data?.data}
           defaultCategory={
-            productDetail.data?.data.products_info?.category_name
+            productDetail.data?.data?.products_info?.category_name
           }
           isEditing={intent === 'edit'}
         />
         <ProductVariants
           productDetailData={productDetailData}
           updateProductDetailData={updateProductDetailData}
-          defaultProductDetail={productDetail.data?.data.products_detail}
+          defaultProductDetail={productDetail.data?.data?.products_detail}
           isEditing={intent === 'edit'}
         />
         <ProductShipping hazardous={hazardous} setHazardous={setHazardous} />

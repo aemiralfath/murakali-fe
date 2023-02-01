@@ -1,3 +1,9 @@
+import { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useGetOrderByID } from '@/api/order'
 import { useGetUserProfile } from '@/api/user/profile'
 import {
@@ -8,16 +14,10 @@ import { Avatar, Button, Divider, H1, H4, P, TextArea } from '@/components'
 import MainLayout from '@/layout/MainLayout'
 import RefundOrderDetail from '@/sections/refund/RefundOrderDetail'
 import RefundThreadSaction from '@/sections/refund/RefundThreadSaction'
-import type {
-  CreateRefundThreadRequest,
-  RefundThread,
-} from '@/types/api/refund'
+import type { CreateRefundThreadRequest } from '@/types/api/refund'
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { toast } from 'react-hot-toast'
 
 function RefundThread() {
   const router = useRouter()
@@ -53,11 +53,13 @@ function RefundThread() {
   }, [createRefundThreadUser.isError])
 
   const handleSubmit = () => {
-    const req: CreateRefundThreadRequest = {
-      refund_id: refundThreadData.data.data.refund_data.id,
-      text: text,
+    if (refundThreadData.data?.data) {
+      const req: CreateRefundThreadRequest = {
+        refund_id: refundThreadData.data.data.refund_data.id,
+        text: text,
+      }
+      createRefundThreadUser.mutate(req)
     }
-    createRefundThreadUser.mutate(req)
   }
 
   return (
@@ -83,11 +85,11 @@ function RefundThread() {
         <div className="mt-3 flex h-full w-full flex-col bg-white">
           {order.isLoading ? (
             <P className="flex w-full justify-center">Loading</P>
-          ) : order.isSuccess ? (
+          ) : order.data?.data ? (
             <>
               <RefundOrderDetail
                 order={order.data.data}
-                refundThreadData={refundThreadData.data.data}
+                refundThreadData={refundThreadData?.data?.data}
               />
             </>
           ) : (
@@ -95,7 +97,7 @@ function RefundThread() {
           )}
           {refundThreadData.isLoading ? (
             <div>loading</div>
-          ) : refundThreadData.isSuccess ? (
+          ) : refundThreadData.data?.data ? (
             <>
               <RefundThreadSaction
                 refundThreadData={refundThreadData.data.data}

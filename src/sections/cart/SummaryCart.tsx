@@ -1,10 +1,11 @@
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+
+import { useRouter } from 'next/router'
+
 import { useGetCart } from '@/api/user/cart'
 import { Button, H3 } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
-import { useRouter } from 'next/router'
-
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
 
 import { encrypt } from 'n-krypta'
 
@@ -45,7 +46,7 @@ const SummaryCart: React.FC<SummaryCartProps> = ({ idProducts, idShops }) => {
 
   if (cartList.data?.data?.rows) {
     cartList.data.data.rows.forEach(function (shop) {
-      shop.product_details.forEach(function (productDetail) {
+      shop.product_details?.forEach(function (productDetail) {
         const id = productDetail.id
         const productPrice = productDetail.product_price
         const productSubPrice = productDetail.promo.sub_price

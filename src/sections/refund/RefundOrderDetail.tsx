@@ -1,3 +1,9 @@
+import React from 'react'
+import { toast } from 'react-hot-toast'
+import { HiInformationCircle } from 'react-icons/hi'
+
+import { useRouter } from 'next/router'
+
 import { useGetUserWallet } from '@/api/user/wallet'
 import { A, Button, Divider, H3, P } from '@/components'
 import formatMoney from '@/helper/formatMoney'
@@ -6,22 +12,18 @@ import ConfirmationModal from '@/layout/template/confirmation/confirmationModal'
 import type { AddressDetail } from '@/types/api/address'
 import type { BuyerOrder } from '@/types/api/order'
 import type { ConversationRefundThread } from '@/types/api/refund'
+
 import { Menu, Transition } from '@headlessui/react'
-import { useRouter } from 'next/router'
-import React from 'react'
-import { toast } from 'react-hot-toast'
-import { HiInformationCircle } from 'react-icons/hi'
 
 const OrderDetailCard: React.FC<
   LoadingDataWrapper<BuyerOrder> & {
     isReview?: boolean
-    refundThreadData: ConversationRefundThread
+    refundThreadData?: ConversationRefundThread
     handleActionAccept?: () => void
     handleActionRejected?: () => void
     isSeller?: boolean
   }
 > = ({
-  isLoading,
   data,
   handleActionAccept,
   handleActionRejected,
@@ -46,8 +48,8 @@ const OrderDetailCard: React.FC<
                   className="text-white"
                   onClick={handleActionAccept}
                   disabled={
-                    refundThreadData.refund_data.accepted_at.Valid ||
-                    refundThreadData.refund_data.rejected_at.Valid
+                    refundThreadData?.refund_data.accepted_at.Valid ||
+                    refundThreadData?.refund_data.rejected_at.Valid
                   }
                 >
                   Accepted
@@ -57,8 +59,8 @@ const OrderDetailCard: React.FC<
                   className="text-white"
                   onClick={handleActionRejected}
                   disabled={
-                    refundThreadData.refund_data.accepted_at.Valid ||
-                    refundThreadData.refund_data.rejected_at.Valid
+                    refundThreadData?.refund_data.accepted_at.Valid ||
+                    refundThreadData?.refund_data.rejected_at.Valid
                   }
                 >
                   Rejected
@@ -86,7 +88,7 @@ const OrderDetailCard: React.FC<
                               }
                               onConfirm={() => {
                                 if (
-                                  userWallet.data.data.active_date.Valid ===
+                                  userWallet?.data?.data?.active_date.Valid ===
                                     true &&
                                   new Date(
                                     Date.parse(
@@ -95,7 +97,7 @@ const OrderDetailCard: React.FC<
                                   ) < new Date()
                                 ) {
                                   router.push(
-                                    '/order/complaint?id=' + order.order_id
+                                    '/order/complaint?id=' + order?.order_id
                                   )
                                   return
                                 }
@@ -145,7 +147,7 @@ const OrderDetailCard: React.FC<
                 'mt-5 flex w-full origin-top-right flex-col gap-3 rounded border bg-white p-4  ring-1 ring-black ring-opacity-5 focus:outline-none'
               }
             >
-              {isLoading ? (
+              {!order ? (
                 <div className="flex gap-2.5">
                   <div className="h-[100px] w-[100px] animate-pulse rounded bg-base-300" />
                   <div className="flex-1 px-2">
@@ -194,52 +196,56 @@ const OrderDetailCard: React.FC<
 
               <Divider />
               <div className={'flex items-center justify-between'}>
-                <>
-                  <P className="opacity-60">Total:</P>
-                  <div className="flex items-center gap-2">
-                    <P className="font-semibold">
-                      Rp
-                      {formatMoney(order.total_price + order.delivery_fee)}
-                    </P>
-                    <div className="dropdown-end dropdown">
-                      <label tabIndex={0}>
-                        <HiInformationCircle className="cursor-pointer text-gray-400" />
-                      </label>
-                      <ul
-                        tabIndex={0}
-                        className="dropdown-content w-56 bg-base-100 p-2 shadow-lg"
-                      >
-                        <P className="font-semibold">Detail</P>
-                        <div className="mt-2 flex flex-col gap-1">
-                          <div className="flex items-center justify-between">
-                            <P className="text-sm">Subtotal</P>
-                            <P className="text-sm">
-                              Rp
-                              {formatMoney(order.total_price)}
-                            </P>
+                {order ? (
+                  <>
+                    <P className="opacity-60">Total:</P>
+                    <div className="flex items-center gap-2">
+                      <P className="font-semibold">
+                        Rp
+                        {formatMoney(order.total_price + order.delivery_fee)}
+                      </P>
+                      <div className="dropdown dropdown-end">
+                        <label tabIndex={0}>
+                          <HiInformationCircle className="cursor-pointer text-gray-400" />
+                        </label>
+                        <ul
+                          tabIndex={0}
+                          className="dropdown-content w-56 bg-base-100 p-2 shadow-lg"
+                        >
+                          <P className="font-semibold">Detail</P>
+                          <div className="mt-2 flex flex-col gap-1">
+                            <div className="flex items-center justify-between">
+                              <P className="text-sm">Subtotal</P>
+                              <P className="text-sm">
+                                Rp
+                                {formatMoney(order.total_price)}
+                              </P>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <P className="text-sm">Delivery Fee</P>
+                              <P className="text-sm">
+                                Rp
+                                {formatMoney(order.delivery_fee)}
+                              </P>
+                            </div>
+                            <Divider />
+                            <div className="flex items-center justify-between">
+                              <P className="text-sm">Total</P>
+                              <P className="text-sm font-medium">
+                                Rp
+                                {formatMoney(
+                                  order.delivery_fee + order.total_price
+                                )}
+                              </P>
+                            </div>
                           </div>
-                          <div className="flex items-center justify-between">
-                            <P className="text-sm">Delivery Fee</P>
-                            <P className="text-sm">
-                              Rp
-                              {formatMoney(order.delivery_fee)}
-                            </P>
-                          </div>
-                          <Divider />
-                          <div className="flex items-center justify-between">
-                            <P className="text-sm">Total</P>
-                            <P className="text-sm font-medium">
-                              Rp
-                              {formatMoney(
-                                order.delivery_fee + order.total_price
-                              )}
-                            </P>
-                          </div>
-                        </div>
-                      </ul>
+                        </ul>
+                      </div>
                     </div>
-                  </div>
-                </>
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
             </Menu.Items>
           </Transition>
@@ -252,7 +258,7 @@ const OrderDetailCard: React.FC<
 const AddressDetailCard: React.FC<{
   name: string
   address: AddressDetail
-  phone: number
+  phone: number | null
   isSeller?: boolean
 }> = ({ name, address, phone, isSeller }) => {
   return (
@@ -284,7 +290,7 @@ const AddressDetailCard: React.FC<{
 
 const RefundOrderDetail: React.FC<{
   order: BuyerOrder
-  refundThreadData: ConversationRefundThread
+  refundThreadData?: ConversationRefundThread
   handleActionAccept?: () => void
   handleActionRejected?: () => void
   isSeller?: boolean
@@ -309,12 +315,16 @@ const RefundOrderDetail: React.FC<{
           </div>
         </div>
         <div className="flex-auto">
-          <AddressDetailCard
-            name={order.shop_name}
-            address={order.seller_address}
-            phone={order.shop_phone_number}
-            isSeller
-          />
+          {order.seller_address ? (
+            <AddressDetailCard
+              name={order.shop_name}
+              address={order.seller_address}
+              phone={order.shop_phone_number}
+              isSeller
+            />
+          ) : (
+            <></>
+          )}
         </div>
       </div>
       <OrderDetailCard

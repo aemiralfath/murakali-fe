@@ -1,6 +1,7 @@
 import { authorizedClient } from '@/api/apiClient'
 import type { APIResponse, PaginationData } from '@/types/api/response'
 import type { CreateUpdateVoucher, VoucherData } from '@/types/api/voucher'
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const profileKey = 'voucher-admin'
@@ -34,7 +35,7 @@ export const useAdminVouchers = (
   )
 }
 
-const getAdminVoucherDetail = async (id: string) => {
+const getAdminVoucherDetail = async (id?: string) => {
   const response = await authorizedClient.get<APIResponse<VoucherData>>(
     '/admin/voucher/' + id
   )

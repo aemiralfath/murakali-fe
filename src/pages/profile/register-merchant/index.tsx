@@ -1,18 +1,21 @@
-import { Button, H2, H4, P, TextInput } from '@/components'
 import React, { useEffect } from 'react'
-import { useModal } from '@/hooks'
-import Head from 'next/head'
-import MainLayout from '@/layout/MainLayout'
-import { useGetAllAddress, useGetDefaultAddress } from '@/api/user/address'
 import { toast } from 'react-hot-toast'
+
+import Head from 'next/head'
 import { useRouter } from 'next/router'
-import AddressOption from '@/sections/checkout/option/AddressOption'
+
 import { useRegistrationMerchant } from '@/api/auth/register-merchant'
+import { useGetAllAddress, useGetDefaultAddress } from '@/api/user/address'
+import { useGetUserProfile } from '@/api/user/profile'
+import { Button, H2, H4, P, TextInput } from '@/components'
+import { useModal } from '@/hooks'
+import MainLayout from '@/layout/MainLayout'
+import AddressOption from '@/sections/checkout/option/AddressOption'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import type { AxiosError } from 'axios'
-import type { APIResponse } from '@/types/api/response'
-import { useGetUserProfile } from '@/api/user/profile'
 
 function MerchantRegistration() {
   const modal = useModal()
@@ -26,7 +29,7 @@ function MerchantRegistration() {
   const userProfile = useGetUserProfile()
 
   useEffect(() => {
-    if (userProfile.isSuccess) {
+    if (userProfile.data?.data) {
       if (userProfile.data.data.role === 2) {
         router.push('/merchant')
       }
@@ -128,14 +131,18 @@ function MerchantRegistration() {
                     {address.isSuccess ? (
                       <div className="grid grid-cols-1 sm:grid-cols-3">
                         <div className="col-span-2">
-                          <P>
-                            {address.data?.data?.rows[0].address_detail},{' '}
-                            {address.data?.data?.rows[0].sub_district},{' '}
-                            {address.data?.data?.rows[0].district},{' '}
-                            {address.data?.data?.rows[0].city},{' '}
-                            {address.data?.data?.rows[0].province}, Indonesia (
-                            {address.data?.data?.rows[0].zip_code})
-                          </P>
+                          {address.data?.data?.rows[0] !== undefined ? (
+                            <P>
+                              {address.data.data.rows[0].address_detail},{' '}
+                              {address.data.data.rows[0].sub_district},{' '}
+                              {address.data.data.rows[0].district},{' '}
+                              {address.data.data.rows[0].city},{' '}
+                              {address.data.data.rows[0].province}, Indonesia (
+                              {address.data.data.rows[0].zip_code})
+                            </P>
+                          ) : (
+                            <></>
+                          )}
                         </div>
                         <div className="col-span-1 flex items-center justify-end px-2">
                           <Button

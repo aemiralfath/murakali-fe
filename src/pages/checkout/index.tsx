@@ -1,32 +1,34 @@
-import { Button, H3, P } from '@/components'
 import React, { useEffect, useState } from 'react'
 import { FaTicketAlt } from 'react-icons/fa'
-import { useModal } from '@/hooks'
+import { FaAddressCard } from 'react-icons/fa'
+
+import { useRouter } from 'next/router'
+
 import { useGetDefaultAddress } from '@/api/user/address'
 import { useGetCart } from '@/api/user/cart'
+import { useGetVoucherMarketplaceCheckout } from '@/api/user/checkout'
+import { useGetUserSLP } from '@/api/user/slp'
+import { useGetUserWallet } from '@/api/user/wallet'
+import { Button, H3, P } from '@/components'
+import formatMoney from '@/helper/formatMoney'
+import { useModal } from '@/hooks'
 import { Navbar } from '@/layout/template'
+import Footer from '@/layout/template/footer'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import CheckoutSummary from '@/sections/checkout/CheckoutSummary'
+import ShopCard from '@/sections/checkout/ShopCard'
 import AddressOption from '@/sections/checkout/option/AddressOption'
-import { useRouter } from 'next/router'
 import type {
   CartPostCheckout,
   PostCheckout,
   ProductPostCheckout,
 } from '@/types/api/checkout'
-
-import { FaAddressCard } from 'react-icons/fa'
-
-import { decrypt } from 'n-krypta'
-import ShopCard from '@/sections/checkout/ShopCard'
-import { useGetUserWallet } from '@/api/user/wallet'
-import { useGetUserSLP } from '@/api/user/slp'
-import Footer from '@/layout/template/footer'
-import { Menu } from '@headlessui/react'
 import type { VoucherData } from '@/types/api/voucher'
-import { useGetVoucherMarketplaceCheckout } from '@/api/user/checkout'
-import formatMoney from '@/helper/formatMoney'
+
+import { Menu } from '@headlessui/react'
 import moment from 'moment'
+import { decrypt } from 'n-krypta'
+
 function Checkout() {
   const cartList = useGetCart()
   const userWallet = useGetUserWallet()
@@ -61,21 +63,23 @@ function Checkout() {
   const [checkoutItems, setCheckoutItems] = useState<PostCheckout>()
 
   useEffect(() => {
-    if (cartList.data?.data.rows && idShops) {
+    if (cartList.data?.data?.rows && idShops) {
       const tempCheckoutItem: CartPostCheckout[] = cartList.data.data.rows
         .filter((item) => idShops.includes(item.shop.id))
         .map((cartDetail) => {
           const product_details: ProductPostCheckout[] =
-            cartDetail.product_details
-              .filter((item) => idProducts.includes(item.id))
-              .map((product) => {
-                return {
-                  id: product.id,
-                  cart_id: '',
-                  quantity: product.quantity,
-                  note: '',
-                }
-              })
+            cartDetail.product_details === null
+              ? []
+              : cartDetail.product_details
+                  .filter((item) => idProducts?.includes(item.id))
+                  .map((product) => {
+                    return {
+                      id: product.id,
+                      cart_id: '',
+                      quantity: product.quantity,
+                      note: '',
+                    }
+                  })
           return {
             shop_id: cartDetail.shop.id,
             voucher_shop_id: '',
@@ -150,23 +154,25 @@ function Checkout() {
 
   useEffect(() => {
     if (defaultAddress.isSuccess) {
-      setAddresInfo({
-        id: defaultAddress.data?.data?.rows[0].id,
-        name: defaultAddress.data?.data?.rows[0].name,
-        fullAddress:
-          defaultAddress.data?.data?.rows[0].address_detail +
-          ', ' +
-          defaultAddress.data?.data?.rows[0].sub_district +
-          ', ' +
-          defaultAddress.data?.data?.rows[0].district +
-          ', ' +
-          defaultAddress.data?.data?.rows[0].city +
-          ', ' +
-          defaultAddress.data?.data?.rows[0].province +
-          ', Indonesia (' +
-          defaultAddress.data?.data?.rows[0].zip_code +
-          ')',
-      })
+      if (defaultAddress.data?.data?.rows[0] !== undefined) {
+        setAddresInfo({
+          id: defaultAddress.data?.data?.rows[0].id,
+          name: defaultAddress.data?.data?.rows[0].name,
+          fullAddress:
+            defaultAddress.data?.data?.rows[0].address_detail +
+            ', ' +
+            defaultAddress.data?.data?.rows[0].sub_district +
+            ', ' +
+            defaultAddress.data?.data?.rows[0].district +
+            ', ' +
+            defaultAddress.data?.data?.rows[0].city +
+            ', ' +
+            defaultAddress.data?.data?.rows[0].province +
+            ', Indonesia (' +
+            defaultAddress.data?.data?.rows[0].zip_code +
+            ')',
+        })
+      }
     }
   }, [defaultAddress.isSuccess])
 
@@ -181,14 +187,14 @@ function Checkout() {
             <div className="flex h-fit flex-wrap items-center justify-between gap-10 rounded-lg border-[1px] border-solid border-gray-300 py-5 px-8">
               <div>
                 <>
-                  {addresInfo ? (
+                  {addresInfo.fullAddress != '' ? (
                     <div>
                       <H3 className="mb-1 font-bold">Shipping Address:</H3>
                       <P className="font-bold">{addresInfo.name}</P>
                       <P>{addresInfo.fullAddress}</P>
                     </div>
                   ) : (
-                    <P className="font-bold">
+                    <P className="italic text-gray-400">
                       You dont have default address, please choose your default
                       address
                     </P>
@@ -209,7 +215,7 @@ function Checkout() {
                 <FaAddressCard /> Change address
               </Button>
             </div>
-            {!cartList.isLoading ? (
+            {!cartList.isLoading && checkoutItems && idProducts ? (
               <>
                 {cartList.data?.data && idShops ? (
                   cartList.data.data.rows
@@ -265,8 +271,8 @@ function Checkout() {
                             })
                           }}
                           destination={
-                            defaultAddress.data?.data
-                              ? defaultAddress.data?.data.rows[0].city_id
+                            defaultAddress.data?.data?.rows[0] !== undefined
+                              ? defaultAddress.data.data.rows[0].city_id
                               : 0
                           }
                           cart={cart}
@@ -308,8 +314,9 @@ function Checkout() {
                       )}
                     </Menu.Button>
 
-                    {voucherMarketplace.isSuccess ? (
-                      voucherMarketplace.data?.data?.rows?.length > 0 ? (
+                    {voucherMarketplace.isSuccess &&
+                    voucherMarketplace.data?.data ? (
+                      voucherMarketplace.data.data.rows.length > 0 ? (
                         <div>
                           <Menu.Items className="absolute max-h-64 w-56 origin-top-left divide-y divide-gray-100  overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
                             {voucherMarketplace.data?.data?.rows.map(
@@ -432,12 +439,12 @@ function Checkout() {
                 </div>
               </div>
 
-              {!userWallet.isLoading && !userSLP.isLoading && checkoutItems ? (
+              {userWallet.data?.data && userSLP.data?.data && checkoutItems ? (
                 <CheckoutSummary
                   mapPriceQuantity={mapPriceQuantitys}
                   postCheckout={checkoutItems}
-                  userWallet={userWallet.data.data}
-                  userSLP={userSLP.data.data}
+                  userWallet={userWallet.data?.data}
+                  userSLP={userSLP.data?.data}
                 />
               ) : (
                 <></>

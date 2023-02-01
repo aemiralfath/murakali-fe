@@ -1,20 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { HiTrash } from 'react-icons/hi'
+import { useDispatch } from 'react-redux'
+
+import Image from 'next/image'
+
 import { useDeleteCart, useUpdateCart } from '@/api/user/cart'
 import { Button, H4, P, TextInput } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
-
 import { useModal } from '@/hooks'
-
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { ProductCartDetail } from '@/types/api/cart'
 import type { APIResponse } from '@/types/api/response'
-import type { AxiosError } from 'axios'
-import Image from 'next/image'
 
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
-import { HiTrash } from 'react-icons/hi'
+import type { AxiosError } from 'axios'
 
 interface ProductCartProps extends React.InputHTMLAttributes<HTMLInputElement> {
   listProduct: ProductCartDetail
@@ -73,7 +73,7 @@ const ProductCart: React.FC<ProductCartProps> = ({
   }
 
   useEffect(() => {
-    if (input.note != '') {
+    if (input.note != '' && productNote) {
       productNote(listProduct.id, input.note)
     }
   }, [input])

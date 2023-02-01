@@ -1,8 +1,11 @@
-import { Button, H2, P, PaginationNav } from '@/components'
-import type { SellerInfo } from '@/types/api/seller'
-import { useRouter } from 'next/router'
 import React from 'react'
 import { HiStar } from 'react-icons/hi'
+
+import { useRouter } from 'next/router'
+
+import { Button, H2, P, PaginationNav } from '@/components'
+import type { SellerInfo } from '@/types/api/seller'
+
 interface SellerLayoutProps {
   isLoading: boolean
   data?: SellerInfo[]
@@ -58,7 +61,7 @@ const SellerLayout: React.FC<SellerLayoutProps> = ({
         </>
       ) : (
         <>
-          {data.length > 0 ? (
+          {data && data.length > 0 ? (
             <>
               {data.map((shop, index) => (
                 <div key={index}>
@@ -114,11 +117,11 @@ const SellerLayout: React.FC<SellerLayoutProps> = ({
                   </div>
                 </div>
               ))}
-              {!isLoading && data?.length !== 0 ? (
+              {!isLoading && data?.length !== 0 && setPageShop ? (
                 <div className="mt-4 flex w-full justify-center">
                   <PaginationNav
                     total={totalPage ?? 1}
-                    page={pageShop}
+                    page={pageShop ?? 1}
                     onChange={setPageShop}
                     size="sm"
                   />

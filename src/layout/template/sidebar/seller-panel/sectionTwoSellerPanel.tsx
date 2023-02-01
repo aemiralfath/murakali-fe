@@ -1,19 +1,19 @@
-import { A, Icon } from '@/components'
-import cx from '@/helper/cx'
-import { useMediaQuery } from '@/hooks'
-
-import { useRouter } from 'next/router'
 import React from 'react'
 import {
   HiArchive,
   HiInbox,
-  HiNewspaper,
   HiReceiptTax,
   HiShoppingBag,
   HiTruck,
   HiTag,
   HiArrowLeft,
 } from 'react-icons/hi'
+
+import { useRouter } from 'next/router'
+
+import { A, Icon } from '@/components'
+import cx from '@/helper/cx'
+import { useMediaQuery } from '@/hooks'
 
 export type ValidPage =
   | 'order'
@@ -26,7 +26,7 @@ export type ValidPage =
   | 'wallet'
 
 interface SellerSideBarProps {
-  selectedPage: ValidPage
+  selectedPage?: ValidPage
 }
 
 interface SideBarMenuProps {

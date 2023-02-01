@@ -1,8 +1,9 @@
+import React from 'react'
+
 import { H1, H2, H4, P, RatingStars, Spinner } from '@/components'
 import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
 import type { ProductDetail, ProductInfo } from '@/types/api/product'
-import React from 'react'
 
 // TODO: Add interface to Rating, Sold Count, Title, Prices
 interface MainProductDetailProps {
@@ -33,21 +34,43 @@ const MainProductDetail = ({
     variantTypeIdx: number
   ): boolean => {
     if (variantNamesState.length === 1) {
-      return variantMapState[0][variantTypeIdx] === undefined
+      return variantMapState[0] === undefined
+        ? true
+        : variantMapState[0][variantTypeIdx] === undefined
     } else {
       if (variantNameIdx === 0) {
         if (selectMap[1] !== -1) {
-          return variantMapState[variantTypeIdx][selectMap[1]] === undefined
+          const tempMapState = variantMapState[variantTypeIdx]
+          if (tempMapState === undefined) {
+            return true
+          }
+          const tempSelector = selectMap[1]
+          if (tempSelector === undefined) {
+            return true
+          }
+          const tempSelectedMapState = tempMapState[tempSelector]
+
+          return tempSelectedMapState === undefined
             ? true
-            : variantMapState[variantTypeIdx][selectMap[1]].stock === 0
+            : tempSelectedMapState.stock === 0
         } else {
           return false
         }
       } else {
         if (selectMap[0] !== -1) {
-          return variantMapState[selectMap[0]][variantTypeIdx] === undefined
+          const tempSelector = selectMap[0]
+          if (tempSelector === undefined) {
+            return true
+          }
+
+          const tempSelectedMap = variantMapState[tempSelector]
+          if (tempSelectedMap === undefined) {
+            return true
+          }
+
+          return tempSelectedMap[variantTypeIdx] === undefined
             ? true
-            : variantMapState[selectMap[0]][variantTypeIdx].stock === 0
+            : tempSelectedMap[variantTypeIdx]?.stock === 0
         } else {
           return false
         }
@@ -121,14 +144,14 @@ const MainProductDetail = ({
                   {productInfo?.max_price === productInfo?.min_price ? (
                     <>
                       <span className="text-lg xl:text-xl">Rp</span>{' '}
-                      {formatMoney(productInfo?.max_price)}
+                      {formatMoney(productInfo?.max_price ?? 0)}
                     </>
                   ) : (
                     <>
                       <span className="text-lg xl:text-xl">Rp</span>{' '}
-                      {formatMoney(productInfo?.min_price)}-
+                      {formatMoney(productInfo?.min_price ?? 0)}-
                       <span className="text-lg xl:text-xl">Rp</span>{' '}
-                      {formatMoney(productInfo?.max_price)}
+                      {formatMoney(productInfo?.max_price ?? 0)}
                     </>
                   )}
                 </>
@@ -155,8 +178,8 @@ const MainProductDetail = ({
               >
                 <H4>{variantName}:</H4>
                 <div className="mt-1 flex flex-wrap gap-2">
-                  {variantTypesState[variantName] ? (
-                    variantTypesState[variantName].map(
+                  {variantTypesState[variantName] !== undefined ? (
+                    variantTypesState[variantName]?.map(
                       (variantType, variantTypeIdx) => {
                         return (
                           <>
@@ -167,7 +190,7 @@ const MainProductDetail = ({
                                 variantTypeIdx
                               )}
                               className={cx(
-                                'btn-sm btn rounded-sm',
+                                'btn btn-sm rounded-sm',
                                 selectMap[variantNameIdx] === variantTypeIdx
                                   ? 'btn-primary'
                                   : 'btn-outline border-gray-200'

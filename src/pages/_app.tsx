@@ -1,14 +1,22 @@
-import NextNProgress from 'nextjs-progressbar'
-import { CustomToaster, LoadingModal } from '@/components'
-import Modal from '@/components/modal'
-import { store } from '@/redux/store'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { type AppType } from 'next/dist/shared/lib/utils'
 import React from 'react'
 import { Provider } from 'react-redux'
 
-import '../styles/globals.css'
+import { type AppType } from 'next/dist/shared/lib/utils'
+
+import { CustomToaster, LoadingModal } from '@/components'
+import Modal from '@/components/modal'
+import { store } from '@/redux/store'
+
+import type { DehydratedState } from '@tanstack/react-query'
+import {
+  Hydrate,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import NextNProgress from 'nextjs-progressbar'
+
+import '../styles/globals.css'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,18 +26,23 @@ const queryClient = new QueryClient({
   },
 })
 
-const MyApp: AppType = ({ Component, pageProps }) => {
+const MyApp: AppType<{ dehydratedState: DehydratedState }> = ({
+  Component,
+  pageProps,
+}) => {
   return (
     <>
       <NextNProgress color="#2545CA" />
       <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={false} />
-        <Provider store={store}>
-          <LoadingModal />
-          <Modal />
-          <CustomToaster />
-          <Component {...pageProps} />
-        </Provider>
+        <Hydrate state={pageProps.dehydratedState}>
+          <ReactQueryDevtools initialIsOpen={false} />
+          <Provider store={store}>
+            <LoadingModal />
+            <Modal />
+            <CustomToaster />
+            <Component {...pageProps} />
+          </Provider>
+        </Hydrate>
       </QueryClientProvider>
     </>
   )

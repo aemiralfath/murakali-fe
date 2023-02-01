@@ -1,3 +1,10 @@
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { HiArrowLeft } from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useGetSellerDetailInformation } from '@/api/seller'
 import {
   useCreateVouchers,
@@ -6,18 +13,12 @@ import {
 } from '@/api/seller/voucher'
 import { Button, Chip, H2, H4, P, TextInput } from '@/components'
 import { useMediaQuery } from '@/hooks'
-
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
-
 import type { APIResponse } from '@/types/api/response'
 import type { CreateUpdateVoucher } from '@/types/api/voucher'
+
 import type { AxiosError } from 'axios'
 import moment from 'moment'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { HiArrowLeft } from 'react-icons/hi'
 
 function ManageVouchers() {
   const router = useRouter()
@@ -41,7 +42,7 @@ function ManageVouchers() {
   }, [voucherId])
 
   useEffect(() => {
-    if (sellerVoucher.isSuccess) {
+    if (sellerVoucher.data?.data) {
       if (typeManage === 'update') {
         setInput({
           code: sellerVoucher.data?.data?.code,
@@ -340,18 +341,15 @@ function ManageVouchers() {
                       : moment(input.expired_date).format('YYYY-MM-DD HH:mm')
                   }
                   min={
-                    !duplicate
-                      ? moment(Date.now()).format('YYYY-MM-DD HH:mm')
-                      : moment(sellerVoucher.data?.data?.actived_date).format(
+                    duplicate || edit
+                      ? moment(sellerVoucher.data?.data?.actived_date).format(
                           'YYYY-MM-DD HH:mm'
                         )
+                      : moment(Date.now()).format('YYYY-MM-DD HH:mm')
                   }
                   value={moment(input.actived_date).format('YYYY-MM-DD HH:mm')}
                   label={md ? undefined : 'Active Date'}
                   full
-                  disabled={
-                    Date.now() >= Date.parse(input.actived_date) && edit
-                  }
                   required
                 />
               </div>

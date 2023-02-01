@@ -1,8 +1,8 @@
 import { authorizedClient } from '@/api/apiClient'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-
-import type { APIResponse } from '@/types/api/response'
 import type { CourierList } from '@/types/api/courier'
+import type { APIResponse } from '@/types/api/response'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const profileKey = 'delivery-service'
 
