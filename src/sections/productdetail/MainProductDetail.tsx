@@ -4,6 +4,7 @@ import { H1, H2, H4, P, RatingStars, Spinner } from '@/components'
 import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
 import type { ProductDetail, ProductInfo } from '@/types/api/product'
+import { Promotion } from '@/types/api/promotion'
 
 // TODO: Add interface to Rating, Sold Count, Title, Prices
 interface MainProductDetailProps {
@@ -15,6 +16,7 @@ interface MainProductDetailProps {
   setSelectMap: (p: number[]) => void
   selectVariant: ProductDetail | undefined
   productInfo: ProductInfo | undefined
+  promotionInfo?: Promotion
   totalReview: number
 }
 
@@ -27,6 +29,7 @@ const MainProductDetail = ({
   setSelectMap,
   selectVariant,
   productInfo,
+  promotionInfo,
   totalReview,
 }: MainProductDetailProps) => {
   const getDisabledStatus = (
@@ -135,7 +138,7 @@ const MainProductDetail = ({
               {selectVariant ? (
                 <>
                   <span className="text-lg xl:text-xl">Rp</span>{' '}
-                  {selectVariant.discount_price
+                  {selectVariant.discount_price > 0
                     ? formatMoney(selectVariant.discount_price)
                     : formatMoney(selectVariant.normal_price)}
                 </>
