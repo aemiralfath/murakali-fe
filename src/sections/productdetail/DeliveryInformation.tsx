@@ -110,7 +110,7 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
                 })
               }
             }}
-            className="flex-start btn btn-ghost btn-sm flex w-fit py-0 font-normal hover:bg-white hover:text-primary"
+            className="flex-start btn-ghost btn-sm btn flex w-fit py-0 font-normal hover:bg-white hover:text-primary"
           >
             <span className="flex items-center gap-3">
               <HiOutlineTruck /> To {destination.city}
@@ -119,7 +119,7 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
           <HiArrowNarrowRight />
           <div className="block">
             <Menu>
-              <Menu.Button className="btn btn-ghost btn-sm w-fit gap-2 bg-white py-0 text-start hover:bg-white hover:text-primary">
+              <Menu.Button className="btn-ghost btn-sm btn w-fit gap-2 bg-white py-0 text-start hover:bg-white hover:text-primary">
                 Delivery Fee Rp.{' '}
                 {minMax.max === 0 && minMax.min === 0 ? (
                   <>

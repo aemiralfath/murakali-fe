@@ -50,7 +50,7 @@ const CategoryFilter: React.FC<{
                           {levelOne.name}
                         </span>
                       </div>
-                      {levelOne.child_category.length > 0 ? (
+                      {levelOne.child_category?.length > 0 ? (
                         <Disclosure.Button className="flex items-center justify-between rounded-lg bg-white  py-0 text-left text-sm font-medium text-purple-900 focus:outline-none focus-visible:ring ">
                           <HiChevronDown
                             className={`${
@@ -64,7 +64,7 @@ const CategoryFilter: React.FC<{
                     </div>
 
                     <Disclosure.Panel className="ml-2  text-sm text-gray-500">
-                      {levelOne.child_category.length > 0 ? (
+                      {levelOne.child_category?.length > 0 ? (
                         <RecursionCategory
                           filterCategory={filterCategory}
                           categories={levelOne}
@@ -84,7 +84,7 @@ const CategoryFilter: React.FC<{
         })}
         {categories.length > 4 ? (
           <button
-            className="btn btn-ghost btn-sm flex w-full items-center gap-2 rounded bg-white text-primary"
+            className="btn-ghost btn-sm btn flex w-full items-center gap-2 rounded bg-white text-primary"
             onClick={() => setShowAllCategory(!showAllCategory)}
           >
             {showAllCategory ? (

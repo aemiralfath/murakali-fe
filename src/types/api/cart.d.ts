@@ -17,7 +17,7 @@ export interface CartData {
 export interface HoverCartData {
   limit: number
   total_item: number
-  cart_items: CartData[]
+  cart_items: CartData[] | null
 }
 
 export interface Cart {
@@ -32,7 +32,7 @@ export interface CartDetail {
     name: string
   }
   weight: number
-  product_details: ProductCartDetail[]
+  product_details: ProductCartDetail[] | null
 }
 
 export interface ProductCartDetail {

@@ -46,7 +46,7 @@ const SummaryCart: React.FC<SummaryCartProps> = ({ idProducts, idShops }) => {
 
   if (cartList.data?.data?.rows) {
     cartList.data.data.rows.forEach(function (shop) {
-      shop.product_details.forEach(function (productDetail) {
+      shop.product_details?.forEach(function (productDetail) {
         const id = productDetail.id
         const productPrice = productDetail.product_price
         const productSubPrice = productDetail.promo.sub_price

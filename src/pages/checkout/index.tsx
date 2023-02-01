@@ -68,16 +68,18 @@ function Checkout() {
         .filter((item) => idShops.includes(item.shop.id))
         .map((cartDetail) => {
           const product_details: ProductPostCheckout[] =
-            cartDetail.product_details
-              .filter((item) => idProducts?.includes(item.id))
-              .map((product) => {
-                return {
-                  id: product.id,
-                  cart_id: '',
-                  quantity: product.quantity,
-                  note: '',
-                }
-              })
+            cartDetail.product_details === null
+              ? []
+              : cartDetail.product_details
+                  .filter((item) => idProducts?.includes(item.id))
+                  .map((product) => {
+                    return {
+                      id: product.id,
+                      cart_id: '',
+                      quantity: product.quantity,
+                      note: '',
+                    }
+                  })
           return {
             shop_id: cartDetail.shop.id,
             voucher_shop_id: '',
@@ -292,7 +294,7 @@ function Checkout() {
               <div className="flex h-fit items-center justify-center rounded-lg border-[1px] border-solid border-gray-300 py-8 ">
                 <div className="block ">
                   <Menu>
-                    <Menu.Button className="btn-primary btn-outline btn  m-1 w-56 gap-4">
+                    <Menu.Button className="btn-outline btn-primary btn  m-1 w-56 gap-4">
                       {voucher.code ? (
                         <div className="flex-start flex items-center gap-2">
                           <FaTicketAlt />
