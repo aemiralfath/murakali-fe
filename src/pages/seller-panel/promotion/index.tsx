@@ -68,12 +68,12 @@ function PromotionSeller() {
             {new Date() < new Date(row.actived_date) &&
             new Date() < new Date(row.expired_date) ? (
               <div>
-                <Chip type="accent">Will Come</Chip>
+                <Chip type="secondary">Will Come</Chip>
               </div>
             ) : new Date() > new Date(row.actived_date) &&
               new Date() < new Date(row.expired_date) ? (
               <div>
-                <Chip type="primary">Ongoing</Chip>
+                <Chip type="success">Ongoing</Chip>
               </div>
             ) : new Date() > new Date(row.actived_date) &&
               new Date() > new Date(row.expired_date) ? (

@@ -17,7 +17,7 @@ import ProcessDelivery from '@/sections/seller-panel/delivery-servise/ProcessDel
 import CancelDelivery from '@/sections/seller-panel/delivery-servise/CancelDelivery'
 import { toast } from 'react-hot-toast'
 import type { AxiosError } from 'axios'
-import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
+import { HiArrowDown, HiArrowUp, HiInformationCircle } from 'react-icons/hi'
 
 function ListOrderDeliveryService() {
   const router = useRouter()
@@ -118,7 +118,8 @@ function ListOrderDeliveryService() {
             Action: (
               <div className="flex w-fit flex-col gap-1">
                 <Button
-                  buttonType="gray"
+                  buttonType="primary"
+                  outlined
                   size="sm"
                   className="rounded"
                   onClick={() => {
@@ -127,7 +128,7 @@ function ListOrderDeliveryService() {
                     })
                   }}
                 >
-                  Look Detail
+                  <HiInformationCircle /> Detail
                 </Button>
                 {data.order_status === 7 ? (
                   <>
