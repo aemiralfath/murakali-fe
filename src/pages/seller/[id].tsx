@@ -105,7 +105,7 @@ const CategoryTab: React.FC<{
 
               <ul
                 tabIndex={0}
-                className="dropdown-content dropdown-end dropdown-hover menu rounded-box w-52 bg-base-100 p-2 shadow"
+                className="dropdown-end dropdown-hover dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
               >
                 {categories.slice(3, 999).map((item, index) => {
                   return (
@@ -129,7 +129,7 @@ const CategoryTab: React.FC<{
           )
         ) : (
           <>
-            <div className="dropdown dropdown-end dropdown-hover mx-auto w-full">
+            <div className="dropdown-end dropdown-hover dropdown mx-auto w-full">
               <label
                 tabIndex={0}
                 className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
@@ -144,7 +144,7 @@ const CategoryTab: React.FC<{
 
               <ul
                 tabIndex={0}
-                className="dropdown-content dropdown-end menu rounded-box w-52 bg-base-100 p-2 shadow"
+                className="dropdown-end dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
               >
                 {categories.slice(0, 999).map((item, index) => {
                   return (
@@ -201,6 +201,7 @@ function Seller() {
     filterRating,
     filterLocation,
     filterCategory,
+    setFilterCategory,
     page,
     setPage,
   } = controller
@@ -287,7 +288,7 @@ function Seller() {
 
   const productQuery: ProductQuery = {
     search: '',
-    category: selectedTab,
+    category: filterCategory,
     limit: 20,
     page: page,
     sort_by: sortBy.sort_by,
@@ -356,8 +357,8 @@ function Seller() {
                       sellerCategory.data?.data ? (
                         <CategoryTab
                           categories={sellerCategory.data.data}
-                          selectedTab={selectedTab}
-                          setSelectedTab={setSelectedTab}
+                          selectedTab={filterCategory}
+                          setSelectedTab={setFilterCategory}
                         />
                       ) : (
                         <></>
@@ -388,7 +389,14 @@ function Seller() {
           <div className="flex justify-between ">
             <H3>Most Purchased Products</H3>
             <H4 className="self-end">
-              <a href="#allproducts">See All</a>
+              <a
+                href="#allproducts"
+                onClick={() => {
+                  setSortBy({ sort: 'DESC', sort_by: 'unit_sold' })
+                }}
+              >
+                See All
+              </a>
             </H4>
           </div>
           <ProductCarousel product={product.data?.data?.rows ?? []} />
@@ -405,6 +413,7 @@ function Seller() {
               data={SearchProductList.data.data.rows}
               totalPage={SearchProductList.data.data.total_pages}
               noCategory={true}
+              sellerCategory={sellerCategory.data?.data ?? []}
             />
           ) : (
             <div>handle error</div>
