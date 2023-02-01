@@ -181,7 +181,6 @@ const ManagePromotionSeller = () => {
 
     const newState = selectedProduct.map((sp) => {
       if (sp.product_id === id) {
-        let discount: number
         let subprice: number = sp.price - num
 
         if (num > sp.price) {
@@ -189,14 +188,18 @@ const ManagePromotionSeller = () => {
         }
 
         if (sp.discount_percentage > 0) {
-          discount = (sp.price * sp.discount_percentage) / 100
+          let discount: number
+          discount = sp.price * (sp.discount_percentage / 100)
 
-          if (discount > sp.max_discount_price) {
-            discount = sp.max_discount_price
+          if (discount > num) {
+            discount = num
           }
           subprice = sp.price - discount
         }
 
+        if (sp.discount_fix_price === 0 && sp.discount_percentage === 0) {
+          subprice = sp.product_subprice
+        }
         return {
           ...sp,
           max_discount_price: num,
@@ -239,6 +242,10 @@ const ManagePromotionSeller = () => {
 
           if (tempMaxDiscountPrice !== null) {
             tempProduct.max_discount_price = tempMaxDiscountPrice
+
+            if (tempProduct.max_discount_price > tempProduct.price) {
+              tempProduct.max_discount_price = tempProduct.price
+            }
           }
 
           if (tempQuota !== null) {
@@ -247,6 +254,20 @@ const ManagePromotionSeller = () => {
 
           if (tempMaxQuantity !== null) {
             tempProduct.max_quantity = tempMaxQuantity
+          }
+
+          if (tempDiscountPercentage > 0) {
+            let discount: number
+            discount = sp.price * (tempDiscountPercentage / 100)
+
+            if (discount > tempProduct.max_discount_price) {
+              discount = tempProduct.max_discount_price
+            }
+            tempProduct.product_subprice = tempProduct.price - discount
+          }
+          if (tempDiscountFixPrice > 0) {
+            tempProduct.product_subprice =
+              tempProduct.price - tempDiscountFixPrice
           }
         }
       })
@@ -283,8 +304,13 @@ const ManagePromotionSeller = () => {
     }
   }, [intent, id])
 
+  const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
-  const getProductNoPromotionSeller = useProductNoPromotionSeller(10, page)
+  const getProductNoPromotionSeller = useProductNoPromotionSeller(
+    10,
+    page,
+    search
+  )
 
   const [selectedProduct, setSelectedProduct] = useState<ProductPromotion[]>([])
 
@@ -518,7 +544,7 @@ const ManagePromotionSeller = () => {
   }
 
   const formatData = (data?: PaginationData<ProductPromotion>) => {
-    if (data && data?.rows.length > 0) {
+    if (data && data?.rows) {
       return data.rows.map((row) => ({
         Select: (
           <div>
@@ -584,6 +610,17 @@ const ManagePromotionSeller = () => {
       },
     ]
   }
+
+  const handleChangeSearch = (event: React.FormEvent<HTMLInputElement>) => {
+    const inputName = event.currentTarget.name
+    const value = event.currentTarget.value
+
+    setInputSearch((prev) => ({ ...prev, [inputName]: value }))
+  }
+
+  const [inputSearch, setInputSearch] = useState({
+    search: '',
+  })
 
   return (
     <div>
@@ -773,6 +810,9 @@ const ManagePromotionSeller = () => {
                               : tempDiscountPercentage > 0
                               ? 0
                               : parsed
+                          )
+                          setTempMaxDiscountPrice(
+                            Number.isNaN(parsed) ? 0 : parsed
                           )
                         }}
                       />
@@ -1027,6 +1067,31 @@ const ManagePromotionSeller = () => {
           <div className="mt-3 flex max-w-full flex-col  rounded border bg-white px-6 pt-6">
             <div className="flex w-full flex-wrap items-center justify-between gap-2 py-5">
               <H2>Select Products</H2>
+
+              <div className="flex max-w-lg gap-x-2">
+                <TextInput
+                  type="text"
+                  name="search"
+                  placeholder="Search..."
+                  onChange={handleChangeSearch}
+                  value={inputSearch.search}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      setSearch(inputSearch.search)
+                    }
+                  }}
+                />
+
+                <Button
+                  buttonType="primary"
+                  type="button"
+                  onClick={() => {
+                    setSearch(inputSearch.search)
+                  }}
+                >
+                  Search
+                </Button>
+              </div>
             </div>
             <div className=" overflow-auto">
               {' '}
