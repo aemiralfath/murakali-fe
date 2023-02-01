@@ -426,6 +426,23 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
             )}
           </div>
         </div>
+        {Number(data?.length) >= 7 ? (
+          <div className="w-full mt-3 flex justify-center">
+            <PaginationNav
+              total={totalPage ?? 1}
+              page={page}
+              onChange={(p) => {
+                setPage(p)
+                if (typeof window !== undefined) {
+                  window.scrollTo(0, 0)
+                }
+              }}
+              size="md"
+            />
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   )
