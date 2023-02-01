@@ -143,6 +143,7 @@ function Vouchers() {
                   <Button
                     buttonType="primary"
                     size="sm"
+                    outlined
                     onClick={() => {
                       router.push({
                         pathname: '/seller-panel/vouchers/' + data.id,
