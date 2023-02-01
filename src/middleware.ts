@@ -22,6 +22,14 @@ export async function middleware(req: NextRequest) {
       }
       return response
     }
+    if (req.nextUrl.pathname.startsWith('/admin')) {
+      if (jwt.role_id !== 3) {
+        const url = req.nextUrl.clone()
+        url.pathname = '/login'
+        return NextResponse.rewrite(url)
+      }
+      return response
+    }
     return response
   }
 
@@ -48,6 +56,14 @@ export async function middleware(req: NextRequest) {
       }
       return response
     }
+    if (req.nextUrl.pathname.startsWith('/admin')) {
+      if (jwt.role_id !== 3) {
+        const url = req.nextUrl.clone()
+        url.pathname = '/login'
+        return NextResponse.rewrite(url)
+      }
+      return response
+    }
     return response
   } else {
     const url = req.nextUrl.clone()
@@ -58,5 +74,5 @@ export async function middleware(req: NextRequest) {
 
 // TODO: Add pages => https://nextjs.org/docs/advanced-features/middleware#matcher
 export const config = {
-  matcher: ['/profile/:path*', '/seller-panel/:path*'],
+  matcher: ['/profile/:path*', '/seller-panel/:path*', '/admin/:path*'],
 }
