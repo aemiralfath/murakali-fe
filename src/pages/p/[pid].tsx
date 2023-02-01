@@ -82,6 +82,9 @@ const useProductFavorite = (pid: string) => {
   }, [deleteFavorite.isError])
 
   useEffect(() => {
+    checkFavorite.mutate(pid)
+  }, [])
+  useEffect(() => {
     if (addFavorite.isSuccess) {
       toast.success('Added to Favorite')
       checkFavorite.mutate(pid)

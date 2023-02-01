@@ -110,15 +110,23 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        {selectVariant ? (
-          <></>
+        {qty <= 0 ? (
+          <P className="text-sm italic text-error opacity-80">Out Of Stock</P>
         ) : (
-          <P className="text-sm italic opacity-60">Please select Variant</P>
+          <>
+            {' '}
+            {selectVariant ? (
+              <></>
+            ) : (
+              <P className="text-sm italic opacity-60">Please select Variant</P>
+            )}
+          </>
         )}
+
         <Button
           buttonType="primary"
           className="rounded"
-          disabled={!selectVariant}
+          disabled={!selectVariant || qty <= 0}
           onClick={() => {
             if (!user && !isLoading) {
               toast.error('You must login first')
@@ -146,7 +154,7 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
         <Button
           buttonType="primary"
           outlined
-          disabled={!selectVariant}
+          disabled={!selectVariant || qty <= 0}
           className="rounded"
           onClick={() => {
             if (!user && !isLoading) {

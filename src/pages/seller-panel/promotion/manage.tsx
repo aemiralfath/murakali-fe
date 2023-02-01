@@ -131,17 +131,103 @@ const ManagePromotionSeller = () => {
     setSelectedProduct(newState)
   }
 
+  const handleChangeDiscountPercentage = (
+    event: React.FormEvent<HTMLInputElement>,
+    id: string
+  ) => {
+    const value = event.currentTarget.value
+    let num = value === '' ? 0 : parseInt(value)
+
+    const newState = selectedProduct.map((sp) => {
+      if (sp.product_id === id) {
+        if (num > 100) {
+          num = 100
+        } else if (num < 0) {
+          num = 0
+        } else {
+          num = num
+        }
+
+        let discount = (sp.price * num) / 100
+
+        if (discount > sp.max_discount_price) {
+          discount = sp.max_discount_price
+        }
+
+        const subprice = sp.price - discount
+
+        return {
+          ...sp,
+          discount_percentage: num,
+          product_subprice: Number.isNaN(subprice)
+            ? sp.price
+            : subprice < 0
+            ? 0
+            : subprice,
+        }
+      }
+      return sp
+    })
+
+    setSelectedProduct(newState)
+  }
+
+  const handleChangeMaxDiscountPrice = (
+    event: React.FormEvent<HTMLInputElement>,
+    id: string
+  ) => {
+    const value = event.currentTarget.value
+    let num = value === '' ? 0 : parseInt(value)
+
+    const newState = selectedProduct.map((sp) => {
+      if (sp.product_id === id) {
+        let discount: number
+        let subprice: number = sp.price - num
+
+        if (num > sp.price) {
+          num = sp.price
+        }
+
+        if (sp.discount_percentage > 0) {
+          discount = (sp.price * sp.discount_percentage) / 100
+
+          if (discount > sp.max_discount_price) {
+            discount = sp.max_discount_price
+          }
+          subprice = sp.price - discount
+        }
+
+        return {
+          ...sp,
+          max_discount_price: num,
+          product_subprice: Number.isNaN(subprice)
+            ? sp.price
+            : subprice < 0
+            ? 0
+            : subprice,
+        }
+      }
+      return sp
+    })
+
+    setSelectedProduct(newState)
+  }
+
   const handleChangeOnClick = () => {
+    if (selectedProductId.length === 0) {
+      toast.error('You must select one or more product')
+      return
+    }
     const newState = selectedProduct.map((sp) => {
       const tempProduct = sp
       selectedProductId.map((id) => {
         if (sp.product_id === id) {
-          if (tempDiscountPercentage !== null) {
+          if (tempDiscountPercentage !== 0) {
             tempProduct.discount_percentage = tempDiscountPercentage
             tempProduct.discount_fix_price = 0
           }
 
-          if (tempDiscountFixPrice !== null) {
+          if (tempDiscountFixPrice !== 0) {
             tempProduct.discount_fix_price = tempDiscountFixPrice
             tempProduct.discount_percentage = 0
             tempProduct.max_discount_price = tempDiscountFixPrice
@@ -822,7 +908,8 @@ const ManagePromotionSeller = () => {
                                 Price Sale
                               </P>
                               <P className="font-bold text-primary">
-                                Rp.{ConvertShowMoney(sp.product_subprice)}
+                                Rp.
+                                {ConvertShowMoney(sp.product_subprice)}
                               </P>
                             </div>
                           </div>
@@ -858,9 +945,12 @@ const ManagePromotionSeller = () => {
                             value={sp.discount_percentage}
                             full
                             disabled={sp.discount_fix_price > 0}
-                            onChange={(event) =>
-                              handleChange(event, sp.product_id)
-                            }
+                            onChange={(event) => {
+                              handleChangeDiscountPercentage(
+                                event,
+                                sp.product_id
+                              )
+                            }}
                           />
                           <TextInput
                             name="discount_fix_price"
@@ -879,7 +969,7 @@ const ManagePromotionSeller = () => {
                         <div className="">
                           <TextInput
                             name="min_product_price"
-                            label="Min Price"
+                            label="Min Product Price"
                             value={sp.min_product_price}
                             onChange={(event) =>
                               handleChange(event, sp.product_id)
@@ -887,11 +977,11 @@ const ManagePromotionSeller = () => {
                           />
                           <TextInput
                             name="max_discount_price"
-                            label="Max Price"
+                            label="Max Discount Price"
                             value={sp.max_discount_price}
                             disabled={sp.discount_fix_price > 0}
                             onChange={(event) =>
-                              handleChange(event, sp.product_id)
+                              handleChangeMaxDiscountPrice(event, sp.product_id)
                             }
                           />
                         </div>
