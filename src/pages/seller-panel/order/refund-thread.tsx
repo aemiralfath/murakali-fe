@@ -28,7 +28,7 @@ function RefundThread() {
   const router = useRouter()
 
   const userProfile = useGetUserProfile()
-  const sellerInfo = useGetSellerInfoByUserID(userProfile.data.data.id)
+  const sellerInfo = useGetSellerInfoByUserID(userProfile.data?.data?.id)
 
   const modal = useModal()
   const setLoadingModal = useLoadingModal()
