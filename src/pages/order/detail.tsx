@@ -602,7 +602,7 @@ const OrderDetail = () => {
                       )}
                       <div className="mt-2 flex items-baseline gap-1">
                         {getRefundThread.data?.data?.refund_data.rejected_at
-                          .Valid ? (
+                          .Valid === true ? (
                           <>
                             <P className="text-xs opacity-50">
                               your previous File Complaint Form has been

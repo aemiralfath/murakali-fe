@@ -1,3 +1,5 @@
+import type { NullableTime } from './time'
+
 export interface RefundOrderData {
   id: string
   order_id: string
@@ -5,18 +7,9 @@ export interface RefundOrderData {
   is_buyer_refund: boolean
   reason: string
   image: string
-  accepted_at: {
-    Time: string
-    Valid: boolean
-  }
-  rejected_at: {
-    Time: string
-    Valid: boolean
-  }
-  refunded_at: {
-    Time: string
-    Valid: boolean
-  }
+  accepted_at: NullableTime
+  rejected_at: NullableTime
+  refunded_at: NullableTime
   order: {
     id: string
     transaction_id: string
