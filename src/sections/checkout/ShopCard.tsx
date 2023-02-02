@@ -277,20 +277,20 @@ const ShopCard: React.FC<ShopCardProps> = ({
                               {() => (
                                 <Button
                                   disabled
-                                  className="btn my-1 mx-auto h-fit w-full gap-1  border-4 border-solid  border-primary bg-gray-500 py-2 
+                                  className="btn my-1 mx-auto h-fit w-full gap-1 border-solid  border-primary bg-gray-500 py-2 
                             text-start text-white "
                                 >
                                   <a className="flex flex-col items-center">
                                     <span className="text-lg  font-bold">
-                                      Discount{' '}
                                       {data.discount_percentage > 0 ? (
                                         <>{data.discount_percentage}%</>
                                       ) : (
                                         <>
-                                          Rp.{' '}
+                                          Rp
                                           {formatMoney(data.discount_fix_price)}
                                         </>
-                                      )}
+                                      )}{' '}
+                                      Off
                                     </span>
                                     <P className="text-md max-w-[70%] truncate break-words">
                                       {data.code}
@@ -342,18 +342,20 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                     )
                                     setVoucher(data)
                                   }}
-                                  className="btn my-1 mx-auto h-fit w-full gap-1  border-4 border-solid  border-primary bg-white py-2 
+                                  className="btn my-1 mx-auto h-fit w-full gap-1 border-solid  border-primary bg-white py-2 
                             text-start text-primary hover:border-white hover:bg-primary hover:text-white"
                                 >
                                   <a className="flex flex-col items-center ">
                                     <span className="text-lg  font-bold">
-                                      Discount{' '}
                                       {data.discount_percentage > 0 ? (
                                         <>{data.discount_percentage}%</>
                                       ) : (
                                         <>
-                                          Rp.{' '}
-                                          {formatMoney(data.discount_fix_price)}
+                                          Rp
+                                          {formatMoney(
+                                            data.discount_fix_price
+                                          )}{' '}
+                                          Off
                                         </>
                                       )}
                                     </span>
@@ -407,7 +409,11 @@ const ShopCard: React.FC<ShopCardProps> = ({
             <p>Total Order </p>
             <p>
               Rp.
-              {formatMoney(totalPrice + delivery.delivery_fee - voucherPrice)}
+              {formatMoney(
+                totalPrice + delivery.delivery_fee - voucherPrice < 0
+                  ? 0
+                  : totalPrice + delivery.delivery_fee - voucherPrice
+              )}
             </p>
           </div>
         </div>

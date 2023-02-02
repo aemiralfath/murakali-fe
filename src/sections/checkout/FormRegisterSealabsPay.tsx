@@ -13,7 +13,9 @@ import type { Transaction } from '@/types/api/transaction'
 import type { WalletUser } from '@/types/api/wallet'
 
 import type { AxiosError } from 'axios'
+import { useFormik } from 'formik'
 import moment from 'moment'
+import * as Yup from 'yup'
 
 import PaymentOption from './option/PaymentOption'
 
@@ -45,12 +47,35 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
     active_date: '',
   })
 
-  const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
-    const inputName = event.currentTarget.name
-    const value = event.currentTarget.value
+  const handleRegisterSealabsPay = async (input: SLPUser) => {
+    registerSealabsPay.mutate(input)
 
-    setInput((prev) => ({ ...prev, [inputName]: value }))
+    setInput({
+      card_number: '',
+      name: '',
+      is_default: true,
+      active_date: '',
+    })
   }
+
+  const slpForm = useFormik({
+    initialValues: input,
+    enableReinitialize: true,
+    validationSchema: Yup.object({
+      card_number: Yup.string()
+        .matches(/^[0-9]+$/, 'Invalid account number')
+        .min(16, 'Invalid account number')
+        .max(16, 'Invalid account number')
+        .required('This field is required'),
+      name: Yup.string()
+        .min(2, 'Must have minimum 2 characters')
+        .required('This field is required'),
+      active_date: Yup.string().required('This field is required'),
+    }),
+    onSubmit: (input) => {
+      handleRegisterSealabsPay(input)
+    },
+  })
 
   useEffect(() => {
     if (registerSealabsPay.isError) {
@@ -68,28 +93,9 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
     }
   }, [registerSealabsPay.isSuccess])
 
-  const handleRegisterSealabsPay = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault()
-    registerSealabsPay.mutate(input)
-
-    setInput({
-      card_number: '',
-      name: '',
-      is_default: true,
-      active_date: '',
-    })
-  }
   return (
     <div className="px-6 lg:px-8">
-      <form
-        className="flex flex-col gap-y-3"
-        onSubmit={(e) => {
-          void handleRegisterSealabsPay(e)
-          return false
-        }}
-      >
+      <form className="flex flex-col gap-y-3" onSubmit={slpForm.handleSubmit}>
         <div>
           <TextInput
             label={'Name'}
@@ -97,10 +103,15 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
             type="text"
             name="name"
             placeholder="name"
-            onChange={handleChange}
-            value={input.name}
+            onChange={slpForm.handleChange}
+            value={slpForm.values.name}
             full
             required
+            errorMsg={
+              slpForm.values.name !== '' && slpForm.errors.name
+                ? slpForm.errors.name
+                : ''
+            }
           />
         </div>
 
@@ -112,10 +123,15 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
             placeholder="card number"
             minLength={16}
             maxLength={16}
-            onChange={handleChange}
-            value={input.card_number}
+            onChange={slpForm.handleChange}
+            value={slpForm.values.card_number}
             full
             required
+            errorMsg={
+              slpForm.values.card_number !== '' && slpForm.errors.card_number
+                ? slpForm.errors.card_number
+                : ''
+            }
           />
         </div>
 
@@ -124,12 +140,17 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
             label="Active Date"
             type="date"
             name="active_date"
-            onChange={handleChange}
+            onChange={slpForm.handleChange}
             min={moment(Date.now()).format('YYYY-MM-DD')}
             placeholder={String(Date.now())}
-            value={moment(input.active_date).format('YYYY-MM-DD')}
+            value={moment(slpForm.values.active_date).format('YYYY-MM-DD')}
             full
             required
+            errorMsg={
+              slpForm.values.active_date !== '' && slpForm.errors.active_date
+                ? slpForm.errors.active_date
+                : ''
+            }
           />
         </div>
 

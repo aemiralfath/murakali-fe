@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { HiPlus } from 'react-icons/hi'
+import { HiLockOpen, HiPlus } from 'react-icons/hi'
 import { useDispatch } from 'react-redux'
 
 import { useRouter } from 'next/router'
@@ -62,6 +62,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
       name: string
       balance?: number
       image: string
+      active: boolean
     }>
   >([])
 
@@ -103,6 +104,8 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   }, [second])
 
   useEffect(() => {
+    setPaymentOption([])
+
     const tempPaymentOption = transaction
       ? []
       : userWallet
@@ -112,16 +115,24 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
             name: 'Wallet',
             balance: userWallet.balance,
             image: walletImage.src,
+            active: true,
           },
         ]
-      : []
-    setPaymentOption([])
+      : [
+          {
+            id: 'inactive',
+            name: 'Wallet',
+            active: false,
+            image: walletImage.src,
+          },
+        ]
 
     const slps = userSLPs.map((slp) => {
       return {
         id: slp.card_number,
         name: slp.name,
         image: sealabsImage.src,
+        active: true,
       }
     })
     setPaymentOption([...tempPaymentOption, ...slps])
@@ -236,77 +247,103 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   return (
     <div className="grid grid-cols-1 gap-2">
       <div className="cursor-pointer">
-        {paymentOption.length != 0 &&
-          paymentOption.map((paymentOption, index) => (
-            <label key={index}>
+        {paymentOption.map((paymentOption, index) => (
+          <label key={index}>
+            <div
+              className={cx(
+                'col-span-3 my-2 h-fit rounded-lg border p-4',
+                selected === paymentOption.id
+                  ? 'border-primary ring-1 ring-primary'
+                  : ''
+              )}
+            >
               <div
                 className={cx(
-                  'col-span-3 my-2 h-fit rounded-lg border p-4',
-                  selected === paymentOption.id
-                    ? 'border-primary ring-1 ring-primary'
+                  'flex-start flex items-center justify-between gap-2',
+                  paymentOption.balance &&
+                    (paymentOption.balance - totalOrder < 0 || blocked)
+                    ? 'bg-slate-200'
                     : ''
                 )}
               >
-                <div
-                  className={cx(
-                    'flex-start flex items-center justify-between gap-2',
-                    paymentOption.balance &&
-                      (paymentOption.balance - totalOrder < 0 || blocked)
-                      ? 'bg-slate-200'
-                      : ''
-                  )}
-                >
-                  <div className="flex aspect-[4/3] h-14 items-center justify-center rounded-lg bg-base-200">
-                    <img
-                      className="h-6 w-6 rounded-t-lg"
-                      src={paymentOption.image}
-                      alt={'payment option'}
-                    />
-                  </div>
-
-                  <div className="flex-1 overflow-hidden">
-                    <div className="col-span-3 flex flex-col ">
-                      <P className="font-semibold">{paymentOption.name}</P>
-                      {paymentOption.name === 'Wallet' ? (
-                        <P className="text-sm">
-                          Rp{ConvertShowMoney(paymentOption.balance ?? 0)}
-                        </P>
-                      ) : (
-                        <P className="text-sm">{paymentOption.id}</P>
-                      )}
-                    </div>
-                  </div>
-                  {paymentOption.balance ? (
-                    paymentOption.balance - totalOrder < 0 ? (
-                      <Button type="button" buttonType="primary" size="sm">
-                        Top up
-                      </Button>
-                    ) : blocked ? (
-                      <div className="mt-2">
-                        <span className="mx-2 mt-2">
-                          {minute} : {second < 10 ? <>0</> : <></>}
-                          {second}
-                        </span>
-                      </div>
-                    ) : (
-                      ''
-                    )
-                  ) : (
-                    ''
-                  )}
-                  <input
-                    className="radio-primary radio mx-3 border-base-300"
-                    type="radio"
-                    name={'PaymentOption-' + String(paymentOption.id)}
-                    readOnly
-                    value={paymentOption.id}
-                    checked={selected === paymentOption.id}
-                    onChange={handleChange}
+                <div className="flex aspect-[4/3] h-14 items-center justify-center rounded-lg bg-base-200">
+                  <img
+                    className="h-6 w-6 rounded-t-lg"
+                    src={paymentOption.image}
+                    alt={'payment option'}
                   />
                 </div>
+
+                <div className="flex-1 overflow-hidden">
+                  <div className="col-span-3 flex flex-col ">
+                    <P className="font-semibold">{paymentOption.name}</P>
+                    {paymentOption.name === 'Wallet' ? (
+                      <P className="text-sm">
+                        {paymentOption.balance ? (
+                          `Rp${ConvertShowMoney(paymentOption.balance)}`
+                        ) : paymentOption.active ? (
+                          'Rp0'
+                        ) : (
+                          <div>
+                            <Button
+                              size="xs"
+                              buttonType="gray"
+                              onClick={() => {
+                                router.push('/wallet')
+                                dispatch(closeModal())
+                              }}
+                            >
+                              <HiLockOpen /> Activate Wallet
+                            </Button>
+                          </div>
+                        )}
+                      </P>
+                    ) : (
+                      <P className="text-sm">{paymentOption.id}</P>
+                    )}
+                  </div>
+                </div>
+                {blocked ? (
+                  <div className="mt-2">
+                    <span className="mx-2 mt-2">
+                      {minute} : {second < 10 ? <>0</> : <></>}
+                      {second}
+                    </span>
+                  </div>
+                ) : (
+                  ''
+                )}
+                {paymentOption.active && !blocked ? (
+                  paymentOption.name === 'Wallet' &&
+                  (paymentOption.balance ?? 0) - totalOrder < 0 ? (
+                    <Button
+                      size="xs"
+                      buttonType="gray"
+                      onClick={() => {
+                        router.push('/wallet')
+                        dispatch(closeModal())
+                      }}
+                    >
+                      Top Up
+                    </Button>
+                  ) : (
+                    <input
+                      className="radio-primary radio mx-3 border-base-300"
+                      type="radio"
+                      name={'PaymentOption-' + String(paymentOption.id)}
+                      readOnly
+                      value={paymentOption.id}
+                      checked={selected === paymentOption.id}
+                      onChange={handleChange}
+                    />
+                  )
+                ) : (
+                  <></>
+                )}
               </div>
-            </label>
-          ))}
+            </div>
+          </label>
+        ))}
 
         <div className="mb-4 mt-4 flex justify-center">
           <Button
