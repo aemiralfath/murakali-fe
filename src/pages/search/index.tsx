@@ -147,7 +147,7 @@ const SearchPage: NextPage = () => {
   }, [rating])
 
   const productQuery: ProductQuery = {
-    search: filterKeyword,
+    search: filterKeyword.replace('%', '%25'),
     category: filterCategory,
     limit: 30,
     page: page,

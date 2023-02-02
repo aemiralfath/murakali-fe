@@ -93,7 +93,7 @@ function Vouchers() {
                   <></>
                 )}
                 {Date.now() > Date.parse(data.expired_date) ? (
-                  <Chip type="error">Has Ended</Chip>
+                  <Chip type="gray">Has Ended</Chip>
                 ) : (
                   <></>
                 )}
@@ -143,6 +143,7 @@ function Vouchers() {
                   <Button
                     buttonType="primary"
                     size="sm"
+                    outlined
                     onClick={() => {
                       router.push({
                         pathname: '/seller-panel/vouchers/' + data.id,

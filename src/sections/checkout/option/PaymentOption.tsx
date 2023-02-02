@@ -352,7 +352,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
             disabled={!selected}
             isLoading={changeTransactionPaymentMethod.isLoading}
           >
-            Checkout
+            Create Order
           </Button>
         </div>
       </div>

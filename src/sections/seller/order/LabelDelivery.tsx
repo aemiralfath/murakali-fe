@@ -18,10 +18,7 @@ const LabelDelivery: React.FC<LabelDeliveryProps> = ({ allData }) => {
   const componentRef = useRef<HTMLDivElement>(null)
   return (
     <div>
-      <div
-        className="mx-auto my-auto w-96 border-8 border-solid border-black p-4"
-        ref={componentRef}
-      >
+      <div className="mx-auto my-auto w-96 border-8 border-solid border-black p-4">
         <div className="mb-2 flex flex-row items-center justify-center  border-b-4 border-black pb-2">
           <div className="w-32 text-white">
             <Icon color="black" />
@@ -74,6 +71,67 @@ const LabelDelivery: React.FC<LabelDeliveryProps> = ({ allData }) => {
           <P className="font-bold">Resi Number</P>
 
           <Barcode value={allData.resi_no} />
+        </div>
+      </div>
+
+      <div className="hidden">
+        {' '}
+        <div ref={componentRef}>
+          <div className="mx-auto my-auto w-96 border-8 border-solid border-black p-4">
+            <div className="mb-2 flex flex-row items-center justify-center  border-b-4 border-black pb-2">
+              <div className="w-32 text-white">
+                <Icon color="black" />
+              </div>
+            </div>
+            <div className="mb-2 flex flex-col items-center justify-center border-b-4 border-black pb-2">
+              <H2 className="font-bold">Invoice</H2>
+
+              <Barcode value={allData.invoice} width={1} height={90} />
+            </div>
+            <div className="mb-2 flex justify-between border-b-4 border-black pb-2">
+              <div>
+                <H3 className="font-bold">Delivery Info</H3>
+                <P>{allData.courier_name}</P>
+                <P>{allData.courier_description}</P>
+                <P>ETD {allData.courier_etd.replace(/\D/g, '')} Days</P>
+              </div>
+              <div>
+                <P className="mt-5">
+                  Weight :{' '}
+                  {allData.detail.reduce(
+                    (accumulator, currentValue) =>
+                      accumulator + currentValue.product_weight,
+                    0
+                  ) / 1000}{' '}
+                  kg
+                </P>
+              </div>
+            </div>
+            <div className="mb-2 grid grid-cols-2 border-b-4 border-dashed  border-black pb-2">
+              <div className="mr-2 border-r-2 border-black pr-2">
+                <OrderAddressDetail
+                  title={'From'}
+                  username={allData.shop_name}
+                  phone_number={allData.shop_phone_number}
+                  address={allData.seller_address}
+                />
+              </div>
+              <div>
+                <OrderAddressDetail
+                  title={'Destination'}
+                  username={allData.buyer_username}
+                  phone_number={allData.buyer_phone_number}
+                  address={allData.buyer_address}
+                />
+              </div>
+            </div>
+
+            <div className="flex-rows flex items-center justify-center">
+              <P className="font-bold">Resi Number</P>
+
+              <Barcode value={allData.resi_no} />
+            </div>
+          </div>
         </div>
       </div>
 

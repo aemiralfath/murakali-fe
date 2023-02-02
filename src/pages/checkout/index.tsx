@@ -316,7 +316,7 @@ function Checkout() {
 
                     {voucherMarketplace.isSuccess &&
                     voucherMarketplace.data?.data ? (
-                      voucherMarketplace.data.data.rows.length > 0 ? (
+                      voucherMarketplace.data.data.rows ? (
                         <div>
                           <Menu.Items className="absolute max-h-64 w-56 origin-top-left divide-y divide-gray-100  overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
                             {voucherMarketplace.data?.data?.rows.map(

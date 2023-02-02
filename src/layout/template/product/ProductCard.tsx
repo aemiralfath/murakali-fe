@@ -130,7 +130,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                   </P>
                 ) : (
                   <>
-                    <div className="flex flex-col -mt-2 justify-start ">
+                    <div className="-mt-2 flex flex-col justify-start ">
                       <P className="-mb-1 items-center text-slate-400 ">
                         <span className="text-[0.6rem] line-through">Rp.</span>
                         <span className="text-[0.8rem] line-through">

@@ -74,9 +74,13 @@ function ManageProfile() {
                       <P className="text-sm leading-3 opacity-70">
                         Phone Number
                       </P>
-                      <P className="text-lg font-semibold">
-                        {'+62 ' + userProfile.data.data.phone_number ?? '-'}
-                      </P>
+                      {userProfile.data?.data?.phone_number === null ? (
+                        <>-</>
+                      ) : (
+                        <P className="text-lg font-semibold">
+                          {'+62 ' + userProfile.data.data.phone_number ?? '-'}
+                        </P>
+                      )}
                     </div>
                     <div className="">
                       <P className="text-sm leading-3 opacity-70">Email</P>
@@ -97,9 +101,12 @@ function ManageProfile() {
                     <div className="">
                       <P className="text-sm leading-3 opacity-70">Birth Date</P>
                       <P className="text-lg font-semibold">
-                        {moment(userProfile.data.data.birth_date).format(
-                          'DD MMMM YYYY'
-                        )}
+                        {userProfile.data.data.birth_date !==
+                        '0001-01-01T00:00:00Z'
+                          ? moment(userProfile.data.data.birth_date).format(
+                              'DD MMMM YYYY'
+                            )
+                          : '-'}
                       </P>
                     </div>
                     <div className="mt-4">
