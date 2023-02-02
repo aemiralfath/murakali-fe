@@ -318,7 +318,7 @@ function Checkout() {
                     voucherMarketplace.data?.data ? (
                       voucherMarketplace.data.data.rows ? (
                         <div>
-                          <Menu.Items className="absolute max-h-64 w-56 origin-top-left divide-y divide-gray-100  overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
+                          <Menu.Items className="absolute max-h-64 w-64 origin-top-left divide-y divide-gray-100  overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
                             {voucherMarketplace.data?.data?.rows.map(
                               (data, index) => (
                                 <div className="px-1" key={index}>
