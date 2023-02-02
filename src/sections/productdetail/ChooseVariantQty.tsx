@@ -15,6 +15,7 @@ import type { AxiosError } from 'axios'
 
 interface ChooseVariantQtyProps {
   productID: string
+  productDetails: ProductDetail[] | undefined
   variantNamesState: string[]
   selectVariant: ProductDetail | undefined
   setSelectVariant: (p: ProductDetail | undefined) => void
@@ -24,6 +25,7 @@ interface ChooseVariantQtyProps {
 
 const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
   productID,
+  productDetails,
   variantNamesState,
   selectVariant,
   qty,
@@ -80,7 +82,9 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
             {selectVariant ? (
               <span>{selectVariant.stock}</span>
             ) : (
-              <span className="italic opacity-50">-</span>
+              <span className="">
+                {productDetails?.reduce((acc, curr) => acc + curr.stock, 0)}
+              </span>
             )}
           </P>
         </div>

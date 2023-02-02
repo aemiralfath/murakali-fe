@@ -445,6 +445,7 @@ const ProductPage: NextPage = () => {
             ) : (
               <ChooseVariantQty
                 productID={pid as string}
+                productDetails={product.data?.data?.products_detail}
                 qty={qty}
                 setQty={setQty}
                 selectVariant={selectVariant}
