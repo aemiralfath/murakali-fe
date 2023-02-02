@@ -6,8 +6,13 @@ import {
   useSendEmailChangePassword,
   useVerifyOTPChangePassword,
 } from '@/api/auth/changepassword'
+import {
+  useChangeWalletPinStepUpEmail,
+  useChangeWalletPinStepUpVerify,
+} from '@/api/user/wallet'
 import { useModal } from '@/hooks'
 import FormChangePassword from '@/layout/template/profile/FormChangePassword'
+import FormPINWallet from '@/sections/wallet/FormPinWallet'
 import type { APIResponse } from '@/types/api/response'
 
 import type { AxiosError } from 'axios'
@@ -23,6 +28,9 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType }) => {
   let pinInputRef: PinInput | null
   const userVerivyOTPChangePassword = useVerifyOTPChangePassword()
   const userSendEmailChangePassword = useSendEmailChangePassword()
+
+  const ChangeWalletPinStepUpEmail = useChangeWalletPinStepUpEmail()
+  const ChangeWalletPinStepUpVerify = useChangeWalletPinStepUpVerify()
 
   const [second, setSecond] = React.useState(59)
   const [minute, setMinute] = React.useState(2)
@@ -71,6 +79,37 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType }) => {
   }, [userVerivyOTPChangePassword.isError])
 
   useEffect(() => {
+    if (ChangeWalletPinStepUpVerify.isSuccess) {
+      toast.success('Verify OTP Success')
+      modal.edit({
+        title: 'Update Wallet',
+        content: <FormPINWallet createPin={false} />,
+        closeButton: false,
+      })
+    }
+  }, [ChangeWalletPinStepUpVerify.isSuccess])
+
+  useEffect(() => {
+    if (ChangeWalletPinStepUpEmail.isSuccess) {
+      toast.success('OTP has been sended to your email')
+      setMinute(2)
+      setSecond(59)
+    }
+  }, [ChangeWalletPinStepUpEmail.isSuccess])
+
+  useEffect(() => {
+    if (ChangeWalletPinStepUpVerify.isError) {
+      if (pinInputRef) {
+        pinInputRef.clear()
+      }
+      const errmsg = ChangeWalletPinStepUpVerify.failureReason as AxiosError<
+        APIResponse<null>
+      >
+      toast.error(errmsg.response?.data.message as string)
+    }
+  }, [ChangeWalletPinStepUpVerify.isError])
+
+  useEffect(() => {
     if (userSendEmailChangePassword.isError) {
       const errmsg = userSendEmailChangePassword.failureReason as AxiosError<
         APIResponse<null>
@@ -84,6 +123,10 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType }) => {
 
     if (OTPType === 'change-password') {
       userVerivyOTPChangePassword.mutate(input.otp)
+    }
+
+    if (OTPType === 'change-wallet-pin') {
+      ChangeWalletPinStepUpVerify.mutate(input.otp)
     }
   }
 
@@ -135,6 +178,9 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType }) => {
                 onClick={() => {
                   if (OTPType === 'change-password') {
                     userSendEmailChangePassword.mutate()
+                  }
+                  if (OTPType === 'change-wallet-pin') {
+                    ChangeWalletPinStepUpEmail.mutate()
                   }
                 }}
                 className="text-blue-700"
