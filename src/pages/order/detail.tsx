@@ -598,7 +598,7 @@ const OrderDetail = () => {
                         </>
                       )}
                       <div className="mt-2 flex items-baseline gap-1">
-                        {getRefundThread.data?.data?.refund_data.rejected_at
+                        {getRefundThread.data?.data?.refund_data?.rejected_at
                           .Valid ? (
                           <>
                             <P className="text-xs opacity-50">
@@ -660,8 +660,8 @@ const OrderDetail = () => {
                           </>
                         ) : (
                           <>
-                            {getRefundThread.data?.data?.refund_data.accepted_at
-                              .Valid ? (
+                            {getRefundThread.data?.data?.refund_data
+                              ?.accepted_at.Valid ? (
                               <>
                                 <P className="text-xs opacity-50">
                                   your File Complaint has been accepted at{' '}
