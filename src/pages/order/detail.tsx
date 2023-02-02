@@ -78,12 +78,13 @@ const OrderDetailCardSection: React.FC<{
         setReview(gotReview.data.data.rows[0])
       }
     }
-  }, [gotReview.isSuccess])
+  }, [gotReview.data?.data])
 
   useEffect(() => {
     if (createReview.isSuccess) {
       gotReview.refetch()
       toast.success('Review created!')
+      setComment('')
     }
   }, [createReview.isSuccess])
 
@@ -241,6 +242,8 @@ const OrderDetailCardSection: React.FC<{
                                     ? comment?.length <= 160
                                     : true
                                 ) {
+                                  setOpen(!open)
+
                                   createReview.mutate({
                                     product_id: detail.product_id,
                                     rating: star,
@@ -598,7 +601,7 @@ const OrderDetail = () => {
                         </>
                       )}
                       <div className="mt-2 flex items-baseline gap-1">
-                        {getRefundThread.data?.data?.refund_data.rejected_at
+                        {getRefundThread.data?.data?.refund_data?.rejected_at
                           .Valid ? (
                           <>
                             <P className="text-xs opacity-50">
@@ -660,8 +663,8 @@ const OrderDetail = () => {
                           </>
                         ) : (
                           <>
-                            {getRefundThread.data?.data?.refund_data.accepted_at
-                              .Valid ? (
+                            {getRefundThread.data?.data?.refund_data
+                              ?.accepted_at.Valid ? (
                               <>
                                 <P className="text-xs opacity-50">
                                   your File Complaint has been accepted at{' '}

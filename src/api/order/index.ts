@@ -8,6 +8,8 @@ import { authorizedClient } from '../apiClient'
 
 type GetOrderParams = {
   order_status?: number
+  sort?: string
+  page?: number
 }
 const key = 'order'
 

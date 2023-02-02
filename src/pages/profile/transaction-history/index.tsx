@@ -9,7 +9,7 @@ import {
   HiOutlineShieldCheck,
   HiShoppingCart,
 } from 'react-icons/hi'
-
+import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
@@ -18,7 +18,7 @@ import { useGetTransactions } from '@/api/transaction'
 import { useGetRefundThread } from '@/api/user/refund'
 import { useGetUserSLP } from '@/api/user/slp'
 import { useGetUserWallet } from '@/api/user/wallet'
-import { A, Button, Chip, Divider, H1, P } from '@/components'
+import { A, Button, Chip, Divider, H1, P, PaginationNav } from '@/components'
 import { orderStatus } from '@/constants/status'
 import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
@@ -412,7 +412,7 @@ const OrderCard: React.FC<
                         </A>{' '}
                         has been rejected at{' '}
                         {moment(
-                          getRefundThread.data?.data?.refund_data.rejected_at
+                          getRefundThread.data?.data?.refund_data?.rejected_at
                             .Time
                         )
                           .utcOffset(420)
@@ -559,13 +559,21 @@ function TransactionHistory() {
     }
   }, [status])
 
+  const [sort, setSort] = useState('DESC')
+  const [page, setPage] = useState<number>(1)
+
   const orders = useGetOrders({
     order_status: qryStatus === 0 ? undefined : qryStatus,
+    sort: sort,
+    page: page,
   })
-  const transactions = useGetTransactions()
+  const transactions = useGetTransactions(sort, page)
   const userWallet = useGetUserWallet()
   const userSLP = useGetUserSLP()
 
+  useEffect(() => {
+    setPage(1)
+  }, [qryStatus])
   return (
     <>
       <Head>
@@ -578,9 +586,37 @@ function TransactionHistory() {
       <ProfileLayout selectedPage="transaction-history">
         <>
           <H1 className="text-primary">Transactions</H1>
-          <div className="my-4">
+          <div className="my-2">
             <Divider />
           </div>
+          <div className="flex-start flex">
+            <div className="flex items-center gap-x-2 px-5">
+              <P className="my-3  font-bold">Date</P>
+              <button
+                className={cx(
+                  'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                  sort === 'ASC' ? 'bg-primary text-xs text-white' : ''
+                )}
+                onClick={() => {
+                  setSort('ASC')
+                }}
+              >
+                <HiArrowUp />
+              </button>
+              <button
+                className={cx(
+                  'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                  sort === 'DESC' ? 'bg-primary text-xs text-white' : ''
+                )}
+                onClick={() => {
+                  setSort('DESC')
+                }}
+              >
+                <HiArrowDown />
+              </button>
+            </div>
+          </div>
+
           <div className="customscroll mb-3 max-w-full overflow-auto">
             <div className="tabs mb-1 flex-nowrap">
               {['All', ...orderStatus.slice(1)].map((status, idx) => (
@@ -767,6 +803,21 @@ function TransactionHistory() {
                 <EmptyLayout />
               )}
             </div>
+            {orders.data?.data?.rows && transactions.data?.data?.rows ? (
+              <div className="mt-4 flex h-[8rem] w-full justify-center">
+                <PaginationNav
+                  page={page}
+                  total={
+                    qryStatus !== 1
+                      ? orders.data?.data?.total_pages
+                      : transactions.data?.data?.total_pages
+                  }
+                  onChange={(p) => setPage(p)}
+                />
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
         </>
       </ProfileLayout>
