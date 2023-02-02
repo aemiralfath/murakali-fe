@@ -11,6 +11,7 @@ import formatMoney from '@/helper/formatMoney'
 import { useUser } from '@/hooks'
 import type { CheckoutValues } from '@/pages/checkout'
 import type { ProductDetail } from '@/types/api/product'
+import { Promotion } from '@/types/api/promotion'
 import type { APIResponse } from '@/types/api/response'
 
 import type { AxiosError } from 'axios'
@@ -26,6 +27,7 @@ interface ChooseVariantQtyProps {
   qty: number
   setQty: (p: number) => void
   shopID?: string
+  promotionInfo?: Promotion
 }
 
 const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
@@ -35,6 +37,7 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
   qty,
   setQty,
   shopID,
+  promotionInfo,
 }) => {
   const addToCart = useAddToCart()
 
@@ -97,15 +100,23 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
         <H4>Subtotal</H4>
         <div className="flex items-center justify-between">
           {selectVariant !== undefined ? (
-            selectVariant?.discount_price ? (
-              <>
-                <P className="text-sm line-through opacity-50">
-                  Rp.{formatMoney(selectVariant?.normal_price * qty)}
-                </P>
-                <P className="flex-1 text-right text-lg font-bold">
-                  Rp.{formatMoney(selectVariant?.discount_price * qty)}
-                </P>
-              </>
+            promotionInfo && qty <= promotionInfo.promotion_quota ? (
+              selectVariant?.discount_price ? (
+                <>
+                  <P className="text-sm line-through opacity-50">
+                    Rp.{formatMoney(selectVariant?.normal_price * qty)}
+                  </P>
+                  <P className="flex-1 text-right text-lg font-bold">
+                    Rp.{formatMoney(selectVariant?.discount_price * qty)}
+                  </P>
+                </>
+              ) : (
+                <>
+                  <P className="flex-1 text-right text-lg font-bold">
+                    Rp.{formatMoney(selectVariant?.normal_price * qty)}
+                  </P>
+                </>
+              )
             ) : (
               <>
                 <P className="flex-1 text-right text-lg font-bold">
@@ -117,15 +128,23 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        {selectVariant ? (
-          <></>
+        {qty <= 0 ? (
+          <P className="text-sm italic text-error opacity-80">Out Of Stock</P>
         ) : (
-          <P className="text-sm italic opacity-60">Please select Variant</P>
+          <>
+            {' '}
+            {selectVariant ? (
+              <></>
+            ) : (
+              <P className="text-sm italic opacity-60">Please select Variant</P>
+            )}
+          </>
         )}
+
         <Button
           buttonType="primary"
           className="rounded"
-          disabled={!selectVariant}
+          disabled={!selectVariant || qty <= 0}
           onClick={() => {
             if (!user && !isLoading) {
               toast.error('You must login first')
@@ -174,7 +193,7 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
         <Button
           buttonType="primary"
           outlined
-          disabled={!selectVariant}
+          disabled={!selectVariant || qty <= 0}
           className="rounded"
           onClick={() => {
             if (!user && !isLoading) {

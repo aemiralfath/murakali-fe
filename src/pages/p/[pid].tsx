@@ -82,6 +82,9 @@ const useProductFavorite = (pid: string) => {
   }, [deleteFavorite.isError])
 
   useEffect(() => {
+    checkFavorite.mutate(pid)
+  }, [])
+  useEffect(() => {
     if (addFavorite.isSuccess) {
       toast.success('Added to Favorite')
       checkFavorite.mutate(pid)
@@ -451,6 +454,7 @@ const ProductPage: NextPage = () => {
                 setSelectVariant={setSelectVariant}
                 variantNamesState={variantNamesState}
                 shopID={seller.data?.data?.id}
+                promotionInfo={product.data?.data?.promotions_info}
               />
             )}
           </div>

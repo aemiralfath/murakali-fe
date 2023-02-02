@@ -51,7 +51,20 @@ function RefundAdmin() {
             ),
             Order: <div>{data.order_id}</div>,
             Reason: <div>{data.reason}</div>,
-            Refund: <div>Rp. {formatMoney(data.order.total_price)}</div>,
+            Refund: (
+              <div>
+                {data.is_seller_refund ? (
+                  <>
+                    Rp.{' '}
+                    {formatMoney(
+                      data.order.total_price + data.order.delivery_fee
+                    )}
+                  </>
+                ) : (
+                  <>Rp. {formatMoney(data.order.total_price)}</>
+                )}
+              </div>
+            ),
             Status: (
               <div>
                 {data.is_seller_refund ? (

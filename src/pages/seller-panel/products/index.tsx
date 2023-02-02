@@ -334,7 +334,7 @@ const Products = () => {
           </Button>
         </div>
         <div className="mt-3 flex max-w-full flex-col overflow-auto rounded border bg-white px-6 pt-6">
-          <div className="grid mb-3 gap-3 lg:grid-cols-2 grid-cols-1">
+          <div className="mb-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
             <div className=" flex w-fit items-center justify-between rounded border py-2 px-3">
               <div className="flex items-center gap-2">
                 <H4>Sort</H4>

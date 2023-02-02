@@ -200,8 +200,8 @@ function ManageAddress() {
         </>
 
         {userAllAddress.data?.data?.total_pages === 0 ? (
-          <div className="border-grey-200 z-10 flex h-full items-center rounded-lg border-[1px] border-solid py-7 px-8">
-            <P className="flex w-full items-center justify-center font-extrabold">
+          <div className="z-10 flex h-full items-center rounded-lg  py-7 px-8">
+            <P className="flex w-full items-center justify-center italic text-gray-500">
               Address is Empty!
             </P>
           </div>

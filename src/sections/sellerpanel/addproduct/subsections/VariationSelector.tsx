@@ -37,7 +37,7 @@ const VariationSelector: React.FC<{
           >
             <span
               className={cx(
-                'whitespace-nowrap max-w-full overflow-hidden',
+                'max-w-full overflow-hidden whitespace-nowrap',
                 selected === '' ? 'text-gray-400' : 'text-base-content'
               )}
             >
