@@ -250,7 +250,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
                 <div className="flex-start flex items-center gap-2">
                   <FaTicketAlt />
                   <div className="flex flex-col">
-                    <P>{voucher.code}</P>
+                    <P className="block w-fit truncate">{voucher.code}</P>
                     {voucher.discount_percentage > 0 ? (
                       <P>{voucher.discount_percentage}%</P>
                     ) : (
@@ -268,7 +268,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
             {voucherShop.data?.data ? (
               Number(voucherShop.data?.data?.rows?.length) > 0 ? (
                 <div>
-                  <Menu.Items className="absolute max-h-64 w-56 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
+                  <Menu.Items className="absolute max-h-64 w-64 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
                     {voucherShop.data.data.rows?.map((data, index) => (
                       <div className="p-1" key={index}>
                         {data.quota <= 0 ? (
@@ -281,7 +281,8 @@ const ShopCard: React.FC<ShopCardProps> = ({
                             text-start text-white "
                                 >
                                   <a className="flex flex-col items-center">
-                                    <span className="text-lg  font-bold">
+                                    <P className="block  w-fit truncate text-lg font-bold">
+                                      Discount{' '}
                                       {data.discount_percentage > 0 ? (
                                         <>{data.discount_percentage}%</>
                                       ) : (
@@ -291,7 +292,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                         </>
                                       )}{' '}
                                       Off
-                                    </span>
+                                    </P>
                                     <P className="text-md max-w-[70%] truncate break-words">
                                       {data.code}
                                     </P>
@@ -346,7 +347,8 @@ const ShopCard: React.FC<ShopCardProps> = ({
                             text-start text-primary hover:border-white hover:bg-primary hover:text-white"
                                 >
                                   <a className="flex flex-col items-center ">
-                                    <span className="text-lg  font-bold">
+                                    <span className="inline-block break-words text-lg font-bold">
+                                      Discount{' '}
                                       {data.discount_percentage > 0 ? (
                                         <>{data.discount_percentage}%</>
                                       ) : (
