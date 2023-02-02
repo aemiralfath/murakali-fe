@@ -83,6 +83,7 @@ const useProductFavorite = (pid: string) => {
 
   useEffect(() => {
     checkFavorite.mutate(pid)
+    countFavorite.mutate(pid)
   }, [])
   useEffect(() => {
     if (addFavorite.isSuccess) {
