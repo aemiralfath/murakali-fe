@@ -13,7 +13,7 @@ import { useRouter } from 'next/router'
 
 import { useLogout } from '@/api/auth/logout'
 import { useGetHoverCart } from '@/api/user/cart'
-import { Avatar, Button, H2, Icon, TextInput } from '@/components'
+import { Avatar, Button, H2, Icon, P, TextInput } from '@/components'
 import formatMoney from '@/helper/formatMoney'
 import {
   useHover,
@@ -36,7 +36,7 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
   const [cartRef, isCartHover] = useHover()
   const router = useRouter()
   return (
-    <div className="nav-item relative z-50 " ref={cartRef}>
+    <div className="nav-item relative z-40" ref={cartRef}>
       <Link
         href={`/cart`}
         className="flex items-center px-3 py-2 text-xs font-bold uppercase leading-snug text-white hover:opacity-75"
@@ -55,7 +55,7 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
         leaveTo="transform opacity-0 scale-95"
       >
         <div className="absolute right-[10%] top-auto ">
-          <div className="relative z-40 mt-3 w-[32rem] rounded-md bg-white py-2 px-4 shadow-lg">
+          <div className="relative mt-3 w-[32rem] rounded-md bg-white py-2 px-4 shadow-lg">
             <div className="absolute -top-[7px] right-[10px] h-5 w-5 rotate-45 bg-white" />
             <H2 className="text-primary">Cart</H2>
             <div className="grid grid-cols-1 divide-y">
@@ -74,7 +74,9 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                                 : data.thumbnail_url
                             }
                             alt={data.title}
-                            className={'aspect-square h-[4.5rem] w-[4.5rem]'}
+                            className={
+                              'aspect-square bg-base-300 h-[4.5rem] w-[4.5rem]'
+                            }
                           />
                           <div className="flex flex-1 flex-col flex-wrap gap-2 px-1">
                             <div className="mt-1 font-semibold leading-4 line-clamp-2">
@@ -114,10 +116,13 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                     })
                   ) : (
                     <div className="flex py-2">
-                      <div className="flex flex-1 flex-col gap-2 px-2">
-                        <div className="mt-1 text-center font-semibold leading-4 line-clamp-2">
-                          No item in cart
-                        </div>
+                      <div className="flex justify-center items-center flex-1 flex-col my-8">
+                        <P className="flex w-full items-center justify-center font-semibold text-lg">
+                          Cart is Empty
+                        </P>
+                        <P className="text-sm font-light">
+                          Start shopping now!
+                        </P>
                       </div>
                     </div>
                   )}
@@ -137,6 +142,7 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                 <Button
                   size="sm"
                   buttonType="ghost"
+                  disabled={!(cart && cart.length > 0)}
                   onClick={() => {
                     router.push('/cart')
                   }}
@@ -258,7 +264,7 @@ const Navbar: React.FC = () => {
   return (
     <>
       <nav
-        className={`relative flex flex-wrap items-center justify-between bg-primary px-2 py-5`}
+        className={`z-[21] relative flex flex-wrap items-center justify-between bg-primary px-2 py-5`}
       >
         <div className="container mx-auto flex flex-wrap items-center justify-between gap-5 px-5">
           <div className="relative flex justify-between">

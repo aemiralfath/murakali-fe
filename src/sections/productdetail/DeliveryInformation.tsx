@@ -55,8 +55,11 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
   }, [destination, weight])
 
   useEffect(() => {
-    if (locationCost.data?.data?.data) {
-      const tempShippingOption = locationCost.data?.data.data.shipping_option[0]
+    if (
+      locationCost.data?.data?.data &&
+      locationCost.data.data.data.shipping_option !== null
+    ) {
+      const tempShippingOption = locationCost.data.data.data.shipping_option[0]
 
       if (tempShippingOption !== undefined) {
         let max = tempShippingOption.fee
@@ -138,7 +141,8 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
               </Menu.Button>
 
               {!locationCost.isLoading ? (
-                locationCost.data?.data?.data ? (
+                locationCost.data?.data?.data &&
+                locationCost.data.data.data.shipping_option !== null ? (
                   locationCost.data?.data?.data?.shipping_option.length > 0 ? (
                     <div>
                       <Menu.Items className="customscroll absolute max-h-64 w-fit origin-top-left divide-y divide-gray-100 overflow-x-hidden  overflow-y-scroll rounded-md bg-white p-2 shadow-lg focus:outline-none ">

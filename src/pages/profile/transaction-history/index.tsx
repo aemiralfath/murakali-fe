@@ -10,6 +10,7 @@ import {
   HiShoppingCart,
 } from 'react-icons/hi'
 import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
+
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 

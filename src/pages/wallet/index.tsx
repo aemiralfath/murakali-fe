@@ -150,7 +150,8 @@ function Wallet() {
             <div className="flex justify-center">
               <Spinner color="gray" />
             </div>
-          ) : userWalletHistory.data?.data ? (
+          ) : userWalletHistory.data?.data &&
+            userWalletHistory.data.data.rows ? (
             userWalletHistory.data.data.rows.map((data, index) => (
               <div
                 key={index}
@@ -212,7 +213,7 @@ function Wallet() {
 
           {(userWalletHistory.isError && !userWalletHistory.isLoading) ||
           (userWalletHistory.data?.data &&
-            userWalletHistory.data?.data?.rows.length <= 0) ? (
+            Number(userWalletHistory.data?.data?.rows?.length) <= 0) ? (
             <>
               <P className="text-center font-bold text-gray-500">
                 History is Empty

@@ -14,10 +14,11 @@ const getAllSellers = async (search: string, page: number) => {
 }
 
 export const useGetAllSellers = (search: string, page: number) => {
-  return useQuery(
-    [profileKey, 'all', search, page],
-    async () => await getAllSellers(search, page)
-  )
+  return useQuery({
+    queryKey: [profileKey, 'all', search, page],
+    queryFn: async () => await getAllSellers(search, page),
+    enabled: Boolean(search),
+  })
 }
 
 const getSellerInfo = async (shopID?: string) => {

@@ -6,6 +6,7 @@ import { setupListeners } from '@reduxjs/toolkit/dist/query'
 
 import loadingModalReducer from './reducer/loadingModalReducer'
 import modalReducer from './reducer/modalReducer'
+import newestPaymentReducer from './reducer/newestPaymentReducer'
 import searchKeywordReducer from './reducer/searchKeywordReducer'
 
 export const store = configureStore({
@@ -13,6 +14,7 @@ export const store = configureStore({
     modal: modalReducer,
     loadingModal: loadingModalReducer,
     searchKeyword: searchKeywordReducer,
+    newestPayment: newestPaymentReducer,
   },
   middleware: (middleware) =>
     middleware({
