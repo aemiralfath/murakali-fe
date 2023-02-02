@@ -6,6 +6,7 @@ import { useRegisterSealabsPay } from '@/api/user/slp'
 import { Button, TextInput } from '@/components'
 import { useModal } from '@/hooks'
 import { closeModal } from '@/redux/reducer/modalReducer'
+import { addNewestPayment } from '@/redux/reducer/newestPaymentReducer'
 import type { PostCheckout } from '@/types/api/checkout'
 import type { APIResponse } from '@/types/api/response'
 import type { SLPUser } from '@/types/api/slp'
@@ -49,6 +50,7 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
 
   const handleRegisterSealabsPay = async (input: SLPUser) => {
     registerSealabsPay.mutate(input)
+    dispatch(addNewestPayment(input.card_number))
 
     setInput({
       card_number: '',

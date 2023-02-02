@@ -13,8 +13,9 @@ import { Button, P } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import cx from '@/helper/cx'
 import { validateUUID } from '@/helper/uuid'
-import { useModal } from '@/hooks'
+import { useModal, useSelector } from '@/hooks'
 import { closeModal } from '@/redux/reducer/modalReducer'
+import { clearNewestPayment } from '@/redux/reducer/newestPaymentReducer'
 import type { PostCheckout } from '@/types/api/checkout'
 import type { APIResponse } from '@/types/api/response'
 import type { SLPUser } from '@/types/api/slp'
@@ -47,6 +48,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   const modal = useModal()
   const getUserSLP = useGetUserSLP()
   const [userSLPs, seUserSLPs] = useState<SLPUser[]>([])
+  const newestPayment = useSelector((state) => state.newestPayment)
 
   const [selected, setSelected] = useState('')
   const dispatch = useDispatch()
@@ -154,6 +156,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
 
   function handleTransaction() {
     if (postCheckout) {
+      dispatch(clearNewestPayment())
       if (validateUUID(selected)) {
         modalPIN.info({
           title: 'Input PIN',
@@ -208,7 +211,9 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   }, [transaction])
 
   useEffect(() => {
-    if (userWallet && userWallet.balance - totalOrder >= 0 && !blocked) {
+    if (newestPayment.card_number !== undefined) {
+      setSelected(newestPayment.card_number)
+    } else if (userWallet && userWallet.balance - totalOrder >= 0 && !blocked) {
       setSelected(userWallet.id)
     } else {
       setSelected('')
@@ -245,8 +250,8 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   }, [createTransaction.isError])
 
   return (
-    <div className="grid grid-cols-1 gap-2">
-      <div className="cursor-pointer">
+    <div className={cx('grid grid-cols-1 gap-2')}>
+      <div className="">
         {paymentOption.map((paymentOption, index) => (
           <label key={index}>
             <div
@@ -254,16 +259,15 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
                 'col-span-3 my-2 h-fit rounded-lg border p-4',
                 selected === paymentOption.id
                   ? 'border-primary ring-1 ring-primary'
-                  : ''
+                  : '',
+                paymentOption.name === 'Wallet' && blocked
+                  ? 'bg-base-300 cursor-not-allowed'
+                  : 'cursor-pointer'
               )}
             >
               <div
                 className={cx(
-                  'flex-start flex items-center justify-between gap-2',
-                  paymentOption.balance &&
-                    (paymentOption.balance - totalOrder < 0 || blocked)
-                    ? 'bg-slate-200'
-                    : ''
+                  'flex-start flex items-center justify-between gap-2'
                 )}
               >
                 <div className="flex aspect-[4/3] h-14 items-center justify-center rounded-lg bg-base-200">
@@ -303,17 +307,18 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
                     )}
                   </div>
                 </div>
-                {blocked ? (
-                  <div className="mt-2">
-                    <span className="mx-2 mt-2">
+                {blocked && paymentOption.name === 'Wallet' ? (
+                  <div className="flex items-center flex-col justify-center">
+                    <span className="px-1 py-0.5 bg-white rounded">
                       {minute} : {second < 10 ? <>0</> : <></>}
                       {second}
                     </span>
+                    <P className="mt-1 text-xs italic">Temporarily Blocked</P>
                   </div>
                 ) : (
                   ''
                 )}
-                {paymentOption.active && !blocked ? (
+                {paymentOption.active ? (
                   paymentOption.name === 'Wallet' &&
                   (paymentOption.balance ?? 0) - totalOrder < 0 ? (
                     <Button

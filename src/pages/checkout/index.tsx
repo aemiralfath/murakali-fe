@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { HiHome } from 'react-icons/hi'
 
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import { useGetDefaultAddress } from '@/api/user/address'
@@ -207,7 +208,9 @@ function Checkout() {
   return (
     <>
       <Navbar />
-      <title>Checkout</title>
+      <Head>
+        <title>Checkout | Murakali</title>
+      </Head>
       <TitlePageExtend title="Checkout" />
       <div className="container my-8 mx-auto mb-10 min-h-screen w-full px-2">
         <div className="grid grid-cols-1 gap-5 xl:grid-cols-4">
