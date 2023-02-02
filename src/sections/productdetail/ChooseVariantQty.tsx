@@ -6,12 +6,17 @@ import { useRouter } from 'next/router'
 
 import { useAddToCart } from '@/api/user/cart'
 import { H3, P, NumberInput, Divider, H4, Button } from '@/components'
+import { env } from '@/env/client.mjs'
 import formatMoney from '@/helper/formatMoney'
 import { useUser } from '@/hooks'
+import type { CheckoutValues } from '@/pages/checkout'
 import type { ProductDetail } from '@/types/api/product'
 import type { APIResponse } from '@/types/api/response'
 
 import type { AxiosError } from 'axios'
+import CryptoJS from 'crypto-js'
+
+const secret = env.NEXT_PUBLIC_SECRET_KEY
 
 interface ChooseVariantQtyProps {
   productID: string
@@ -20,6 +25,7 @@ interface ChooseVariantQtyProps {
   setSelectVariant: (p: ProductDetail | undefined) => void
   qty: number
   setQty: (p: number) => void
+  shopID?: string
 }
 
 const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
@@ -28,6 +34,7 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
   selectVariant,
   qty,
   setQty,
+  shopID,
 }) => {
   const addToCart = useAddToCart()
 
@@ -129,12 +136,33 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
                 },
               })
             } else {
-              if (selectVariant) {
+              if (selectVariant && shopID) {
+                const tempValues: CheckoutValues = {
+                  idProducts: [selectVariant.id],
+                  idShops: [shopID],
+                  price: selectVariant.normal_price * qty,
+                  subPrice:
+                    (selectVariant.normal_price -
+                      selectVariant.discount_price) *
+                    qty,
+                  quantity: qty,
+                  result_discount: selectVariant.discount_price * qty,
+                }
+
                 addToCart.mutate({
                   id: selectVariant.id,
                   quantity: qty,
                 })
-                router.push('/cart')
+                router.push({
+                  pathname: '/checkout',
+                  query: {
+                    update: 'true',
+                    values: CryptoJS.AES.encrypt(
+                      JSON.stringify(tempValues),
+                      secret
+                    ).toString(),
+                  },
+                })
               } else {
                 toast.error('Please select variant!')
               }

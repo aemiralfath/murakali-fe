@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import { FaStore } from 'react-icons/fa'
+import { HiTrash } from 'react-icons/hi'
 import { useDispatch } from 'react-redux'
 
+import Head from 'next/head'
+import Image from 'next/image'
 import Router from 'next/router'
 
 import { useDeleteCart, useGetCart } from '@/api/user/cart'
-import { Button, H2, H4, P } from '@/components'
+import { Button, Divider, P } from '@/components'
 import ProductCart from '@/components/card/ProductCart'
-import { useModal, useUser } from '@/hooks'
+import cx from '@/helper/cx'
+import { useMediaQuery, useModal, useUser } from '@/hooks'
 import { Navbar } from '@/layout/template'
 import Footer from '@/layout/template/footer'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
@@ -26,6 +31,8 @@ function Cart() {
   const deleteCart = useDeleteCart()
   const modal = useModal()
   const dispatch = useDispatch()
+
+  const xl = useMediaQuery('xl')
 
   useEffect(() => {
     if (deleteCart.isSuccess) {
@@ -69,18 +76,20 @@ function Cart() {
   return (
     <>
       <Navbar />
-      <title>Cart</title>
+      <Head>
+        <title>Cart | Murakali</title>
+      </Head>
       <TitlePageExtend title="Cart" />
 
-      <div className="container my-8 mx-auto mb-10 h-fit min-h-screen w-full px-2">
-        <div className="grid grid-cols-1 gap-2 xl:grid-cols-4">
-          <div className="col-span-3  flex flex-col gap-5">
-            <div className="flex  justify-between rounded-lg border-[1px] border-solid border-gray-300 py-5 px-8">
+      <div className="container relative my-8 mx-auto mb-10 h-fit min-h-screen w-full px-1 xl:px-2">
+        <div className="grid grid-cols-1 xl:gap-2 xl:grid-cols-4">
+          <div className="col-span-3 xl:px-2 flex flex-col gap-5">
+            <div className="flex justify-between">
               <label className="flex-start flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={checkAll}
-                  className="checkbox-primary checkbox"
+                  className="checkbox-sm checkbox"
                   onChange={() => {
                     if (cartList.data?.data?.rows) {
                       if (!checkAll) {
@@ -106,10 +115,12 @@ function Cart() {
                     }
                   }}
                 />
-                <H4>Choose All</H4>
+                <P className="text-gray-500">Choose All</P>
               </label>
               <Button
                 buttonType="ghost"
+                className="font-normal"
+                size="sm"
                 onClick={() => {
                   modal.edit({
                     title: 'Delete All Cart',
@@ -158,141 +169,159 @@ function Cart() {
                   })
                 }}
               >
-                Delete All
+                <HiTrash /> Clear Items
               </Button>
             </div>
+            <Divider />
             {!cartList.isLoading ? (
               <>
                 {cartList.data?.data?.rows ? (
                   cartList.data.data.rows.map((cart, index) => (
-                    <div
-                      className="z-0 h-full rounded-lg border-[1px] border-solid border-gray-300 py-7 px-8"
-                      key={`${cart.id} ${index}`}
-                    >
-                      <label className="flex-start mb-5 flex items-center gap-2">
-                        <input
-                          className="checkbox-primary checkbox "
-                          type="checkbox"
-                          checked={
-                            selectedShop.findIndex((data) => {
-                              return data === cart.shop.id
-                            }) !== -1
-                          }
-                          onClick={() => {
-                            let resultProduct: string[] = []
-                            let resultShop: string[] = []
-                            const value = cart.shop.id
-
-                            cart.product_details?.forEach(function (pd) {
-                              resultProduct = selectedProducts.filter(
-                                (productId) => {
-                                  return productId !== pd.id
-                                }
-                              )
-                            })
-
-                            resultShop = selectedShop.filter((ss) => {
-                              return cart.shop.id !== ss
-                            })
-
-                            // unselect shop checkbox
-                            for (let i = 0; i < selectedShop.length; i++) {
-                              if (selectedShop[i] === value) {
-                                cart.product_details?.forEach(function (pd) {
-                                  for (
-                                    let j = 0;
-                                    j < resultProduct.length;
-                                    j++
-                                  ) {
-                                    if (pd.id === resultProduct[j]) {
-                                      resultProduct.splice(j, 1)
-                                    }
-                                  }
-                                })
-
-                                setSelectedProduct(resultProduct)
-                                setSelectedShop(resultShop)
-                                return
-                              }
-                            }
-
-                            // select shop checkbox
-                            cart.product_details?.forEach(function (pd) {
-                              resultProduct.push(pd.id)
-                            })
-                            setSelectedProduct(resultProduct)
-
-                            resultShop.push(cart.shop.id)
-                            setSelectedShop(resultShop)
-                          }}
-                        />
-                        <H2>{cart.shop.name}</H2>
-                      </label>
-                      {cart.product_details?.map((product, index) => (
-                        <div
-                          className="flex flex-col gap-5"
-                          key={`${index} ${product.id}`}
-                        >
-                          <ProductCart
-                            forCart={true}
-                            listProduct={product}
+                    <>
+                      <div className="z-0" key={`${cart.id} ${index}`}>
+                        <label className="flex-start mb-5 flex items-center gap-2">
+                          <input
+                            className={cx(
+                              ' checkbox ',
+                              selectedShop.findIndex((data) => {
+                                return data === cart.shop.id
+                              }) !== -1
+                                ? 'checkbox-primary'
+                                : ''
+                            )}
+                            type="checkbox"
                             checked={
-                              selectedProducts.findIndex((data) => {
-                                return data === product.id
+                              selectedShop.findIndex((data) => {
+                                return data === cart.shop.id
                               }) !== -1
                             }
                             onClick={() => {
-                              const value = product.id
+                              let resultProduct: string[] = []
                               let resultShop: string[] = []
+                              const value = cart.shop.id
 
-                              // select product checkbox
-                              resultShop = selectedShop.filter((sp) => {
-                                return cart.shop.id !== sp
+                              cart.product_details?.forEach(function (pd) {
+                                resultProduct = selectedProducts.filter(
+                                  (productId) => {
+                                    return productId !== pd.id
+                                  }
+                                )
                               })
 
-                              // unselect product checkbox
-                              for (
-                                let i = 0;
-                                i < selectedProducts.length;
-                                i++
-                              ) {
-                                if (selectedProducts[i] === value) {
-                                  const result: string[] =
-                                    selectedProducts.filter((productId) => {
-                                      return productId !== value
-                                    })
-                                  setSelectedProduct(result)
+                              resultShop = selectedShop.filter((ss) => {
+                                return cart.shop.id !== ss
+                              })
 
-                                  let unCheck = false
-                                  result.forEach(function (p) {
-                                    cart.product_details?.forEach(function (c) {
-                                      if (p === c.id) {
-                                        unCheck = true
+                              // unselect shop checkbox
+                              for (let i = 0; i < selectedShop.length; i++) {
+                                if (selectedShop[i] === value) {
+                                  cart.product_details?.forEach(function (pd) {
+                                    for (
+                                      let j = 0;
+                                      j < resultProduct.length;
+                                      j++
+                                    ) {
+                                      if (pd.id === resultProduct[j]) {
+                                        resultProduct.splice(j, 1)
                                       }
-                                    })
+                                    }
                                   })
-                                  if (!unCheck) {
-                                    setSelectedShop(resultShop)
-                                  }
 
+                                  setSelectedProduct(resultProduct)
+                                  setSelectedShop(resultShop)
                                   return
                                 }
                               }
 
-                              const newArray: string[] = []
-                              selectedProducts.forEach(function (sp) {
-                                newArray.push(sp)
+                              // select shop checkbox
+                              cart.product_details?.forEach(function (pd) {
+                                resultProduct.push(pd.id)
                               })
-                              newArray.push(value)
-                              setSelectedProduct(newArray)
+                              setSelectedProduct(resultProduct)
 
                               resultShop.push(cart.shop.id)
                               setSelectedShop(resultShop)
                             }}
                           />
+                          <P className="font-semibold text-lg items-center flex gap-2">
+                            <FaStore /> {cart.shop.name}
+                          </P>
+                        </label>
+                        <div className="flex flex-col gap-2">
+                          {cart.product_details?.map((product, index) => (
+                            <div
+                              className="flex flex-col"
+                              key={`${index} ${product.id}`}
+                            >
+                              <ProductCart
+                                forCart={true}
+                                listProduct={product}
+                                checked={
+                                  selectedProducts.findIndex((data) => {
+                                    return data === product.id
+                                  }) !== -1
+                                }
+                                onClick={() => {
+                                  const value = product.id
+                                  let resultShop: string[] = []
+
+                                  // select product checkbox
+                                  resultShop = selectedShop.filter((sp) => {
+                                    return cart.shop.id !== sp
+                                  })
+
+                                  // unselect product checkbox
+                                  for (
+                                    let i = 0;
+                                    i < selectedProducts.length;
+                                    i++
+                                  ) {
+                                    if (selectedProducts[i] === value) {
+                                      const result: string[] =
+                                        selectedProducts.filter((productId) => {
+                                          return productId !== value
+                                        })
+                                      setSelectedProduct(result)
+
+                                      let unCheck = false
+                                      result.forEach(function (p) {
+                                        cart.product_details?.forEach(function (
+                                          c
+                                        ) {
+                                          if (p === c.id) {
+                                            unCheck = true
+                                          }
+                                        })
+                                      })
+                                      if (!unCheck) {
+                                        setSelectedShop(resultShop)
+                                      }
+
+                                      return
+                                    }
+                                  }
+
+                                  const newArray: string[] = []
+                                  selectedProducts.forEach(function (sp) {
+                                    newArray.push(sp)
+                                  })
+                                  newArray.push(value)
+                                  setSelectedProduct(newArray)
+
+                                  resultShop.push(cart.shop.id)
+                                  setSelectedShop(resultShop)
+                                }}
+                              />
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                      {index !== Number(cartList.data.data?.rows.length) - 1 ? (
+                        <Divider />
+                      ) : (
+                        <></>
+                      )}
+                    </>
                   ))
                 ) : (
                   <></>
@@ -303,20 +332,43 @@ function Cart() {
             )}
 
             {cartList.data?.data?.total_pages === 0 ? (
-              <div className="z-0 flex h-full items-center rounded-lg border-[1px] border-solid border-gray-300 py-7 px-8">
-                <P className="flex w-full items-center justify-center font-extrabold">
-                  Cart is Empty!
+              <div className="z-0 flex flex-col h-full items-center rounded-lg py-7 px-8">
+                <div className="relative aspect-video w-full sm:w-96 md:w-[28rem]">
+                  <Image
+                    src={'/asset/tour.png'}
+                    className="object-cover"
+                    alt="Buy your first product"
+                    fill
+                  />
+                </div>
+                <P className="flex w-full mt-8 items-center justify-center font-semibold text-lg">
+                  Cart is Empty
                 </P>
+                <P className="text-sm font-light">Start shopping now!</P>
               </div>
             ) : (
               <></>
             )}
           </div>
-          <div>
-            <SummaryCart idProducts={selectedProducts} idShops={selectedShop} />
-          </div>
+          {xl ? (
+            <div className="">
+              <SummaryCart
+                idProducts={selectedProducts}
+                idShops={selectedShop}
+              />
+            </div>
+          ) : (
+            <></>
+          )}
         </div>
       </div>
+      {!xl ? (
+        <div className="relative">
+          <SummaryCart idProducts={selectedProducts} idShops={selectedShop} />
+        </div>
+      ) : (
+        <></>
+      )}
       <Footer />
     </>
   )

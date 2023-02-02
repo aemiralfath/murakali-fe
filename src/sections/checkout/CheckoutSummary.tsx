@@ -17,7 +17,7 @@ interface CheckoutSummaryProps {
     result_discount: number
   }
   postCheckout: PostCheckout
-  userWallet: WalletUser
+  userWallet?: WalletUser
   userSLP: SLPUser[]
 }
 
@@ -83,10 +83,10 @@ const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({
     }
   }, [postCheckout])
   return (
-    <div className=" h-fit rounded-lg border-[1px] border-solid border-gray-300   py-10">
+    <div className="">
       <H3 className="text-center">Checkout Summary</H3>
 
-      <div className="flex flex-col gap-y-5 px-5 py-5">
+      <div className="flex flex-col gap-y-5">
         <div className=" grid grid-cols-1 gap-1 lg:grid-cols-2 ">
           <div>Total Price ({mapPriceQuantity.quantity} item)</div>
           <div className="flex justify-start lg:justify-end">

@@ -301,7 +301,7 @@ const ProductPage: NextPage = () => {
   const { addFavorite, deleteFavorite, checkFavorite, countFavorite } =
     useProductFavorite(String(pid))
 
-  const seller = useGetSellerInfo(product.data?.data?.products_info.shop_id)
+  const seller = useGetSellerInfo(product.data?.data?.products_info?.shop_id)
   const { sellerProduct, similiarProduct, recommendedProduct } =
     useSellerProduct(
       seller.data?.data?.id,
@@ -450,6 +450,7 @@ const ProductPage: NextPage = () => {
                 selectVariant={selectVariant}
                 setSelectVariant={setSelectVariant}
                 variantNamesState={variantNamesState}
+                shopID={seller.data?.data?.id}
               />
             )}
           </div>

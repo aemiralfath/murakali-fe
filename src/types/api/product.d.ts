@@ -16,7 +16,7 @@ export interface ProductInfo {
   max_price: number
   category_name: string
   category_url: string
-  shop_id: string
+  shop_id?: string
 }
 
 export interface ProductDetail {

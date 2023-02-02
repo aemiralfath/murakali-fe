@@ -30,8 +30,8 @@ import FormPin from '../FormPin'
 import FormRegisterSealabsPay from '../FormRegisterSealabsPay'
 
 interface CheckoutSummaryProps {
-  userWallet: WalletUser
   userSLP: SLPUser[]
+  userWallet?: WalletUser
   postCheckout?: PostCheckout
   totalOrder?: number
   transaction?: Transaction
@@ -72,18 +72,18 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   }, [getUserSLP.isSuccess])
 
   useEffect(() => {
-    if (userWallet.unlocked_at.Valid) {
+    if (userWallet?.unlocked_at.Valid) {
       const unlockTime = moment(userWallet.unlocked_at.Time)
       const unlockTimeSecond = Math.abs(moment().diff(unlockTime, 'seconds'))
       const unlockTimeMinute = Math.floor(unlockTimeSecond / 60)
       setMinute(unlockTimeMinute)
       setSecond(unlockTimeSecond - unlockTimeMinute * 60)
     }
-  }, [userWallet.unlocked_at.Valid])
+  }, [userWallet?.unlocked_at.Valid])
 
   useEffect(() => {
     second > 0 && setTimeout(() => setSecond(second - 1), 1000)
-    if (second === 0) {
+    if (userWallet && second === 0) {
       if (minute <= 0) {
         setBlocked(false)
         setSelected(userWallet.id)
@@ -96,7 +96,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
     if (
       second > 0 &&
       minute > 0 &&
-      moment().isBefore(moment(userWallet.unlocked_at.Time))
+      moment().isBefore(moment(userWallet?.unlocked_at.Time))
     ) {
       setBlocked(true)
     }
@@ -105,7 +105,8 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   useEffect(() => {
     const tempPaymentOption = transaction
       ? []
-      : [
+      : userWallet
+      ? [
           {
             id: userWallet.id,
             name: 'Wallet',
@@ -113,6 +114,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
             image: walletImage.src,
           },
         ]
+      : []
     setPaymentOption([])
 
     const slps = userSLPs.map((slp) => {
@@ -127,10 +129,10 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value
-    if (value !== userWallet.id) {
+    if (userWallet && value !== userWallet.id) {
       setSelected(value)
     } else {
-      if (userWallet.balance - totalOrder >= 0 && !blocked) {
+      if (Number(userWallet?.balance) - totalOrder >= 0 && !blocked) {
         setSelected(value)
       }
     }
@@ -195,7 +197,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   }, [transaction])
 
   useEffect(() => {
-    if (userWallet.balance - totalOrder >= 0 && !blocked) {
+    if (userWallet && userWallet.balance - totalOrder >= 0 && !blocked) {
       setSelected(userWallet.id)
     } else {
       setSelected('')

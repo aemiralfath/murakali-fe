@@ -47,7 +47,7 @@ const P: React.FC<PProps> = ({ className, ...rest }) => {
   return <p className={cx('', className ?? '')} {...rest} />
 }
 
-interface AProps extends React.HTMLAttributes<HTMLAnchorElement> {
+interface AProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   underline?: boolean
 }
 const A: React.FC<AProps> = ({ underline, className, ...rest }) => {
