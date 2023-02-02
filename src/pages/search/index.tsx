@@ -15,6 +15,7 @@ import SellerLayout from '@/sections/search/SellerLayout'
 import type { ProductQuery } from '@/types/api/product'
 
 import type { NextPage } from 'next'
+import qs from 'qs'
 
 const SearchPage: NextPage = () => {
   const router = useRouter()
@@ -24,20 +25,23 @@ const SearchPage: NextPage = () => {
 
   const [productOrShop, setProductOrShop] = useState<number>(1)
 
-  const [queryParam, setQueryParam] = useState<Map<string, string>>(
-    new Map<string, string>()
-  )
-  const handleUpdateQuery = (k: string, v: string) => {
-    queryParam.set(k, v)
-    setQueryParam(queryParam)
-  }
-  const handleDeleteQuery = (k: string) => {
-    queryParam.delete(k)
-    setQueryParam(queryParam)
-  }
-
-  const [flag, setFlag] = useState(true)
-  const [locationState, setLocationState] = useState('')
+  const [queryParam, setQueryParam] = useState<ProductQuery>({
+    limit: 30,
+    page: 1,
+    min_price: 0,
+    max_price: INF,
+    max_rating: 5,
+  })
+  useEffect(() => {
+    setQueryParam({
+      ...queryParam,
+      category: typeof catName === 'string' ? catName : undefined,
+      search: typeof keyword === 'string' ? keyword : undefined,
+      sort_by: typeof sort_by === 'string' ? sort_by : undefined,
+      sort: typeof sort === 'string' ? sort : undefined,
+      min_rating: typeof rating === 'string' ? parseInt(rating) : undefined,
+    })
+  }, [catName, keyword, sort_by, sort, rating])
 
   const controller = useProductListing()
   const {
@@ -45,157 +49,73 @@ const SearchPage: NextPage = () => {
     setFilterKeyword,
     sortBy,
     setSortBy,
-    filterPrice,
     filterRating,
     setFilterRating,
-    filterLocation,
     filterCategory,
     setFilterCategory,
+    filterPrice,
+    filterLocation,
     page,
   } = controller
 
   useEffect(() => {
-    if (sort !== undefined) {
-      setSortBy({ sort_by: String(sort_by), sort: String(sort) })
+    if (router.isReady) {
+      const query = qs.stringify(
+        {
+          catName: filterCategory === '' ? null : filterCategory,
+          keyword: filterKeyword === '' ? null : filterKeyword,
+          sort: sortBy.sort === '' ? null : sortBy.sort,
+          sort_by: sortBy.sort_by === '' ? null : sortBy.sort_by,
+          rating: filterRating === -1 ? null : filterRating,
+        },
+        { skipNulls: true }
+      )
+      router.push('/search?' + query)
     }
-    setFlag(true)
-  }, [sort])
+  }, [filterKeyword, sortBy, filterRating, filterCategory])
 
   useEffect(() => {
-    if (sortBy.sort_by !== '') {
-      handleUpdateQuery('sort_by', sortBy.sort_by)
-    } else if (sortBy.sort_by === '') {
-      handleDeleteQuery('sort_by')
-    }
-
-    if (sortBy.sort !== '') {
-      handleUpdateQuery('sort', sortBy.sort)
-    } else if (sortBy.sort === '') {
-      handleDeleteQuery('sort')
-    }
-    setFlag(true)
-  }, [sortBy])
-
-  useEffect(() => {
-    if (filterPrice === undefined) {
-      handleDeleteQuery('min_price')
-      handleDeleteQuery('max_price')
-    } else {
-      handleUpdateQuery('min_price', String(filterPrice.min))
-      handleUpdateQuery('max_price', String(filterPrice.max))
-    }
-
-    setFlag(true)
-  }, [filterPrice])
-
-  useEffect(() => {
-    if (filterRating === -1) {
-      handleDeleteQuery('rating')
-    } else {
-      handleUpdateQuery('rating', String(filterRating))
-    }
-    setFlag(true)
-  }, [filterRating])
-
-  useEffect(() => {
-    let locationQuery = ''
-    filterLocation.map((provinceDetail) => {
-      if (locationQuery === '') {
-        locationQuery = provinceDetail.province_id
-      } else {
-        locationQuery = locationQuery + ',' + provinceDetail.province_id
-      }
-    })
-    if (locationQuery === '') {
-      setLocationState('')
-      handleDeleteQuery('location')
-    } else {
-      setLocationState(locationQuery)
-      handleUpdateQuery('location', locationQuery)
-    }
-    setFlag(true)
-  }, [filterLocation])
-
-  useEffect(() => {
-    handleUpdateQuery('page', String(page))
-    setFlag(true)
-  }, [page])
-
-  useEffect(() => {
-    if (catName === undefined) {
-      setFilterCategory('')
-      handleDeleteQuery('category')
-    } else {
-      setFilterCategory(String(catName))
-      handleUpdateQuery('category', String(catName))
-    }
-    setFlag(true)
-  }, [catName])
-
-  useEffect(() => {
-    if (keyword === undefined) {
-      setFilterKeyword('')
-    } else {
+    if (keyword !== undefined) {
       setFilterKeyword(String(keyword))
     }
   }, [keyword])
 
   useEffect(() => {
-    if (rating !== undefined) {
-      setFilterRating(Number(rating))
+    if (sort !== undefined) {
+      setSortBy({ sort_by: String(sort_by), sort: String(sort) })
+    }
+  }, [sort, sort_by])
+
+  useEffect(() => {
+    if (catName === undefined) {
+      setFilterCategory('')
+    } else {
+      setFilterCategory(String(catName))
+    }
+  }, [catName])
+
+  useEffect(() => {
+    if (typeof rating === 'string') {
+      setFilterRating(parseInt(rating))
     }
   }, [rating])
 
-  const productQuery: ProductQuery = {
-    search: filterKeyword.replace('%', '%25'),
-    category: filterCategory,
-    limit: 30,
+  const SearchProductList = useSearchQueryProduct({
+    ...queryParam,
+    min_price: filterPrice?.min,
+    max_price: filterPrice?.max,
+    province_ids: filterLocation.reduce((prev, curr, idx) => {
+      if (idx === 0) {
+        return curr.province_id
+      } else {
+        return `${prev},${curr.province_id}`
+      }
+    }, ''),
     page: page,
-    sort_by: sortBy.sort_by,
-    sort: sortBy.sort,
-    min_price: filterPrice !== undefined ? filterPrice.min : 0,
-    max_price: filterPrice !== undefined ? filterPrice.max : INF,
-    min_rating: filterRating,
-    max_rating: 5,
-    shop_id: '',
-    province_ids: locationState,
-  }
-
-  const SearchProductList = useSearchQueryProduct(productQuery)
+  })
 
   const [pageShop, setPageShop] = useState<number>(1)
-  const SearchShopList = useGetAllSellers(filterKeyword, pageShop)
-
-  useEffect(() => {
-    if (flag === true) {
-      let stringQuery = ''
-      let fr = false
-      queryParam.forEach((value, key) => {
-        if (fr === true) {
-          stringQuery = stringQuery + '&'
-        }
-        stringQuery = stringQuery + key + '=' + value
-        fr = true
-      })
-      let num1 = 0
-      let num2 = 0
-      if (SearchProductList.data?.data) {
-        num1 =
-          (SearchProductList.data.data.page - 1) *
-            SearchProductList.data.data.limit +
-          1
-        num2 = num1 + SearchProductList.data.data.limit - 1
-        if (num2 > SearchProductList.data.data.total_rows) {
-          num2 = SearchProductList.data.data.total_rows
-        }
-      }
-
-      router.push({
-        pathname: `/search`,
-        query: stringQuery,
-      })
-    }
-  }, [flag])
+  const SearchShopList = useGetAllSellers(String(keyword), pageShop)
 
   return (
     <>
@@ -204,7 +124,7 @@ const SearchPage: NextPage = () => {
         <meta name="description" content="Murakali E-Commerce Application" />
       </Head>
       <MainLayout>
-        <div className="my-2 flex h-fit w-full max-w-full justify-center space-x-10 overflow-x-auto overflow-y-hidden whitespace-nowrap border-b-[2px]">
+        <div className="my-2 flex h-fit w-full max-w-full justify-center space-x-10 overflow-x-auto overflow-y-hidden whitespace-nowrap border-b-[1px]">
           <button
             onClick={() => setProductOrShop(1)}
             className={cx(

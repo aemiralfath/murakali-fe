@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { HiPlus } from 'react-icons/hi'
+import { HiLockOpen, HiPlus } from 'react-icons/hi'
 import { useDispatch } from 'react-redux'
 
 import { useRouter } from 'next/router'
@@ -13,8 +13,9 @@ import { Button, P } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import cx from '@/helper/cx'
 import { validateUUID } from '@/helper/uuid'
-import { useModal } from '@/hooks'
+import { useModal, useSelector } from '@/hooks'
 import { closeModal } from '@/redux/reducer/modalReducer'
+import { clearNewestPayment } from '@/redux/reducer/newestPaymentReducer'
 import type { PostCheckout } from '@/types/api/checkout'
 import type { APIResponse } from '@/types/api/response'
 import type { SLPUser } from '@/types/api/slp'
@@ -30,8 +31,8 @@ import FormPin from '../FormPin'
 import FormRegisterSealabsPay from '../FormRegisterSealabsPay'
 
 interface CheckoutSummaryProps {
-  userWallet: WalletUser
   userSLP: SLPUser[]
+  userWallet?: WalletUser
   postCheckout?: PostCheckout
   totalOrder?: number
   transaction?: Transaction
@@ -47,6 +48,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   const modal = useModal()
   const getUserSLP = useGetUserSLP()
   const [userSLPs, seUserSLPs] = useState<SLPUser[]>([])
+  const newestPayment = useSelector((state) => state.newestPayment)
 
   const [selected, setSelected] = useState('')
   const dispatch = useDispatch()
@@ -62,6 +64,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
       name: string
       balance?: number
       image: string
+      active: boolean
     }>
   >([])
 
@@ -72,18 +75,18 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   }, [getUserSLP.isSuccess])
 
   useEffect(() => {
-    if (userWallet.unlocked_at.Valid) {
+    if (userWallet?.unlocked_at.Valid) {
       const unlockTime = moment(userWallet.unlocked_at.Time)
       const unlockTimeSecond = Math.abs(moment().diff(unlockTime, 'seconds'))
       const unlockTimeMinute = Math.floor(unlockTimeSecond / 60)
       setMinute(unlockTimeMinute)
       setSecond(unlockTimeSecond - unlockTimeMinute * 60)
     }
-  }, [userWallet.unlocked_at.Valid])
+  }, [userWallet?.unlocked_at.Valid])
 
   useEffect(() => {
     second > 0 && setTimeout(() => setSecond(second - 1), 1000)
-    if (second === 0) {
+    if (userWallet && second === 0) {
       if (minute <= 0) {
         setBlocked(false)
         setSelected(userWallet.id)
@@ -96,30 +99,42 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
     if (
       second > 0 &&
       minute > 0 &&
-      moment().isBefore(moment(userWallet.unlocked_at.Time))
+      moment().isBefore(moment(userWallet?.unlocked_at.Time))
     ) {
       setBlocked(true)
     }
   }, [second])
 
   useEffect(() => {
+    setPaymentOption([])
+
     const tempPaymentOption = transaction
       ? []
-      : [
+      : userWallet
+      ? [
           {
             id: userWallet.id,
             name: 'Wallet',
             balance: userWallet.balance,
             image: walletImage.src,
+            active: true,
           },
         ]
-    setPaymentOption([])
+      : [
+          {
+            id: 'inactive',
+            name: 'Wallet',
+            active: false,
+            image: walletImage.src,
+          },
+        ]
 
     const slps = userSLPs.map((slp) => {
       return {
         id: slp.card_number,
         name: slp.name,
         image: sealabsImage.src,
+        active: true,
       }
     })
     setPaymentOption([...tempPaymentOption, ...slps])
@@ -127,10 +142,10 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value
-    if (value !== userWallet.id) {
+    if (userWallet && value !== userWallet.id) {
       setSelected(value)
     } else {
-      if (userWallet.balance - totalOrder >= 0 && !blocked) {
+      if (Number(userWallet?.balance) - totalOrder >= 0 && !blocked) {
         setSelected(value)
       }
     }
@@ -141,6 +156,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
 
   function handleTransaction() {
     if (postCheckout) {
+      dispatch(clearNewestPayment())
       if (validateUUID(selected)) {
         modalPIN.info({
           title: 'Input PIN',
@@ -195,7 +211,9 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   }, [transaction])
 
   useEffect(() => {
-    if (userWallet.balance - totalOrder >= 0 && !blocked) {
+    if (newestPayment.card_number !== undefined) {
+      setSelected(newestPayment.card_number)
+    } else if (userWallet && userWallet.balance - totalOrder >= 0 && !blocked) {
       setSelected(userWallet.id)
     } else {
       setSelected('')
@@ -232,79 +250,105 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
   }, [createTransaction.isError])
 
   return (
-    <div className="grid grid-cols-1 gap-2">
-      <div className="cursor-pointer">
-        {paymentOption.length != 0 &&
-          paymentOption.map((paymentOption, index) => (
-            <label key={index}>
+    <div className={cx('grid grid-cols-1 gap-2')}>
+      <div className="">
+        {paymentOption.map((paymentOption, index) => (
+          <label key={index}>
+            <div
+              className={cx(
+                'col-span-3 my-2 h-fit rounded-lg border p-4',
+                selected === paymentOption.id
+                  ? 'border-primary ring-1 ring-primary'
+                  : '',
+                paymentOption.name === 'Wallet' && blocked
+                  ? 'bg-base-300 cursor-not-allowed'
+                  : 'cursor-pointer'
+              )}
+            >
               <div
                 className={cx(
-                  'col-span-3 my-2 h-fit rounded-lg border p-4',
-                  selected === paymentOption.id
-                    ? 'border-primary ring-1 ring-primary'
-                    : ''
+                  'flex-start flex items-center justify-between gap-2'
                 )}
               >
-                <div
-                  className={cx(
-                    'flex-start flex items-center justify-between gap-2',
-                    paymentOption.balance &&
-                      (paymentOption.balance - totalOrder < 0 || blocked)
-                      ? 'bg-slate-200'
-                      : ''
-                  )}
-                >
-                  <div className="flex aspect-[4/3] h-14 items-center justify-center rounded-lg bg-base-200">
-                    <img
-                      className="h-6 w-6 rounded-t-lg"
-                      src={paymentOption.image}
-                      alt={'payment option'}
-                    />
-                  </div>
-
-                  <div className="flex-1 overflow-hidden">
-                    <div className="col-span-3 flex flex-col ">
-                      <P className="font-semibold">{paymentOption.name}</P>
-                      {paymentOption.name === 'Wallet' ? (
-                        <P className="text-sm">
-                          Rp{ConvertShowMoney(paymentOption.balance ?? 0)}
-                        </P>
-                      ) : (
-                        <P className="text-sm">{paymentOption.id}</P>
-                      )}
-                    </div>
-                  </div>
-                  {paymentOption.balance ? (
-                    paymentOption.balance - totalOrder < 0 ? (
-                      <Button type="button" buttonType="primary" size="sm">
-                        Top up
-                      </Button>
-                    ) : blocked ? (
-                      <div className="mt-2">
-                        <span className="mx-2 mt-2">
-                          {minute} : {second < 10 ? <>0</> : <></>}
-                          {second}
-                        </span>
-                      </div>
-                    ) : (
-                      ''
-                    )
-                  ) : (
-                    ''
-                  )}
-                  <input
-                    className="radio-primary radio mx-3 border-base-300"
-                    type="radio"
-                    name={'PaymentOption-' + String(paymentOption.id)}
-                    readOnly
-                    value={paymentOption.id}
-                    checked={selected === paymentOption.id}
-                    onChange={handleChange}
+                <div className="flex aspect-[4/3] h-14 items-center justify-center rounded-lg bg-base-200">
+                  <img
+                    className="h-6 w-6 rounded-t-lg"
+                    src={paymentOption.image}
+                    alt={'payment option'}
                   />
                 </div>
+
+                <div className="flex-1 overflow-hidden">
+                  <div className="col-span-3 flex flex-col ">
+                    <P className="font-semibold">{paymentOption.name}</P>
+                    {paymentOption.name === 'Wallet' ? (
+                      <P className="text-sm">
+                        {paymentOption.balance ? (
+                          `Rp${ConvertShowMoney(paymentOption.balance)}`
+                        ) : paymentOption.active ? (
+                          'Rp0'
+                        ) : (
+                          <div>
+                            <Button
+                              size="xs"
+                              buttonType="gray"
+                              onClick={() => {
+                                router.push('/wallet')
+                                dispatch(closeModal())
+                              }}
+                            >
+                              <HiLockOpen /> Activate Wallet
+                            </Button>
+                          </div>
+                        )}
+                      </P>
+                    ) : (
+                      <P className="text-sm">{paymentOption.id}</P>
+                    )}
+                  </div>
+                </div>
+                {blocked && paymentOption.name === 'Wallet' ? (
+                  <div className="flex items-center flex-col justify-center">
+                    <span className="px-1 py-0.5 bg-white rounded">
+                      {minute} : {second < 10 ? <>0</> : <></>}
+                      {second}
+                    </span>
+                    <P className="mt-1 text-xs italic">Temporarily Blocked</P>
+                  </div>
+                ) : (
+                  ''
+                )}
+                {paymentOption.active ? (
+                  paymentOption.name === 'Wallet' &&
+                  (paymentOption.balance ?? 0) - totalOrder < 0 ? (
+                    <Button
+                      size="xs"
+                      buttonType="gray"
+                      onClick={() => {
+                        router.push('/wallet')
+                        dispatch(closeModal())
+                      }}
+                    >
+                      Top Up
+                    </Button>
+                  ) : (
+                    <input
+                      className="radio-primary radio mx-3 border-base-300"
+                      type="radio"
+                      name={'PaymentOption-' + String(paymentOption.id)}
+                      readOnly
+                      value={paymentOption.id}
+                      checked={selected === paymentOption.id}
+                      onChange={handleChange}
+                    />
+                  )
+                ) : (
+                  <></>
+                )}
               </div>
-            </label>
-          ))}
+            </div>
+          </label>
+        ))}
 
         <div className="mb-4 mt-4 flex justify-center">
           <Button

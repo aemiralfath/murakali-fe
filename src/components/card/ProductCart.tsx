@@ -1,15 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import { HiTrash } from 'react-icons/hi'
+import { HiMinus, HiPencilAlt, HiPlus, HiTrash } from 'react-icons/hi'
 import { useDispatch } from 'react-redux'
 
-import Image from 'next/image'
-
 import { useDeleteCart, useUpdateCart } from '@/api/user/cart'
-import { Button, H4, P, TextInput } from '@/components'
+import { A, Button, P, TextInput } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
-import { useModal } from '@/hooks'
+import cx from '@/helper/cx'
+import { useDebounce, useModal } from '@/hooks'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { ProductCartDetail } from '@/types/api/cart'
 import type { APIResponse } from '@/types/api/response'
@@ -37,6 +36,57 @@ const ProductCart: React.FC<ProductCartProps> = ({
 
   const dispatch = useDispatch()
 
+  const [tempQty, setTempQty] = useState(listProduct.quantity)
+  const debouncedQty = useDebounce(tempQty)
+
+  const [openNote, setOpenNote] = useState(false)
+
+  useEffect(() => {
+    if (tempQty !== listProduct.quantity) {
+      if (debouncedQty <= 0) {
+        modal.edit({
+          title: 'Delete Cart',
+          content: (
+            <>
+              <P>Do you really want to delete this item?</P>
+              <div className="mt-2 flex justify-end gap-2">
+                <Button
+                  type="button"
+                  buttonType="primary"
+                  onClick={() => {
+                    setTempQty(listProduct.quantity)
+                    dispatch(closeModal())
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  buttonType="gray"
+                  onClick={() => {
+                    deleteCart.mutate(listProduct.id)
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
+            </>
+          ),
+          closeButton: false,
+        })
+      } else {
+        updateCart.mutate({
+          id: listProduct.id,
+          quantity: debouncedQty,
+        })
+      }
+    }
+  }, [debouncedQty])
+
+  useEffect(() => {
+    setTempQty(listProduct.quantity)
+  }, [listProduct])
+
   useEffect(() => {
     if (updateCart.isSuccess) {
       toast.success('Successfully update cart')
@@ -48,6 +98,7 @@ const ProductCart: React.FC<ProductCartProps> = ({
     if (updateCart.isError) {
       const errmsg = updateCart.failureReason as AxiosError<APIResponse<null>>
       toast.error(errmsg.response?.data.message as string)
+      setTempQty(listProduct.quantity)
     }
   }, [updateCart.isError])
 
@@ -78,71 +129,85 @@ const ProductCart: React.FC<ProductCartProps> = ({
     }
   }, [input])
   return (
-    <div>
-      <div className="z-0 mb-5 rounded-lg border-[1px] border-solid border-gray-300 py-5 px-2 transition-all hover:shadow-xl sm:px-8">
-        <div className="flex flex-wrap justify-around gap-3 ">
-          <div className="align-center  flex-start flex  justify-between gap-x-4 ">
-            {forCart ? (
-              <input
-                className="checkbox-primary checkbox my-auto"
-                type="checkbox"
-                checked={rest.checked}
-                defaultChecked={rest.checked}
-                {...rest}
-              />
-            ) : (
-              <></>
-            )}
-            <Image
-              className="h-24 w-24 rounded-t-lg object-contain "
-              width={100}
-              height={100}
-              alt={listProduct.title + ' photo'}
-              src={listProduct.thumbnail_url}
-              loading="lazy"
-              onError={({ currentTarget }) => {
-                currentTarget.onerror = null
-                currentTarget.src = '/asset/no-image.png'
-              }}
+    <div
+      className={cx(
+        'z-0 rounded border-[1px] p-2.5 border-solid transition-all',
+        rest.checked ? 'border-primary border-opacity-50' : ''
+      )}
+    >
+      <div className="flex flex-wrap justify-between gap-2.5 ">
+        <div className="align-center  flex-start flex justify-between">
+          {forCart ? (
+            <input
+              className={cx(
+                'checkbox-sm checkbox mr-2.5',
+                rest.checked ? 'checkbox-primary' : ''
+              )}
+              type="checkbox"
+              checked={rest.checked}
+              defaultChecked={rest.checked}
+              readOnly
+              {...rest}
             />
-          </div>
-          <div
-            className={
-              forCart ? 'w-80 text-center sm:text-left xl:ml-4' : 'w-80  '
-            }
-          >
-            <H4 className="font-bold">{listProduct.title}</H4>
-
-            <P className="mt-3">Variant:</P>
-            <P className="text-gray-400">
-              {Object.keys(listProduct.variant).map((key) => {
-                return `${key}: ${listProduct.variant[key]} `
-              })}
-            </P>
-          </div>
-          <div className="my-auto">
-            <P className="">Unit Price :</P>{' '}
+          ) : (
+            <></>
+          )}
+          <img
+            className="h-24 w-24 object-contain "
+            width={100}
+            height={100}
+            alt={listProduct.title + ' photo'}
+            src={listProduct.thumbnail_url}
+            loading="lazy"
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null
+              currentTarget.src = '/asset/no-image.png'
+            }}
+          />
+        </div>
+        <div className={'flex-1 min-w-[200px]'}>
+          <P className="font-semibold line-clamp-2">{listProduct.title}</P>
+          <P className="mt-1 text-sm">Variant:</P>
+          <P className="text-gray-400 text-sm -mt-[2px]">
+            {Object.keys(listProduct.variant).map((key) => {
+              return `${key}: ${listProduct.variant[key]} `
+            })}
+          </P>
+          {forCart ? (
+            <></>
+          ) : (
+            <div className="ml-0 mt-2 max-w-sm">
+              {!openNote ? (
+                <A
+                  underline
+                  className="text-sm flex items-center gap-1"
+                  onClick={() => {
+                    setOpenNote(true)
+                  }}
+                >
+                  <HiPencilAlt />
+                  Add Note
+                </A>
+              ) : (
+                <TextInput
+                  type="text"
+                  name="note"
+                  inputSize="sm"
+                  placeholder="Please input note"
+                  onChange={handleChange}
+                  value={input.note}
+                  full
+                />
+              )}
+            </div>
+          )}
+        </div>
+        <div className="flex gap-2.5 min-w-[25%] justify-center">
+          <div className="w-fit my-auto">
+            <P className="font-semibold text-sm">Sub Total :</P>
             {listProduct.promo.sub_price === 0 ? (
-              <P>Rp. {ConvertShowMoney(listProduct.product_price)}</P>
-            ) : (
-              <>
-                <P className="items-center text-slate-400 ">
-                  <span className="text-[0.6rem] line-through">Rp.</span>
-
-                  <span className="text-[0.7rem] line-through">
-                    {ConvertShowMoney(listProduct.product_price)}
-                  </span>
-                </P>
-                <P>Rp. {ConvertShowMoney(listProduct.promo.sub_price)}</P>
-              </>
-            )}
-          </div>
-          <div className="my-auto">
-            <P className="font-bold text-primary"> Sub Total :</P>
-
-            {listProduct.promo.sub_price === 0 ? (
-              <P className="font-bold text-primary">
-                Rp.{' '}
+              <P className="font-bold text-lg -mt-1">
+                Rp
                 {ConvertShowMoney(
                   listProduct.product_price * listProduct.quantity
                 )}
@@ -150,8 +215,7 @@ const ProductCart: React.FC<ProductCartProps> = ({
             ) : (
               <>
                 <P className="items-center text-slate-400 ">
-                  <span className="text-[0.6rem] line-through">Rp.</span>
-
+                  <span className="text-[0.6rem] line-through">Rp</span>
                   <span className="text-[0.7rem] line-through">
                     {ConvertShowMoney(
                       listProduct.product_price * listProduct.quantity
@@ -159,140 +223,103 @@ const ProductCart: React.FC<ProductCartProps> = ({
                   </span>
                 </P>
                 <P className="font-bold text-primary">
-                  Rp.{' '}
+                  Rp{' '}
                   {ConvertShowMoney(
                     listProduct.promo.sub_price * listProduct.quantity
                   )}
                 </P>
               </>
             )}
+            <div className="mt-1 text-sm">
+              {listProduct.promo.sub_price === 0 ? (
+                <p>Rp{ConvertShowMoney(listProduct.product_price)}/pcs</p>
+              ) : (
+                <>
+                  <p className="items-center text-slate-400 ">
+                    <span className="text-[0.6rem] line-through">Rp</span>
+                    <span className="text-[0.7rem] line-through">
+                      {ConvertShowMoney(listProduct.product_price)}
+                    </span>
+                  </p>
+                  <p>Rp.{ConvertShowMoney(listProduct.promo.sub_price)}/pcs</p>
+                </>
+              )}
+            </div>
           </div>
-          {forCart ? (
-            <div className="flex items-center justify-center gap-2">
-              <button
-                onClick={() => {
-                  if (listProduct.quantity <= 1) {
-                    modal.edit({
-                      title: 'Delete Cart',
-                      content: (
-                        <>
-                          <P>Do you really want to delete this cart?</P>
-                          <div className="mt-2 flex justify-end gap-2">
-                            <Button
-                              type="button"
-                              buttonType="primary"
-                              onClick={() => {
-                                dispatch(closeModal())
-                              }}
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              type="button"
-                              buttonType="gray"
-                              onClick={() => {
-                                deleteCart.mutate(listProduct.id)
-                              }}
-                            >
-                              Delete
-                            </Button>
-                          </div>
-                        </>
-                      ),
-                      closeButton: false,
-                    })
-                  } else if (listProduct.quantity > 1) {
-                    updateCart.mutate({
-                      id: listProduct.id,
-                      quantity: listProduct.quantity - 1,
-                    })
-                  }
-                }}
-                className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-400"
-              >
-                -
-              </button>
+        </div>
+        {forCart ? (
+          <div className="flex items-center justify-center gap-2">
+            <button
+              onClick={() => {
+                if (tempQty >= 1) {
+                  setTempQty(tempQty - 1)
+                }
+              }}
+              className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-400 text-gray-500"
+            >
+              <HiMinus />
+            </button>
+            <P className="flex h-8 w-8 items-center justify-center">
+              {tempQty}
+            </P>
+            <button
+              onClick={() => {
+                setTempQty(tempQty + 1)
+              }}
+              className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-400 text-gray-500"
+            >
+              <HiPlus />
+            </button>
+
+            <button
+              onClick={() => {
+                modal.edit({
+                  title: 'Delete Cart',
+                  content: (
+                    <>
+                      <P>Do you really want to delete this item?</P>
+                      <div className="mt-2 flex justify-end gap-2">
+                        <Button
+                          type="button"
+                          buttonType="primary"
+                          onClick={() => {
+                            dispatch(closeModal())
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          type="button"
+                          buttonType="gray"
+                          onClick={() => {
+                            deleteCart.mutate(listProduct.id)
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    </>
+                  ),
+                  closeButton: false,
+                })
+              }}
+              className="btn-outline btn-error ml-8 mr-4 flex h-8 w-8 items-center justify-center rounded-full border-2 border-error"
+            >
+              <HiTrash />
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="flex items-center justify-end gap-2">
+              <P>Quantity :</P>
               <P className="flex h-8 w-8 items-center justify-center">
                 {listProduct.quantity}
               </P>
-
-              <button
-                onClick={() => {
-                  updateCart.mutate({
-                    id: listProduct.id,
-                    quantity: listProduct.quantity + 1,
-                  })
-                }}
-                className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-400"
-              >
-                +
-              </button>
-
-              <button
-                onClick={() => {
-                  modal.edit({
-                    title: 'Delete Cart',
-                    content: (
-                      <>
-                        <P>Do you really want to delete this cart?</P>
-                        <div className="mt-2 flex justify-end gap-2">
-                          <Button
-                            type="button"
-                            buttonType="primary"
-                            onClick={() => {
-                              dispatch(closeModal())
-                            }}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            type="button"
-                            buttonType="gray"
-                            onClick={() => {
-                              deleteCart.mutate(listProduct.id)
-                            }}
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                      </>
-                    ),
-                    closeButton: false,
-                  })
-                }}
-                className="btn-outline btn-error ml-8 flex h-8 w-8 items-center justify-center rounded-full border-2 border-error"
-              >
-                <HiTrash />
-              </button>
             </div>
-          ) : (
-            <>
-              <div className="flex items-center justify-end gap-2">
-                <P>Quantity :</P>
-                <P className="flex h-8 w-8 items-center justify-center">
-                  {listProduct.quantity}
-                </P>
-              </div>
-            </>
-          )}
-        </div>
-        <div>
-          {forCart ? (
-            <></>
-          ) : (
-            <div className="ml-0 mt-3 max-w-sm lg:ml-7">
-              <TextInput
-                type="text"
-                name="note"
-                placeholder="please input note"
-                onChange={handleChange}
-                value={input.note}
-                full
-              />
-            </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
+      <div></div>
     </div>
   )
 }

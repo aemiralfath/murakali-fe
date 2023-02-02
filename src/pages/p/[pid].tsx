@@ -305,7 +305,7 @@ const ProductPage: NextPage = () => {
   const { addFavorite, deleteFavorite, checkFavorite, countFavorite } =
     useProductFavorite(String(pid))
 
-  const seller = useGetSellerInfo(product.data?.data?.products_info.shop_id)
+  const seller = useGetSellerInfo(product.data?.data?.products_info?.shop_id)
   const { sellerProduct, similiarProduct, recommendedProduct } =
     useSellerProduct(
       seller.data?.data?.id,
@@ -454,6 +454,7 @@ const ProductPage: NextPage = () => {
                 selectVariant={selectVariant}
                 setSelectVariant={setSelectVariant}
                 variantNamesState={variantNamesState}
+                shopID={seller.data?.data?.id}
                 promotionInfo={product.data?.data?.promotions_info}
               />
             )}
@@ -568,7 +569,8 @@ const ProductPage: NextPage = () => {
               .map((_, idx) => {
                 return <ProductCard key={`${idx}`} data={undefined} isLoading />
               })
-          ) : similiarProduct.data?.data ? (
+          ) : similiarProduct.data?.data &&
+            similiarProduct.data.data.rows !== null ? (
             similiarProduct.data.data.rows.map((product, idx) => {
               return (
                 <ProductCard

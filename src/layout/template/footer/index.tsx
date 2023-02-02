@@ -26,7 +26,7 @@ const SocialMediaBtn: React.FC<{ icon: React.ReactNode; href: string }> = ({
 
 const Footer = () => {
   return (
-    <div className="relative mt-32 w-full rounded-t-xl text-white">
+    <div className="-z-10 relative mt-32 w-full rounded-t-xl text-white">
       <div className="flex w-full flex-col items-center gap-5 bg-primary p-8">
         <div className="max-w-[8rem]">
           <Icon />

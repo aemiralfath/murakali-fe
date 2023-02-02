@@ -11,8 +11,8 @@ const CategorySearch = () => {
     setKeyword(keyword)
   }, [keyword])
   return (
-    <div className="z-50 flex w-full -translate-y-[2.5rem] justify-center lg:-translate-y-[0.5rem]">
-      <div className="hidden items-center gap-4 rounded-full bg-white shadow-md sm:flex sm:px-12 sm:py-5">
+    <div className="z-0 flex w-full -translate-y-[2.5rem] justify-center lg:-translate-y-[0.5rem]">
+      <div className="z-0 hidden items-center gap-4 rounded-full bg-white shadow-md sm:flex sm:px-12 sm:py-5">
         <input
           placeholder="Search"
           className="transition-color border-b-[1px] p-2 focus-visible:border-primary focus-visible:outline-none"
