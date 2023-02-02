@@ -412,7 +412,7 @@ const OrderCard: React.FC<
                         </A>{' '}
                         has been rejected at{' '}
                         {moment(
-                          getRefundThread.data?.data?.refund_data.rejected_at
+                          getRefundThread.data?.data?.refund_data?.rejected_at
                             .Time
                         )
                           .utcOffset(420)
