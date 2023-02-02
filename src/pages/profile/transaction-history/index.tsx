@@ -9,15 +9,16 @@ import {
   HiOutlineShieldCheck,
   HiShoppingCart,
 } from 'react-icons/hi'
-
+import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import { useCompleteOrder, useGetOrders, useReceiveOrder } from '@/api/order'
 import { useGetTransactions } from '@/api/transaction'
+import { useGetRefundThread } from '@/api/user/refund'
 import { useGetUserSLP } from '@/api/user/slp'
 import { useGetUserWallet } from '@/api/user/wallet'
-import { A, Button, Chip, Divider, H1, P } from '@/components'
+import { A, Button, Chip, Divider, H1, P, PaginationNav } from '@/components'
 import { orderStatus } from '@/constants/status'
 import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
@@ -116,7 +117,9 @@ const OrderCard: React.FC<
   const router = useRouter()
   const { pathname } = router
 
+  const userWallet = useGetUserWallet()
   const order = data
+  const getRefundThread = useGetRefundThread(data?.order_id)
   const receiveOrder = useReceiveOrder()
   const completeOrder = useCompleteOrder()
 
@@ -391,34 +394,142 @@ const OrderCard: React.FC<
             <div className="mt-2 flex items-baseline justify-center gap-1 text-center">
               {order.is_refund === false ? (
                 <>
-                  <P className="text-xs opacity-50">Or</P>
-                  <A
-                    className="text-xs opacity-50 hover:opacity-100"
-                    underline
-                    onClick={() => {
-                      modal.info({
-                        title: 'Confirmation',
-                        closeButton: false,
-                        content: (
-                          <ConfirmationModal
-                            msg={
-                              'Are you sure Want to Complaint the Order and Refund?'
-                            }
-                            onConfirm={() => {
-                              router.push(
-                                '/order/complaint?id=' + order.order_id
-                              )
+                  {getRefundThread.data?.data?.refund_data?.rejected_at
+                    .Valid ? (
+                    <>
+                      <P className="text-xs opacity-50">
+                        your previous{' '}
+                        <A
+                          className="text-xs hover:opacity-100"
+                          underline
+                          onClick={() => {
+                            router.push(
+                              '/order/refund-thread?id=' + order.order_id
+                            )
+                          }}
+                        >
+                          File Complaint
+                        </A>{' '}
+                        has been rejected at{' '}
+                        {moment(
+                          getRefundThread.data?.data?.refund_data.rejected_at
+                            .Time
+                        )
+                          .utcOffset(420)
+                          .format('DD MMMM YYYY HH:mm:ss')
+                          .toString()}
+                        {'.'}
+                        <P>
+                          you can create new File Complaint to refund before 24
+                          hours rejected.
+                        </P>
+                        <P>
+                          <A
+                            className="text-xs hover:opacity-100"
+                            underline
+                            onClick={() => {
+                              modal.info({
+                                title: 'Confirmation',
+                                closeButton: false,
+                                content: (
+                                  <ConfirmationModal
+                                    msg={
+                                      'Are you sure Want to Complaint the Order and Refund?'
+                                    }
+                                    onConfirm={() => {
+                                      if (
+                                        userWallet?.data?.data?.active_date
+                                          .Valid === true &&
+                                        new Date(
+                                          Date.parse(
+                                            userWallet.data.data.active_date
+                                              .Time
+                                          )
+                                        ) < new Date()
+                                      ) {
+                                        router.push(
+                                          '/order/complaint?id=' +
+                                            order.order_id
+                                        )
+                                        return
+                                      }
+                                      toast.error('wallet is not active')
+                                    }}
+                                  />
+                                ),
+                              })
                             }}
-                          />
-                        ),
-                      })
-                    }}
-                  >
-                    File a Complaint
-                  </A>
+                          >
+                            File a Complaint
+                          </A>
+                        </P>
+                      </P>
+                    </>
+                  ) : (
+                    <>
+                      <P className="text-xs opacity-50">Or</P>
+                      <A
+                        className="text-xs opacity-50 hover:opacity-100"
+                        underline
+                        onClick={() => {
+                          modal.info({
+                            title: 'Confirmation',
+                            closeButton: false,
+                            content: (
+                              <ConfirmationModal
+                                msg={
+                                  'Are you sure Want to Complaint the Order and Refund?'
+                                }
+                                onConfirm={() => {
+                                  if (
+                                    userWallet?.data?.data?.active_date
+                                      .Valid === true &&
+                                    new Date(
+                                      Date.parse(
+                                        userWallet.data.data.active_date.Time
+                                      )
+                                    ) < new Date()
+                                  ) {
+                                    router.push(
+                                      '/order/complaint?id=' + order.order_id
+                                    )
+                                    return
+                                  }
+                                  toast.error('wallet is not active')
+                                }}
+                              />
+                            ),
+                          })
+                        }}
+                      >
+                        File a Complaint
+                      </A>
+                    </>
+                  )}
+                  <></>
                 </>
               ) : (
-                <></>
+                <>
+                  {getRefundThread.data?.data?.refund_data?.accepted_at
+                    .Valid ? (
+                    <>
+                      <P className="text-xs opacity-50">
+                        your File Complaint has been accepted at{' '}
+                        {moment(
+                          getRefundThread.data?.data?.refund_data.accepted_at
+                            .Time
+                        )
+                          .utcOffset(420)
+                          .format('DD MMMM YYYY HH:mm:ss')
+                          .toString()}
+                        {'.'}
+                        <P>please wait the system to process refund order.</P>
+                      </P>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </>
               )}
             </div>
           ) : (
@@ -448,13 +559,21 @@ function TransactionHistory() {
     }
   }, [status])
 
+  const [sort, setSort] = useState('DESC')
+  const [page, setPage] = useState<number>(1)
+
   const orders = useGetOrders({
     order_status: qryStatus === 0 ? undefined : qryStatus,
+    sort: sort,
+    page: page,
   })
-  const transactions = useGetTransactions()
+  const transactions = useGetTransactions(sort, page)
   const userWallet = useGetUserWallet()
   const userSLP = useGetUserSLP()
 
+  useEffect(() => {
+    setPage(1)
+  }, [qryStatus])
   return (
     <>
       <Head>
@@ -467,9 +586,37 @@ function TransactionHistory() {
       <ProfileLayout selectedPage="transaction-history">
         <>
           <H1 className="text-primary">Transactions</H1>
-          <div className="my-4">
+          <div className="my-2">
             <Divider />
           </div>
+          <div className="flex-start flex">
+            <div className="flex items-center gap-x-2 px-5">
+              <P className="my-3  font-bold">Date</P>
+              <button
+                className={cx(
+                  'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                  sort === 'ASC' ? 'bg-primary text-xs text-white' : ''
+                )}
+                onClick={() => {
+                  setSort('ASC')
+                }}
+              >
+                <HiArrowUp />
+              </button>
+              <button
+                className={cx(
+                  'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                  sort === 'DESC' ? 'bg-primary text-xs text-white' : ''
+                )}
+                onClick={() => {
+                  setSort('DESC')
+                }}
+              >
+                <HiArrowDown />
+              </button>
+            </div>
+          </div>
+
           <div className="customscroll mb-3 max-w-full overflow-auto">
             <div className="tabs mb-1 flex-nowrap">
               {['All', ...orderStatus.slice(1)].map((status, idx) => (
@@ -656,6 +803,21 @@ function TransactionHistory() {
                 <EmptyLayout />
               )}
             </div>
+            {orders.data?.data?.rows && transactions.data?.data?.rows ? (
+              <div className="mt-4 flex h-[8rem] w-full justify-center">
+                <PaginationNav
+                  page={page}
+                  total={
+                    qryStatus !== 1
+                      ? orders.data?.data?.total_pages
+                      : transactions.data?.data?.total_pages
+                  }
+                  onChange={(p) => setPage(p)}
+                />
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
         </>
       </ProfileLayout>

@@ -83,6 +83,7 @@ const useProductFavorite = (pid: string) => {
 
   useEffect(() => {
     checkFavorite.mutate(pid)
+    countFavorite.mutate(pid)
   }, [])
   useEffect(() => {
     if (addFavorite.isSuccess) {
@@ -453,6 +454,7 @@ const ProductPage: NextPage = () => {
                 selectVariant={selectVariant}
                 setSelectVariant={setSelectVariant}
                 variantNamesState={variantNamesState}
+                promotionInfo={product.data?.data?.promotions_info}
               />
             )}
           </div>

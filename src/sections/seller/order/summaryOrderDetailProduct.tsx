@@ -1,8 +1,11 @@
 import { useEffect } from 'react'
 import toast from 'react-hot-toast'
 
+import { useRouter } from 'next/router'
+
 import { useWithdrawOrderBalance } from '@/api/seller/order'
-import { Button } from '@/components'
+import { useGetRefundThreadSeller } from '@/api/seller/refund'
+import { Button, P } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import { useModal } from '@/hooks'
 import CancelDelivery from '@/sections/seller-panel/delivery-servise/CancelDelivery'
@@ -11,6 +14,7 @@ import type { OrderData } from '@/types/api/order'
 import type { APIResponse } from '@/types/api/response'
 
 import type { AxiosError } from 'axios'
+import moment from 'moment'
 
 import InputResi from '../../seller-panel/delivery-servise/InputResi'
 import LabelDelivery from './LabelDelivery'
@@ -22,6 +26,67 @@ interface SummaryOrderDetailProductProps {
   order_id: string
   is_withdraw: boolean
   allData: OrderData
+}
+
+const CheckOrderRefund: React.FC<{ data: OrderData }> = ({ data }) => {
+  const router = useRouter()
+  const getRefundThread = useGetRefundThreadSeller(data?.order_id)
+  return (
+    <div>
+      <Button
+        size="sm"
+        buttonType="ghost"
+        outlined
+        className="min-w-full rounded text-gray-500"
+        onClick={() => {
+          router.push('/seller-panel/order/refund-thread?id=' + data?.order_id)
+        }}
+      >
+        Refund Thread
+      </Button>
+      {data.is_refund ? (
+        <>
+          {getRefundThread.data?.data?.refund_data.accepted_at.Valid ? (
+            <div className="whitespace-pre-line">
+              <P className="text-xs opacity-50">
+                This File Complaint has been accepted at{' '}
+                {moment(
+                  getRefundThread.data?.data?.refund_data.accepted_at.Time
+                )
+                  .utcOffset(420)
+                  .format('DD MMMM YYYY HH:mm:ss')
+                  .toString()}
+                {'.'}
+                <P>please wait the system to process refund order.</P>
+              </P>
+            </div>
+          ) : (
+            <></>
+          )}
+        </>
+      ) : (
+        <>
+          {getRefundThread.data?.data?.refund_data.rejected_at.Valid ? (
+            <div className="whitespace-pre-line">
+              <P className="text-xs opacity-50">
+                File Complaint has been rejected at{' '}
+                {moment(
+                  getRefundThread.data?.data?.refund_data.rejected_at.Time
+                )
+                  .utcOffset(420)
+                  .format('DD MMMM YYYY HH:mm:ss')
+                  .toString()}
+                {'.'}
+                <P>please wait the system to process refund order.</P>
+              </P>
+            </div>
+          ) : (
+            <></>
+          )}
+        </>
+      )}
+    </div>
+  )
 }
 
 const SummaryOrderDetailProduct: React.FC<SummaryOrderDetailProductProps> = ({
@@ -114,7 +179,7 @@ const SummaryOrderDetailProduct: React.FC<SummaryOrderDetailProductProps> = ({
         </div>
       </div>
 
-      <div>
+      <div className="w-[16rem] min-w-full max-w-full">
         {order_status === 7 ? (
           <>
             <Button
@@ -169,17 +234,20 @@ const SummaryOrderDetailProduct: React.FC<SummaryOrderDetailProductProps> = ({
             Create Package
           </Button>
         ) : order_status === 4 || order_status === 5 || order_status === 6 ? (
-          <Button
-            buttonType="primary"
-            size="sm"
-            className="rounded"
-            wide
-            onClick={() => {
-              labelDelivery()
-            }}
-          >
-            Label Delivery
-          </Button>
+          <>
+            <Button
+              buttonType="primary"
+              size="sm"
+              className="rounded"
+              wide
+              onClick={() => {
+                labelDelivery()
+              }}
+            >
+              Label Delivery
+            </Button>
+            {order_status === 6 ? <CheckOrderRefund data={allData} /> : <></>}
+          </>
         ) : (
           <></>
         )}

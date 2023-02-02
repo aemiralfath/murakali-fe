@@ -9,14 +9,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const refundKey = 'refund'
 
-const getRefundThreadSeller = async (orderID: string) => {
+const getRefundThreadSeller = async (orderID?: string) => {
   const response = await authorizedClient.get<
     APIResponse<ConversationRefundThread>
   >('/seller/refund/' + orderID)
   return response.data
 }
 
-export const useGetRefundThreadSeller = (orderID: string) => {
+export const useGetRefundThreadSeller = (orderID?: string) => {
   return useQuery({
     queryKey: [refundKey, 'orderID: ' + orderID],
     queryFn: async () => await getRefundThreadSeller(orderID),

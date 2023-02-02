@@ -8,6 +8,10 @@ export interface WalletUser {
     Time: string
     Valid: boolean
   }
+  active_date: {
+    Time: string
+    Valid: boolean
+  }
 }
 
 export interface TopUpWallet {
