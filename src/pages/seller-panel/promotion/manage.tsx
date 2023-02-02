@@ -78,6 +78,7 @@ const ManagePromotionSeller = () => {
       if (sp.product_id === id) {
         let subprice = sp.price
         let discount = 0
+
         if (inputName === 'discount_percentage') {
           discount = (sp.price * num) / 100
           subprice = sp.price - discount
@@ -154,7 +155,11 @@ const ManagePromotionSeller = () => {
           discount = sp.max_discount_price
         }
 
-        const subprice = sp.price - discount
+        let subprice = sp.price - discount
+
+        if (sp.min_product_price > sp.price) {
+          subprice = sp.price
+        }
 
         return {
           ...sp,
@@ -200,9 +205,58 @@ const ManagePromotionSeller = () => {
         if (sp.discount_fix_price === 0 && sp.discount_percentage === 0) {
           subprice = sp.product_subprice
         }
+
+        if (sp.min_product_price > sp.price) {
+          subprice = sp.price
+        }
         return {
           ...sp,
           max_discount_price: num,
+          product_subprice: Number.isNaN(subprice)
+            ? sp.price
+            : subprice < 0
+            ? 0
+            : subprice,
+        }
+      }
+      return sp
+    })
+
+    setSelectedProduct(newState)
+  }
+
+  const handleChangeMinProductPrice = (
+    event: React.FormEvent<HTMLInputElement>,
+    id: string
+  ) => {
+    const value = event.currentTarget.value
+    const num = value === '' ? 0 : parseInt(value)
+
+    const newState = selectedProduct.map((sp) => {
+      let subprice: number = sp.product_subprice
+      if (sp.product_id === id) {
+        if (sp.discount_percentage > 0) {
+          let discount: number
+          discount = sp.price * (sp.discount_percentage / 100)
+
+          if (discount > sp.max_discount_price) {
+            discount = sp.max_discount_price
+          }
+          subprice = sp.price - discount
+        } else if (sp.discount_fix_price > 0) {
+          subprice = sp.price - sp.max_discount_price
+        }
+
+        if (sp.discount_fix_price === 0 && sp.discount_percentage === 0) {
+          subprice = sp.product_subprice
+        }
+        if (num > sp.price) {
+          subprice = sp.price
+        }
+
+        return {
+          ...sp,
+          min_product_price: num,
           product_subprice: Number.isNaN(subprice)
             ? sp.price
             : subprice < 0
@@ -268,6 +322,10 @@ const ManagePromotionSeller = () => {
           if (tempDiscountFixPrice > 0) {
             tempProduct.product_subprice =
               tempProduct.price - tempDiscountFixPrice
+          }
+
+          if (tempMinimumProductPrice > sp.price) {
+            tempProduct.product_subprice = sp.price
           }
         }
       })
@@ -1012,7 +1070,7 @@ const ManagePromotionSeller = () => {
                             label="Min Product Price"
                             value={sp.min_product_price}
                             onChange={(event) =>
-                              handleChange(event, sp.product_id)
+                              handleChangeMinProductPrice(event, sp.product_id)
                             }
                           />
                           <TextInput
@@ -1077,7 +1135,7 @@ const ManagePromotionSeller = () => {
                   value={inputSearch.search}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                      setSearch(inputSearch.search)
+                      setSearch(inputSearch.search.replace('%', '%25'))
                     }
                   }}
                 />
@@ -1086,7 +1144,7 @@ const ManagePromotionSeller = () => {
                   buttonType="primary"
                   type="button"
                   onClick={() => {
-                    setSearch(inputSearch.search)
+                    setSearch(inputSearch.search.replace('%', '%25'))
                   }}
                 >
                   Search
@@ -1094,7 +1152,6 @@ const ManagePromotionSeller = () => {
               </div>
             </div>
             <div className=" overflow-auto">
-              {' '}
               <Table
                 empty={
                   getProductNoPromotionSeller.isLoading ||
