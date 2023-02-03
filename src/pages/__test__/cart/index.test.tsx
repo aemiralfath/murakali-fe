@@ -1,7 +1,8 @@
 import Cart from '@/pages/cart'
+import { render } from '@/test/testUtils'
 
 import '@testing-library/jest-dom'
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 
 describe('Cart Page', () => {
   it('renders cart page', () => {

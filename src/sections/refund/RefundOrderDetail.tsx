@@ -75,7 +75,7 @@ const OrderDetailCard: React.FC<
               </div>
             ) : (
               <div>
-                {refundThreadData?.refund_data.rejected_at.Valid &&
+                {refundThreadData?.refund_data?.rejected_at.Valid &&
                 Date.now() -
                   Date.parse(refundThreadData?.refund_data.rejected_at.Time) >=
                   DAY ? (
