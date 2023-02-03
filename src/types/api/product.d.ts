@@ -124,4 +124,5 @@ export interface ProductQuery {
   max_rating?: number
   shop_id?: string
   province_ids?: string
+  listed_status?: 0 | 1 | 2
 }

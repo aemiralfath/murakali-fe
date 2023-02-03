@@ -15,11 +15,14 @@ function ManageProfileSeller() {
       <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
         <H3>Manage Profile Seller</H3>
         <div className=" mx-2 mt-8 flex flex-col gap-2 md:flex-row">
-          <div className="flex justify-center">
+          <div className="flex justify-center flex-col items-center ">
             <Avatar
               size="xl"
               url={useSellerDetailInformation.data?.data?.photo_url}
             />
+            <P className=" text-gray-500 line-clamp-2 w-52 italic mt-2 text-center">
+              Go to profile page if you want to change photo
+            </P>
           </div>
           <div className=" mx-2 mt-8 grid grid-cols-1 gap-2 md:grid-cols-3">
             <div className="col-span-2 mt-8 flex flex-col gap-2 sm:mt-0 ">

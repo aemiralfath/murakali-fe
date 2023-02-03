@@ -299,6 +299,7 @@ function Seller() {
     max_rating: 5,
     shop_id: param.query.id as string,
     province_ids: locationState,
+    listed_status: 1,
   }
 
   const SearchProductList = useSearchQueryProduct(productQuery)
@@ -340,12 +341,7 @@ function Seller() {
                         {sellerProfile.data.data.total_product} Products
                       </span>
                     </P>
-                    <P className="flex gap-4">
-                      Total Rating
-                      <span className="text-primary">
-                        {sellerProfile.data.data.total_rating} Rating
-                      </span>
-                    </P>
+
                     <P className="mb-2 flex items-start gap-4">
                       Rating Avg
                       <span className="flex items-center gap-1 text-primary">

@@ -59,12 +59,16 @@ const FormEditProfile: React.FC = () => {
 
   useEffect(() => {
     if (userProfile.data?.data) {
+      let tempBirthDate: string = userProfile.data.data.birth_date
+      if (userProfile.data.data.birth_date === '0001-01-01T00:00:00Z') {
+        tempBirthDate = '1990-01-01T00:00:00Z'
+      }
       setInput({
         email: userProfile.data.data.email,
         full_name: userProfile.data.data.full_name,
         user_name: userProfile.data.data.user_name,
         phone_number: userProfile.data.data.phone_number,
-        birth_date: userProfile.data.data.birth_date,
+        birth_date: tempBirthDate,
         id: '',
         photo_url: '',
         gender: selected,
@@ -82,7 +86,18 @@ const FormEditProfile: React.FC = () => {
   }
   const handleEditProfile = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    editUserProfile.mutate(input)
+
+    editUserProfile.mutate({
+      email: input.email,
+      full_name: input.full_name,
+      user_name: input.user_name,
+      phone_number: input.phone_number,
+      birth_date: input.birth_date,
+      id: '',
+      photo_url: '',
+      gender: selected,
+      role: 1,
+    })
   }
 
   //TODO: Still buggy, fix later
@@ -180,7 +195,7 @@ const FormEditProfile: React.FC = () => {
                     setSelected('F')
                   }}
                 />
-                Women
+                Female
               </label>
             </div>
           </div>

@@ -41,7 +41,7 @@ const CheckOrderRefund: React.FC<{ data?: OrderData }> = ({ data }) => {
       </Button>
       {data?.is_refund ? (
         <>
-          {getRefundThread.data?.data?.refund_data.accepted_at.Valid ? (
+          {getRefundThread.data?.data?.refund_data?.accepted_at.Valid ? (
             <div className="whitespace-pre-line">
               <P className="text-xs opacity-50">
                 This File Complaint has been accepted at{' '}

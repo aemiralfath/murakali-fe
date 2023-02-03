@@ -112,6 +112,7 @@ const SearchPage: NextPage = () => {
       }
     }, ''),
     page: page,
+    listed_status: 1,
   })
 
   const [pageShop, setPageShop] = useState<number>(1)

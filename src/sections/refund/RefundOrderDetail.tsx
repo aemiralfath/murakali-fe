@@ -31,6 +31,7 @@ const OrderDetailCard: React.FC<
   isSeller,
 }) => {
   const order = data
+  const DAY = 24 * 60 * 60 * 1000
 
   const modal = useModal()
   const router = useRouter()
@@ -48,8 +49,8 @@ const OrderDetailCard: React.FC<
                   className="text-white"
                   onClick={handleActionAccept}
                   disabled={
-                    refundThreadData?.refund_data.accepted_at.Valid ||
-                    refundThreadData?.refund_data.rejected_at.Valid
+                    refundThreadData?.refund_data?.accepted_at.Valid ||
+                    refundThreadData?.refund_data?.rejected_at.Valid
                   }
                 >
                   Accepted
@@ -59,8 +60,8 @@ const OrderDetailCard: React.FC<
                   className="text-white"
                   onClick={handleActionRejected}
                   disabled={
-                    refundThreadData?.refund_data.accepted_at.Valid ||
-                    refundThreadData?.refund_data.rejected_at.Valid
+                    refundThreadData?.refund_data?.accepted_at.Valid ||
+                    refundThreadData?.refund_data?.rejected_at.Valid
                   }
                 >
                   Rejected
@@ -68,50 +69,59 @@ const OrderDetailCard: React.FC<
               </div>
             ) : (
               <div>
-                <P className="text-xs opacity-50">
-                  <P>
-                    you can create new File Complaint to refund before 24 hours
-                    rejected.
-                  </P>
-                  <P>
-                    <A
-                      className="text-xs hover:opacity-100"
-                      underline
-                      onClick={() => {
-                        modal.info({
-                          title: 'Confirmation',
-                          closeButton: false,
-                          content: (
-                            <ConfirmationModal
-                              msg={
-                                'Are you sure Want to Complaint the Order and Refund?'
-                              }
-                              onConfirm={() => {
-                                if (
-                                  userWallet?.data?.data?.active_date.Valid ===
-                                    true &&
-                                  new Date(
-                                    Date.parse(
-                                      userWallet.data.data.active_date.Time
-                                    )
-                                  ) < new Date()
-                                ) {
-                                  router.push(
-                                    '/order/complaint?id=' + order?.order_id
-                                  )
-                                  return
-                                }
-                                toast.error('wallet is not active')
-                              }}
-                            />
-                          ),
-                        })
-                      }}
-                    >
-                      File a Complaint
-                    </A>
-                  </P>
-                </P>
+                {refundThreadData?.refund_data?.rejected_at.Valid &&
+                Date.now() -
+                  Date.parse(refundThreadData?.refund_data.rejected_at.Time) >=
+                  DAY ? (
+                  <>
+                    <P className="text-xs opacity-50">
+                      <P>
+                        you can create new File Complaint to refund before 24
+                        hours rejected.
+                      </P>
+                      <P>
+                        <A
+                          className="text-xs hover:opacity-100"
+                          underline
+                          onClick={() => {
+                            modal.info({
+                              title: 'Confirmation',
+                              closeButton: false,
+                              content: (
+                                <ConfirmationModal
+                                  msg={
+                                    'Are you sure Want to Complaint the Order and Refund?'
+                                  }
+                                  onConfirm={() => {
+                                    if (
+                                      userWallet?.data?.data?.active_date
+                                        .Valid === true &&
+                                      new Date(
+                                        Date.parse(
+                                          userWallet.data.data.active_date.Time
+                                        )
+                                      ) < new Date()
+                                    ) {
+                                      router.push(
+                                        '/order/complaint?id=' + order?.order_id
+                                      )
+                                      return
+                                    }
+                                    toast.error('wallet is not active')
+                                  }}
+                                />
+                              ),
+                            })
+                          }}
+                        >
+                          File a Complaint
+                        </A>
+                      </P>
+                    </P>
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
             )}
             <div className="flex max-w-full items-end justify-end">

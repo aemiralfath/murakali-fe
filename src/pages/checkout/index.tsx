@@ -259,6 +259,9 @@ function Checkout() {
                     .map((cart, index) => (
                       <div key={cart.id} className="flex flex-col gap-4">
                         <ShopCard
+                          defaultAddressIsEmpty={
+                            addresInfo.fullAddress == '' ? true : false
+                          }
                           postCheckout={checkoutItems}
                           courierID={(
                             courierID,
