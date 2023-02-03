@@ -104,7 +104,7 @@ const RefundThreadSaction: React.FC<{
                 <div>
                   <H2 className="mb-2">Reason to Refund</H2>
                 </div>
-                {refundThreadData.refund_data.rejected_at.Valid ? (
+                {refundThreadData.refund_data?.rejected_at.Valid ? (
                   <div className="">
                     <div className="flex items-end justify-end">
                       <Chip type="error">Rejected</Chip>
@@ -116,7 +116,7 @@ const RefundThreadSaction: React.FC<{
                         .toString()}
                     </P>
                   </div>
-                ) : refundThreadData.refund_data.accepted_at.Valid ? (
+                ) : refundThreadData.refund_data?.accepted_at.Valid ? (
                   <>
                     {refundThreadData.refund_data.refunded_at.Valid ? (
                       <div>
@@ -154,14 +154,16 @@ const RefundThreadSaction: React.FC<{
               <div className="py-3">
                 <img
                   alt={'image'}
-                  src={refundThreadData.refund_data.image}
+                  src={
+                    refundThreadData.refund_data?.image ?? '/asset/no-image.png'
+                  }
                   width={150}
                   height={150}
                 />
               </div>
               <Divider />
               <div className="max-w-full break-words py-2">
-                {refundThreadData.refund_data.reason}
+                {refundThreadData.refund_data?.reason}
               </div>
             </div>
           </div>

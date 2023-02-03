@@ -101,7 +101,7 @@ function RefundThread() {
   }, [refundAccept.isError])
 
   const handleSubmit = () => {
-    if (refundThreadData.data?.data) {
+    if (refundThreadData.data?.data?.refund_data) {
       const req: CreateRefundThreadRequest = {
         refund_id: refundThreadData.data.data.refund_data.id,
         text: text,
@@ -118,7 +118,7 @@ function RefundThread() {
         <ConfirmationModal
           msg={'Are you sure Want to Accept this Order to Refund?'}
           onConfirm={() => {
-            if (refundThreadData.data?.data) {
+            if (refundThreadData.data?.data?.refund_data) {
               refundAccept.mutate(refundThreadData.data.data.refund_data.id)
             }
           }}
@@ -135,7 +135,7 @@ function RefundThread() {
         <ConfirmationModal
           msg={'Are you sure Want to Reject this Order to Refund?'}
           onConfirm={() => {
-            if (refundThreadData.data?.data) {
+            if (refundThreadData.data?.data?.refund_data) {
               refundReject.mutate(refundThreadData.data.data.refund_data.id)
             }
           }}
