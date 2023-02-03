@@ -174,10 +174,17 @@ function ManageVouchers() {
     const letterNumber = /^[0-9a-zA-Z]+$/
 
     if (!input.code.match(letterNumber) && !edit) {
-      toast.error('input code must alphabet')
+      toast.error('Input code must alphabet')
       return
     }
 
+    if (
+      Number(input.discount_fix_price) > 100000000 ||
+      Number(input.max_discount_price) > 100000000
+    ) {
+      toast.error('Input cannot more than 100000000')
+      return
+    }
     let bodyInput: CreateUpdateVoucher
 
     if (selected === 'F') {

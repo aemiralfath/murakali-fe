@@ -164,7 +164,13 @@ function ManageVouchersAdmin() {
       toast.error('input code must alphabet')
       return
     }
-
+    if (
+      Number(input.discount_fix_price) > 100000000 ||
+      Number(input.max_discount_price) > 100000000
+    ) {
+      toast.error('Input cannot more than 100000000')
+      return
+    }
     let bodyInput: CreateUpdateVoucher
 
     if (selected === 'F') {
@@ -234,7 +240,9 @@ function ManageVouchersAdmin() {
                   <H4>Code Voucher</H4>
                   <Chip type={'gray'}>Required</Chip>
                 </div>
-                <P className="mt-2 max-w-[20rem] text-sm">Code Voucher</P>
+                <P className="mt-2 max-w-[20rem] text-sm">
+                  Code Voucher, code maximum 15 characters
+                </P>
               </div>
               <div className="flex flex-1 items-center">
                 <TextInput
@@ -243,6 +251,7 @@ function ManageVouchersAdmin() {
                   onChange={handleChange}
                   value={input.code.toUpperCase()}
                   full
+                  maxLength={15}
                   required
                   disabled={edit}
                 />

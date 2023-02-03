@@ -181,7 +181,7 @@ function Checkout() {
   }, [voucher, addresInfo, parsedValues])
 
   useEffect(() => {
-    if (defaultAddress.isSuccess) {
+    if (defaultAddress.data?.data) {
       if (defaultAddress.data?.data?.rows[0] !== undefined) {
         setAddresInfo({
           id: defaultAddress.data?.data?.rows[0].id,
@@ -202,7 +202,7 @@ function Checkout() {
         })
       }
     }
-  }, [defaultAddress])
+  }, [defaultAddress.data?.data])
 
   return (
     <>
