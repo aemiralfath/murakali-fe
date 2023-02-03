@@ -1,10 +1,10 @@
+import Cart from '@/pages/cart'
+
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 
-import Cart from './index'
-
 describe('Cart Page', () => {
-  it('Render Cart Page', () => {
+  it('renders cart page', () => {
     render(<Cart />)
     expect(screen.getByText('Cart')).toBeInTheDocument()
   })
