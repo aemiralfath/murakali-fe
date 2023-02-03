@@ -76,7 +76,7 @@ export const ReviewCard: React.FC<ReviewProps> = ({ item }) => {
           )}
         </div>
         <div>
-          {item.image_url === '' ? (
+          {item.image_url === null ? (
             <></>
           ) : (
             <img
