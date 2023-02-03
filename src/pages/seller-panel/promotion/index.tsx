@@ -94,7 +94,7 @@ function PromotionSeller() {
             Period: (
               <div>
                 <P>{moment(row.actived_date).format('DD MMM YYYY HH:mm:ss')}</P>
-                {' - '}
+                <P className="font-bold">until</P>
                 <P>{moment(row.expired_date).format('DD MMM YYYY HH:mm:ss')}</P>
               </div>
             ),

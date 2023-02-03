@@ -45,6 +45,11 @@ export type CheckoutValues = z.infer<typeof CheckoutValues>
 const secret = env.NEXT_PUBLIC_SECRET_KEY
 
 function Checkout() {
+  const [addresInfo, setAddresInfo] = useState({
+    id: '',
+    name: '',
+    fullAddress: '',
+  })
   const cartList = useGetCart()
   const updateCart = useUpdateCart()
   const userWallet = useGetUserWallet()
@@ -82,12 +87,6 @@ function Checkout() {
       })
     }
   }, [update, parsedValues])
-
-  const [addresInfo, setAddresInfo] = useState({
-    id: '',
-    name: '',
-    fullAddress: '',
-  })
 
   const [checkoutItems, setCheckoutItems] = useState<PostCheckout>()
 
@@ -182,7 +181,7 @@ function Checkout() {
   }, [voucher, addresInfo, parsedValues])
 
   useEffect(() => {
-    if (defaultAddress.isSuccess) {
+    if (defaultAddress.data?.data) {
       if (defaultAddress.data?.data?.rows[0] !== undefined) {
         setAddresInfo({
           id: defaultAddress.data?.data?.rows[0].id,
@@ -203,7 +202,7 @@ function Checkout() {
         })
       }
     }
-  }, [defaultAddress.isSuccess])
+  }, [defaultAddress.data?.data])
 
   return (
     <>

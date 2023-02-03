@@ -187,7 +187,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
             locationCost.data.data.data.shipping_option !== null ? (
               locationCost.data.data.data.shipping_option.length > 0 ? (
                 <div>
-                  <Menu.Items className="z-20 absolute w-fit origin-top-left p-2 divide-y divide-gray-100 rounded-md bg-white shadow-md focus:outline-none ">
+                  <Menu.Items className="z-20 absolute w-56 origin-top-left p-2 divide-y divide-gray-100 rounded-md bg-white shadow-md focus:outline-none ">
                     {locationCost.data.data.data.shipping_option.map(
                       (shipping, index) => (
                         <div key={index}>
@@ -209,7 +209,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                     etd: shipping.etd,
                                   })
                                 }}
-                                className="btn m-1 mx-auto h-fit w-44 gap-2 justify-start border-gray-300 bg-white text-base-content hover:border-white hover:bg-primary hover:text-white"
+                                className="btn  m-1 mx-auto border-primary h-fit w-52 gap-2 justify-start text-primary bg-white  hover:border-white hover:bg-primary hover:text-white"
                               >
                                 <a className="flex justify-start text-start w-full py-2 flex-col gap-1">
                                   <span className="text-lg font-semibold">
@@ -268,7 +268,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
             {voucherShop.data?.data ? (
               Number(voucherShop.data?.data?.rows?.length) > 0 ? (
                 <div>
-                  <Menu.Items className="absolute max-h-64 w-64 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
+                  <Menu.Items className="absolute max-h-64 w-60 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
                     {voucherShop.data.data.rows?.map((data, index) => (
                       <div className="p-1" key={index}>
                         {data.quota <= 0 ? (
@@ -281,7 +281,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
                             text-start text-white "
                                 >
                                   <a className="flex flex-col items-center">
-                                    <P className="block  w-fit truncate text-lg font-bold">
+                                    <P className="max-w-[95%] truncate  break-words text-md font-bold">
                                       Discount{' '}
                                       {data.discount_percentage > 0 ? (
                                         <>{data.discount_percentage}%</>
@@ -347,7 +347,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
                             text-start text-primary hover:border-white hover:bg-primary hover:text-white"
                                 >
                                   <a className="flex flex-col items-center ">
-                                    <span className="inline-block break-words text-lg font-bold">
+                                    <P className="max-w-[96%] truncate  break-words text-md font-bold">
                                       Discount{' '}
                                       {data.discount_percentage > 0 ? (
                                         <>{data.discount_percentage}%</>
@@ -360,7 +360,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                           Off
                                         </>
                                       )}
-                                    </span>
+                                    </P>
                                     <P className=" text-md max-w-[80%] truncate break-words">
                                       {data.code}
                                     </P>

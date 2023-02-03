@@ -9,7 +9,7 @@ interface TitlePageExtendProps {
 const TitlePageExtend: React.FC<TitlePageExtendProps> = ({ title }) => {
   return (
     <div className="flex h-20 w-full bg-primary ">
-      <H1 className="container mx-auto my-4 flex flex-wrap items-end px-5 text-white">
+      <H1 className="container mx-auto my-2 flex flex-wrap items-end px-5 text-white">
         {title}
       </H1>
     </div>
