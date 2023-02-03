@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { FaTicketAlt } from 'react-icons/fa'
+import { FaStore, FaTicketAlt } from 'react-icons/fa'
 import { FaShippingFast } from 'react-icons/fa'
 
 import { useGetVoucherShopCheckout } from '@/api/user/checkout'
 import { useLocationCost } from '@/api/user/location'
-import { Button, H2, P } from '@/components'
+import { Button, P } from '@/components'
 import ProductCart from '@/components/card/ProductCart'
 import formatMoney from '@/helper/formatMoney'
 import type { CartDetail } from '@/types/api/cart'
@@ -32,7 +32,6 @@ interface ShopCardProps {
 
 const ShopCard: React.FC<ShopCardProps> = ({
   cart,
-  index,
   idProducts,
   destination,
   postCheckout,
@@ -117,60 +116,62 @@ const ShopCard: React.FC<ShopCardProps> = ({
   }, [cart, destination])
 
   return (
-    <div className="z-10 h-full rounded-lg border-[1px] border-solid border-gray-300 py-5 px-8">
-      <H2 className="mb-8">
-        {index + 1}. {cart.shop.name}
-      </H2>
-      {cart.product_details !== null ? (
-        cart.product_details
-          .filter((item) => idProducts.includes(item.id))
-          .map((product) => (
-            <div className="flex flex-col gap-5" key={product.id}>
-              <ProductCart
-                forCart={false}
-                listProduct={product}
-                productNote={(idProduct, note) => {
-                  postCheckout.cart_items
-                    .filter((item) => cart.shop.id === item.shop_id)
-                    .map((shop) => {
-                      const temp: ProductPostCheckout[] =
-                        shop.product_details.map((product) => {
-                          let tempNote: string = product.note
-                          if (product.id === idProduct) {
-                            tempNote = note
-                          }
-                          return {
-                            id: product.id,
-                            cart_id: product.cart_id,
-                            quantity: product.quantity,
-                            note: tempNote,
-                          }
-                        })
-                      setProductD(temp)
-                      courierID(
-                        delivery.id,
-                        delivery.delivery_fee,
-                        voucher.id,
-                        voucherPrice,
-                        temp
-                      )
-                    })
-                }}
-              />
-            </div>
-          ))
-      ) : (
-        <></>
-      )}
+    <div className="">
+      <P className="font-semibold text-lg items-center flex gap-2 mb-3">
+        <FaStore /> {cart.shop.name}
+      </P>
+      <div className="flex flex-col gap-2">
+        {cart.product_details !== null ? (
+          cart.product_details
+            .filter((item) => idProducts.includes(item.id))
+            .map((product) => (
+              <div className="flex flex-col gap-5" key={product.id}>
+                <ProductCart
+                  forCart={false}
+                  listProduct={product}
+                  productNote={(idProduct, note) => {
+                    postCheckout.cart_items
+                      .filter((item) => cart.shop.id === item.shop_id)
+                      .map((shop) => {
+                        const temp: ProductPostCheckout[] =
+                          shop.product_details.map((product) => {
+                            let tempNote: string = product.note
+                            if (product.id === idProduct) {
+                              tempNote = note
+                            }
+                            return {
+                              id: product.id,
+                              cart_id: product.cart_id,
+                              quantity: product.quantity,
+                              note: tempNote,
+                            }
+                          })
+                        setProductD(temp)
+                        courierID(
+                          delivery.id,
+                          delivery.delivery_fee,
+                          voucher.id,
+                          voucherPrice,
+                          temp
+                        )
+                      })
+                  }}
+                />
+              </div>
+            ))
+        ) : (
+          <></>
+        )}
+      </div>
 
-      <div className="flex flex-wrap items-center justify-center gap-y-2 md:justify-end">
+      <div className="flex flex-wrap mt-2 items-center justify-center gap-y-2 md:justify-end">
         <div className="block">
           <Menu>
-            <Menu.Button className="btn-outline btn-primary btn  m-1 w-44 gap-4">
+            <Menu.Button className="btn-outline btn-primary btn m-1 w-56 gap-4">
               {delivery.name ? (
                 <div className="flex-start flex items-center gap-2">
                   <FaShippingFast />
-                  <div className="flex flex-col">
+                  <div className="flex flex-nowrap gap-1">
                     <P>{delivery.name}</P>
                     <P>{delivery.etd}</P>
                   </div>
@@ -182,10 +183,11 @@ const ShopCard: React.FC<ShopCardProps> = ({
               )}
             </Menu.Button>
 
-            {locationCost.data?.data?.data ? (
+            {locationCost.data?.data?.data &&
+            locationCost.data.data.data.shipping_option !== null ? (
               locationCost.data.data.data.shipping_option.length > 0 ? (
                 <div>
-                  <Menu.Items className="absolute w-44 origin-top-left  divide-y divide-gray-100 rounded-md bg-white shadow-lg focus:outline-none ">
+                  <Menu.Items className="z-20 absolute w-fit origin-top-left p-2 divide-y divide-gray-100 rounded-md bg-white shadow-md focus:outline-none ">
                     {locationCost.data.data.data.shipping_option.map(
                       (shipping, index) => (
                         <div key={index}>
@@ -207,14 +209,16 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                     etd: shipping.etd,
                                   })
                                 }}
-                                className="btn m-2 h-24  w-40  gap-4 border-gray-300 bg-white text-primary outline hover:border-white hover:bg-primary hover:text-white"
+                                className="btn m-1 mx-auto h-fit w-44 gap-2 justify-start border-gray-300 bg-white text-base-content hover:border-white hover:bg-primary hover:text-white"
                               >
-                                <a className="flex flex-col gap-1">
-                                  <span className="text-lg font-bold">
+                                <a className="flex justify-start text-start w-full py-2 flex-col gap-1">
+                                  <span className="text-lg font-semibold">
                                     {shipping.courier.name}
                                   </span>
-                                  <span className="">Rp. {shipping.fee}</span>
-                                  <span>
+                                  <span className="text-sm -mt-1 font-normal">
+                                    Rp. {shipping.fee}
+                                  </span>
+                                  <span className="text-xs -mt-1 font-normal">
                                     {shipping.etd.replace(/\D/g, '')} Days
                                   </span>
                                 </a>
@@ -246,7 +250,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
                 <div className="flex-start flex items-center gap-2">
                   <FaTicketAlt />
                   <div className="flex flex-col">
-                    <P>{voucher.code}</P>
+                    <P className="block w-fit truncate">{voucher.code}</P>
                     {voucher.discount_percentage > 0 ? (
                       <P>{voucher.discount_percentage}%</P>
                     ) : (
@@ -262,10 +266,10 @@ const ShopCard: React.FC<ShopCardProps> = ({
             </Menu.Button>
 
             {voucherShop.data?.data ? (
-              voucherShop.data?.data?.rows?.length > 0 ? (
+              Number(voucherShop.data?.data?.rows?.length) > 0 ? (
                 <div>
-                  <Menu.Items className="absolute max-h-64 w-56 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
-                    {voucherShop.data.data.rows.map((data, index) => (
+                  <Menu.Items className="absolute max-h-64 w-64 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
+                    {voucherShop.data.data.rows?.map((data, index) => (
                       <div className="p-1" key={index}>
                         {data.quota <= 0 ? (
                           <>
@@ -273,21 +277,22 @@ const ShopCard: React.FC<ShopCardProps> = ({
                               {() => (
                                 <Button
                                   disabled
-                                  className="btn my-1 mx-auto h-fit w-full gap-1  border-4 border-solid  border-primary bg-gray-500 py-2 
+                                  className="btn my-1 mx-auto h-fit w-full gap-1 border-solid  border-primary bg-gray-500 py-2 
                             text-start text-white "
                                 >
                                   <a className="flex flex-col items-center">
-                                    <span className="text-lg  font-bold">
+                                    <P className="block  w-fit truncate text-lg font-bold">
                                       Discount{' '}
                                       {data.discount_percentage > 0 ? (
                                         <>{data.discount_percentage}%</>
                                       ) : (
                                         <>
-                                          Rp.{' '}
+                                          Rp
                                           {formatMoney(data.discount_fix_price)}
                                         </>
-                                      )}
-                                    </span>
+                                      )}{' '}
+                                      Off
+                                    </P>
                                     <P className="text-md max-w-[70%] truncate break-words">
                                       {data.code}
                                     </P>
@@ -338,18 +343,21 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                     )
                                     setVoucher(data)
                                   }}
-                                  className="btn my-1 mx-auto h-fit w-full gap-1  border-4 border-solid  border-primary bg-white py-2 
+                                  className="btn my-1 mx-auto h-fit w-full gap-1 border-solid  border-primary bg-white py-2 
                             text-start text-primary hover:border-white hover:bg-primary hover:text-white"
                                 >
                                   <a className="flex flex-col items-center ">
-                                    <span className="text-lg  font-bold">
+                                    <span className="inline-block break-words text-lg font-bold">
                                       Discount{' '}
                                       {data.discount_percentage > 0 ? (
                                         <>{data.discount_percentage}%</>
                                       ) : (
                                         <>
-                                          Rp.{' '}
-                                          {formatMoney(data.discount_fix_price)}
+                                          Rp
+                                          {formatMoney(
+                                            data.discount_fix_price
+                                          )}{' '}
+                                          Off
                                         </>
                                       )}
                                     </span>
@@ -378,7 +386,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
                   </Menu.Items>
                 </div>
               ) : (
-                <Menu.Items className="absolute h-10 w-56 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
+                <Menu.Items className="absolute h-10 w-56 origin-top-left divide-y customscroll divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-md focus:outline-none ">
                   <div className=" p-2">
                     <P className=" text-center">No Voucher Available</P>
                   </div>
@@ -390,23 +398,25 @@ const ShopCard: React.FC<ShopCardProps> = ({
           </Menu>
         </div>
 
-        <div className="border-1 mx-2 flex flex-col gap-2 gap-y-2 border-l-primary px-2 text-primary md:border-l-2">
-          <div className="flex justify-between gap-5">
-            <h6>Delivery </h6>
-
-            <h6> + Rp.{formatMoney(delivery.delivery_fee)}</h6>
+        <div className="border-1 mx-2 flex flex-col text-sm border-l-primary px-2 text-primary-focus md:border-l-2">
+          <div className="flex justify-between font-light gap-5">
+            <p>Delivery </p>
+            <p> + Rp.{formatMoney(delivery.delivery_fee)}</p>
           </div>
-          <div className="flex justify-between gap-5">
-            <h6>Voucher Shop Total </h6>
-
-            <h6>- Rp.{formatMoney(voucherPrice)}</h6>
+          <div className="flex justify-between font-light gap-5">
+            <p>Voucher Shop Total </p>
+            <p>- Rp.{formatMoney(voucherPrice)}</p>
           </div>
-          <div className="flex justify-between gap-5">
-            <h6>Total Order </h6>
-            <h6>
+          <div className="flex justify-between font-semibold gap-5">
+            <p>Total Order </p>
+            <p>
               Rp.
-              {formatMoney(totalPrice + delivery.delivery_fee - voucherPrice)}
-            </h6>
+              {formatMoney(
+                totalPrice + delivery.delivery_fee - voucherPrice < 0
+                  ? 0
+                  : totalPrice + delivery.delivery_fee - voucherPrice
+              )}
+            </p>
           </div>
         </div>
       </div>

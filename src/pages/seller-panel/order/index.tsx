@@ -61,12 +61,12 @@ const CheckOrderRefund: React.FC<{ data?: OrderData }> = ({ data }) => {
         </>
       ) : (
         <>
-          {getRefundThread.data?.data?.refund_data.rejected_at.Valid ? (
+          {getRefundThread.data?.data?.refund_data?.rejected_at?.Valid ? (
             <div className="whitespace-pre-line">
               <P className="text-xs opacity-50">
                 File Complaint has been rejected at{' '}
                 {moment(
-                  getRefundThread.data?.data?.refund_data.rejected_at.Time
+                  getRefundThread.data?.data?.refund_data?.rejected_at.Time
                 )
                   .utcOffset(420)
                   .format('DD MMMM YYYY HH:mm:ss')
@@ -391,7 +391,7 @@ function ListOrderDeliveryService() {
               <Table
                 data={formatSub(sellerOrders.data.data)}
                 isLoading={false}
-                empty={sellerOrders.data.data.rows.length === 0}
+                empty={sellerOrders.data.data.rows?.length === 0}
               />
             ) : (
               <div>{'Error'}</div>

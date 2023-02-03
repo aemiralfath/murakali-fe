@@ -19,6 +19,7 @@ export const clientSchema = z.object({
   NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID: z.string(),
   NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_SECRET: z.string(),
   NEXT_PUBLIC_GOOGLE_OAUTH_REDIRECT_URL: z.string(),
+  NEXT_PUBLIC_SECRET_KEY: z.string(),
 })
 
 /**
@@ -35,4 +36,5 @@ export const clientEnv = {
     process.env.NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_SECRET,
   NEXT_PUBLIC_GOOGLE_OAUTH_REDIRECT_URL:
     process.env.NEXT_PUBLIC_GOOGLE_OAUTH_REDIRECT_URL,
+  NEXT_PUBLIC_SECRET_KEY: process.env.NEXT_PUBLIC_SECRET_KEY,
 }

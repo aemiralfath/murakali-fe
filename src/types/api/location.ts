@@ -6,7 +6,7 @@ export interface LocationCostRequest {
 }
 
 export interface LocationCostResponse {
-  shipping_option: LocationCostResponseDetail[]
+  shipping_option: LocationCostResponseDetail[] | null
 }
 
 export interface LocationCostResponseDetail {

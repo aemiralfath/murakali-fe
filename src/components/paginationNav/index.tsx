@@ -1,5 +1,11 @@
 import React from 'react'
-import { HiChevronLeft, HiChevronRight, HiDotsHorizontal } from 'react-icons/hi'
+import {
+  HiChevronDoubleLeft,
+  HiChevronDoubleRight,
+  HiChevronLeft,
+  HiChevronRight,
+  HiDotsHorizontal,
+} from 'react-icons/hi'
 
 import cx from '@/helper/cx'
 import { useMediaQuery, usePagination } from '@/hooks'
@@ -43,6 +49,18 @@ const PaginationNav: React.FC<{
 
   return (
     <div className="flex items-center gap-1">
+      {xs ? (
+        <></>
+      ) : (
+        <PaginationBtn
+          size={size}
+          className="border-0"
+          disabled={page - 1 === 0}
+          onClick={() => pagination.first()}
+        >
+          <HiChevronDoubleLeft />
+        </PaginationBtn>
+      )}
       <PaginationBtn
         size={size}
         className="border-0"
@@ -85,6 +103,18 @@ const PaginationNav: React.FC<{
       >
         <HiChevronRight />
       </PaginationBtn>
+      {xs ? (
+        <></>
+      ) : (
+        <PaginationBtn
+          size={size}
+          className="border-0"
+          disabled={page - 1 === 0}
+          onClick={() => pagination.last()}
+        >
+          <HiChevronDoubleRight />
+        </PaginationBtn>
+      )}
     </div>
   )
 }
