@@ -733,10 +733,7 @@ function TransactionHistory() {
                                 size="sm"
                                 buttonType="primary"
                                 onClick={() => {
-                                  if (
-                                    userWallet.data?.data &&
-                                    userSLP.data?.data
-                                  ) {
+                                  if (userSLP.data?.data) {
                                     modal.edit({
                                       title: 'Choose Payment Option',
                                       content: (
