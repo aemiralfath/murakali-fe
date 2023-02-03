@@ -449,6 +449,7 @@ const ProductPage: NextPage = () => {
             ) : (
               <ChooseVariantQty
                 productID={pid as string}
+                productDetails={product.data?.data?.products_detail}
                 qty={qty}
                 setQty={setQty}
                 selectVariant={selectVariant}
@@ -525,7 +526,7 @@ const ProductPage: NextPage = () => {
           </div>
         </div>
         <Divider />
-        <div className="mx-5 flex justify-between">
+        <div className="mx-5 flex justify-between flex-wrap">
           <H3>Another Products from Seller</H3>
           <H4 className="self-end">
             <Link
@@ -546,7 +547,7 @@ const ProductPage: NextPage = () => {
         <H3 className="mx-5">Recommended Product</H3>
         <ProductCarousel product={recommendedProduct.data?.data?.rows ?? []} />
         <Divider />
-        <div className="mx-5 flex justify-between">
+        <div className="mx-5 flex justify-between flex-wrap">
           <H3>Similiar Products</H3>
           <H4 className="self-end">
             <Link

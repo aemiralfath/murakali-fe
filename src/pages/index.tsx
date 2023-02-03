@@ -67,7 +67,10 @@ const Home: NextPage = () => {
           <Divider />
         </div>
         <div>
-          <div className="flex justify-between " id="recommended-product-list">
+          <div
+            className="flex justify-between flex-wrap gap-2"
+            id="recommended-product-list"
+          >
             <H1>Recommended Products</H1>
             <H4 className="self-end">
               <button

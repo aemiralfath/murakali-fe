@@ -1123,14 +1123,15 @@ const ManagePromotionSeller = () => {
 
         {intent === 'add' ? (
           <div className="mt-3 flex max-w-full flex-col  rounded border bg-white px-6 pt-6">
-            <div className="flex w-full flex-wrap items-center justify-between gap-2 py-5">
+            <div className="flex w-full flex-wrap items-center justify-between gap-2 py-5 ">
               <H2>Select Products</H2>
 
-              <div className="flex max-w-lg gap-x-2">
+              <div className="flex max-w-lg flex-wrap gap-2">
                 <TextInput
                   type="text"
                   name="search"
                   placeholder="Search..."
+                  className="max-w-xs"
                   onChange={handleChangeSearch}
                   value={inputSearch.search}
                   onKeyDown={(e) => {

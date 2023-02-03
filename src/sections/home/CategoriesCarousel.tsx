@@ -81,7 +81,7 @@ const CategoriesCarousel: React.FC<{
 
   return (
     <div className="relative">
-      <div className="flex justify-between ">
+      <div className="flex justify-between flex-wrap gap-2">
         <H1>Explore Categories</H1>
         <H4 className="self-end">
           <Link href="/category" className="whitespace-nowrap">

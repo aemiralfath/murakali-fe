@@ -45,7 +45,7 @@ const MarketplaceVoucherMenu: React.FC<{
       voucherMarketplace.data.data.rows !== null ? (
         voucherMarketplace.data.data.rows.length > 0 ? (
           <div>
-            <Menu.Items className="absolute max-h-64 w-56 origin-top-left divide-y divide-gray-100  overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
+            <Menu.Items className="absolute mx-auto max-h-52 w-56 sm:w-80 origin-top-left divide-y divide-gray-100  overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
               {voucherMarketplace.data?.data &&
               voucherMarketplace.data?.data.rows.length > 0 ? (
                 voucherMarketplace.data?.data?.rows.map((data, index) => (
@@ -60,7 +60,7 @@ const MarketplaceVoucherMenu: React.FC<{
                             text-start text-white "
                             >
                               <a className="flex flex-col items-center ">
-                                <span className="text-lg  font-bold">
+                                <span className="max-w-[96%] truncate  break-words text-md font-bold">
                                   Discount{' '}
                                   {data.discount_percentage > 0 ? (
                                     <>{data.discount_percentage}%</>
@@ -101,7 +101,7 @@ const MarketplaceVoucherMenu: React.FC<{
                             text-start text-primary hover:border-white hover:bg-primary hover:text-white"
                             >
                               <a className="flex flex-col items-center ">
-                                <span className="text-lg  font-bold">
+                                <span className="max-w-[95%] truncate  break-words  text-md font-bold">
                                   Discount{' '}
                                   {data.discount_percentage > 0 ? (
                                     <>{data.discount_percentage}%</>
