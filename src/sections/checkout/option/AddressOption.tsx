@@ -3,7 +3,8 @@ import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 
 import { useEditAddress, useGetAllAddress } from '@/api/user/address'
-import { Button, Chip, H4, P } from '@/components'
+import { Button, Chip, P } from '@/components'
+import cx from '@/helper/cx'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { AddressDetail } from '@/types/api/address'
 import type { APIResponse } from '@/types/api/response'
@@ -88,36 +89,38 @@ const AddressOption: React.FC<AddressOptionProps> = ({ is_shop_address }) => {
             {userAllAddress.data?.data?.rows.map((address, index) => (
               <label key={index}>
                 <div
-                  className={
+                  className={cx(
+                    'col-span-3 p-2  my-2 h-fit rounded-lg border-solid',
                     selected === address.id
-                      ? 'col-span-3  my-2 h-fit rounded-lg border-4 border-solid border-primary p-2 '
-                      : 'col-span-3  my-2 h-fit rounded-lg border-2 border-solid border-slate-600 p-2 '
-                  }
+                      ? 'border-primary border-[2px]'
+                      : 'border-[1px]'
+                  )}
                 >
                   <div
                     className="flex-start flex
                   "
                   >
                     <input
-                      className="mx-3"
+                      className="mr-3 radio radio-sm mt-0.5"
                       type="radio"
                       name={'Address' + String(address.id)}
                       value={address.id}
                       checked={selected === address.id}
                       onChange={handleChange}
+                      readOnly
                     />
-                    <div className=" my-4 mx-2 grid grid-cols-1 gap-2 md:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-2 md:grid-cols-4">
                       <div className="col-span-3 flex flex-col gap-y-2 ">
-                        <H4>{address.name}</H4>
-                        <P>
+                        <P className="font-semibold">{address.name}</P>
+                        <P className="text-sm">
                           {address.address_detail}, {address.sub_district},{' '}
                           {address.district}, {address.city}, {address.province}
                           , Indonesia ({address.zip_code})
                         </P>
                         <div className="flex flex-wrap gap-2">
-                          {address.is_shop_default ? (
+                          {address.is_default ? (
                             <>
-                              <Chip>Shop Shipping Address</Chip>
+                              <Chip type="gray">Shop Shipping Address</Chip>
                             </>
                           ) : (
                             <></>
@@ -137,7 +140,13 @@ const AddressOption: React.FC<AddressOptionProps> = ({ is_shop_address }) => {
           </P>
         )
       ) : (
-        <P>Loading</P>
+        <div className="w-full">
+          <div className="flex flex-col gap-2">
+            <div className="h-[1rem] w-[4rem] rounded bg-base-300 animate-pulse" />
+            <div className="h-[1rem] w-[8rem] rounded bg-base-300 animate-pulse" />
+            <div className="h-[1rem] w-[6rem] rounded bg-base-300 animate-pulse" />
+          </div>
+        </div>
       )}
       <div className="my-2 flex justify-end">
         <div className="btn-group">
@@ -170,7 +179,7 @@ const AddressOption: React.FC<AddressOptionProps> = ({ is_shop_address }) => {
         </div>
       </div>
       <hr></hr>
-      <div className="my-2 flex justify-end gap-2">
+      <div className="mt-4 flex justify-end gap-2">
         <Button
           type="button"
           buttonType="primary"

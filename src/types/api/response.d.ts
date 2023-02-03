@@ -9,5 +9,5 @@ export interface PaginationData<T> {
   sort: string
   total_rows: number
   total_pages: number
-  rows: T[]
+  rows: T[] | null
 }

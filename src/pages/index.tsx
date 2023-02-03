@@ -28,7 +28,7 @@ const Home: NextPage = () => {
         <title>Murakali</title>
         <meta name="description" content="Murakali E-Commerce Application" />
       </Head>
-      <div className="absolute z-20 w-full translate-y-[4rem] overflow-x-hidden md:translate-y-[4.5rem]">
+      <div className="absolute -z-10 w-full translate-y-[4rem] overflow-x-hidden md:translate-y-[4.5rem]">
         {banner.isLoading ? (
           <BannerCarousel banners={bannerData} isLoading={true} />
         ) : banner.data?.data &&
@@ -67,7 +67,10 @@ const Home: NextPage = () => {
           <Divider />
         </div>
         <div>
-          <div className="flex justify-between " id="recommended-product-list">
+          <div
+            className="flex justify-between flex-wrap gap-2"
+            id="recommended-product-list"
+          >
             <H1>Recommended Products</H1>
             <H4 className="self-end">
               <button
@@ -97,7 +100,7 @@ const Home: NextPage = () => {
                   )
                 })
             ) : recommendedProduct.data?.data ? (
-              recommendedProduct.data.data.rows.map((product, idx) => {
+              recommendedProduct.data.data.rows?.map((product, idx) => {
                 return (
                   <ProductCard
                     key={`${product.title} ${idx}`}

@@ -391,7 +391,7 @@ function ListOrderDeliveryService() {
               <Table
                 data={formatSub(sellerOrders.data.data)}
                 isLoading={false}
-                empty={sellerOrders.data.data.rows.length === 0}
+                empty={sellerOrders.data.data.rows?.length === 0}
               />
             ) : (
               <div>{'Error'}</div>

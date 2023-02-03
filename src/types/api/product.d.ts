@@ -16,7 +16,7 @@ export interface ProductInfo {
   max_price: number
   category_name: string
   category_url: string
-  shop_id: string
+  shop_id?: string
 }
 
 export interface ProductDetail {
@@ -112,16 +112,16 @@ export interface ProductImages {
   url: string
 }
 export interface ProductQuery {
-  search: string
-  category: string
-  limit: number
-  page: number
-  sort_by: string
-  sort: string
-  min_price: number
-  max_price: number
-  min_rating: number
-  max_rating: number
-  shop_id: string
-  province_ids: string
+  search?: string
+  category?: string
+  limit?: number
+  page?: number
+  sort_by?: string
+  sort?: string
+  min_price?: number
+  max_price?: number
+  min_rating?: number
+  max_rating?: number
+  shop_id?: string
+  province_ids?: string
 }

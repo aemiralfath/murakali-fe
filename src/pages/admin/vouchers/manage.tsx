@@ -243,7 +243,6 @@ function ManageVouchersAdmin() {
                   onChange={handleChange}
                   value={input.code.toUpperCase()}
                   full
-                  maxLength={10}
                   required
                   disabled={edit}
                 />
