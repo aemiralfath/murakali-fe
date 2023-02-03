@@ -1,6 +1,6 @@
 import type { NullableTime } from './time'
 
-export interface RefundOrderData {
+export type RefundOrderData = {
   id: string
   order_id: string
   is_seller_refund: boolean
@@ -27,7 +27,7 @@ export interface RefundOrderData {
       Valid: boolean
     }
   }
-}
+} | null
 
 export interface ConversationRefundThread {
   user_name: string

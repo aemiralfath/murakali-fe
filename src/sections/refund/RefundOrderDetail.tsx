@@ -49,8 +49,8 @@ const OrderDetailCard: React.FC<
                   className="text-white"
                   onClick={handleActionAccept}
                   disabled={
-                    refundThreadData?.refund_data.accepted_at.Valid ||
-                    refundThreadData?.refund_data.rejected_at.Valid
+                    refundThreadData?.refund_data?.accepted_at.Valid ||
+                    refundThreadData?.refund_data?.rejected_at.Valid
                   }
                 >
                   Accepted
@@ -60,8 +60,8 @@ const OrderDetailCard: React.FC<
                   className="text-white"
                   onClick={handleActionRejected}
                   disabled={
-                    refundThreadData?.refund_data.accepted_at.Valid ||
-                    refundThreadData?.refund_data.rejected_at.Valid
+                    refundThreadData?.refund_data?.accepted_at.Valid ||
+                    refundThreadData?.refund_data?.rejected_at.Valid
                   }
                 >
                   Rejected
@@ -69,7 +69,7 @@ const OrderDetailCard: React.FC<
               </div>
             ) : (
               <div>
-                {refundThreadData?.refund_data.rejected_at.Valid &&
+                {refundThreadData?.refund_data?.rejected_at.Valid &&
                 Date.now() -
                   Date.parse(refundThreadData?.refund_data.rejected_at.Time) >=
                   DAY ? (

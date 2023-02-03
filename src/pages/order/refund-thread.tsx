@@ -53,7 +53,7 @@ function RefundThread() {
   }, [createRefundThreadUser.isError])
 
   const handleSubmit = () => {
-    if (refundThreadData.data?.data) {
+    if (refundThreadData.data?.data?.refund_data) {
       const req: CreateRefundThreadRequest = {
         refund_id: refundThreadData.data.data.refund_data.id,
         text: text,

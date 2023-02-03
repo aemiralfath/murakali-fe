@@ -44,16 +44,16 @@ function RefundAdmin() {
           return {
             Date: (
               <div>
-                {moment(data.accepted_at.Time).format(
+                {moment(data?.accepted_at.Time).format(
                   'dddd, DD MMM YYYY  HH:mm'
                 )}
               </div>
             ),
-            Order: <div>{data.order_id}</div>,
-            Reason: <div>{data.reason}</div>,
+            Order: <div>{data?.order_id}</div>,
+            Reason: <div>{data?.reason}</div>,
             Refund: (
               <div>
-                {data.is_seller_refund ? (
+                {data?.is_seller_refund ? (
                   <>
                     Rp.{' '}
                     {formatMoney(
@@ -61,13 +61,13 @@ function RefundAdmin() {
                     )}
                   </>
                 ) : (
-                  <>Rp. {formatMoney(data.order.total_price)}</>
+                  <>Rp. {formatMoney(data?.order.total_price ?? 0)}</>
                 )}
               </div>
             ),
             Status: (
               <div>
-                {data.is_seller_refund ? (
+                {data?.is_seller_refund ? (
                   <Chip type="gray"> Seller Refund</Chip>
                 ) : (
                   <Chip type="gray"> Buyer Refund</Chip>
@@ -80,7 +80,9 @@ function RefundAdmin() {
                   buttonType="primary"
                   outlined
                   onClick={() => {
-                    confirmRefund.mutate(data.id)
+                    if (data) {
+                      confirmRefund.mutate(data.id)
+                    }
                   }}
                 >
                   Confirm
