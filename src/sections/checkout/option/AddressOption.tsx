@@ -118,7 +118,7 @@ const AddressOption: React.FC<AddressOptionProps> = ({ is_shop_address }) => {
                           , Indonesia ({address.zip_code})
                         </P>
                         <div className="flex flex-wrap gap-2">
-                          {address.is_shop_default ? (
+                          {address.is_default ? (
                             <>
                               <Chip type="gray">Shop Shipping Address</Chip>
                             </>
