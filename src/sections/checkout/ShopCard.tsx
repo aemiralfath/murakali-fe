@@ -16,6 +16,7 @@ import { Menu } from '@headlessui/react'
 import moment from 'moment'
 
 interface ShopCardProps {
+  defaultAddressIsEmpty?: boolean
   cart: CartDetail
   index: number
   idProducts: string[] | string
@@ -31,6 +32,7 @@ interface ShopCardProps {
 }
 
 const ShopCard: React.FC<ShopCardProps> = ({
+  defaultAddressIsEmpty,
   cart,
   idProducts,
   destination,
@@ -167,7 +169,10 @@ const ShopCard: React.FC<ShopCardProps> = ({
       <div className="flex flex-wrap mt-2 items-center justify-center gap-y-2 md:justify-end">
         <div className="block">
           <Menu>
-            <Menu.Button className="btn-outline btn-primary btn m-1 w-56 gap-4">
+            <Menu.Button
+              disabled={defaultAddressIsEmpty}
+              className="btn-outline btn-primary btn m-1 w-56 gap-4"
+            >
               {delivery.name ? (
                 <div className="flex-start flex items-center gap-2">
                   <FaShippingFast />
