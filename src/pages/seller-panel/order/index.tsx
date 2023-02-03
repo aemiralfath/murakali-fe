@@ -292,7 +292,7 @@ function ListOrderDeliveryService() {
         </div>
 
         <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
-          <div className="flex flex-row gap-x-2">
+          <div className="flex flex-row flex-wrap gap-2">
             <div className="flex items-center gap-x-2 px-5">
               <P className="my-3  font-bold">Date</P>
               <button

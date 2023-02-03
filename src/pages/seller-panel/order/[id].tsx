@@ -72,7 +72,7 @@ function OrderDetailPage() {
                   </div>
                   <div className="flex-auto">
                     <P className="text-sm">Invoice</P>
-                    <P className="font-bold">
+                    <P className="block truncate font-bold">
                       {getSellerOrderDetail.data.data.invoice}
                     </P>
                   </div>
@@ -98,7 +98,7 @@ function OrderDetailPage() {
                 <div className="flex flex-auto flex-col gap-6">
                   <div className="flex-auto">
                     <P className="text-sm">Status</P>
-                    <P className="font-bold">
+                    <P className="block truncate font-bold">
                       {
                         orderStatusData.find(
                           (s) =>
@@ -113,7 +113,7 @@ function OrderDetailPage() {
 
               <div className=" mt-5 h-full w-full max-w-full rounded border bg-white p-6">
                 <div className="flex justify-center ">
-                  <ul className="steps steps-vertical w-fit min-w-fit py-5 lg:steps-horizontal ">
+                  <ul className="steps steps-vertical w-fit min-w-fit py-5 lg:steps-horizontal">
                     {sellerOrderStatus.map((status, index) => {
                       if (getSellerOrderDetail.data?.data) {
                         return (
@@ -137,7 +137,7 @@ function OrderDetailPage() {
                                 : 'step'
                             )}
                           >
-                            <span className="mx-1 text-sm line-clamp-2">
+                            <span className="mx-1 text-start text-sm line-clamp-2 md:text-center">
                               {status.name}
                             </span>
                           </li>

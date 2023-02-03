@@ -568,7 +568,7 @@ function ManageVouchers() {
               </div>
             </div>
 
-            <div className="mt-4 flex gap-2 lg:justify-end">
+            <div className="mt-4 flex justify-end gap-2">
               <Button
                 type="button"
                 outlined
