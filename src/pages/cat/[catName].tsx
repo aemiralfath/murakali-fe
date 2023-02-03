@@ -119,6 +119,7 @@ const FilterCategoryName: NextPage = () => {
     max_rating: 5,
     shop_id: '',
     province_ids: locationState,
+    listed_status: 1,
   }
 
   const SearchProductList = useSearchQueryProduct(productQuery)
