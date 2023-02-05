@@ -28,7 +28,7 @@ const Home: NextPage = () => {
         <title>Murakali</title>
         <meta name="description" content="Murakali E-Commerce Application" />
       </Head>
-      <div className="absolute -z-10 w-full translate-y-[4rem] overflow-x-hidden md:translate-y-[4.5rem]">
+      <div className="absolute z-10 w-full translate-y-[4rem] overflow-x-hidden md:translate-y-[4.5rem]">
         {banner.isLoading ? (
           <BannerCarousel banners={bannerData} isLoading={true} />
         ) : banner.data?.data &&
@@ -46,7 +46,10 @@ const Home: NextPage = () => {
       </div>
       <MainLayout>
         <div className="-z-50 h-[16rem] w-full sm:h-[18rem] lg:h-[22rem]" />
-        <CategorySearch />
+        <div className="z-10">
+          <CategorySearch />
+        </div>
+
         {categories.data?.data ? (
           <CategoriesCarousel categories={categories.data.data} />
         ) : (
