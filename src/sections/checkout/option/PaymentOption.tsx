@@ -9,7 +9,7 @@ import { useRouter } from 'next/router'
 import { useChangeTransactionPaymentMethod } from '@/api/transaction'
 import { useGetUserSLP } from '@/api/user/slp'
 import { useCreateTransaction } from '@/api/user/transaction'
-import { Button, P } from '@/components'
+import { Button, Chip, P } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
 import cx from '@/helper/cx'
 import { validateUUID } from '@/helper/uuid'
@@ -65,6 +65,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
       balance?: number
       image: string
       active: boolean
+      is_default: boolean
     }>
   >([])
 
@@ -118,6 +119,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
             balance: userWallet.balance,
             image: walletImage.src,
             active: true,
+            is_default: false,
           },
         ]
       : [
@@ -126,6 +128,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
             name: 'Wallet',
             active: false,
             image: walletImage.src,
+            is_default: false,
           },
         ]
 
@@ -135,6 +138,7 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
         name: slp.name,
         image: sealabsImage.src,
         active: true,
+        is_default: slp.is_default,
       }
     })
     setPaymentOption([...tempPaymentOption, ...slps])
@@ -304,6 +308,11 @@ const PaymentOption: React.FC<CheckoutSummaryProps> = ({
                       </P>
                     ) : (
                       <P className="text-sm">{paymentOption.id}</P>
+                    )}
+                    {paymentOption.is_default ? (
+                      <Chip type="primary">Default</Chip>
+                    ) : (
+                      <></>
                     )}
                   </div>
                 </div>

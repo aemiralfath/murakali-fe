@@ -301,6 +301,14 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                     <P className="text-md max-w-[70%] truncate break-words">
                                       {data.code}
                                     </P>
+                                    {data.discount_percentage > 0 ? (
+                                      <span className="max-w-[96%] truncate  break-words text-xs ">
+                                        Max Discount Rp.{' '}
+                                        {formatMoney(data.max_discount_price)}
+                                      </span>
+                                    ) : (
+                                      <></>
+                                    )}
                                     <span className=" text-xs ">
                                       Min. Rp.{' '}
                                       {formatMoney(data.min_product_price)}
@@ -369,6 +377,14 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                     <P className=" text-md max-w-[80%] truncate break-words">
                                       {data.code}
                                     </P>
+                                    {data.discount_percentage > 0 ? (
+                                      <span className="max-w-[96%] truncate  break-words text-xs ">
+                                        Max Discount Rp.{' '}
+                                        {formatMoney(data.max_discount_price)}
+                                      </span>
+                                    ) : (
+                                      <></>
+                                    )}
                                     <span className=" text-xs ">
                                       Min. Rp.{' '}
                                       {formatMoney(data.min_product_price)}
