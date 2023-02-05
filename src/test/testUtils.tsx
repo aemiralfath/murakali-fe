@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { PropsWithChildren } from 'react'
 import React from 'react'
@@ -61,6 +63,12 @@ export function renderWithProviders(
           retry: 1,
         },
       },
+      logger: {
+        log: console.log,
+        warn: console.warn,
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        error: () => {},
+      },
     })
 
     return (
@@ -73,16 +81,5 @@ export function renderWithProviders(
   return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) }
 }
 
-const customRender = (
-  ui: React.ReactElement<any, string | React.JSXElementConstructor<any>>,
-  options = {}
-): void => {
-  render(ui, {
-    wrapper: ({ children }) => children,
-    ...options,
-  })
-}
-
 export * from '@testing-library/react'
 export { default as userEvent } from '@testing-library/user-event'
-export { customRender as render }
