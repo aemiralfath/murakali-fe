@@ -17,7 +17,13 @@ const MarketplaceVoucherMenu: React.FC<{
     APIResponse<PaginationData<VoucherData>>,
     unknown
   >
-}> = ({ voucher, setVoucher, voucherMarketplace }) => {
+  mapPriceQuantity: {
+    price: number
+    subPrice: number
+    quantity: number
+    result_discount: number
+  }
+}> = ({ voucher, setVoucher, voucherMarketplace, mapPriceQuantity }) => {
   return (
     <Menu>
       <Menu.Button className="btn-outline btn-primary btn  m-1 w-full gap-4">
@@ -45,12 +51,13 @@ const MarketplaceVoucherMenu: React.FC<{
       voucherMarketplace.data.data.rows !== null ? (
         voucherMarketplace.data.data.rows.length > 0 ? (
           <div>
-            <Menu.Items className="absolute mx-auto max-h-52 w-56 sm:w-80 origin-top-left divide-y divide-gray-100  overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
+            <Menu.Items className="absolute mx-auto max-h-52 w-56 origin-top-left divide-y divide-gray-100 overflow-y-scroll  rounded-md bg-white shadow-lg focus:outline-none sm:w-80 ">
               {voucherMarketplace.data?.data &&
               voucherMarketplace.data?.data.rows.length > 0 ? (
                 voucherMarketplace.data?.data?.rows.map((data, index) => (
                   <div className="px-1" key={index}>
-                    {data.quota <= 0 ? (
+                    {data.quota <= 0 ||
+                    mapPriceQuantity.subPrice <= data.min_product_price ? (
                       <>
                         <Menu.Item>
                           {() => (
@@ -60,7 +67,7 @@ const MarketplaceVoucherMenu: React.FC<{
                             text-start text-white "
                             >
                               <a className="flex flex-col items-center ">
-                                <span className="max-w-[96%] truncate  break-words text-md font-bold">
+                                <span className="text-md max-w-[96%]  truncate break-words font-bold">
                                   Discount{' '}
                                   {data.discount_percentage > 0 ? (
                                     <>{data.discount_percentage}%</>
@@ -107,7 +114,7 @@ const MarketplaceVoucherMenu: React.FC<{
                             text-start text-primary hover:border-white hover:bg-primary hover:text-white"
                             >
                               <a className="flex flex-col items-center ">
-                                <span className="max-w-[95%] truncate  break-words  text-md font-bold">
+                                <span className="text-md max-w-[95%]  truncate  break-words font-bold">
                                   Discount{' '}
                                   {data.discount_percentage > 0 ? (
                                     <>{data.discount_percentage}%</>
