@@ -31,36 +31,22 @@ const CategoryTab: React.FC<{
     <div className="tabs-boxed z-10 grid w-full grid-cols-2 bg-primary bg-opacity-10 sm:grid-cols-5 ">
       {sm ? (
         <div className="tabs col-span-4 flex-nowrap items-center space-x-5 overflow-auto">
-          <button
-            onClick={() => setSelectedTab('')}
-            className={cx(
-              'tab-lg w-1/2 min-w-max text-center text-base sm:w-1/4',
-              selectedTab === '' ? 'tab-active' : ''
-            )}
-          >
-            All Item
-          </button>
+          <a href="#seller-products">
+            <button
+              onClick={() => setSelectedTab('')}
+              className={cx(
+                'tab-lg w-1/2 min-w-max text-center text-base sm:w-1/4',
+                selectedTab === '' ? 'tab-active' : ''
+              )}
+            >
+              All Item
+            </button>
+          </a>
           {categories.length <= 4 ? (
             categories.map((item, index) => {
               return (
-                <button
-                  key={index}
-                  onClick={() => setSelectedTab(item.name)}
-                  className={cx(
-                    'tab-lg w-1/4 min-w-max text-center text-base',
-                    selectedTab === item.name ? 'tab-active' : ''
-                  )}
-                >
-                  {item.name}
-                </button>
-              )
-            })
-          ) : (
-            <>
-              {categories.slice(0, 3).map((item, index) => {
-                return (
+                <a href="#seller-products" key={index}>
                   <button
-                    key={index}
                     onClick={() => setSelectedTab(item.name)}
                     className={cx(
                       'tab-lg w-1/4 min-w-max text-center text-base',
@@ -69,6 +55,24 @@ const CategoryTab: React.FC<{
                   >
                     {item.name}
                   </button>
+                </a>
+              )
+            })
+          ) : (
+            <>
+              {categories.slice(0, 3).map((item, index) => {
+                return (
+                  <a href="#seller-products" key={index}>
+                    <button
+                      onClick={() => setSelectedTab(item.name)}
+                      className={cx(
+                        'tab-lg w-1/4 min-w-max text-center text-base',
+                        selectedTab === item.name ? 'tab-active' : ''
+                      )}
+                    >
+                      {item.name}
+                    </button>
+                  </a>
                 )
               })}
             </>
@@ -76,21 +80,23 @@ const CategoryTab: React.FC<{
         </div>
       ) : (
         <div className="tabs flex-nowrap items-center space-x-5 overflow-auto">
-          <button
-            onClick={() => setSelectedTab('')}
-            className={cx(
-              'tab-lg w-full min-w-max text-center text-base',
-              selectedTab === '' ? 'tab-active' : ''
-            )}
-          >
-            All Item
-          </button>
+          <a href="#seller-products">
+            <button
+              onClick={() => setSelectedTab('')}
+              className={cx(
+                'tab-lg w-full min-w-max text-center text-base',
+                selectedTab === '' ? 'tab-active' : ''
+              )}
+            >
+              All Item
+            </button>
+          </a>
         </div>
       )}
       <>
         {sm ? (
           categories.length > 4 ? (
-            <div className="dropdown dropdown-end dropdown-hover mx-auto w-full">
+            <div className="dropdown-end dropdown-hover dropdown mx-auto w-full">
               <label
                 tabIndex={0}
                 className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
@@ -105,7 +111,7 @@ const CategoryTab: React.FC<{
 
               <ul
                 tabIndex={0}
-                className="dropdown-content dropdown-end dropdown-hover menu rounded-box w-52 bg-base-100 p-2 shadow"
+                className="dropdown-end dropdown-hover dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
               >
                 {categories.slice(3, 999).map((item, index) => {
                   return (
@@ -129,7 +135,7 @@ const CategoryTab: React.FC<{
           )
         ) : (
           <>
-            <div className="dropdown dropdown-end dropdown-hover mx-auto w-full">
+            <div className="dropdown-end dropdown-hover dropdown mx-auto w-full">
               <label
                 tabIndex={0}
                 className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
@@ -144,7 +150,7 @@ const CategoryTab: React.FC<{
 
               <ul
                 tabIndex={0}
-                className="dropdown-content dropdown-end menu rounded-box w-52 bg-base-100 p-2 shadow"
+                className="dropdown-end dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
               >
                 {categories.slice(0, 999).map((item, index) => {
                   return (

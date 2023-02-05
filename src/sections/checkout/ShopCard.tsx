@@ -119,7 +119,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
 
   return (
     <div className="">
-      <P className="font-semibold text-lg items-center flex gap-2 mb-3">
+      <P className="mb-3 flex items-center gap-2 text-lg font-semibold">
         <FaStore /> {cart.shop.name}
       </P>
       <div className="flex flex-col gap-2">
@@ -166,7 +166,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
         )}
       </div>
 
-      <div className="flex flex-wrap mt-2 items-center justify-center gap-y-2 md:justify-end">
+      <div className="mt-2 flex flex-wrap items-center justify-center gap-y-2 md:justify-end">
         <div className="block">
           <Menu>
             <Menu.Button
@@ -192,7 +192,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
             locationCost.data.data.data.shipping_option !== null ? (
               locationCost.data.data.data.shipping_option.length > 0 ? (
                 <div>
-                  <Menu.Items className="z-20 absolute w-56 origin-top-left p-2 divide-y divide-gray-100 rounded-md bg-white shadow-md focus:outline-none ">
+                  <Menu.Items className="absolute z-20 w-56 origin-top-left divide-y divide-gray-100 rounded-md bg-white p-2 shadow-md focus:outline-none ">
                     {locationCost.data.data.data.shipping_option.map(
                       (shipping, index) => (
                         <div key={index}>
@@ -214,16 +214,16 @@ const ShopCard: React.FC<ShopCardProps> = ({
                                     etd: shipping.etd,
                                   })
                                 }}
-                                className="btn  m-1 mx-auto border-primary h-fit w-52 gap-2 justify-start text-primary bg-white  hover:border-white hover:bg-primary hover:text-white"
+                                className="btn  m-1 mx-auto h-fit w-52 justify-start gap-2 border-primary bg-white text-primary  hover:border-white hover:bg-primary hover:text-white"
                               >
-                                <a className="flex justify-start text-start w-full py-2 flex-col gap-1">
+                                <a className="flex w-full flex-col justify-start gap-1 py-2 text-start">
                                   <span className="text-lg font-semibold">
                                     {shipping.courier.name}
                                   </span>
-                                  <span className="text-sm -mt-1 font-normal">
+                                  <span className="-mt-1 text-sm font-normal">
                                     Rp. {shipping.fee}
                                   </span>
-                                  <span className="text-xs -mt-1 font-normal">
+                                  <span className="-mt-1 text-xs font-normal">
                                     {shipping.etd.replace(/\D/g, '')} Days
                                   </span>
                                 </a>
@@ -276,7 +276,8 @@ const ShopCard: React.FC<ShopCardProps> = ({
                   <Menu.Items className="absolute max-h-64 w-60 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-lg focus:outline-none ">
                     {voucherShop.data.data.rows?.map((data, index) => (
                       <div className="p-1" key={index}>
-                        {data.quota <= 0 ? (
+                        {data.quota <= 0 ||
+                        totalPrice <= data.min_product_price ? (
                           <>
                             <Menu.Item>
                               {() => (
@@ -286,7 +287,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
                             text-start text-white "
                                 >
                                   <a className="flex flex-col items-center">
-                                    <P className="max-w-[95%] truncate  break-words text-md font-bold">
+                                    <P className="text-md max-w-[95%]  truncate break-words font-bold">
                                       Discount{' '}
                                       {data.discount_percentage > 0 ? (
                                         <>{data.discount_percentage}%</>
@@ -352,7 +353,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
                             text-start text-primary hover:border-white hover:bg-primary hover:text-white"
                                 >
                                   <a className="flex flex-col items-center ">
-                                    <P className="max-w-[96%] truncate  break-words text-md font-bold">
+                                    <P className="text-md max-w-[96%]  truncate break-words font-bold">
                                       Discount{' '}
                                       {data.discount_percentage > 0 ? (
                                         <>{data.discount_percentage}%</>
@@ -391,7 +392,7 @@ const ShopCard: React.FC<ShopCardProps> = ({
                   </Menu.Items>
                 </div>
               ) : (
-                <Menu.Items className="absolute h-10 w-56 origin-top-left divide-y customscroll divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-md focus:outline-none ">
+                <Menu.Items className="customscroll absolute h-10 w-56 origin-top-left divide-y divide-gray-100  overflow-x-hidden overflow-y-scroll rounded-md bg-white shadow-md focus:outline-none ">
                   <div className=" p-2">
                     <P className=" text-center">No Voucher Available</P>
                   </div>
@@ -403,16 +404,16 @@ const ShopCard: React.FC<ShopCardProps> = ({
           </Menu>
         </div>
 
-        <div className="border-1 mx-2 flex flex-col text-sm border-l-primary px-2 text-primary-focus md:border-l-2">
-          <div className="flex justify-between font-light gap-5">
+        <div className="border-1 mx-2 flex flex-col border-l-primary px-2 text-sm text-primary-focus md:border-l-2">
+          <div className="flex justify-between gap-5 font-light">
             <p>Delivery </p>
             <p> + Rp.{formatMoney(delivery.delivery_fee)}</p>
           </div>
-          <div className="flex justify-between font-light gap-5">
+          <div className="flex justify-between gap-5 font-light">
             <p>Voucher Shop Total </p>
             <p>- Rp.{formatMoney(voucherPrice)}</p>
           </div>
-          <div className="flex justify-between font-semibold gap-5">
+          <div className="flex justify-between gap-5 font-semibold">
             <p>Total Order </p>
             <p>
               Rp.

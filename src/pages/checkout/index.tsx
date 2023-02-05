@@ -332,17 +332,22 @@ function Checkout() {
           <div>
             <div
               className={cx(
-                'bg-white p-5  border flex flex-col gap-5',
+                'flex flex-col  gap-5 border bg-white p-5',
                 xl
                   ? 'col-span-3 rounded'
-                  : 'rounded-t-lg fixed bottom-0 left-0 w-full'
+                  : 'fixed bottom-0 left-0 w-full rounded-t-lg'
               )}
             >
-              <MarketplaceVoucherMenu
-                voucher={voucher}
-                setVoucher={setVoucher}
-                voucherMarketplace={voucherMarketplace}
-              />
+              {parsedValues ? (
+                <MarketplaceVoucherMenu
+                  voucher={voucher}
+                  setVoucher={setVoucher}
+                  voucherMarketplace={voucherMarketplace}
+                  mapPriceQuantity={{ ...parsedValues }}
+                />
+              ) : (
+                <></>
+              )}
               <Divider />
               {userSLP.data?.data && checkoutItems && parsedValues ? (
                 <CheckoutSummary
