@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { HiArrowLeft, HiDuplicate, HiPencil } from 'react-icons/hi'
+import { HiArrowLeft, HiDuplicate } from 'react-icons/hi'
 
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -229,17 +229,7 @@ const PromotionDetailSeller = () => {
         </div>
         <div className="mt-6 flex justify-end gap-3">
           <Button
-            buttonType="ghost"
-            outlined
-            onClick={() => {
-              router.push('/seller-panel/promotion/manage?intent=edit&id=' + id)
-            }}
-          >
-            <HiPencil /> Edit
-          </Button>
-
-          <Button
-            buttonType="ghost"
+            buttonType="primary"
             outlined
             onClick={() => {
               router.push('/seller-panel/promotion/manage?intent=add&id=' + id)
