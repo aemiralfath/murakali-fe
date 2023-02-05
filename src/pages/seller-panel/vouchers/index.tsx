@@ -78,7 +78,7 @@ function Vouchers() {
               </div>
             ),
             Code: <div>{data.code}</div>,
-            Qouta: <div>{data.quota}</div>,
+            Quota: <div>{data.quota}</div>,
             Status: (
               <div>
                 {Date.now() >= Date.parse(data.actived_date) &&
@@ -246,7 +246,7 @@ function Vouchers() {
         'Created Date': '',
         Code: '',
         Status: '',
-        Qouta: '',
+        Quota: '',
         'Active Date': '',
         'Discount ': '',
         'Min Product Price': '',
