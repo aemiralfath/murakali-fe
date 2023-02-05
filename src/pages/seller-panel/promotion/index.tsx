@@ -146,19 +146,27 @@ function PromotionSeller() {
                     <HiPencil /> Edit
                   </Button>
                 )}
-                <Button
-                  size="sm"
-                  buttonType="ghost"
-                  className="text-primary"
-                  onClick={() => {
-                    router.push(
-                      '/seller-panel/promotion/manage?intent=add&id=' +
-                        row.promotion_id
-                    )
-                  }}
-                >
-                  <HiDuplicate /> Duplicate
-                </Button>
+
+                {new Date() > new Date(row.actived_date) &&
+                new Date() > new Date(row.expired_date) ? (
+                  <>
+                    <Button
+                      size="sm"
+                      buttonType="ghost"
+                      className="text-primary"
+                      onClick={() => {
+                        router.push(
+                          '/seller-panel/promotion/manage?intent=add&id=' +
+                            row.promotion_id
+                        )
+                      }}
+                    >
+                      <HiDuplicate /> Duplicate
+                    </Button>
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
             ),
           }))
