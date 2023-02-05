@@ -21,7 +21,12 @@ const ProductDescription = ({ seller, productInfo }: ProductDescription) => {
   return (
     <>
       <H3 className="mt-8">Product Description</H3>
-      <P className={cx('mt-2', descriptionOpen ? '' : 'line-clamp-[15]')}>
+      <P
+        className={cx(
+          'mt-2 break-words max-w-lg ',
+          descriptionOpen ? 'line-clamp-4' : 'line-clamp-[15]'
+        )}
+      >
         {productInfo?.description}
       </P>
       <div className="mt-4">

@@ -146,8 +146,8 @@ function MerchantRegistration() {
                   <div className="col-span-1 py-2">
                     <H4>Address</H4>
                     {address.isSuccess ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-3">
-                        <div className="col-span-2">
+                      <div className="flex flex-wrap justify-between flex-row">
+                        <div className="w-96">
                           {address.data?.data?.rows[0] !== undefined ? (
                             <P>
                               {address.data.data.rows[0].address_detail},{' '}
@@ -161,7 +161,7 @@ function MerchantRegistration() {
                             <></>
                           )}
                         </div>
-                        <div className="col-span-1 flex items-center justify-end px-2">
+                        <div className=" flex items-centerpx-2">
                           <Button
                             buttonType="primary"
                             size="sm"

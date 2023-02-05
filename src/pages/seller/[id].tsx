@@ -299,6 +299,7 @@ function Seller() {
     max_rating: 5,
     shop_id: param.query.id as string,
     province_ids: locationState,
+    listed_status: 1,
   }
 
   const SearchProductList = useSearchQueryProduct(productQuery)

@@ -167,7 +167,7 @@ const OrderCard: React.FC<
       {isLoading ? (
         <div className="h-[1.5rem] w-[6rem] animate-pulse rounded bg-base-300" />
       ) : (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap">
           {order ? (
             <>
               <div className="flex items-center gap-2">
@@ -186,7 +186,9 @@ const OrderCard: React.FC<
                   {moment(order.created_at).format('DD MMMM YYYY')}
                 </P>
                 <P className="text-xs opacity-60">•</P>
-                <Chip type="gray">{orderStatus[order.order_status]}</Chip>
+                <div className="block truncate max-w-md">
+                  <Chip type="gray">{orderStatus[order.order_status]}</Chip>
+                </div>
               </div>
             </>
           ) : (
@@ -217,7 +219,9 @@ const OrderCard: React.FC<
                 height={100}
               />
               <div className="flex-1 px-2">
-                <P className="font-semibold">{detail.product_title}</P>
+                <P className="font-semibold line-clamp-1 w-32 sm:w-fit ">
+                  {detail.product_title}
+                </P>
                 <P className="text-sm opacity-60">
                   Quantity: {detail.order_quantity}
                 </P>
