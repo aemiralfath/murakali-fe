@@ -13,15 +13,14 @@ const Breadcrumbs: React.FC<{
       {data.map((d, idx) => {
         return (
           <div key={idx} className={'flex items-center'}>
-            <Link
-              href={d.link}
+            <div
               className={cx(
                 'text-primary line-clamp-1 hover:underline',
                 idx === data.length - 1 ? 'font-semibold' : ''
               )}
             >
               {d.name}
-            </Link>
+            </div>
             {idx === data.length - 1 ? (
               <></>
             ) : (

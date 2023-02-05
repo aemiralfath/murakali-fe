@@ -25,7 +25,7 @@ export async function middleware(req: NextRequest) {
     if (req.nextUrl.pathname.startsWith('/admin')) {
       if (jwt.role_id !== 3) {
         const url = req.nextUrl.clone()
-        url.pathname = '/login'
+        url.pathname = '/'
         return NextResponse.rewrite(url)
       }
       return response
@@ -59,7 +59,7 @@ export async function middleware(req: NextRequest) {
     if (req.nextUrl.pathname.startsWith('/admin')) {
       if (jwt.role_id !== 3) {
         const url = req.nextUrl.clone()
-        url.pathname = '/login'
+        url.pathname = '/'
         return NextResponse.rewrite(url)
       }
       return response

@@ -49,11 +49,8 @@ const OrderDetailCard: React.FC<
                   className="text-white"
                   onClick={handleActionAccept}
                   disabled={
-                    refundThreadData?.refund_data !== undefined &&
-                    refundThreadData?.refund_data !== null
-                      ? refundThreadData?.refund_data.accepted_at.Valid ||
-                        refundThreadData?.refund_data.rejected_at.Valid
-                      : true
+                    refundThreadData?.refund_data?.accepted_at.Valid ||
+                    refundThreadData?.refund_data?.rejected_at.Valid
                   }
                 >
                   Accepted
@@ -63,11 +60,8 @@ const OrderDetailCard: React.FC<
                   className="text-white"
                   onClick={handleActionRejected}
                   disabled={
-                    refundThreadData?.refund_data !== undefined &&
-                    refundThreadData?.refund_data !== null
-                      ? refundThreadData?.refund_data.accepted_at.Valid ||
-                        refundThreadData?.refund_data.rejected_at.Valid
-                      : true
+                    refundThreadData?.refund_data?.accepted_at.Valid ||
+                    refundThreadData?.refund_data?.rejected_at.Valid
                   }
                 >
                   Rejected
