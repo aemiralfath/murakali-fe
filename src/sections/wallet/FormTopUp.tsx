@@ -62,7 +62,7 @@ const FormTopUp: React.FC = () => {
         toast.error('Insufficient balance, please top up first!')
       }
       if (paymentReason === 'user not found') {
-        toast.error('“Invalid SeaLabs Pay account!')
+        toast.error('Invalid SeaLabs Pay account!')
       }
     }
   }, [useSlpPayment.isError])
