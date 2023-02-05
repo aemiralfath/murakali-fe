@@ -76,25 +76,9 @@ const ManagePromotionSeller = () => {
 
     const newState = selectedProduct.map((sp) => {
       if (sp.product_id === id) {
-        let subprice = sp.price
-        let discount = 0
-
-        if (inputName === 'discount_percentage') {
-          discount = (sp.price * num) / 100
-          subprice = sp.price - discount
-        }
-        if (inputName === 'discount_fix_price') {
-          discount = num
-          subprice = sp.price - discount
-        }
         return {
           ...sp,
           [inputName]: num,
-          product_subprice: Number.isNaN(subprice)
-            ? sp.price
-            : subprice < 0
-            ? 0
-            : subprice,
         }
       }
       return sp
@@ -806,159 +790,169 @@ const ManagePromotionSeller = () => {
           </div>
           <div className="">
             {selectedProduct.length > 0 ? (
-              <>
-                <div className="flex w-full items-center gap-2">
-                  <input
-                    type={'checkbox'}
-                    className={'checkbox'}
-                    onClick={() => {
-                      if (selectedProductId.length < selectedProduct.length) {
-                        const tempSelect = selectedProduct.map(
-                          (p) => p.product_id
-                        )
-                        setSelectedProductId(tempSelect)
-                      } else {
-                        setSelectedProductId([])
-                      }
-                    }}
-                    checked={
-                      selectedProductId.length === selectedProduct.length
-                    }
-                  />
-                  <div className="min-h-12 flex w-full flex-wrap items-center gap-3 rounded-lg bg-base-200 p-2">
-                    <div className="flex max-w-[12rem] items-center gap-1">
-                      <P className="whitespace-nowrap text-sm">
-                        Discount Percentage
-                      </P>
-                      <TextInput
-                        inputSize="sm"
-                        full
-                        placeholder="%"
-                        value={tempDiscountPercentage}
-                        disabled={tempDiscountFixPrice > 0}
-                        onChange={(e) => {
-                          const parsed = parseInt(e.target.value)
-                          setTempDiscountPercentage(
-                            Number.isNaN(parsed)
-                              ? 0
-                              : tempDiscountFixPrice > 0
-                              ? 0
-                              : tempDiscountPercentage > 100
-                              ? 100
-                              : parsed
+              intent === 'edit' ? (
+                <></>
+              ) : (
+                <>
+                  <div className="flex w-full items-center gap-2">
+                    <input
+                      type={'checkbox'}
+                      className={'checkbox'}
+                      onClick={() => {
+                        if (selectedProductId.length < selectedProduct.length) {
+                          const tempSelect = selectedProduct.map(
+                            (p) => p.product_id
                           )
-                        }}
-                      />
-                    </div>
-                    <div className="flex max-w-[12rem] items-center gap-1">
-                      <P className="whitespace-nowrap text-sm">
-                        Discount Nominal
-                      </P>
-                      <TextInput
-                        inputSize="sm"
-                        full
-                        placeholder="Rp."
-                        value={tempDiscountFixPrice}
-                        disabled={tempDiscountPercentage > 0}
-                        onChange={(e) => {
-                          const parsed = parseInt(e.target.value)
-                          setTempDiscountFixPrice(
-                            Number.isNaN(parsed)
-                              ? 0
-                              : tempDiscountPercentage > 0
-                              ? 0
-                              : parsed
-                          )
-                          setTempMaxDiscountPrice(
-                            Number.isNaN(parsed) ? 0 : parsed
-                          )
-                        }}
-                      />
-                    </div>
-                    <div className="flex max-w-[10rem] items-center gap-1">
-                      <P className="whitespace-nowrap text-sm">Min Price</P>
-                      <TextInput
-                        inputSize="sm"
-                        full
-                        placeholder="Rp."
-                        value={tempMinimumProductPrice}
-                        onChange={(e) => {
-                          const parsed = parseInt(e.target.value)
-                          setTempMinimumProductPrice(
-                            Number.isNaN(parsed) ? 0 : parsed
-                          )
-                        }}
-                      />
-                    </div>
-                    <div className="flex max-w-[12rem] items-center gap-1">
-                      <P className="whitespace-nowrap text-sm">Max Discount</P>
-                      <TextInput
-                        inputSize="sm"
-                        full
-                        placeholder="Rp."
-                        value={tempMaxDiscountPrice}
-                        disabled={tempDiscountFixPrice > 0}
-                        onChange={(e) => {
-                          const parsed = parseInt(e.target.value)
-                          setTempMaxDiscountPrice(
-                            Number.isNaN(parsed)
-                              ? 0
-                              : tempDiscountFixPrice > 0
-                              ? tempDiscountFixPrice
-                              : parsed
-                          )
-                        }}
-                      />
-                    </div>
-
-                    <div className="flex max-w-[12rem] items-center gap-1">
-                      <P className="whitespace-nowrap text-sm">Quota</P>
-                      <TextInput
-                        inputSize="sm"
-                        full
-                        placeholder="Quota"
-                        value={tempQuota}
-                        onChange={(e) => {
-                          const parsed = parseInt(e.target.value)
-                          setTempQuota(Number.isNaN(parsed) ? 0 : parsed)
-                        }}
-                      />
-                    </div>
-                    <div className="flex max-w-[12rem] items-center gap-1">
-                      <P className="whitespace-nowrap text-sm">Max Quantity</P>
-                      <TextInput
-                        inputSize="sm"
-                        full
-                        placeholder="Qty"
-                        value={tempMaxQuantity}
-                        onChange={(e) => {
-                          const parsed = parseInt(e.target.value)
-                          setTempMaxQuantity(Number.isNaN(parsed) ? 0 : parsed)
-                        }}
-                      />
-                    </div>
-                    <div className="flex flex-1 justify-end">
-                      <Button
-                        size="sm"
-                        disabled={
-                          tempDiscountPercentage === null &&
-                          tempDiscountFixPrice === null &&
-                          tempMinimumProductPrice === null &&
-                          tempMaxDiscountPrice === null &&
-                          tempQuota === null &&
-                          tempMaxQuantity === null
+                          setSelectedProductId(tempSelect)
+                        } else {
+                          setSelectedProductId([])
                         }
-                        onClick={handleChangeOnClick}
-                      >
-                        Set
-                      </Button>
+                      }}
+                      checked={
+                        selectedProductId.length === selectedProduct.length
+                      }
+                    />
+                    <div className="min-h-12 flex w-full flex-wrap items-center gap-3 rounded-lg bg-base-200 p-2">
+                      <div className="flex max-w-[12rem] items-center gap-1">
+                        <P className="whitespace-nowrap text-sm">
+                          Discount Percentage
+                        </P>
+                        <TextInput
+                          inputSize="sm"
+                          full
+                          placeholder="%"
+                          value={tempDiscountPercentage}
+                          disabled={tempDiscountFixPrice > 0}
+                          onChange={(e) => {
+                            const parsed = parseInt(e.target.value)
+                            setTempDiscountPercentage(
+                              Number.isNaN(parsed)
+                                ? 0
+                                : tempDiscountFixPrice > 0
+                                ? 0
+                                : tempDiscountPercentage > 100
+                                ? 100
+                                : parsed
+                            )
+                          }}
+                        />
+                      </div>
+                      <div className="flex max-w-[12rem] items-center gap-1">
+                        <P className="whitespace-nowrap text-sm">
+                          Discount Nominal
+                        </P>
+                        <TextInput
+                          inputSize="sm"
+                          full
+                          placeholder="Rp."
+                          value={tempDiscountFixPrice}
+                          disabled={tempDiscountPercentage > 0}
+                          onChange={(e) => {
+                            const parsed = parseInt(e.target.value)
+                            setTempDiscountFixPrice(
+                              Number.isNaN(parsed)
+                                ? 0
+                                : tempDiscountPercentage > 0
+                                ? 0
+                                : parsed
+                            )
+                            setTempMaxDiscountPrice(
+                              Number.isNaN(parsed) ? 0 : parsed
+                            )
+                          }}
+                        />
+                      </div>
+                      <div className="flex max-w-[10rem] items-center gap-1">
+                        <P className="whitespace-nowrap text-sm">Min Price</P>
+                        <TextInput
+                          inputSize="sm"
+                          full
+                          placeholder="Rp."
+                          value={tempMinimumProductPrice}
+                          onChange={(e) => {
+                            const parsed = parseInt(e.target.value)
+                            setTempMinimumProductPrice(
+                              Number.isNaN(parsed) ? 0 : parsed
+                            )
+                          }}
+                        />
+                      </div>
+                      <div className="flex max-w-[12rem] items-center gap-1">
+                        <P className="whitespace-nowrap text-sm">
+                          Max Discount
+                        </P>
+                        <TextInput
+                          inputSize="sm"
+                          full
+                          placeholder="Rp."
+                          value={tempMaxDiscountPrice}
+                          disabled={tempDiscountFixPrice > 0}
+                          onChange={(e) => {
+                            const parsed = parseInt(e.target.value)
+                            setTempMaxDiscountPrice(
+                              Number.isNaN(parsed)
+                                ? 0
+                                : tempDiscountFixPrice > 0
+                                ? tempDiscountFixPrice
+                                : parsed
+                            )
+                          }}
+                        />
+                      </div>
+
+                      <div className="flex max-w-[12rem] items-center gap-1">
+                        <P className="whitespace-nowrap text-sm">Quota</P>
+                        <TextInput
+                          inputSize="sm"
+                          full
+                          placeholder="Quota"
+                          value={tempQuota}
+                          onChange={(e) => {
+                            const parsed = parseInt(e.target.value)
+                            setTempQuota(Number.isNaN(parsed) ? 0 : parsed)
+                          }}
+                        />
+                      </div>
+                      <div className="flex max-w-[12rem] items-center gap-1">
+                        <P className="whitespace-nowrap text-sm">
+                          Max Quantity
+                        </P>
+                        <TextInput
+                          inputSize="sm"
+                          full
+                          placeholder="Qty"
+                          value={tempMaxQuantity}
+                          onChange={(e) => {
+                            const parsed = parseInt(e.target.value)
+                            setTempMaxQuantity(
+                              Number.isNaN(parsed) ? 0 : parsed
+                            )
+                          }}
+                        />
+                      </div>
+                      <div className="flex flex-1 justify-end">
+                        <Button
+                          size="sm"
+                          disabled={
+                            tempDiscountPercentage === null &&
+                            tempDiscountFixPrice === null &&
+                            tempMinimumProductPrice === null &&
+                            tempMaxDiscountPrice === null &&
+                            tempQuota === null &&
+                            tempMaxQuantity === null
+                          }
+                          onClick={handleChangeOnClick}
+                        >
+                          Set
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <P className="mt-1 text-xs">
-                  Selected {selectedProductId.length} products
-                </P>
-              </>
+                  <P className="mt-1 text-xs">
+                    Selected {selectedProductId.length} products
+                  </P>
+                </>
+              )
             ) : (
               <span className="flex h-12 items-center text-sm italic">
                 Select some products
@@ -974,12 +968,20 @@ const ManagePromotionSeller = () => {
                     <div className="flex items-center justify-start overflow-auto bg-base-200">
                       <div className="flex w-fit items-center p-1 align-middle">
                         <div className="px-[1rem]">
-                          <input
-                            type={'checkbox'}
-                            className={'checkbox'}
-                            checked={selectedProductId.includes(sp.product_id)}
-                            onClick={() => toggleSelectedProduct(sp.product_id)}
-                          />
+                          {intent === 'edit' ? (
+                            <></>
+                          ) : (
+                            <input
+                              type={'checkbox'}
+                              className={'checkbox'}
+                              checked={selectedProductId.includes(
+                                sp.product_id
+                              )}
+                              onClick={() =>
+                                toggleSelectedProduct(sp.product_id)
+                              }
+                            />
+                          )}
                         </div>
                         <div className="flex max-w-full flex-1 items-center gap-3 py-1">
                           <div className="flex">
@@ -1015,22 +1017,26 @@ const ManagePromotionSeller = () => {
                       </div>
 
                       <div className="flex flex-1 justify-end px-5 align-middle">
-                        <Button
-                          size="sm"
-                          buttonType="ghost"
-                          onClick={() => {
-                            setSelectedProduct(
-                              selectedProduct.filter(
-                                (sp2) => sp2.product_id !== sp.product_id
+                        {intent === 'edit' ? (
+                          <></>
+                        ) : (
+                          <Button
+                            size="sm"
+                            buttonType="ghost"
+                            onClick={() => {
+                              setSelectedProduct(
+                                selectedProduct.filter(
+                                  (sp2) => sp2.product_id !== sp.product_id
+                                )
                               )
-                            )
-                            setSelectedId(
-                              selectedId.filter((id) => id !== sp.product_id)
-                            )
-                          }}
-                        >
-                          <BsTrash className="h-6 w-6" />
-                        </Button>
+                              setSelectedId(
+                                selectedId.filter((id) => id !== sp.product_id)
+                              )
+                            }}
+                          >
+                            <BsTrash className="h-6 w-6" />
+                          </Button>
+                        )}
                       </div>
                     </div>
 

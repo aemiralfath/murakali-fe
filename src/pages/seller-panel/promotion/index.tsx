@@ -62,7 +62,7 @@ function PromotionSeller() {
                 </P>
               </div>
             ),
-            Quantity: (
+            Quota: (
               <div>
                 <div className="flex gap-2">
                   <P className="">{row.quota}</P>
@@ -74,12 +74,12 @@ function PromotionSeller() {
                 {new Date() < new Date(row.actived_date) &&
                 new Date() < new Date(row.expired_date) ? (
                   <div>
-                    <Chip type="accent">Will Come</Chip>
+                    <Chip type="secondary">Will Come</Chip>
                   </div>
                 ) : new Date() > new Date(row.actived_date) &&
                   new Date() < new Date(row.expired_date) ? (
                   <div>
-                    <Chip type="primary">Ongoing</Chip>
+                    <Chip type="success">Ongoing</Chip>
                   </div>
                 ) : new Date() > new Date(row.actived_date) &&
                   new Date() > new Date(row.expired_date) ? (
@@ -166,7 +166,7 @@ function PromotionSeller() {
             {
               'Promotion Name': '',
               Product: '',
-              Quantity: '',
+              Quota: '',
               Status: '',
               Period: '',
               Discount: '',
@@ -179,7 +179,7 @@ function PromotionSeller() {
       {
         'Promotion Name': '',
         Product: '',
-        Quantity: '',
+        Quota: '',
         Status: '',
         Period: '',
         Discount: '',
