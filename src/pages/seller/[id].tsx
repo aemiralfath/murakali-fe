@@ -346,7 +346,7 @@ function Seller() {
                       Rating Avg
                       <span className="flex items-center gap-1 text-primary">
                         <AiFillStar className="text-accent" />{' '}
-                        {sellerProfile.data.data.rating_avg} Rating
+                        {sellerProfile.data.data.rating_avg.toFixed(1)} Rating
                       </span>
                     </P>
                     {md ? (
