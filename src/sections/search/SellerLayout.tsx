@@ -98,7 +98,8 @@ const SellerLayout: React.FC<SellerLayoutProps> = ({
                       </div>
                       <div className="my-auto text-center ">
                         <P className="flex items-center font-bold text-primary">
-                          <HiStar className="text-accent" /> {shop.rating_avg}
+                          <HiStar className="text-accent" />{' '}
+                          {shop.rating_avg.toFixed(1)}
                         </P>
                         <P className="">Rating</P>
                       </div>
