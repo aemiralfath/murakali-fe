@@ -133,7 +133,6 @@ const FormPIN: React.FC<FormPINProps> = ({ postCheckout, amount }) => {
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
-          flexWrap: 'wrap',
         }}
         inputStyle={{ borderColor: 'grey' }}
         inputFocusStyle={{ borderColor: 'blue' }}
