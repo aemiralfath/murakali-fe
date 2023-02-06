@@ -8,9 +8,7 @@ import { useRouter } from 'next/router'
 import { useResetPassword } from '@/api/auth/resetpassword'
 import { A, Button, H1, Icon, P, TextInput } from '@/components'
 import { useModal } from '@/hooks'
-import type { APIResponse } from '@/types/api/response'
 
-import type { AxiosError } from 'axios'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 

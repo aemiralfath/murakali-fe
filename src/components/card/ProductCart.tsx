@@ -145,7 +145,6 @@ const ProductCart: React.FC<ProductCartProps> = ({
               )}
               type="checkbox"
               checked={rest.checked}
-              defaultChecked={rest.checked}
               readOnly
               {...rest}
             />

@@ -149,6 +149,7 @@ const SummaryCart: React.FC<SummaryCartProps> = ({ idProducts, idShops }) => {
         <Button
           buttonType="primary"
           disabled={idProducts.length === 0}
+          data-testid="button-buy"
           onClick={() => {
             if (idProducts.length === 0) {
               toast.error('You must choose one of the products')

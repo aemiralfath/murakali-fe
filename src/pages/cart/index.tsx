@@ -90,6 +90,8 @@ function Cart() {
                   type="checkbox"
                   checked={checkAll}
                   className="checkbox-sm checkbox"
+                  data-testid="choose-all-checkbox"
+                  readOnly
                   onChange={() => {
                     if (cartList.data?.data?.rows) {
                       if (!checkAll) {
@@ -177,8 +179,8 @@ function Cart() {
               <>
                 {cartList.data?.data?.rows ? (
                   cartList.data.data.rows.map((cart, index) => (
-                    <>
-                      <div className="z-0" key={`${cart.id} ${index}`}>
+                    <div key={`${cart.id} ${index}`}>
+                      <div className="z-0">
                         <label className="flex-start mb-5 flex items-center gap-2">
                           <input
                             className={cx(
@@ -190,6 +192,8 @@ function Cart() {
                                 : ''
                             )}
                             type="checkbox"
+                            readOnly
+                            data-testid={`checkbox-${cart.shop.id}`}
                             checked={
                               selectedShop.findIndex((data) => {
                                 return data === cart.shop.id
@@ -261,6 +265,7 @@ function Cart() {
                                     return data === product.id
                                   }) !== -1
                                 }
+                                readOnly
                                 onClick={() => {
                                   const value = product.id
                                   let resultShop: string[] = []
@@ -321,7 +326,7 @@ function Cart() {
                       ) : (
                         <></>
                       )}
-                    </>
+                    </div>
                   ))
                 ) : (
                   <></>
