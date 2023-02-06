@@ -8,6 +8,18 @@ import type { Jwt } from './types/api/user.js'
 export async function middleware(req: NextRequest) {
   const response = NextResponse.next()
 
+  if (
+    req.nextUrl.pathname.startsWith('/login') ||
+    req.nextUrl.pathname.startsWith('/register')
+  ) {
+    if (req.cookies.has('access_token')) {
+      const url = req.nextUrl.clone()
+      return NextResponse.redirect(url.origin + '/')
+    } else {
+      return NextResponse.next()
+    }
+  }
+
   if (!req.cookies.has('access_token')) {
     const url = req.nextUrl.clone()
     return NextResponse.redirect(url.origin + '/redirect?from=' + url.pathname)
@@ -45,6 +57,8 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
+    '/login',
+    '/register',
     '/profile/:path*',
     '/checkout/:path*',
     '/favorites',
