@@ -1,23 +1,25 @@
-import { TextInput, Button, Icon, H1, Divider } from '@/components'
-import * as Yup from 'yup'
-import YupPassword from 'yup-password'
-import { FaGoogle } from 'react-icons/fa'
+import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
-import FormOTP from '@/sections/registration/FormOTP'
-import Link from 'next/link'
+import { FaGoogle } from 'react-icons/fa'
 
-import { useFormik } from 'formik'
-import { useModal } from '@/hooks'
+import Head from 'next/head'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+
 import {
   useRegistrationCheckEmail,
   useRegistrationFull,
 } from '@/api/auth/registration'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import { TextInput, Button, Icon, H1, Divider } from '@/components'
+import { getGoogleUrl } from '@/helper/googleoauth'
+import { useModal } from '@/hooks'
+import FormOTP from '@/sections/registration/FormOTP'
+import type { APIResponse } from '@/types/api/response'
 
 import type { AxiosError } from 'axios'
-import type { APIResponse } from '@/types/api/response'
-import { getGoogleUrl } from '@/helper/googleoauth'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import YupPassword from 'yup-password'
 
 YupPassword(Yup)
 
@@ -62,6 +64,7 @@ const RegistrationPage = () => {
     validationSchema: Yup.object({
       username: Yup.string()
         .min(3, 'Must be 3 characters or more')
+        .matches(/^[a-zA-Z0-9]*$/, 'Username is incorrect')
         .required('This field is required'),
       fullname: Yup.string()
         .min(3, 'Must be 3 characters or more')
@@ -162,6 +165,9 @@ const RegistrationPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Register | Murakali</title>
+      </Head>
       <div className="flex min-h-screen">
         <div className="sm:flex-0 z-10 w-screen flex-1 px-6 shadow-2xl sm:max-w-md">
           <div className="max-w-[8rem] py-6">
@@ -203,7 +209,7 @@ const RegistrationPage = () => {
                   <TextInput
                     type="text"
                     name="username"
-                    placeholder="murakali"
+                    placeholder="johndoe"
                     required
                     full
                     label="Username"
@@ -219,7 +225,7 @@ const RegistrationPage = () => {
                   <TextInput
                     type="text"
                     name="fullname"
-                    placeholder="murakali"
+                    placeholder="John Doe"
                     required
                     full
                     label="Full Name"
@@ -238,7 +244,7 @@ const RegistrationPage = () => {
                     leftIcon={
                       <span className="text-sm font-semibold">+62</span>
                     }
-                    placeholder="81XXXXXXXXX"
+                    placeholder="81234567890"
                     required
                     full
                     label="Phone Number"
@@ -254,7 +260,7 @@ const RegistrationPage = () => {
                   <TextInput
                     type="password"
                     name="password"
-                    placeholder="********"
+                    placeholder="••••••••"
                     required
                     full
                     label="Password"
@@ -271,7 +277,7 @@ const RegistrationPage = () => {
                   <TextInput
                     type="password"
                     name="confirmPassword"
-                    placeholder="********"
+                    placeholder="••••••••"
                     required
                     full
                     label="Confirm Password"

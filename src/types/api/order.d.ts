@@ -1,5 +1,7 @@
 import type { AddressDetail } from '@/types/api/address'
+
 import type { NullableTime } from './time'
+
 export interface OrderData {
   order_id: string
   order_status: number
@@ -23,6 +25,8 @@ export interface OrderData {
   buyer_phone_number: string
   buyer_address: AddressDetail
   seller_address: AddressDetail
+  is_refund: boolean | null
+  is_withdraw: boolean | null
   detail: OrderProductDetail[]
 }
 

@@ -1,6 +1,9 @@
-import cx from '@/helper/cx'
-import Image from 'next/image'
 import React from 'react'
+
+import Image from 'next/image'
+
+import cx from '@/helper/cx'
+
 import Spinner from '../spinner'
 import { P } from '../typography'
 
@@ -24,7 +27,8 @@ const Table: React.FC<TableProps> = ({
   empty,
   wide,
 }) => {
-  const columnNames = Object.keys(data[0])
+  const columnNames =
+    typeof data[0] !== 'undefined' ? Object.keys(data[0]) : ['']
 
   return (
     <table
@@ -55,7 +59,11 @@ const Table: React.FC<TableProps> = ({
                     <span>{column}</span>
                   )}
                   {foundIdx !== -1 && clickableColumn ? (
-                    clickableColumn[foundIdx].component
+                    clickableColumn[foundIdx] ? (
+                      clickableColumn[foundIdx]?.component
+                    ) : (
+                      <></>
+                    )
                   ) : (
                     <></>
                   )}

@@ -1,45 +1,53 @@
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { useAdminBanner } from '@/api/admin/banner'
+import { useGetAllCategory } from '@/api/category'
 import { useRecommendedProduct } from '@/api/product/recommended'
 import { Divider, H1, H4 } from '@/components'
-
+import bannerData from '@/dummy/bannerData'
 import MainLayout from '@/layout/MainLayout'
 import ProductCard from '@/layout/template/product/ProductCard'
 import BannerCarousel from '@/sections/home/BannerCarousel'
 import CategoriesCarousel from '@/sections/home/CategoriesCarousel'
-import Head from 'next/head'
+import CategorySearch from '@/sections/home/CategorySearch'
 
 import { type NextPage } from 'next'
-import CategorySearch from '@/sections/home/CategorySearch'
-import { useGetAllCategory } from '@/api/category'
-import { useAdminBanner } from '@/api/admin/banner'
-import bannerData from '@/dummy/bannerData'
-import { useRouter } from 'next/router'
 
 const Home: NextPage = () => {
   const router = useRouter()
-
   const categories = useGetAllCategory()
-
   const recommendedProduct = useRecommendedProduct()
-
   const banner = useAdminBanner()
+
   return (
     <div className="relative">
       <Head>
         <title>Murakali</title>
         <meta name="description" content="Murakali E-Commerce Application" />
       </Head>
-      <div className="absolute z-20 w-full translate-y-[4rem] overflow-x-hidden md:translate-y-[4.5rem]">
+      <div className="absolute z-10 w-full translate-y-[4rem] overflow-x-hidden md:translate-y-[4.5rem]">
         {banner.isLoading ? (
           <BannerCarousel banners={bannerData} isLoading={true} />
-        ) : banner.data?.data?.length > 0 ? (
-          <BannerCarousel banners={banner.data?.data} isLoading={false} />
+        ) : banner.data?.data &&
+          banner.data?.data?.filter((item) => item.is_active === true).length >
+            0 ? (
+          <BannerCarousel
+            banners={banner.data?.data.filter(
+              (item) => item.is_active === true
+            )}
+            isLoading={false}
+          />
         ) : (
           <BannerCarousel banners={bannerData} isLoading={false} />
         )}
       </div>
       <MainLayout>
         <div className="-z-50 h-[16rem] w-full sm:h-[18rem] lg:h-[22rem]" />
-        <CategorySearch />
+        <div className="z-10">
+          <CategorySearch />
+        </div>
+
         {categories.data?.data ? (
           <CategoriesCarousel categories={categories.data.data} />
         ) : (
@@ -60,8 +68,11 @@ const Home: NextPage = () => {
           <Divider />
         </div>
         <div>
-          <div className="flex justify-between ">
-            <H1>Selected Products</H1>
+          <div
+            className="flex justify-between flex-wrap gap-2"
+            id="recommended-product-list"
+          >
+            <H1>Recommended Products</H1>
             <H4 className="self-end">
               <button
                 onClick={() => {
@@ -69,7 +80,8 @@ const Home: NextPage = () => {
                     pathname: `/search`,
                     query: {
                       sort_by: 'unit_sold',
-                      sort: 'ASC',
+                      sort: 'DESC',
+                      rating: 4,
                     },
                   })
                 }}
@@ -88,8 +100,8 @@ const Home: NextPage = () => {
                     <ProductCard key={`${idx}`} data={undefined} isLoading />
                   )
                 })
-            ) : recommendedProduct.isSuccess ? (
-              recommendedProduct.data.data.rows.map((product, idx) => {
+            ) : recommendedProduct.data?.data ? (
+              recommendedProduct.data.data.rows?.map((product, idx) => {
                 return (
                   <ProductCard
                     key={`${product.title} ${idx}`}

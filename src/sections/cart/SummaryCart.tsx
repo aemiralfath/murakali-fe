@@ -1,12 +1,19 @@
-import { useGetCart } from '@/api/user/cart'
-import { Button, H3 } from '@/components'
-import { ConvertShowMoney } from '@/helper/convertshowmoney'
-import { useRouter } from 'next/router'
-
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import { HiChevronDown, HiChevronUp, HiPlus } from 'react-icons/hi'
 
-import { encrypt } from 'n-krypta'
+import { useRouter } from 'next/router'
+
+import { useGetCart } from '@/api/user/cart'
+import { Button, Divider, H3 } from '@/components'
+import { env } from '@/env/client.mjs'
+import { ConvertShowMoney } from '@/helper/convertshowmoney'
+import { useMediaQuery } from '@/hooks'
+import type { CheckoutValues } from '@/pages/checkout'
+
+import CryptoJS from 'crypto-js'
+
+const secret = env.NEXT_PUBLIC_SECRET_KEY
 
 interface SummaryCartProps {
   idProducts: string[]
@@ -16,6 +23,8 @@ interface SummaryCartProps {
 const SummaryCart: React.FC<SummaryCartProps> = ({ idProducts, idShops }) => {
   const cartList = useGetCart()
   const router = useRouter()
+  const lg = useMediaQuery('lg')
+  const [show, setShow] = useState(false)
 
   const mapPriceQuantitys = new Map<string, typeof price2>()
   let totalProduct = 0
@@ -45,7 +54,7 @@ const SummaryCart: React.FC<SummaryCartProps> = ({ idProducts, idShops }) => {
 
   if (cartList.data?.data?.rows) {
     cartList.data.data.rows.forEach(function (shop) {
-      shop.product_details.forEach(function (productDetail) {
+      shop.product_details?.forEach(function (productDetail) {
         const id = productDetail.id
         const productPrice = productDetail.product_price
         const productSubPrice = productDetail.promo.sub_price
@@ -93,53 +102,80 @@ const SummaryCart: React.FC<SummaryCartProps> = ({ idProducts, idShops }) => {
   }, [idProducts.length, cartList.dataUpdatedAt])
 
   return (
-    <div className=" h-fit rounded-lg border-[1px] border-solid border-gray-300   py-10">
-      <H3 className="text-center"> Summary Cart</H3>
-
-      <div className="flex flex-col gap-y-5 px-5 py-5">
-        <div className=" grid grid-cols-1 gap-1 lg:grid-cols-2 ">
-          <div>Total Price ({product.quantity} item)</div>
-          <div className="flex justify-start lg:justify-end">
-            Rp. {ConvertShowMoney(product.price)}
-          </div>
+    <div className="fixed bottom-0 transition-all right-0 min-w-full rounded-t-lg bg-white xl:relative xl:m-0 h-fit xl:rounded shadow-lg border-[1px] p-6">
+      <H3 className="font-bold flex items-center gap-2">
+        Summary{' '}
+        {lg ? (
+          <></>
+        ) : show ? (
+          <HiChevronDown onClick={() => setShow(!show)} />
+        ) : (
+          <HiChevronUp onClick={() => setShow(!show)} />
+        )}
+      </H3>
+      <div className="flex flex-col gap-y-5 mt-5">
+        {lg || show ? (
+          <>
+            <div className=" grid gap-1 grid-cols-2 ">
+              <div>Subtotal ({product.quantity})</div>
+              <div className="flex justify-end">
+                Rp. {ConvertShowMoney(product.price)}
+              </div>
+            </div>
+            {product.result_discount !== 0 ? (
+              <div className=" grid gap-1 grid-cols-2 ">
+                <div>Discount</div>
+                <div className="flex justify-end">
+                  - Rp. {ConvertShowMoney(product.result_discount)}
+                </div>
+              </div>
+            ) : (
+              <></>
+            )}
+          </>
+        ) : (
+          <></>
+        )}
+        <div className="flex gap-2">
+          <Divider />
+          <HiPlus className="flex-0 text-sm text-gray-300" />
         </div>
-        <div className=" grid grid-cols-1 gap-1 lg:grid-cols-2 ">
-          <div>Promo Product</div>
-          <div className="flex justify-start lg:justify-end">
-            - Rp. {ConvertShowMoney(product.result_discount)}
-          </div>
-        </div>
-
-        <hr></hr>
-        <div className="grid grid-cols-1 gap-1 font-bold lg:grid-cols-2 ">
-          <div>All Total</div>
-          <div className="flex justify-start lg:justify-end">
+        <div className="grid gap-1 font-bold grid-cols-2 ">
+          <div>Total</div>
+          <div className="flex justify-end">
             Rp. {ConvertShowMoney(product.subPrice)}
           </div>
         </div>
-
         <Button
           buttonType="primary"
+          disabled={idProducts.length === 0}
+          data-testid="button-buy"
           onClick={() => {
             if (idProducts.length === 0) {
               toast.error('You must choose one of the products')
             } else {
-              const secret = 'test'
+              const tempValues: CheckoutValues = {
+                idProducts: idProducts,
+                idShops: idShops,
+                price: product.price,
+                subPrice: product.subPrice,
+                quantity: product.quantity,
+                result_discount: product.result_discount,
+              }
+
               router.push({
                 pathname: '/checkout',
                 query: {
-                  idProduct: idProducts,
-                  idShop: idShops,
-                  price: encrypt(product.price, secret),
-                  subPrice: encrypt(product.subPrice, secret),
-                  quantity: encrypt(product.quantity, secret),
-                  resultDiscount: encrypt(product.result_discount, secret),
+                  values: CryptoJS.AES.encrypt(
+                    JSON.stringify(tempValues),
+                    secret
+                  ).toString(),
                 },
               })
             }
           }}
         >
-          Checkout Page
+          Buy
         </Button>
       </div>
     </div>

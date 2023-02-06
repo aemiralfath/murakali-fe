@@ -1,3 +1,10 @@
+import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import PinInput from 'react-pin-input'
+import { useDispatch } from 'react-redux'
+
+import router from 'next/router'
+
 import { useCreateTransaction, useWalletPayment } from '@/api/user/transaction'
 import { useVerifyPIN } from '@/api/user/wallet'
 import { Button } from '@/components'
@@ -5,12 +12,8 @@ import { closeModal } from '@/redux/reducer/modalReducer'
 import type { PostCheckout } from '@/types/api/checkout'
 import type { APIResponse } from '@/types/api/response'
 import type { Transaction } from '@/types/api/transaction'
+
 import type { AxiosError } from 'axios'
-import router from 'next/router'
-import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import PinInput from 'react-pin-input'
-import { useDispatch } from 'react-redux'
 
 interface FormPINProps extends React.InputHTMLAttributes<HTMLSelectElement> {
   amount: number
@@ -29,13 +32,17 @@ const FormPIN: React.FC<FormPINProps> = ({ postCheckout, amount }) => {
   useEffect(() => {
     if (verifyPIN.isSuccess) {
       setPin('')
-      pinInputRef.clear()
-      createTransaction.mutate(postCheckout)
+      if (pinInputRef) {
+        pinInputRef.clear()
+      }
+      if (postCheckout) {
+        createTransaction.mutate(postCheckout)
+      }
     }
   }, [verifyPIN.isSuccess])
 
   useEffect(() => {
-    if (createTransaction.isSuccess) {
+    if (createTransaction.data?.data) {
       toast.success('Checkout Success')
       walletPayment.mutate(createTransaction.data.data.transaction_id)
     }
@@ -52,12 +59,14 @@ const FormPIN: React.FC<FormPINProps> = ({ postCheckout, amount }) => {
   useEffect(() => {
     if (verifyPIN.isError) {
       setPin('')
-      pinInputRef.clear()
+      if (pinInputRef) {
+        pinInputRef.clear()
+      }
       const errMsg = verifyPIN.failureReason as AxiosError<APIResponse<null>>
-      toast.error(errMsg.response.data.message as string)
+      toast.error(errMsg.response?.data.message as string)
 
       if (
-        errMsg.response.data.message ===
+        errMsg.response?.data.message ===
         'Wallet is temporarily blocked, please wait.'
       ) {
         dispatch(closeModal())
@@ -124,7 +133,6 @@ const FormPIN: React.FC<FormPINProps> = ({ postCheckout, amount }) => {
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
-          flexWrap: 'wrap',
         }}
         inputStyle={{ borderColor: 'grey' }}
         inputFocusStyle={{ borderColor: 'blue' }}

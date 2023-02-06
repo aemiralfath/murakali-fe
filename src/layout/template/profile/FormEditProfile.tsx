@@ -1,15 +1,15 @@
-import { Button, TextInput } from '@/components'
-import type { UserDetail } from '@/types/api/user'
-import type { APIResponse } from '@/types/api/response'
-
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from '@/hooks'
-import { closeModal } from '@/redux/reducer/modalReducer'
-import { useGetUserProfile, useEditUserProfile } from '@/api/user/profile'
 import { toast } from 'react-hot-toast'
 
-import moment from 'moment'
+import { useGetUserProfile, useEditUserProfile } from '@/api/user/profile'
+import { Button, TextInput } from '@/components'
+import { useDispatch } from '@/hooks'
+import { closeModal } from '@/redux/reducer/modalReducer'
+import type { APIResponse } from '@/types/api/response'
+import type { UserDetail } from '@/types/api/user'
+
 import type { AxiosError } from 'axios'
+import moment from 'moment'
 
 const FormEditProfile: React.FC = () => {
   const userProfile = useGetUserProfile()
@@ -59,12 +59,16 @@ const FormEditProfile: React.FC = () => {
 
   useEffect(() => {
     if (userProfile.data?.data) {
+      let tempBirthDate: string = userProfile.data.data.birth_date
+      if (userProfile.data.data.birth_date === '0001-01-01T00:00:00Z') {
+        tempBirthDate = '1990-01-01T00:00:00Z'
+      }
       setInput({
         email: userProfile.data.data.email,
         full_name: userProfile.data.data.full_name,
         user_name: userProfile.data.data.user_name,
         phone_number: userProfile.data.data.phone_number,
-        birth_date: userProfile.data.data.birth_date,
+        birth_date: tempBirthDate,
         id: '',
         photo_url: '',
         gender: selected,
@@ -82,18 +86,16 @@ const FormEditProfile: React.FC = () => {
   }
   const handleEditProfile = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    editUserProfile.mutate(input)
 
-    void dispatch(closeModal())
-    setInput({
-      email: '',
-      full_name: '',
-      user_name: '',
-      phone_number: '',
-      birth_date: '',
+    editUserProfile.mutate({
+      email: input.email,
+      full_name: input.full_name,
+      user_name: input.user_name,
+      phone_number: input.phone_number,
+      birth_date: input.birth_date,
       id: '',
       photo_url: '',
-      gender: 'M',
+      gender: selected,
       role: 1,
     })
   }
@@ -156,7 +158,9 @@ const FormEditProfile: React.FC = () => {
               type="date"
               name="birth_date"
               onChange={handleChange}
-              max={moment(Date.now()).format('YYYY-MM-DD')}
+              max={moment(
+                new Date(new Date().setDate(new Date().getDate() - 1))
+              ).format('YYYY-MM-DD')}
               placeholder={String(Date.now())}
               value={moment(input.birth_date).format('YYYY-MM-DD')}
               full
@@ -191,7 +195,7 @@ const FormEditProfile: React.FC = () => {
                     setSelected('F')
                   }}
                 />
-                Women
+                Female
               </label>
             </div>
           </div>

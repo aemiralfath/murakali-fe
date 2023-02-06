@@ -1,6 +1,8 @@
-import cx from '@/helper/cx'
 import React, { useState } from 'react'
 import { HiCheck, HiEye, HiEyeOff, HiX } from 'react-icons/hi'
+
+import cx from '@/helper/cx'
+
 import Spinner from '../spinner'
 
 interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -43,6 +45,11 @@ const TextInput: React.FC<TextInputProps> = ({
       {label ? (
         <label className="py-0.5 px-1" htmlFor={rest.name}>
           <span className="label-text">{label}</span>
+          {rest.required ? (
+            <span className="label-text font-semibold text-error">*</span>
+          ) : (
+            <></>
+          )}
         </label>
       ) : (
         <></>

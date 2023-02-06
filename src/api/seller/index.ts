@@ -1,8 +1,8 @@
 import { authorizedClient, unauthorizedClient } from '@/api/apiClient'
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
-
 import type { APIResponse, PaginationData } from '@/types/api/response'
 import type { SellerDetailInfomation, SellerInfo } from '@/types/api/seller'
+
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 
 const profileKey = 'sellerinfo'
 
@@ -14,24 +14,29 @@ const getAllSellers = async (search: string, page: number) => {
 }
 
 export const useGetAllSellers = (search: string, page: number) => {
-  return useQuery(
-    [profileKey, 'all', search, page],
-    async () => await getAllSellers(search, page)
-  )
+  return useQuery({
+    queryKey: [profileKey, 'all', search, page],
+    queryFn: async () => await getAllSellers(search, page),
+    enabled: Boolean(search),
+  })
 }
 
-const getSellerInfo = async (shopID: string) => {
+const getSellerInfo = async (shopID?: string) => {
   const response = await unauthorizedClient.get<APIResponse<SellerInfo>>(
     '/seller/' + shopID
   )
   return response.data
 }
 
-export const useGetSellerInfo = (shopID: string) => {
-  return useQuery([profileKey, shopID], async () => await getSellerInfo(shopID))
+export const useGetSellerInfo = (shopID?: string) => {
+  return useQuery({
+    queryKey: [profileKey, shopID],
+    queryFn: async () => await getSellerInfo(shopID),
+    enabled: Boolean(shopID),
+  })
 }
 
-const getSellerInfoByUserID = async (userID: string) => {
+const getSellerInfoByUserID = async (userID?: string) => {
   const response = await authorizedClient.get<APIResponse<SellerInfo>>(
     '/seller/user/' + userID
   )

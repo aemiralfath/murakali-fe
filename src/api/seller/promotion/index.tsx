@@ -6,6 +6,7 @@ import type {
   SellerPromotion,
 } from '@/types/api/promotion'
 import type { APIResponse, PaginationData } from '@/types/api/response'
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const profileKey = 'promotion'
@@ -82,16 +83,32 @@ export const useUpdatePromotion = () => {
   )
 }
 
-const getProductNoPromotionSeller = async (limit: number, page: number) => {
+const getProductNoPromotionSeller = async (
+  limit: number,
+  page: number,
+  search: string
+) => {
   const response = await authorizedClient.get<
     APIResponse<PaginationData<ProductPromotion>>
-  >('/seller/product/without-promotion?' + '&limit=' + limit + '&page=' + page)
+  >(
+    '/seller/product/without-promotion?' +
+      '&limit=' +
+      limit +
+      '&page=' +
+      page +
+      '&search=' +
+      search
+  )
   return response.data
 }
 
-export const useProductNoPromotionSeller = (limit: number, page: number) => {
+export const useProductNoPromotionSeller = (
+  limit: number,
+  page: number,
+  search: string
+) => {
   return useQuery(
-    [profileKey, limit, page],
-    async () => await getProductNoPromotionSeller(limit, page)
+    [profileKey, limit, page, search],
+    async () => await getProductNoPromotionSeller(limit, page, search)
   )
 }

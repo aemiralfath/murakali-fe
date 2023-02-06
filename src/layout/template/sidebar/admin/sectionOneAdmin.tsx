@@ -1,18 +1,17 @@
-import { useLogout } from '@/api/auth/logout'
-import { Avatar, Button, Icon } from '@/components'
-
-import { useMediaQuery, useUser } from '@/hooks'
-import type { APIResponse } from '@/types/api/response'
-import { Transition } from '@headlessui/react'
-import type { AxiosError } from 'axios'
-import { useRouter } from 'next/router'
-
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 
-const SectionOneSideBarAdmin: React.FC = ({}) => {
-  const { user } = useUser()
+import { useRouter } from 'next/router'
 
+import { useLogout } from '@/api/auth/logout'
+import { Button, Icon } from '@/components'
+import { useMediaQuery } from '@/hooks'
+import type { APIResponse } from '@/types/api/response'
+
+import { Transition } from '@headlessui/react'
+import type { AxiosError } from 'axios'
+
+const SectionOneSideBarAdmin: React.FC = ({}) => {
   const sm = useMediaQuery('sm')
 
   const router = useRouter()
@@ -47,28 +46,24 @@ const SectionOneSideBarAdmin: React.FC = ({}) => {
           <div className="text-heading relative flex flex-1 items-center text-xl font-semibold text-primary">
             Admin
           </div>
-          {user ? (
-            <div className={'hidden items-center md:flex'}>
-              <ul className="flex list-none flex-col md:ml-auto md:flex-row">
-                <li className="nav-item mx-6 flex items-center">
-                  <div className="h-full w-[1px] bg-base-300"></div>
-                </li>
-                <li className="nav-item flex items-center">
-                  <Button
-                    buttonType="ghost"
-                    onClick={() => {
-                      router.push('/login')
-                      logout.mutate()
-                    }}
-                  >
-                    Logout
-                  </Button>
-                </li>
-              </ul>
-            </div>
-          ) : (
-            <></>
-          )}
+          <div className={'hidden items-center md:flex'}>
+            <ul className="flex list-none flex-col md:ml-auto md:flex-row">
+              <li className="nav-item mx-6 flex items-center">
+                <div className="h-full w-[1px] bg-base-300"></div>
+              </li>
+              <li className="nav-item flex items-center">
+                <Button
+                  buttonType="ghost"
+                  onClick={() => {
+                    router.push('/login')
+                    logout.mutate()
+                  }}
+                >
+                  Logout
+                </Button>
+              </li>
+            </ul>
+          </div>
         </div>
       </nav>
       <Transition
@@ -80,20 +75,7 @@ const SectionOneSideBarAdmin: React.FC = ({}) => {
         leaveFrom={'scale-y-100'}
         leaveTo={'scale-y-0'}
         className={'block origin-top md:hidden'}
-      >
-        <div className="bg-primary px-5 pb-3">
-          {user ? (
-            <ul className="container mx-auto flex list-none flex-col gap-2">
-              <li className="nav-item flex items-center gap-2 text-sm text-white hover:opacity-75">
-                <Avatar size="sm" url={user.photo_url} />
-                <div>{user.full_name}</div>
-              </li>
-            </ul>
-          ) : (
-            <></>
-          )}
-        </div>
-      </Transition>
+      ></Transition>
     </>
   )
 }

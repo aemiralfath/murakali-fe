@@ -1,8 +1,10 @@
+import React, { useEffect, useState } from 'react'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { Navbar } from '@/layout/template'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
-
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
 
 function SLPTopUp() {
   const router = useRouter()
@@ -22,6 +24,9 @@ function SLPTopUp() {
 
   return (
     <>
+      <Head>
+        <title>SeaLabs Pay Top Up</title>
+      </Head>
       <Navbar />
       <TitlePageExtend title="Top Up Wallet" />
       <div className="container my-8 mx-auto mb-10 w-full px-2">

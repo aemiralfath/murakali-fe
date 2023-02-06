@@ -1,3 +1,7 @@
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { HiPencilAlt, HiTrash } from 'react-icons/hi'
+
 import { useDeleteAddress, useGetAllAddress } from '@/api/user/address'
 import { useGetUserProfile } from '@/api/user/profile'
 import {
@@ -14,10 +18,8 @@ import { useDispatch, useModal } from '@/hooks'
 import FormManageAddress from '@/layout/template/profile/FormManageAddress'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { HiPencilAlt, HiTrash } from 'react-icons/hi'
 
 function ManageAddressSeller() {
   const modal = useModal()
@@ -45,17 +47,18 @@ function ManageAddressSeller() {
   }, [deleteAddress.isError])
 
   useEffect(() => {
-    if (userProfile.isSuccess) {
+    if (userProfile.data?.data) {
       setRole(userProfile.data.data.role)
     }
   }, [userProfile.isSuccess])
 
   return (
     <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
-      <div className="flex justify-between">
+      <div className="flex flex-wrap items-end justify-between">
         <H3>Manage Address</H3>
         <Button
           buttonType="primary"
+          size="sm"
           onClick={() => {
             modal.edit({
               title: 'Add Address',
@@ -174,7 +177,7 @@ function ManageAddressSeller() {
             <div className="mt-4 flex justify-end">
               <PaginationNav
                 page={page}
-                total={userAllAddress.data?.data?.total_pages}
+                total={userAllAddress.data?.data?.total_pages ?? 1}
                 onChange={(p) => {
                   setPage(p)
                 }}
@@ -189,8 +192,8 @@ function ManageAddressSeller() {
       )}
 
       {userAllAddress.data?.data?.total_pages === 0 ? (
-        <div className="border-grey-200 z-10 flex h-full items-center rounded-lg border-[1px] border-solid py-7 px-8">
-          <P className="flex w-full items-center justify-center font-extrabold">
+        <div className=" z-10 flex h-full items-center rounded-lg  py-7 px-8">
+          <P className="flex w-full items-center justify-center italic text-gray-500">
             Address is Empty!
           </P>
         </div>

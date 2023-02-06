@@ -1,8 +1,8 @@
 import { authorizedClient } from '@/api/apiClient'
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
-
-import type { APIResponse } from '@/types/api/response'
 import type { AddressData, AddressDetail } from '@/types/api/address'
+import type { APIResponse } from '@/types/api/response'
+
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 
 const profileKey = 'address'
 
@@ -33,12 +33,14 @@ const getDefaultAddress = async (
 
 export const useGetDefaultAddress = (
   isDefault: boolean,
-  isShopDefault: boolean
+  isShopDefault: boolean,
+  enabled: boolean
 ) => {
   return useQuery({
     queryKey: [profileKey],
     queryFn: async () => await getDefaultAddress(isDefault, isShopDefault),
     retry: false,
+    enabled: enabled,
   })
 }
 

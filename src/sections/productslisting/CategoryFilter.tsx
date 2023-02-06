@@ -1,8 +1,11 @@
-import { H4 } from '@/components'
-import type { CategoryData } from '@/types/api/category'
-import { Disclosure } from '@headlessui/react'
 import React, { useState } from 'react'
 import { HiChevronUp, HiChevronDown } from 'react-icons/hi'
+
+import { H4 } from '@/components'
+import type { CategoryData } from '@/types/api/category'
+
+import { Disclosure } from '@headlessui/react'
+
 import RecursionCategory from './RecursionCategory'
 
 const CategoryFilter: React.FC<{
@@ -47,7 +50,7 @@ const CategoryFilter: React.FC<{
                           {levelOne.name}
                         </span>
                       </div>
-                      {levelOne.child_category.length > 0 ? (
+                      {levelOne.child_category?.length > 0 ? (
                         <Disclosure.Button className="flex items-center justify-between rounded-lg bg-white  py-0 text-left text-sm font-medium text-purple-900 focus:outline-none focus-visible:ring ">
                           <HiChevronDown
                             className={`${
@@ -61,7 +64,7 @@ const CategoryFilter: React.FC<{
                     </div>
 
                     <Disclosure.Panel className="ml-2  text-sm text-gray-500">
-                      {levelOne.child_category.length > 0 ? (
+                      {levelOne.child_category?.length > 0 ? (
                         <RecursionCategory
                           filterCategory={filterCategory}
                           categories={levelOne}

@@ -1,3 +1,17 @@
+import React, { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+import {
+  HiCheck,
+  HiInboxIn,
+  HiInformationCircle,
+  HiMinus,
+  HiPlus,
+  HiTrash,
+} from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useCompleteOrder, useGetOrderByID, useReceiveOrder } from '@/api/order'
 import {
   useCreateProductReview,
@@ -5,6 +19,8 @@ import {
   useGetReviewByUserID,
 } from '@/api/product/review'
 import { useGetUserProfile } from '@/api/user/profile'
+import { useGetRefundThread } from '@/api/user/refund'
+import { useGetUserWallet } from '@/api/user/wallet'
 import {
   A,
   Button,
@@ -29,21 +45,9 @@ import type { AddressDetail } from '@/types/api/address'
 import type { BuyerOrder, BuyerOrderDetail } from '@/types/api/order'
 import type { APIResponse } from '@/types/api/response'
 import type { ProductReview } from '@/types/api/review'
+
 import type { AxiosError } from 'axios'
 import moment from 'moment'
-import Head from 'next/head'
-import Image from 'next/image'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
-import { toast } from 'react-hot-toast'
-import {
-  HiCheck,
-  HiInboxIn,
-  HiInformationCircle,
-  HiMinus,
-  HiPlus,
-  HiTrash,
-} from 'react-icons/hi'
 
 const OrderDetailCardSection: React.FC<{
   detail: BuyerOrderDetail
@@ -69,23 +73,21 @@ const OrderDetailCardSection: React.FC<{
   const [comment, setComment] = useState<string>()
 
   useEffect(() => {
-    if (gotReview.isSuccess) {
-      if (gotReview.data.data.rows.length > 0) {
+    if (gotReview.data?.data) {
+      if (
+        gotReview.data.data.rows !== null &&
+        Number(gotReview.data.data.rows?.length) > 0
+      ) {
         setReview(gotReview.data.data.rows[0])
       }
     }
-  }, [gotReview.isSuccess])
-
-  useEffect(() => {
-    if (gotReview.data?.data.rows.length > 0) {
-      setReview(gotReview.data.data.rows[0])
-    }
-  }, [gotReview.isFetching])
+  }, [gotReview.data?.data])
 
   useEffect(() => {
     if (createReview.isSuccess) {
       gotReview.refetch()
       toast.success('Review created!')
+      setComment('')
     }
   }, [createReview.isSuccess])
 
@@ -123,7 +125,9 @@ const OrderDetailCardSection: React.FC<{
         <ConfirmationModal
           msg="Do you want to delete this product review?"
           onConfirm={() => {
-            deleteReview.mutate(review.id)
+            if (review) {
+              deleteReview.mutate(review.id)
+            }
           }}
         />
       ),
@@ -131,9 +135,9 @@ const OrderDetailCardSection: React.FC<{
   }
 
   return (
-    <div className="flex gap-2.5">
+    <div className="flex flex-wrap gap-2.5">
       <div>
-        <Image
+        <img
           alt={detail.product_title}
           src={detail.product_detail_url}
           width={100}
@@ -214,7 +218,8 @@ const OrderDetailCardSection: React.FC<{
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
                             errorMsg={
-                              comment?.length > 150
+                              typeof comment === 'string' &&
+                              comment.length > 150
                                 ? `${comment.length}/160`
                                 : undefined
                             }
@@ -235,7 +240,13 @@ const OrderDetailCardSection: React.FC<{
                               buttonType="primary"
                               isLoading={createReview.isLoading}
                               onClick={() => {
-                                if (comment.length <= 160) {
+                                if (
+                                  typeof comment === 'string'
+                                    ? comment?.length <= 160
+                                    : true
+                                ) {
+                                  setOpen(!open)
+
                                   createReview.mutate({
                                     product_id: detail.product_id,
                                     rating: star,
@@ -297,17 +308,19 @@ const OrderDetailCard: React.FC<
             <div className="h-[1.5rem] w-[70%] animate-pulse rounded bg-base-300" />
           </div>
         </div>
-      ) : (
+      ) : order ? (
         order.detail.map((detail) => {
           return (
             <OrderDetailCardSection
               detail={detail}
-              key={`${detail.product_detail_id}-${order.order_id}`}
-              userId={userProfile.data?.data.id}
+              key={`${detail.product_detail_id}-${order?.order_id}`}
+              userId={userProfile.data?.data?.id}
               isReview={isReview}
             />
           )
         })
+      ) : (
+        <></>
       )}
     </div>
   )
@@ -316,8 +329,8 @@ const OrderDetailCard: React.FC<
 const AddressDetailCard: React.FC<{
   name: string
   title: string
-  address: AddressDetail
-  phone: number
+  address: AddressDetail | null
+  phone: number | null
   isSeller?: boolean
 }> = ({ name, title, address, phone, isSeller }) => {
   return (
@@ -325,7 +338,7 @@ const AddressDetailCard: React.FC<{
       <P className="text-sm">{title}</P>
       <H3>{name}</H3>
       <P className="mt-1">
-        {!isSeller ? (
+        {!isSeller && address ? (
           <>
             <span>{`${address.address_detail}, ${address.sub_district}, ${address.district}`}</span>
             <br />
@@ -333,8 +346,8 @@ const AddressDetailCard: React.FC<{
         ) : (
           <></>
         )}
-        {address.city}, {address.province}
-        {!isSeller ? (
+        {address ? `${address.city}, ${address.province}` : ''}
+        {!isSeller && address ? (
           <>
             <br />
             <span>{address.zip_code}</span>
@@ -362,9 +375,11 @@ const OrderDetail = () => {
   }, [id])
 
   const order = useGetOrderByID(orderID)
+  const getRefundThread = useGetRefundThread(order.data?.data?.order_id)
   const receiveOrder = useReceiveOrder()
   const completeOrder = useCompleteOrder()
 
+  const userWallet = useGetUserWallet()
   useEffect(() => {
     setIsLoadingModal(receiveOrder.isLoading)
   }, [receiveOrder.isLoading])
@@ -416,7 +431,7 @@ const OrderDetail = () => {
       </Head>
       <MainLayout>
         {order.data?.data ? (
-          <div className="flex items-baseline justify-between gap-2">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
             <H1 className="text-primary">Order Detail</H1>
             <P className="opacity-60">
               Created at{' '}
@@ -429,45 +444,54 @@ const OrderDetail = () => {
           <></>
         )}
         <Divider />
-        <ul className="steps w-full min-w-full py-5">
-          {order.data?.data ? (
-            orderStatus
-              .slice(1, orderStatus.length - 2)
-              .map((status, index) => {
-                const idx = index + 1
-                // TODO: handle on cancel
-                return (
-                  <li
-                    key={idx}
-                    data-content={
-                      idx <= order.data.data.order_status ? '✓' : '●'
-                    }
-                    className={
-                      idx <= order.data.data.order_status
-                        ? 'step-primary step'
-                        : 'step'
-                    }
-                  >
-                    {status}
-                  </li>
-                )
-              })
-          ) : (
-            <></>
-          )}
-        </ul>
+        <div className="flex justify-center ">
+          <ul className="steps steps-vertical w-fit min-w-fit py-5 lg:steps-horizontal ">
+            {order.data?.data ? (
+              orderStatus
+                .slice(1, orderStatus.length - 2)
+                .map((status, index) => {
+                  const idx = index + 1
+                  if (order.data?.data) {
+                    return (
+                      <li
+                        key={idx}
+                        data-content={
+                          idx <= order.data.data.order_status ? '✓' : '●'
+                        }
+                        className={
+                          idx <= order.data.data.order_status
+                            ? 'step-primary step'
+                            : 'step'
+                        }
+                      >
+                        <span className="mx-1 text-sm line-clamp-2">
+                          {status}
+                        </span>
+                      </li>
+                    )
+                  }
+
+                  return <li key={idx}></li>
+                })
+            ) : (
+              <></>
+            )}
+          </ul>
+        </div>
         <div className="mt-3 flex h-full w-full flex-col bg-white">
           {order.isLoading ? (
             <P className="flex w-full justify-center">Loading</P>
-          ) : order.isSuccess ? (
+          ) : order.data?.data ? (
             <>
-              <div className="grid grid-cols-4 justify-center gap-4 rounded border p-4">
+              <div className="grid grid-cols-1 justify-center gap-4 rounded border p-4 lg:grid-cols-4">
                 <div className="flex-auto">
                   <P className="text-sm">Shop Name</P>
                   <A
                     className="font-semibold"
                     onClick={() => {
-                      router.push('/seller/' + order.data.data.shop_id)
+                      if (order.data?.data) {
+                        router.push('/seller/' + order.data.data.shop_id)
+                      }
                     }}
                   >
                     {order.data.data.shop_name}
@@ -514,9 +538,11 @@ const OrderDetail = () => {
                               <ConfirmationModal
                                 msg={'Have you receive these product(s)?'}
                                 onConfirm={() => {
-                                  receiveOrder.mutate({
-                                    order_id: order.data.data.order_id,
-                                  })
+                                  if (order.data?.data) {
+                                    receiveOrder.mutate({
+                                      order_id: order.data.data.order_id,
+                                    })
+                                  }
                                 }}
                               />
                             ),
@@ -531,37 +557,179 @@ const OrderDetail = () => {
                   )}
                   {order.data.data.order_status === 6 ? (
                     <>
-                      <Button
-                        buttonType="primary"
-                        onClick={() => {
-                          modal.info({
-                            title: 'Confirmation',
-                            closeButton: false,
-                            content: (
-                              <ConfirmationModal
-                                msg={`Complete Order & Release Rp${formatMoney(
-                                  order.data.data.total_price
-                                )} to the Seller?`}
-                                onConfirm={() => {
-                                  completeOrder.mutate({
-                                    order_id: order.data.data.order_id,
-                                  })
-                                }}
-                              />
-                            ),
-                          })
-                        }}
-                      >
-                        <HiCheck /> Complete Order
-                      </Button>
+                      {order.data.data.is_refund ? (
+                        <>
+                          <Button
+                            buttonType="gray"
+                            outlined
+                            isLoading={receiveOrder.isLoading}
+                            className="text-white"
+                            onClick={() => {
+                              router.push(
+                                '/order/refund-thread?id=' +
+                                  order?.data?.data?.order_id
+                              )
+                            }}
+                          >
+                            Refund Thread
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            buttonType="primary"
+                            onClick={() => {
+                              modal.info({
+                                title: 'Confirmation',
+                                closeButton: false,
+                                content: (
+                                  <ConfirmationModal
+                                    msg={`Complete Order & Release Rp${formatMoney(
+                                      order.data?.data?.total_price ?? 0
+                                    )} to the Seller?`}
+                                    onConfirm={() => {
+                                      if (order.data?.data) {
+                                        completeOrder.mutate({
+                                          order_id: order.data.data.order_id,
+                                        })
+                                      }
+                                    }}
+                                  />
+                                ),
+                              })
+                            }}
+                          >
+                            <HiCheck /> Complete Order
+                          </Button>
+                        </>
+                      )}
                       <div className="mt-2 flex items-baseline gap-1">
-                        <P className="text-xs opacity-50">Or</P>
-                        <A
-                          className="text-xs opacity-50 hover:opacity-100"
-                          underline
-                        >
-                          File a Complaint
-                        </A>
+                        {getRefundThread.data?.data?.refund_data?.rejected_at
+                          .Valid === true ? (
+                          <>
+                            <P className="text-xs opacity-50">
+                              your previous File Complaint Form has been
+                              rejected at{' '}
+                              {moment(
+                                getRefundThread.data?.data?.refund_data
+                                  .rejected_at.Time
+                              )
+                                .utcOffset(420)
+                                .format('DD MMMM YYYY HH:mm:ss')
+                                .toString()}
+                              {'.'}
+                              <P>
+                                you can create new File Complaint to refund
+                                before 24 hours rejected.
+                              </P>
+                              <P>
+                                <A
+                                  className="text-xs hover:opacity-100"
+                                  underline
+                                  onClick={() => {
+                                    modal.info({
+                                      title: 'Confirmation',
+                                      closeButton: false,
+                                      content: (
+                                        <ConfirmationModal
+                                          msg={
+                                            'Are you sure Want to Complaint the Order and Refund?'
+                                          }
+                                          onConfirm={() => {
+                                            if (
+                                              userWallet?.data?.data
+                                                ?.active_date.Valid === true &&
+                                              new Date(
+                                                Date.parse(
+                                                  userWallet.data.data
+                                                    .active_date.Time
+                                                )
+                                              ) < new Date()
+                                            ) {
+                                              router.push(
+                                                '/order/complaint?id=' +
+                                                  order?.data?.data?.order_id
+                                              )
+                                              return
+                                            }
+                                            toast.error('wallet is not active')
+                                          }}
+                                        />
+                                      ),
+                                    })
+                                  }}
+                                >
+                                  File a Complaint
+                                </A>
+                              </P>
+                            </P>
+                          </>
+                        ) : (
+                          <>
+                            {getRefundThread.data?.data?.refund_data
+                              ?.accepted_at.Valid ? (
+                              <>
+                                <P className="text-xs opacity-50">
+                                  your File Complaint has been accepted at{' '}
+                                  {moment(
+                                    getRefundThread.data?.data?.refund_data
+                                      .accepted_at.Time
+                                  )
+                                    .utcOffset(420)
+                                    .format('DD MMMM YYYY HH:mm:ss')
+                                    .toString()}
+                                  {'.'}
+                                  <P>
+                                    please wait the system to process refund
+                                    order.
+                                  </P>
+                                </P>
+                              </>
+                            ) : (
+                              <>
+                                <P className="text-xs opacity-50">Or</P>
+                                <A
+                                  className="text-xs opacity-50 hover:opacity-100"
+                                  underline
+                                  onClick={() => {
+                                    modal.info({
+                                      title: 'Confirmation',
+                                      closeButton: false,
+                                      content: (
+                                        <ConfirmationModal
+                                          msg={
+                                            'Are you sure Want to Complaint the Order and Refund?'
+                                          }
+                                          onConfirm={() => {
+                                            if (
+                                              userWallet?.data?.data
+                                                ?.active_date.Valid === true &&
+                                              new Date(
+                                                Date.parse(
+                                                  userWallet.data.data
+                                                    .active_date.Time
+                                                )
+                                              ) < new Date()
+                                            ) {
+                                              router.push(
+                                                '/order/complaint?id=' +
+                                                  order?.data?.data?.order_id
+                                              )
+                                              return
+                                            }
+                                            toast.error('wallet is not active')
+                                          }}
+                                        />
+                                      ),
+                                    })
+                                  }}
+                                >
+                                  File a Complaint
+                                </A>
+                              </>
+                            )}
+                          </>
+                        )}
                       </div>
                     </>
                   ) : (
@@ -570,7 +738,7 @@ const OrderDetail = () => {
                 </div>
               </div>
 
-              <div className=" mt-5 grid h-full w-full max-w-full grid-cols-2 rounded border bg-white p-6">
+              <div className=" mt-5 grid h-full w-full max-w-full grid-cols-1 gap-y-5 rounded border bg-white p-6 md:grid-cols-2">
                 <AddressDetailCard
                   title="Sender"
                   name={order.data.data.shop_name}
@@ -592,7 +760,7 @@ const OrderDetail = () => {
                   isReview={order.data.data.order_status >= 7}
                 />
                 <Divider />
-                <div className={'flex items-center justify-between'}>
+                <div className={'flex flex-wrap items-center justify-between'}>
                   <>
                     <P className="opacity-60">Total:</P>
                     <div className="flex items-center gap-2">

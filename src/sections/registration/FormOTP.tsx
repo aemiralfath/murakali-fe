@@ -1,18 +1,20 @@
-import { Button } from '@/components'
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import PinInput from 'react-pin-input'
+
 import {
   useSendEmailChangePassword,
   useVerifyOTPChangePassword,
 } from '@/api/auth/changepassword'
 import { useRegistrationVerifOtp } from '@/api/auth/registration'
+import { Button } from '@/components'
 import { useDispatch, useModal } from '@/hooks'
-import FormChangePassword from './FormChangePassword'
 import { closeModal } from '@/redux/reducer/modalReducer'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import PinInput from 'react-pin-input'
+
+import FormChangePassword from './FormChangePassword'
 
 interface FormOTPProps extends React.InputHTMLAttributes<HTMLSelectElement> {
   OTPType: string
@@ -80,14 +82,18 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType, email, setState }) => {
   useEffect(() => {
     if (registrationOtp.isSuccess) {
       toast.success('OTP is valid')
-      pinInputRef.clear()
+      if (pinInputRef !== null) {
+        pinInputRef.clear()
+      }
       setState?.(true)
       handleClose()
     }
   }, [registrationOtp.isSuccess])
   useEffect(() => {
     if (registrationOtp.isError) {
-      pinInputRef.clear()
+      if (pinInputRef !== null) {
+        pinInputRef.clear()
+      }
       const reason = registrationOtp.failureReason as AxiosError<
         APIResponse<null>
       >
@@ -145,7 +151,6 @@ const FormOTP: React.FC<FormOTPProps> = ({ OTPType, email, setState }) => {
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
-          flexWrap: 'wrap',
         }}
         inputStyle={{ borderColor: 'grey' }}
         inputFocusStyle={{ borderColor: 'blue' }}

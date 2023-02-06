@@ -1,4 +1,12 @@
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { HiPencilAlt, HiTrash } from 'react-icons/hi'
+import { useDispatch } from 'react-redux'
+
+import Head from 'next/head'
+
 import { useDeleteAddress, useGetAllAddress } from '@/api/user/address'
+import { useGetUserProfile } from '@/api/user/profile'
 import {
   Button,
   Chip,
@@ -10,17 +18,12 @@ import {
   Spinner,
 } from '@/components'
 import { useModal } from '@/hooks'
-import type { APIResponse } from '@/types/api/response'
-import { closeModal } from '@/redux/reducer/modalReducer'
-import type { AxiosError } from 'axios'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
-import FormManageAddress from '@/layout/template/profile/FormManageAddress'
-import Head from 'next/head'
 import ProfileLayout from '@/layout/ProfileLayout'
-import { HiPencilAlt, HiTrash } from 'react-icons/hi'
-import { useGetUserProfile } from '@/api/user/profile'
+import FormManageAddress from '@/layout/template/profile/FormManageAddress'
+import { closeModal } from '@/redux/reducer/modalReducer'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
 
 function ManageAddress() {
   const modal = useModal()
@@ -48,7 +51,7 @@ function ManageAddress() {
   }, [deleteAddress.isError])
 
   useEffect(() => {
-    if (userProfile.isSuccess) {
+    if (userProfile.data?.data) {
       setRole(userProfile.data.data.role)
     }
   }, [userProfile.isSuccess])
@@ -181,7 +184,7 @@ function ManageAddress() {
                 <div className="mt-4 flex justify-end">
                   <PaginationNav
                     page={page}
-                    total={userAllAddress.data?.data?.total_pages}
+                    total={userAllAddress.data?.data?.total_pages ?? 1}
                     onChange={(p) => {
                       setPage(p)
                     }}
@@ -197,8 +200,8 @@ function ManageAddress() {
         </>
 
         {userAllAddress.data?.data?.total_pages === 0 ? (
-          <div className="border-grey-200 z-10 flex h-full items-center rounded-lg border-[1px] border-solid py-7 px-8">
-            <P className="flex w-full items-center justify-center font-extrabold">
+          <div className="z-10 flex h-full items-center rounded-lg  py-7 px-8">
+            <P className="flex w-full items-center justify-center italic text-gray-500">
               Address is Empty!
             </P>
           </div>

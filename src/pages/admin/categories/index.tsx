@@ -1,3 +1,10 @@
+import React, { useEffect } from 'react'
+import toast from 'react-hot-toast'
+import { HiOutlinePencil, HiPlus, HiTrash } from 'react-icons/hi'
+
+import Head from 'next/head'
+import router from 'next/router'
+
 import {
   useAdminCategories,
   useDeleteAdminCategories,
@@ -7,12 +14,8 @@ import { useDispatch } from '@/hooks'
 import AdminPanelLayout from '@/layout/AdminPanelLayout'
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import Head from 'next/head'
-import router from 'next/router'
-import React, { useEffect } from 'react'
-import toast from 'react-hot-toast'
-import { HiOutlinePencil, HiPlus, HiTrash } from 'react-icons/hi'
 
 function CategoriesAdmin() {
   const category = useAdminCategories()
@@ -73,7 +76,7 @@ function CategoriesAdmin() {
           {category.isLoading ? (
             <>Loading...</>
           ) : (
-            category.data?.data.map((item, index) => {
+            category.data?.data?.map((item, index) => {
               return (
                 <div
                   key={index}

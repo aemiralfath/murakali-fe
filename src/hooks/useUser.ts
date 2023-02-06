@@ -1,9 +1,13 @@
-import { useGetUserProfile } from '@/api/user/profile'
 import { useEffect, useState } from 'react'
 
+import { useRouter } from 'next/router'
+
+import { useGetUserProfile } from '@/api/user/profile'
 import type { UserDetail } from '@/types/api/user'
 
 const useUser = () => {
+  const router = useRouter()
+
   const [user, setUser] = useState<UserDetail | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -14,7 +18,12 @@ const useUser = () => {
 
   useEffect(() => {
     if (userProfile.isSuccess) {
-      setUser(userProfile.data.data)
+      if (userProfile.data.data) {
+        setUser(userProfile.data.data)
+        if (userProfile.data.data.role === 3) {
+          router.push('/admin/vouchers')
+        }
+      }
     }
   }, [userProfile.data])
 

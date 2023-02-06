@@ -1,8 +1,10 @@
-import ProductCard from '@/layout/template/product/ProductCard'
-import { Transition } from '@headlessui/react'
 import React, { useEffect, useRef, useState } from 'react'
 import { HiArrowLeft, HiArrowRight } from 'react-icons/hi'
+
+import ProductCard from '@/layout/template/product/ProductCard'
 import type { BriefProduct } from '@/types/api/product'
+
+import { Transition } from '@headlessui/react'
 
 const ProductCarousel: React.FC<{
   product: Array<BriefProduct>

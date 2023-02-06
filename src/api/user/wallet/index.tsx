@@ -7,6 +7,7 @@ import type {
   WalletHistoryDetail,
   WalletUser,
 } from '@/types/api/wallet'
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const profileKey = 'wallet'
@@ -163,6 +164,47 @@ export const useUpdatePinWallet = () => {
         '/user/wallet/pin',
         {
           pin: pin,
+        }
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+      onError: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+    }
+  )
+}
+
+export const useChangeWalletPinStepUpEmail = () => {
+  const queryClient = useQueryClient()
+  return useMutation(
+    async () => {
+      return await authorizedClient.post<APIResponse<null>>(
+        '/user/wallet/step-up/email'
+      )
+    },
+    {
+      onSuccess: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+      onError: () => {
+        void queryClient.invalidateQueries([profileKey])
+      },
+    }
+  )
+}
+
+export const useChangeWalletPinStepUpVerify = () => {
+  const queryClient = useQueryClient()
+  return useMutation(
+    async (otp: string) => {
+      return await authorizedClient.post<APIResponse<null>>(
+        '/user/wallet/step-up/verify',
+        {
+          otp: otp,
         }
       )
     },

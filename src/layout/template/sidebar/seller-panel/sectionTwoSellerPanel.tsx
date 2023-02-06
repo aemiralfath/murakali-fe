@@ -1,18 +1,22 @@
-import cx from '@/helper/cx'
-
-import { useRouter } from 'next/router'
 import React from 'react'
 import {
   HiArchive,
   HiInbox,
-  HiNewspaper,
   HiReceiptTax,
   HiShoppingBag,
   HiTruck,
   HiTag,
+  HiArrowLeft,
 } from 'react-icons/hi'
 
+import { useRouter } from 'next/router'
+
+import { A, Icon } from '@/components'
+import cx from '@/helper/cx'
+import { useMediaQuery } from '@/hooks'
+
 export type ValidPage =
+  | 'dashboard'
   | 'order'
   | 'promotion'
   | 'voucher'
@@ -23,7 +27,7 @@ export type ValidPage =
   | 'wallet'
 
 interface SellerSideBarProps {
-  selectedPage: ValidPage
+  selectedPage?: ValidPage
 }
 
 interface SideBarMenuProps {
@@ -45,8 +49,8 @@ const SideBarMenu: React.FC<SideBarMenuProps> = ({
       className={cx(
         'w-full px-6 py-4 text-white transition-all',
         active
-          ? ' rounded-r-full bg-white font-semibold text-primary shadow-sm'
-          : 'hover:rounded-r-full hover:bg-white hover:font-semibold hover:text-primary'
+          ? ' rounded-r-full bg-white text-primary shadow-sm'
+          : 'hover:rounded-r-full hover:bg-white hover:text-primary'
       )}
       onClick={() => {
         router.push(`/seller-panel/${link}`)
@@ -63,7 +67,16 @@ const SideBarMenu: React.FC<SideBarMenuProps> = ({
 const SectionTwoSideBarSellerPanel: React.FC<SellerSideBarProps> = ({
   selectedPage,
 }) => {
+  const sm = useMediaQuery('sm')
+  const router = useRouter()
+
   const items: Array<SideBarMenuProps> = [
+    {
+      link: '',
+      title: 'Dashboard',
+      icon: <HiArchive />,
+      active: selectedPage === 'dashboard',
+    },
     {
       link: 'order',
       title: 'Order',
@@ -100,22 +113,38 @@ const SectionTwoSideBarSellerPanel: React.FC<SellerSideBarProps> = ({
       icon: <HiTruck />,
       active: selectedPage === 'delivery-service',
     },
-    {
-      link: 'wallet',
-      title: 'Wallet',
-      icon: <HiNewspaper className="-rotate-90" />,
-      active: selectedPage === 'wallet',
-    },
   ]
 
   return (
     <>
       <div className="flex">
-        <div className="flex min-h-screen w-64 bg-primary py-5">
-          <div className="mr-4 flex w-full flex-col gap-2 py-4">
+        <div className="flex h-full bg-primary py-5">
+          <div className="mr-4 flex flex-col gap-2">
+            <div className="relative flex justify-between">
+              <div
+                className="mx-6 my-1 flex max-w-[2rem] cursor-pointer items-center sm:max-w-[6rem]"
+                onClick={() => {
+                  router.push('/seller-panel')
+                }}
+              >
+                <Icon color="white" small={!sm} />
+              </div>
+            </div>
+            <div className="mt-3 h-[1px] w-full bg-white" />
             {items.map((item, idx) => (
               <SideBarMenu key={idx} {...item} />
             ))}
+            <div className="absolute bottom-0 mb-8 ml-4">
+              <A
+                className="flex items-center gap-2 font-medium text-white"
+                underline
+                onClick={() => {
+                  router.push('/')
+                }}
+              >
+                <HiArrowLeft /> Back to Main App
+              </A>
+            </div>
           </div>
         </div>
       </div>

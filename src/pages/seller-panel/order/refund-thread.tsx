@@ -1,4 +1,11 @@
+import { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useGetOrderByID } from '@/api/order'
+import { useGetSellerInfoByUserID } from '@/api/seller'
 import {
   useCreateRefundThreadSeller,
   useGetRefundThreadSeller,
@@ -12,21 +19,17 @@ import MainLayout from '@/layout/MainLayout'
 import ConfirmationModal from '@/layout/template/confirmation/confirmationModal'
 import RefundOrderDetail from '@/sections/refund/RefundOrderDetail'
 import RefundThreadSaction from '@/sections/refund/RefundThreadSaction'
-import type {
-  CreateRefundThreadRequest,
-  RefundThread,
-} from '@/types/api/refund'
+import type { CreateRefundThreadRequest } from '@/types/api/refund'
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { toast } from 'react-hot-toast'
 
 function RefundThread() {
   const router = useRouter()
 
   const userProfile = useGetUserProfile()
+  const sellerInfo = useGetSellerInfoByUserID(userProfile.data?.data?.id)
+
   const modal = useModal()
   const setLoadingModal = useLoadingModal()
 
@@ -98,11 +101,13 @@ function RefundThread() {
   }, [refundAccept.isError])
 
   const handleSubmit = () => {
-    const req: CreateRefundThreadRequest = {
-      refund_id: refundThreadData.data.data.refund_data.id,
-      text: text,
+    if (refundThreadData.data?.data?.refund_data) {
+      const req: CreateRefundThreadRequest = {
+        refund_id: refundThreadData.data.data.refund_data.id,
+        text: text,
+      }
+      createRefundThreadSeller.mutate(req)
     }
-    createRefundThreadSeller.mutate(req)
   }
 
   const handleActionAccept = () => {
@@ -113,7 +118,9 @@ function RefundThread() {
         <ConfirmationModal
           msg={'Are you sure Want to Accept this Order to Refund?'}
           onConfirm={() => {
-            refundAccept.mutate(refundThreadData.data.data.refund_data.id)
+            if (refundThreadData.data?.data?.refund_data) {
+              refundAccept.mutate(refundThreadData.data.data.refund_data.id)
+            }
           }}
         />
       ),
@@ -128,7 +135,9 @@ function RefundThread() {
         <ConfirmationModal
           msg={'Are you sure Want to Reject this Order to Refund?'}
           onConfirm={() => {
-            refundReject.mutate(refundThreadData.data.data.refund_data.id)
+            if (refundThreadData.data?.data?.refund_data) {
+              refundReject.mutate(refundThreadData.data.data.refund_data.id)
+            }
           }}
         />
       ),
@@ -158,16 +167,22 @@ function RefundThread() {
         <div className="mt-3 flex h-full w-full flex-col bg-white">
           {order.isLoading ? (
             <P className="flex w-full justify-center">Loading</P>
-          ) : order.isSuccess ? (
+          ) : order.data?.data ? (
             <>
-              <RefundOrderDetail order={order.data.data} />
+              <RefundOrderDetail
+                order={order.data.data}
+                refundThreadData={refundThreadData?.data?.data}
+                handleActionAccept={handleActionAccept}
+                handleActionRejected={handleActionRejected}
+                isSeller={true}
+              />
             </>
           ) : (
             <div>{'Error'}</div>
           )}
           {refundThreadData.isLoading ? (
             <div>loading</div>
-          ) : refundThreadData.isSuccess ? (
+          ) : refundThreadData.data?.data ? (
             <>
               <RefundThreadSaction
                 refundThreadData={refundThreadData.data.data}
@@ -180,13 +195,13 @@ function RefundThread() {
 
           <div className="mt-5 flex flex-col gap-3 rounded border bg-white p-4">
             <div className="flex justify-between gap-3">
-              <div className="w-[20%] min-w-[20%] border-r-4 border-blue-500">
+              <div className="w-[20%] min-w-[20%] border-r-4 border-green-500">
                 <div className="flex h-full gap-3 align-top">
                   <div>
                     <Avatar url={userProfile.data?.data?.photo_url} size="lg" />
                   </div>
-                  <div>
-                    <H4>{userProfile.data?.data?.user_name}</H4>
+                  <div className="whitespace-pre-line">
+                    <H4>{sellerInfo.data?.data?.name}</H4>
                   </div>
                 </div>
               </div>
@@ -204,34 +219,6 @@ function RefundThread() {
                   <div>
                     <Button buttonType="secondary" onClick={handleSubmit}>
                       send
-                    </Button>
-                  </div>
-                  <div className="flex gap-3 ">
-                    <Button
-                      buttonType="primary"
-                      className="text-white"
-                      onClick={handleActionAccept}
-                      disabled={
-                        refundThreadData.data?.data?.refund_data.accepted_at
-                          .Valid ||
-                        refundThreadData.data?.data?.refund_data.rejected_at
-                          .Valid
-                      }
-                    >
-                      Accepted
-                    </Button>
-                    <Button
-                      buttonType="error"
-                      className="text-white"
-                      onClick={handleActionRejected}
-                      disabled={
-                        refundThreadData.data?.data?.refund_data.accepted_at
-                          .Valid ||
-                        refundThreadData.data?.data?.refund_data.rejected_at
-                          .Valid
-                      }
-                    >
-                      Rejected
                     </Button>
                   </div>
                 </div>

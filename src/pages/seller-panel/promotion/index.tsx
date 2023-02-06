@@ -1,19 +1,26 @@
+import React, { useEffect, useState } from 'react'
+import type { MouseEvent } from 'react'
+import {
+  HiDuplicate,
+  HiInformationCircle,
+  HiPencil,
+  HiPlus,
+} from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useSellerPromotions } from '@/api/seller/promotion'
 import { Button, Chip, H2, P, PaginationNav, TextInput } from '@/components'
 import Table from '@/components/table'
 import PromotionStatusData from '@/dummy/promotionStatusData'
 import cx from '@/helper/cx'
+import formatMoney from '@/helper/formatMoney'
 import SellerPanelLayout from '@/layout/SellerPanelLayout'
 import type { SellerPromotion } from '@/types/api/promotion'
 import type { PaginationData } from '@/types/api/response'
+
 import moment from 'moment'
-import Head from 'next/head'
-import Image from 'next/image'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
-import type { MouseEvent } from 'react'
-import { HiDuplicate, HiPencil, HiPlus } from 'react-icons/hi'
-import formatMoney from '@/helper/formatMoney'
 
 function PromotionSeller() {
   const router = useRouter()
@@ -25,140 +32,162 @@ function PromotionSeller() {
   const [limit, setLimit] = useState(10)
 
   const formatData = (data?: PaginationData<SellerPromotion>) => {
-    if (data?.rows?.length > 0) {
-      return data.rows.map((row) => ({
-        'Promotion Name': <div>{row.promotion_name}</div>,
-        Product: (
-          <div className="flex gap-3">
-            <div className="w-[96px] flex-1">
-              {row.product_thumbnail_url !== null ? (
-                <Image
-                  width={96}
-                  height={96}
-                  src={row.product_thumbnail_url}
-                  alt={row.product_name}
-                  className={'aspect-square h-24 w-24'}
-                />
-              ) : (
-                <Image
-                  width={96}
-                  height={96}
-                  src={'/asset/image-empty.jpg'}
-                  alt={row.product_name}
-                  className={'aspect-square h-24 w-24'}
-                />
-              )}
-            </div>
-            <div className="flex flex-1 flex-col gap-2 p-1">
-              <P className="w-[15rem] font-semibold line-clamp-2">
-                {row.product_name}
-              </P>
-            </div>
-          </div>
-        ),
-        Quantity: (
-          <div>
-            <div className="flex gap-2">
-              <P className="">{row.quota}</P>
-            </div>
-          </div>
-        ),
-        Status: (
-          <div>
-            {new Date() < new Date(row.actived_date) &&
-            new Date() < new Date(row.expired_date) ? (
-              <div>
-                <Chip type="accent">Will Come</Chip>
+    if (data && Number(data?.rows?.length) > 0) {
+      return data.rows
+        ? data.rows.map((row) => ({
+            'Promotion Name': (
+              <P className="font-semibold">{row.promotion_name}</P>
+            ),
+            Product: (
+              <div className="flex w-[24rem] items-center gap-3">
+                <div className="min-w-[45px] flex-1">
+                  {row.product_thumbnail_url !== null ? (
+                    <img
+                      width={96}
+                      height={96}
+                      src={row.product_thumbnail_url}
+                      alt={row.product_name}
+                    />
+                  ) : (
+                    <img
+                      width={96}
+                      height={96}
+                      src={'/asset/image-empty.jpg'}
+                      alt={row.product_name}
+                    />
+                  )}
+                </div>
+                <P className="max-w-full whitespace-pre-wrap line-clamp-2">
+                  {row.product_name}
+                </P>
               </div>
-            ) : new Date() > new Date(row.actived_date) &&
-              new Date() < new Date(row.expired_date) ? (
+            ),
+            Quota: (
               <div>
-                <Chip type="primary">OnGoing</Chip>
+                <div className="flex gap-2">
+                  <P className="">{row.quota}</P>
+                </div>
               </div>
-            ) : new Date() > new Date(row.actived_date) &&
-              new Date() > new Date(row.expired_date) ? (
+            ),
+            Status: (
               <div>
-                <Chip type="gray">Has Ended</Chip>
+                {new Date() < new Date(row.actived_date) &&
+                new Date() < new Date(row.expired_date) ? (
+                  <div>
+                    <Chip type="secondary">Will Come</Chip>
+                  </div>
+                ) : new Date() > new Date(row.actived_date) &&
+                  new Date() < new Date(row.expired_date) ? (
+                  <div>
+                    <Chip type="success">Ongoing</Chip>
+                  </div>
+                ) : new Date() > new Date(row.actived_date) &&
+                  new Date() > new Date(row.expired_date) ? (
+                  <div>
+                    <Chip type="gray">Has Ended</Chip>
+                  </div>
+                ) : (
+                  <></>
+                )}
               </div>
-            ) : (
-              <></>
-            )}
-          </div>
-        ),
-        Period: (
-          <div>
-            <P>{moment(row.actived_date).format('DD MMM YYYY HH:mm:ss')}</P>
-            {' - '}
-            <P>{moment(row.expired_date).format('DD MMM YYYY HH:mm:ss')}</P>
-          </div>
-        ),
-        Discount: (
-          <div>
-            {row.discount_percentage > 0 && row.discount_fix_price <= 0 ? (
-              <>{row.discount_percentage}%</>
-            ) : (
-              <></>
-            )}
-            {row.discount_percentage <= 0 && row.discount_fix_price > 0 ? (
-              <>
-                Rp
-                {formatMoney(row.discount_fix_price)}
-              </>
-            ) : (
-              <></>
-            )}
-          </div>
-        ),
+            ),
+            Period: (
+              <div>
+                <P>{moment(row.actived_date).format('DD MMM YYYY HH:mm:ss')}</P>
+                <P className="font-bold">until</P>
+                <P>{moment(row.expired_date).format('DD MMM YYYY HH:mm:ss')}</P>
+              </div>
+            ),
+            Discount: (
+              <div>
+                {row.discount_percentage > 0 && row.discount_fix_price <= 0 ? (
+                  <>{row.discount_percentage}%</>
+                ) : (
+                  <></>
+                )}
+                {row.discount_percentage <= 0 && row.discount_fix_price > 0 ? (
+                  <>
+                    Rp
+                    {formatMoney(row.discount_fix_price)}
+                  </>
+                ) : (
+                  <></>
+                )}
+              </div>
+            ),
 
-        Action: (
-          <div className="flex flex-col gap-2">
-            <Button
-              buttonType="gray"
-              size="sm"
-              className="rounded"
-              onClick={() => {
-                router.push({
-                  pathname: '/seller-panel/promotion/' + row.promotion_id,
-                })
-              }}
-            >
-              Look Detail
-            </Button>
-            <Button
-              size="sm"
-              buttonType="ghost"
-              outlined
-              onClick={() => {
-                router.push(
-                  '/seller-panel/promotion/manage?intent=edit&id=' +
-                    row.promotion_id
-                )
-              }}
-            >
-              <HiPencil /> Edit
-            </Button>
-            <Button
-              size="sm"
-              buttonType="ghost"
-              onClick={() => {
-                router.push(
-                  '/seller-panel/promotion/manage?intent=add&id=' +
-                    row.promotion_id
-                )
-              }}
-            >
-              <HiDuplicate /> Duplicate
-            </Button>
-          </div>
-        ),
-      }))
+            Action: (
+              <div className="flex flex-col gap-2">
+                {new Date() > new Date(row.expired_date) ? (
+                  <Button
+                    buttonType="primary"
+                    size="sm"
+                    outlined
+                    onClick={() => {
+                      router.push({
+                        pathname: '/seller-panel/promotion/' + row.promotion_id,
+                      })
+                    }}
+                  >
+                    <HiInformationCircle /> Detail
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    buttonType="primary"
+                    outlined
+                    onClick={() => {
+                      router.push(
+                        '/seller-panel/promotion/manage?intent=edit&id=' +
+                          row.promotion_id
+                      )
+                    }}
+                  >
+                    <HiPencil /> Edit
+                  </Button>
+                )}
+
+                {new Date() > new Date(row.actived_date) &&
+                new Date() > new Date(row.expired_date) ? (
+                  <>
+                    <Button
+                      size="sm"
+                      buttonType="ghost"
+                      className="text-primary"
+                      onClick={() => {
+                        router.push(
+                          '/seller-panel/promotion/manage?intent=add&id=' +
+                            row.promotion_id
+                        )
+                      }}
+                    >
+                      <HiDuplicate /> Duplicate
+                    </Button>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </div>
+            ),
+          }))
+        : [
+            {
+              'Promotion Name': '',
+              Product: '',
+              Quota: '',
+              Status: '',
+              Period: '',
+              Discount: '',
+              Action: '',
+            },
+          ]
     }
 
     return [
       {
         'Promotion Name': '',
         Product: '',
-        Quantity: '',
+        Quota: '',
         Status: '',
         Period: '',
         Discount: '',
@@ -190,8 +219,8 @@ function PromotionSeller() {
         <title>Murakali | Seller Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="promotion">
-        <div className="flex w-full items-center justify-between">
-          <H2>Promotion List</H2>
+        <div className="flex flex-col items-baseline justify-between gap-2 px-3 py-5 sm:flex-row sm:px-0">
+          <H2>Promotions</H2>
           <Button
             size={'sm'}
             buttonType="primary"

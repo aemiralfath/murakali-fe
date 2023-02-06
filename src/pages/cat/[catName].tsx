@@ -1,4 +1,11 @@
+import React, { useEffect, useState } from 'react'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { useGetAllCategory } from '@/api/category'
 import { useSearchQueryProduct } from '@/api/product/search'
+import { Breadcrumbs } from '@/components'
 import ProductListingLayout, {
   useProductListing,
 } from '@/layout/ProductListingLayout'
@@ -6,10 +13,8 @@ import { Navbar } from '@/layout/template'
 import Footer from '@/layout/template/footer'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import type { ProductQuery } from '@/types/api/product'
+
 import type { NextPage } from 'next'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
 
 const FilterCategoryName: NextPage = () => {
   const router = useRouter()
@@ -21,6 +26,9 @@ const FilterCategoryName: NextPage = () => {
   const [flag, setFlag] = useState(true)
   const [locationState, setLocationState] = useState('')
   const [categoryState, setCategoryState] = useState(String(catName))
+  const [categoryTitle, setCategoryTitle] = useState<
+    Array<{ name: string; link: string }>
+  >([])
   const controller = useProductListing()
   const {
     sortBy,
@@ -28,8 +36,62 @@ const FilterCategoryName: NextPage = () => {
     filterRating,
     filterLocation,
     filterCategory,
+    setFilterCategory,
     page,
   } = controller
+
+  const useCategory = useGetAllCategory()
+
+  useEffect(() => {
+    if (useCategory.isSuccess) {
+      if (useCategory.data.data) {
+        useCategory.data.data.map((category) => {
+          if (category.name !== categoryState) {
+            category.child_category.map((child) => {
+              if (child.name !== categoryState) {
+                child.child_category?.map((child2) => {
+                  if (child2.name === categoryState) {
+                    setCategoryTitle([
+                      {
+                        name: category.name,
+                        link: `/cat/${category.name}`,
+                      },
+                      {
+                        name: child.name,
+                        link: `/cat/${child.name}`,
+                      },
+                      {
+                        name: child2.name,
+                        link: `/cat/${child2.name}`,
+                      },
+                    ])
+                  }
+                })
+              } else {
+                setCategoryTitle([
+                  {
+                    name: category.name,
+                    link: `/cat/${category.name}`,
+                  },
+                  {
+                    name: child.name,
+                    link: `/cat/${child.name}`,
+                  },
+                ])
+              }
+            })
+          } else {
+            setCategoryTitle([
+              {
+                name: category.name,
+                link: `/cat/${category.name}`,
+              },
+            ])
+          }
+        })
+      }
+    }
+  }, [useCategory.isSuccess, categoryState])
 
   useEffect(() => {
     if (sortBy.sort_by !== '') {
@@ -95,6 +157,7 @@ const FilterCategoryName: NextPage = () => {
   useEffect(() => {
     const queryCategory = String(catName)
     setCategoryState(queryCategory)
+    setFilterCategory(queryCategory)
     setFlag(true)
   }, [catName])
 
@@ -116,6 +179,7 @@ const FilterCategoryName: NextPage = () => {
     max_rating: 5,
     shop_id: '',
     province_ids: locationState,
+    listed_status: 1,
   }
 
   const SearchProductList = useSearchQueryProduct(productQuery)
@@ -148,9 +212,12 @@ const FilterCategoryName: NextPage = () => {
       <Navbar />
       <TitlePageExtend title={categoryState} />
       <div className="container mx-auto mt-3">
+        <div className="my-3 ml-3">
+          <Breadcrumbs data={categoryTitle} />
+        </div>
         {SearchProductList.isLoading ? (
           <ProductListingLayout controller={controller} isLoading={true} />
-        ) : SearchProductList.data.data.rows ? (
+        ) : SearchProductList.data?.data?.rows ? (
           <ProductListingLayout
             controller={controller}
             isLoading={false}
@@ -159,7 +226,7 @@ const FilterCategoryName: NextPage = () => {
             totalPage={SearchProductList.data.data.total_pages}
           />
         ) : (
-          <div>handle error</div>
+          <></>
         )}
       </div>
       <Footer />

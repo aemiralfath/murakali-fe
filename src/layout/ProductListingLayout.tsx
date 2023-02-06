@@ -1,25 +1,27 @@
-import { useGetAllProvince } from '@/api/user/address/extra'
-import { A, Button, Divider, H4, P, PaginationNav } from '@/components'
-import LocationFilter from '@/sections/productslisting/LocationFilter'
 import React, { useEffect, useState } from 'react'
 import { HiArrowDown, HiArrowUp, HiFilter, HiX } from 'react-icons/hi'
-import PriceFilter from '@/sections/productslisting/PriceFilter'
-import RatingFilter from '@/sections/productslisting/RatingFilter'
-import CategoryFilter from '@/sections/productslisting/CategoryFilter'
-import formatMoney from '@/helper/formatMoney'
-import cx from '@/helper/cx'
-import { useMediaQuery } from '@/hooks'
-import { Transition } from '@headlessui/react'
-import ProductCard from './template/product/ProductCard'
+
 import Image from 'next/image'
 
-import type { FilterPrice } from '@/sections/productslisting/PriceFilter'
-import type { ProvinceDetail } from '@/types/api/address'
-import type { SortBy } from '@/types/helper/sort'
-import type { BriefProduct } from '@/types/api/product'
 import { useGetAllCategory } from '@/api/category'
-
+import { useGetAllProvince } from '@/api/user/address/extra'
+import { A, Button, Divider, H4, P, PaginationNav } from '@/components'
+import cx from '@/helper/cx'
+import formatMoney from '@/helper/formatMoney'
+import { useMediaQuery } from '@/hooks'
+import CategoryFilter from '@/sections/productslisting/CategoryFilter'
+import LocationFilter from '@/sections/productslisting/LocationFilter'
+import PriceFilter from '@/sections/productslisting/PriceFilter'
+import type { FilterPrice } from '@/sections/productslisting/PriceFilter'
+import RatingFilter from '@/sections/productslisting/RatingFilter'
+import type { ProvinceDetail } from '@/types/api/address'
 import type { CategoryData } from '@/types/api/category'
+import type { BriefProduct } from '@/types/api/product'
+import type { SortBy } from '@/types/helper/sort'
+
+import { Transition } from '@headlessui/react'
+
+import ProductCard from './template/product/ProductCard'
 
 const defaultShownProvince = [
   'DKI Jakarta',
@@ -98,6 +100,7 @@ type ProductListingLayoutProps = LoadingDataWrapper<BriefProduct[]> & {
   totalPage?: number
   noCategory?: boolean
   isCategoryPage?: boolean
+  sellerCategory?: CategoryData[]
 }
 
 const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
@@ -106,9 +109,12 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
   controller,
   totalPage,
   noCategory,
+  sellerCategory,
   isCategoryPage,
 }) => {
   const {
+    filterKeyword,
+    setFilterKeyword,
     sortBy,
     setSortBy,
     filterLocation,
@@ -132,7 +138,9 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
 
   useEffect(() => {
     if (useCategory.isSuccess) {
-      setCategoryList(useCategory.data?.data)
+      if (useCategory.data.data) {
+        setCategoryList(useCategory.data.data)
+      }
     }
   }, [useCategory.isSuccess])
 
@@ -177,7 +185,18 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
             setFilterRating={setFilterRating}
           />
           {noCategory ? (
-            <></>
+            sellerCategory?.length === 0 ? (
+              <></>
+            ) : (
+              <>
+                <Divider />
+                <CategoryFilter
+                  categories={sellerCategory ? sellerCategory : []}
+                  filterCategory={filterCategory}
+                  setFilterCategory={setFilterCategory}
+                />
+              </>
+            )
           ) : (
             <>
               <Divider />
@@ -197,6 +216,7 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
               setFilterPrice(undefined)
               setFilterRating(-1)
               setFilterCategory('')
+              setFilterKeyword('')
             }}
           >
             <HiFilter className="text-xl" />
@@ -288,7 +308,8 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                   {filterLocation.length === 0 &&
                   filterPrice === undefined &&
                   filterRating === -1 &&
-                  filterCategory === '' ? (
+                  filterCategory === '' &&
+                  filterKeyword === '' ? (
                     <span className="h-[1.5rem] italic text-gray-400">
                       No Filter
                     </span>
@@ -337,6 +358,15 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
                           onClose={() => {
                             setFilterCategory('')
                           }}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                      {filterKeyword !== '' ? (
+                        <FilterChip
+                          key={'keyword'}
+                          value={`Keyword: ${filterKeyword}`}
+                          onClose={() => setFilterKeyword('')}
                         />
                       ) : (
                         <></>
@@ -396,6 +426,23 @@ const ProductListingLayout: React.FC<ProductListingLayoutProps> = ({
             )}
           </div>
         </div>
+        {Number(data?.length) >= 7 ? (
+          <div className="w-full mt-3 flex justify-center">
+            <PaginationNav
+              total={totalPage ?? 1}
+              page={page}
+              onChange={(p) => {
+                setPage(p)
+                if (typeof window !== undefined) {
+                  window.scrollTo(0, 0)
+                }
+              }}
+              size="md"
+            />
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   )

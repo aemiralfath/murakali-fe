@@ -1,18 +1,20 @@
+import { useDispatch, useSelector } from 'react-redux'
+import type { TypedUseSelectorHook } from 'react-redux'
+
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/dist/query'
-import { useDispatch, useSelector } from 'react-redux'
 
-import modalReducer from './reducer/modalReducer'
 import loadingModalReducer from './reducer/loadingModalReducer'
+import modalReducer from './reducer/modalReducer'
+import newestPaymentReducer from './reducer/newestPaymentReducer'
 import searchKeywordReducer from './reducer/searchKeywordReducer'
-
-import type { TypedUseSelectorHook } from 'react-redux'
 
 export const store = configureStore({
   reducer: {
     modal: modalReducer,
     loadingModal: loadingModalReducer,
     searchKeyword: searchKeywordReducer,
+    newestPayment: newestPaymentReducer,
   },
   middleware: (middleware) =>
     middleware({
@@ -23,6 +25,7 @@ export const store = configureStore({
 setupListeners(store.dispatch)
 
 export type RootState = ReturnType<typeof store.getState>
+
 export type AppDispatch = typeof store.dispatch
 
 export const useAppDispatch: () => AppDispatch = useDispatch

@@ -1,8 +1,12 @@
+import React, { useEffect, useState } from 'react'
+
 import { H3, H4, Chip, P, TextInput, TextArea } from '@/components'
 import toTitleCase from '@/helper/toTitleCase'
+import { useMediaQuery } from '@/hooks'
 import type { CategoryData } from '@/types/api/category'
+
 import { RadioGroup } from '@headlessui/react'
-import React, { useEffect, useState } from 'react'
+
 import CategorySelector from './subsections/CategorySelector'
 
 const ProductInfo: React.FC<{
@@ -32,6 +36,8 @@ const ProductInfo: React.FC<{
   defaultCategory,
   isEditing,
 }) => {
+  const md = useMediaQuery('md')
+
   const [selectedCategory, setSelectedCategory] = useState<CategoryData[]>([])
   const getSelectedCategoryStr = () => {
     if (selectedCategory[0]?.name) {
@@ -53,7 +59,7 @@ const ProductInfo: React.FC<{
   }
   useEffect(() => {
     if (selectedCategory.length > 0) {
-      setCategoryID(selectedCategory.at(-1)?.id)
+      setCategoryID(selectedCategory.at(-1)?.id ?? '')
     }
   }, [selectedCategory])
 
@@ -61,41 +67,58 @@ const ProductInfo: React.FC<{
     <div className="mt-3 flex h-full flex-col rounded border bg-white p-6 ">
       <H3>Product Information</H3>
       <div className="mt-6 flex justify-between gap-3">
-        <div className="w-[30%]">
-          <div className="flex items-center gap-3">
-            <H4>Product Name</H4>
-            <Chip type={'gray'}>Required</Chip>
+        {md ? (
+          <div className="w-[30%]">
+            <div className="flex items-center gap-3">
+              <H4>Product Name</H4>
+              <Chip type={'gray'}>Required</Chip>
+            </div>
+            <P className="mt-2 max-w-[20rem] text-sm">
+              The product name should be at least 40 characters long and include
+              the brand, type of product, or material.
+              <br />
+              <br />
+              It is recommended not to use too many capital letters, include
+              more than one brand, and promotional words.
+            </P>
           </div>
-          <P className="mt-2 max-w-[20rem] text-sm">
-            The product name should be at least 40 characters long and include
-            the brand, type of product, or material.
-            <br />
-            <br />
-            It is recommended not to use too many capital letters, include more
-            than one brand, and promotional words.
-          </P>
-        </div>
+        ) : (
+          <></>
+        )}
         <div className="flex-1">
           <TextInput
             full
             value={nameValue}
+            label={md ? undefined : 'Product Name'}
+            required
             onChange={(e) => setName(e.target.value)}
             placeholder="Example: Vens (Brand) + Authentic Casual Shoe (Type) + Canvas (Material)"
           />
         </div>
       </div>
       <div className="mt-6 flex justify-between gap-3">
-        <div className="w-[30%]">
-          <div className="flex items-center gap-3">
-            <H4>Product Status</H4>
-            <Chip type={'gray'}>Required</Chip>
+        {md ? (
+          <div className="w-[30%]">
+            <div className="flex items-center gap-3">
+              <H4>Product Status</H4>
+              <Chip type={'gray'}>Required</Chip>
+            </div>
+            <P className="mt-2 max-w-[20rem] text-sm">
+              Make sure you list your product for buyer to be able to discover
+              you product. Unlisted product will not be shown to the buyer.
+            </P>
           </div>
-          <P className="mt-2 max-w-[20rem] text-sm">
-            Make sure you list your product for buyer to be able to discover you
-            product. Unlisted product will not be shown to the buyer.
-          </P>
-        </div>
-        <div className="flex-1">
+        ) : (
+          <></>
+        )}
+        <div className="flex flex-1 items-center gap-2">
+          {md ? (
+            <></>
+          ) : (
+            <P className="label-text">
+              Product Status<span className="text-bold text-error">*</span>
+            </P>
+          )}
           <input
             type={'checkbox'}
             className={'toggle-primary toggle'}
@@ -108,21 +131,27 @@ const ProductInfo: React.FC<{
         </div>
       </div>
       <div className="mt-6 flex justify-between gap-3">
-        <div className="w-[30%]">
-          <div className="flex items-center gap-3">
-            <H4>Category</H4>
-            <Chip type={'gray'}>Required</Chip>
+        {md ? (
+          <div className="w-[30%]">
+            <div className="flex items-center gap-3">
+              <H4>Category</H4>
+              <Chip type={'gray'}>Required</Chip>
+            </div>
+            <P className="mt-2 max-w-[20rem] text-sm">
+              Choose the appropriate category because the product will be
+              displayed to users based on the category selected.
+            </P>
           </div>
-          <P className="mt-2 max-w-[20rem] text-sm">
-            Choose the appropriate category because the product will be
-            displayed to users based on the category selected.
-          </P>
-        </div>
+        ) : (
+          <></>
+        )}
         <div className="flex-1">
           <TextInput
             full
             placeholder={`Click "Choose Category"`}
             readOnly
+            required
+            label={md ? undefined : 'Category'}
             errorMsg={isEditing ? 'Category cannot be edited' : ''}
             value={
               isEditing
@@ -133,17 +162,19 @@ const ProductInfo: React.FC<{
             }
           />
         </div>
-        <CategorySelector
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          categoryData={categoryData}
-          disabled={isEditing}
-        />
+        <div className="mt-7 md:mt-0">
+          <CategorySelector
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            categoryData={categoryData}
+            disabled={isEditing}
+          />
+        </div>
       </div>
-      <div className="mt-6 flex gap-3">
+      <div className="mt-6 flex items-center gap-3">
         <div className="w-[30%]">
           <div className="flex items-center gap-3">
-            <H4>Condition</H4>
+            {md ? <H4>Condition</H4> : <P className="label-text">Condition</P>}
           </div>
         </div>
         <RadioGroup
@@ -160,6 +191,7 @@ const ProductInfo: React.FC<{
                   name="radio-condition-new"
                   className="radio checked:bg-primary"
                   checked={checked}
+                  readOnly
                 />
                 <span className="label-text">New</span>
               </label>
@@ -173,6 +205,7 @@ const ProductInfo: React.FC<{
                   name="radio-condition-used"
                   className="radio checked:bg-primary"
                   checked={checked}
+                  readOnly
                 />
                 <span className="label-text">Used</span>
               </label>
@@ -181,20 +214,26 @@ const ProductInfo: React.FC<{
         </RadioGroup>
       </div>
       <div className="mt-6 flex justify-between gap-3">
-        <div className="w-[30%]">
-          <div className="flex items-center gap-3">
-            <H4>Description</H4>
-            <Chip type={'gray'}>Required</Chip>
+        {md ? (
+          <div className="w-[30%]">
+            <div className="flex items-center gap-3">
+              <H4>Description</H4>
+              <Chip type={'gray'}>Required</Chip>
+            </div>
+            <P className="mt-2 max-w-[20rem] text-sm">
+              Make sure your product description includes detailed explanations
+              about your product so that buyers can easily understand and find
+              it.
+            </P>
           </div>
-          <P className="mt-2 max-w-[20rem] text-sm">
-            Make sure your product description includes detailed explanations
-            about your product so that buyers can easily understand and find it.
-          </P>
-        </div>
+        ) : (
+          <></>
+        )}
         <div className="-z-0 flex-1">
           <TextArea
             rows={8}
             full
+            label={md ? undefined : 'Description'}
             value={descriptionValue}
             onChange={(e) => setDescription(e.target.value)}
             placeholder={`Vens Authentic Casual Shoe Black Canvas Series C28B

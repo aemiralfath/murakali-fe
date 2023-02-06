@@ -1,23 +1,29 @@
-import { Button, H2, H4, P, TextInput } from '@/components'
 import React, { useEffect } from 'react'
-import { useModal } from '@/hooks'
-import Head from 'next/head'
-import MainLayout from '@/layout/MainLayout'
-import { useGetAllAddress, useGetDefaultAddress } from '@/api/user/address'
 import { toast } from 'react-hot-toast'
+
+import Head from 'next/head'
 import { useRouter } from 'next/router'
-import AddressOption from '@/sections/checkout/option/AddressOption'
+
+import { useLogout } from '@/api/auth/logout'
 import { useRegistrationMerchant } from '@/api/auth/register-merchant'
+import { useGetAllAddress, useGetDefaultAddress } from '@/api/user/address'
+import { useGetUserProfile } from '@/api/user/profile'
+import { Button, H2, H4, P, TextInput } from '@/components'
+import { useModal } from '@/hooks'
+import MainLayout from '@/layout/MainLayout'
+import AddressOption from '@/sections/checkout/option/AddressOption'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
-import type { AxiosError } from 'axios'
-import type { APIResponse } from '@/types/api/response'
-import { useGetUserProfile } from '@/api/user/profile'
 
 function MerchantRegistration() {
   const modal = useModal()
   const router = useRouter()
-  const address = useGetDefaultAddress(false, true)
+  const logout = useLogout()
+
+  const address = useGetDefaultAddress(false, true, true)
 
   const addresses = useGetAllAddress(1)
 
@@ -26,9 +32,9 @@ function MerchantRegistration() {
   const userProfile = useGetUserProfile()
 
   useEffect(() => {
-    if (userProfile.isSuccess) {
+    if (userProfile.data?.data) {
       if (userProfile.data.data.role === 2) {
-        router.push('/merchant')
+        router.push('/seller-panel')
       }
     }
   }, [userProfile.isSuccess])
@@ -50,9 +56,24 @@ function MerchantRegistration() {
   useEffect(() => {
     if (registerMerchant.isSuccess) {
       toast.success('Registration Merchant Success')
-      router.push('/seller-panel')
+      logout.mutate()
     }
   }, [registerMerchant.isSuccess])
+
+  useEffect(() => {
+    if (logout.isSuccess) {
+      toast.error('Please re-login to your account')
+      router.push('/login')
+    }
+  }, [logout.isSuccess])
+  useEffect(() => {
+    if (logout.isError) {
+      const reason = logout.failureReason as AxiosError<APIResponse<null>>
+      toast.error(
+        reason.response ? reason.response.data.message : reason.message
+      )
+    }
+  }, [logout.isError])
 
   useEffect(() => {
     if (registerMerchant.isError) {
@@ -126,18 +147,22 @@ function MerchantRegistration() {
                   <div className="col-span-1 py-2">
                     <H4>Address</H4>
                     {address.isSuccess ? (
-                      <div className="grid grid-cols-1 sm:grid-cols-3">
-                        <div className="col-span-2">
-                          <P>
-                            {address.data?.data?.rows[0].address_detail},{' '}
-                            {address.data?.data?.rows[0].sub_district},{' '}
-                            {address.data?.data?.rows[0].district},{' '}
-                            {address.data?.data?.rows[0].city},{' '}
-                            {address.data?.data?.rows[0].province}, Indonesia (
-                            {address.data?.data?.rows[0].zip_code})
-                          </P>
+                      <div className="flex flex-wrap justify-between flex-row">
+                        <div className="w-96">
+                          {address.data?.data?.rows[0] !== undefined ? (
+                            <P>
+                              {address.data.data.rows[0].address_detail},{' '}
+                              {address.data.data.rows[0].sub_district},{' '}
+                              {address.data.data.rows[0].district},{' '}
+                              {address.data.data.rows[0].city},{' '}
+                              {address.data.data.rows[0].province}, Indonesia (
+                              {address.data.data.rows[0].zip_code})
+                            </P>
+                          ) : (
+                            <></>
+                          )}
                         </div>
-                        <div className="col-span-1 flex items-center justify-end px-2">
+                        <div className=" flex items-centerpx-2">
                           <Button
                             buttonType="primary"
                             size="sm"

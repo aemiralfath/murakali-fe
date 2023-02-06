@@ -1,10 +1,13 @@
+import { useEffect } from 'react'
+import toast from 'react-hot-toast'
+
+import { useRouter } from 'next/router'
+
 import { useGoogleAuth } from '@/api/auth/oauth'
 import type { OauthError } from '@/types/api/auth'
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
-import toast from 'react-hot-toast'
 
 function OauthPage() {
   const router = useRouter()
@@ -38,9 +41,11 @@ function OauthPage() {
         reason.response ? reason.response.data.message : reason.message
       )
 
-      router.push(
-        reason.response.data.data ? reason.response.data.data.path_url : '/'
-      )
+      if (reason.response?.data?.data !== undefined) {
+        router.push(
+          reason.response.data.data ? reason.response.data.data.path_url : '/'
+        )
+      }
     }
   }, [googleAuth.isError])
 }

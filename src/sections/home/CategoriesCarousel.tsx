@@ -1,11 +1,14 @@
+import React, { useEffect, useRef, useState } from 'react'
+import { HiArrowLeft, HiArrowRight } from 'react-icons/hi'
+
+import Image from 'next/image'
+import Link from 'next/link'
+
 import { H1, H4, P } from '@/components'
 import { useMediaQuery } from '@/hooks'
 import type { CategoryData } from '@/types/api/category'
+
 import { Transition } from '@headlessui/react'
-import Image from 'next/image'
-import Link from 'next/link'
-import React, { useEffect, useRef, useState } from 'react'
-import { HiArrowLeft, HiArrowRight } from 'react-icons/hi'
 
 const CategoryItem: React.FC<{
   name?: string
@@ -17,7 +20,7 @@ const CategoryItem: React.FC<{
     <div className="carousel-item z-0 flex w-[8rem] flex-col items-center justify-center sm:w-[10rem]">
       <Link href={`/cat/${name}`} className="flex flex-col items-center">
         <Image
-          src={photo_url}
+          src={photo_url ?? '/asset/image-empty.jpg'}
           alt="Image Category"
           className="rounded-full"
           width={sm ? 80 : 60}
@@ -78,7 +81,7 @@ const CategoriesCarousel: React.FC<{
 
   return (
     <div className="relative">
-      <div className="flex justify-between ">
+      <div className="flex justify-between flex-wrap gap-2">
         <H1>Explore Categories</H1>
         <H4 className="self-end">
           <Link href="/category" className="whitespace-nowrap">

@@ -1,16 +1,22 @@
-import { Button, TextInput } from '@/components'
-import type { APIResponse } from '@/types/api/response'
-import type { AxiosError } from 'axios'
-import { useFormik } from 'formik'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
-import YupPassword from 'yup-password'
-import * as Yup from 'yup'
 import { useDispatch } from 'react-redux'
-import { closeModal } from '@/redux/reducer/modalReducer'
 
-import { usePasswordConfirmToUpdateWallet } from '@/api/user/wallet'
+import {
+  useChangeWalletPinStepUpEmail,
+  usePasswordConfirmToUpdateWallet,
+} from '@/api/user/wallet'
+import { A, Button, TextInput } from '@/components'
+import FormOTP from '@/components/form/FormOTP'
 import { useModal } from '@/hooks'
+import { closeModal } from '@/redux/reducer/modalReducer'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import YupPassword from 'yup-password'
+
 import FormPINWallet from './FormPinWallet'
 
 YupPassword(Yup)
@@ -18,6 +24,8 @@ YupPassword(Yup)
 function FormPasswordVerification() {
   const dispatch = useDispatch()
   const userPasswordVerification = usePasswordConfirmToUpdateWallet()
+  const ChangeWalletPinStepUpEmail = useChangeWalletPinStepUpEmail()
+
   const modal = useModal()
   useEffect(() => {
     if (userPasswordVerification.isSuccess) {
@@ -76,7 +84,22 @@ function FormPasswordVerification() {
               : ''
           }
         />
-
+        <div className="flex justify-center text-xs">
+          <A
+            underline
+            className=""
+            onClick={() => {
+              ChangeWalletPinStepUpEmail.mutate()
+              modal.edit({
+                title: 'Change Pin',
+                content: <FormOTP OTPType={'change-wallet-pin'} />,
+                closeButton: false,
+              })
+            }}
+          >
+            send email to Verification
+          </A>
+        </div>
         <div className="flex justify-end gap-2 py-3">
           <Button
             buttonType="gray"

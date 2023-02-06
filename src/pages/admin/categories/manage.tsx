@@ -1,21 +1,22 @@
+import React, { Fragment, useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import {
   useAdminCategories,
   useCreateAdminCategories,
   useUpdateAdminCategories,
 } from '@/api/admin/categories'
-
 import { Button, Chip, H2, H4, P, TextInput } from '@/components'
 import Uploader from '@/components/uploader'
 import AdminPanelLayout from '@/layout/AdminPanelLayout'
 import type { CreateUpdateCategory } from '@/types/api/admincategory'
-
 import type { APIResponse } from '@/types/api/response'
+
 import { Listbox, Transition } from '@headlessui/react'
 import type { AxiosError } from 'axios'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React, { Fragment, useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
 
 function ManageCategoryAdmin() {
   const router = useRouter()
@@ -30,7 +31,7 @@ function ManageCategoryAdmin() {
   const [selected, setSelected] = useState('no parent category')
 
   useEffect(() => {
-    if (typeManage === 'update' && categoryID) {
+    if (typeManage === 'update' && categoryID && category.data?.data) {
       category.data?.data
         .filter((item) => item.id === categoryID)
         .map((item) => setInput(item))
@@ -48,7 +49,7 @@ function ManageCategoryAdmin() {
   })
 
   useEffect(() => {
-    if (input.parent_id !== null) {
+    if (input.parent_id !== null && category.data?.data) {
       category.data?.data
         .filter((item) => item.id === input.parent_id)
         .map((item) => {
@@ -149,7 +150,7 @@ function ManageCategoryAdmin() {
                     type="text"
                     value={input.id}
                     full
-                    maxLength={10}
+                    maxLength={20}
                     required
                     disabled={edit}
                   />
@@ -166,7 +167,7 @@ function ManageCategoryAdmin() {
                   <Chip type={'gray'}>Required</Chip>
                 </div>
                 <P className="mt-2 max-w-[20rem] text-sm">
-                  maximum 10 characters
+                  maximum 20 characters
                 </P>
               </div>
               <div className="flex flex-1 items-center">
@@ -176,7 +177,7 @@ function ManageCategoryAdmin() {
                   onChange={handleChange}
                   value={input.name}
                   full
-                  maxLength={10}
+                  maxLength={20}
                   required
                 />
               </div>
@@ -266,51 +267,55 @@ function ManageCategoryAdmin() {
                                   </>
                                 )}
                               </Listbox.Option>
-                              {category.data?.data
-                                .filter(
-                                  (item) =>
-                                    item.level === '1' || item.level === '2'
-                                )
-                                .map((item, index) => (
-                                  <Listbox.Option
-                                    key={index}
-                                    onClick={() => {
-                                      setSelected(item.name)
-                                      setInput((prev) => ({
-                                        ...prev,
-                                        ['parent_id']: item.id,
-                                        ['level']: String(
-                                          Number(item.level) + 1
-                                        ),
-                                      }))
-                                    }}
-                                    className={({ active }) =>
-                                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                        active
-                                          ? 'bg-blue-500 text-white'
-                                          : 'text-gray-900'
-                                      }`
-                                    }
-                                    value={item.name}
-                                  >
-                                    {({ selected }) => (
-                                      <>
-                                        <span
-                                          className={`block truncate ${
-                                            selected
-                                              ? 'font-medium'
-                                              : 'font-normal'
-                                          }`}
-                                        >
-                                          {item.name}
-                                        </span>
-                                        {selected ? (
-                                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600"></span>
-                                        ) : null}
-                                      </>
-                                    )}
-                                  </Listbox.Option>
-                                ))}
+                              {category.data?.data ? (
+                                category.data?.data
+                                  .filter(
+                                    (item) =>
+                                      item.level === '1' || item.level === '2'
+                                  )
+                                  .map((item, index) => (
+                                    <Listbox.Option
+                                      key={index}
+                                      onClick={() => {
+                                        setSelected(item.name)
+                                        setInput((prev) => ({
+                                          ...prev,
+                                          ['parent_id']: item.id,
+                                          ['level']: String(
+                                            Number(item.level) + 1
+                                          ),
+                                        }))
+                                      }}
+                                      className={({ active }) =>
+                                        `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                          active
+                                            ? 'bg-blue-500 text-white'
+                                            : 'text-gray-900'
+                                        }`
+                                      }
+                                      value={item.name}
+                                    >
+                                      {({ selected }) => (
+                                        <>
+                                          <span
+                                            className={`block truncate ${
+                                              selected
+                                                ? 'font-medium'
+                                                : 'font-normal'
+                                            }`}
+                                          >
+                                            {item.name}
+                                          </span>
+                                          {selected ? (
+                                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600"></span>
+                                          ) : null}
+                                        </>
+                                      )}
+                                    </Listbox.Option>
+                                  ))
+                              ) : (
+                                <></>
+                              )}
                             </Listbox.Options>
                           </Transition>
                         </div>
@@ -379,51 +384,55 @@ function ManageCategoryAdmin() {
                                   </>
                                 )}
                               </Listbox.Option>
-                              {category.data?.data
-                                .filter(
-                                  (item) =>
-                                    item.level === '1' || item.level === '2'
-                                )
-                                .map((item, index) => (
-                                  <Listbox.Option
-                                    key={index}
-                                    onClick={() => {
-                                      setSelected(item.name)
-                                      setInput((prev) => ({
-                                        ...prev,
-                                        ['parent_id']: item.id,
-                                        ['level']: String(
-                                          Number(item.level) + 1
-                                        ),
-                                      }))
-                                    }}
-                                    className={({ active }) =>
-                                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                        active
-                                          ? 'bg-blue-500 text-white'
-                                          : 'text-gray-900'
-                                      }`
-                                    }
-                                    value={item.name}
-                                  >
-                                    {({ selected }) => (
-                                      <>
-                                        <span
-                                          className={`block truncate ${
-                                            selected
-                                              ? 'font-medium'
-                                              : 'font-normal'
-                                          }`}
-                                        >
-                                          {item.name}
-                                        </span>
-                                        {selected ? (
-                                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600"></span>
-                                        ) : null}
-                                      </>
-                                    )}
-                                  </Listbox.Option>
-                                ))}
+                              {category.data?.data ? (
+                                category.data?.data
+                                  .filter(
+                                    (item) =>
+                                      item.level === '1' || item.level === '2'
+                                  )
+                                  .map((item, index) => (
+                                    <Listbox.Option
+                                      key={index}
+                                      onClick={() => {
+                                        setSelected(item.name)
+                                        setInput((prev) => ({
+                                          ...prev,
+                                          ['parent_id']: item.id,
+                                          ['level']: String(
+                                            Number(item.level) + 1
+                                          ),
+                                        }))
+                                      }}
+                                      className={({ active }) =>
+                                        `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                          active
+                                            ? 'bg-blue-500 text-white'
+                                            : 'text-gray-900'
+                                        }`
+                                      }
+                                      value={item.name}
+                                    >
+                                      {({ selected }) => (
+                                        <>
+                                          <span
+                                            className={`block truncate ${
+                                              selected
+                                                ? 'font-medium'
+                                                : 'font-normal'
+                                            }`}
+                                          >
+                                            {item.name}
+                                          </span>
+                                          {selected ? (
+                                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600"></span>
+                                          ) : null}
+                                        </>
+                                      )}
+                                    </Listbox.Option>
+                                  ))
+                              ) : (
+                                <></>
+                              )}
                             </Listbox.Options>
                           </Transition>
                         </div>

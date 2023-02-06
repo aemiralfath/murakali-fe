@@ -1,16 +1,18 @@
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { useDispatch } from 'react-redux'
+
+import { useRouter } from 'next/router'
+
 import { useGetUserSLP } from '@/api/user/slp'
 import { useSLPPayment } from '@/api/user/transaction'
 import { useTopUpWallet } from '@/api/user/wallet'
 import { Button, H4, P, Spinner, TextInput } from '@/components'
-
 import { closeModal } from '@/redux/reducer/modalReducer'
 import type { APIResponse } from '@/types/api/response'
 import type { TopUpWallet } from '@/types/api/wallet'
+
 import type { AxiosError } from 'axios'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
-import { useDispatch } from 'react-redux'
 
 const FormTopUp: React.FC = () => {
   const useSlp = useGetUserSLP()
@@ -39,7 +41,7 @@ const FormTopUp: React.FC = () => {
       dispatch(closeModal())
       router.push({
         pathname: '/slp-top-up',
-        query: { id: useSlpPayment.data.data.redirect_url },
+        query: { id: useSlpPayment.data.data?.redirect_url },
       })
     }
   }, [useSlpPayment.isSuccess])
@@ -60,13 +62,13 @@ const FormTopUp: React.FC = () => {
         toast.error('Insufficient balance, please top up first!')
       }
       if (paymentReason === 'user not found') {
-        toast.error('User Not Found!')
+        toast.error('Invalid SeaLabs Pay account!')
       }
     }
   }, [useSlpPayment.isError])
 
   useEffect(() => {
-    if (topUp.isSuccess) {
+    if (topUp.data?.data.data) {
       useSlpPayment.mutate(topUp.data.data.data.transaction_id)
     }
   }, [topUp.isSuccess])
@@ -115,7 +117,7 @@ const FormTopUp: React.FC = () => {
           </label>
           <div className="mx-5 flex flex-col gap-2">
             {!useSlp.isLoading ? (
-              useSlp.data.data ? (
+              useSlp.data?.data ? (
                 useSlp.data.data.map((slpOption, index) => (
                   <label key={index}>
                     <div
@@ -138,7 +140,9 @@ const FormTopUp: React.FC = () => {
                         />
                         <div className=" my-4 mx-2 grid grid-cols-1 gap-2 md:grid-cols-4">
                           <div className="col-span-3 flex flex-col gap-y-2 ">
-                            <H4>{slpOption.name}</H4>
+                            <H4 className="block truncate font-semibold">
+                              {slpOption.name}
+                            </H4>
                             <P className="block truncate font-semibold">
                               {slpOption.card_number}
                             </P>
@@ -155,7 +159,7 @@ const FormTopUp: React.FC = () => {
               <></>
             )}
             {useSlp.isLoading ? <Spinner /> : <></>}
-            {useSlp.data?.data.length <= 0 && !useSlp.isLoading ? (
+            {(useSlp.data?.data?.length ?? 0) <= 0 && !useSlp.isLoading ? (
               <P className="text-center text-xs font-bold text-gray-500">
                 You Dont Have Sealabs Pay
               </P>

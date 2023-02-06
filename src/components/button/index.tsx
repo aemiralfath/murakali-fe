@@ -1,5 +1,7 @@
-import cx from '@/helper/cx'
 import React from 'react'
+
+import cx from '@/helper/cx'
+
 import Spinner from '../spinner'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -11,6 +13,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     | 'white'
     | 'gray'
     | 'error'
+    | 'success'
   outlined?: boolean
   size?: 'xs' | 'sm' | 'md' | 'lg'
   wide?: boolean
@@ -48,6 +51,8 @@ const Button: React.FC<ButtonProps> = ({
           ? 'btn-error'
           : buttonType === 'gray'
           ? 'border-none bg-gray-500'
+          : buttonType === 'success'
+          ? 'border-none bg-green-500'
           : buttonType === 'white'
           ? outlined
             ? 'border-white bg-transparent text-white hover:border-white hover:bg-primary'

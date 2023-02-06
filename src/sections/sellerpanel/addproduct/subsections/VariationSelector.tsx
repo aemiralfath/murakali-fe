@@ -1,9 +1,11 @@
+import { useState, Fragment, useEffect } from 'react'
+import { HiChevronDown, HiPlus } from 'react-icons/hi'
+
 import { Divider, TextInput, Button } from '@/components'
 import cx from '@/helper/cx'
 import toTitleCase from '@/helper/toTitleCase'
+
 import { Popover, Transition } from '@headlessui/react'
-import { useState, Fragment, useEffect } from 'react'
-import { HiChevronDown, HiPlus } from 'react-icons/hi'
 
 const VariationSelector: React.FC<{
   disabledKeyword: string
@@ -35,6 +37,7 @@ const VariationSelector: React.FC<{
           >
             <span
               className={cx(
+                'max-w-full overflow-hidden whitespace-nowrap',
                 selected === '' ? 'text-gray-400' : 'text-base-content'
               )}
             >

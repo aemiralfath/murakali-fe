@@ -1,32 +1,35 @@
-import { Button, Chip, H2, P, PaginationNav } from '@/components'
-import voucherData from '@/dummy/voucherData'
-import cx from '@/helper/cx'
-import SellerPanelLayout from '@/layout/SellerPanelLayout'
-import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 import type { MouseEvent } from 'react'
-import {
-  useDeleteSellerVouchers,
-  useSellerVouchers,
-} from '@/api/seller/voucher'
-import Table from '@/components/table'
-import type { VoucherData } from '@/types/api/voucher'
-import type { APIResponse, PaginationData } from '@/types/api/response'
-import moment from 'moment'
-import formatMoney from '@/helper/formatMoney'
-import { useModal } from '@/hooks'
-import { useDispatch } from 'react-redux'
-import { closeModal } from '@/redux/reducer/modalReducer'
-import { HiTrash, HiArrowDown, HiArrowUp } from 'react-icons/hi'
 import toast from 'react-hot-toast'
-import type { AxiosError } from 'axios'
+import { HiTrash, HiArrowDown, HiArrowUp } from 'react-icons/hi'
 import {
   HiPlus,
   HiPencilAlt,
   HiDocumentDuplicate,
   HiInformationCircle,
 } from 'react-icons/hi'
+import { useDispatch } from 'react-redux'
+
+import Head from 'next/head'
 import { useRouter } from 'next/router'
+
+import {
+  useDeleteSellerVouchers,
+  useSellerVouchers,
+} from '@/api/seller/voucher'
+import { Button, Chip, H2, P, PaginationNav } from '@/components'
+import Table from '@/components/table'
+import voucherData from '@/dummy/voucherData'
+import cx from '@/helper/cx'
+import formatMoney from '@/helper/formatMoney'
+import { useModal } from '@/hooks'
+import SellerPanelLayout from '@/layout/SellerPanelLayout'
+import { closeModal } from '@/redux/reducer/modalReducer'
+import type { APIResponse, PaginationData } from '@/types/api/response'
+import type { VoucherData } from '@/types/api/voucher'
+
+import type { AxiosError } from 'axios'
+import moment from 'moment'
 
 function Vouchers() {
   const router = useRouter()
@@ -75,7 +78,7 @@ function Vouchers() {
               </div>
             ),
             Code: <div>{data.code}</div>,
-            Qouta: <div>{data.quota}</div>,
+            Quota: <div>{data.quota}</div>,
             Status: (
               <div>
                 {Date.now() >= Date.parse(data.actived_date) &&
@@ -90,7 +93,7 @@ function Vouchers() {
                   <></>
                 )}
                 {Date.now() > Date.parse(data.expired_date) ? (
-                  <Chip type="error">Has Ended</Chip>
+                  <Chip type="gray">Has Ended</Chip>
                 ) : (
                   <></>
                 )}
@@ -138,7 +141,9 @@ function Vouchers() {
               <div className="flex w-fit flex-col gap-1">
                 {Date.now() > Date.parse(data.expired_date) ? (
                   <Button
-                    buttonType="gray"
+                    buttonType="primary"
+                    size="sm"
+                    outlined
                     onClick={() => {
                       router.push({
                         pathname: '/seller-panel/vouchers/' + data.id,
@@ -153,6 +158,7 @@ function Vouchers() {
                 {Date.now() < Date.parse(data.expired_date) ? (
                   <Button
                     buttonType="primary"
+                    size="sm"
                     outlined
                     onClick={() => {
                       router.push({
@@ -164,14 +170,16 @@ function Vouchers() {
                       })
                     }}
                   >
-                    <HiPencilAlt /> Update
+                    <HiPencilAlt /> Edit
                   </Button>
                 ) : (
                   <></>
                 )}
                 <Button
-                  buttonType="primary"
+                  buttonType="ghost"
+                  className="btn-primary border-none"
                   outlined
+                  size="sm"
                   onClick={() => {
                     router.push({
                       pathname: '/seller-panel/vouchers/manage',
@@ -188,6 +196,7 @@ function Vouchers() {
                   <Button
                     buttonType="primary"
                     outlined
+                    size="sm"
                     onClick={() => {
                       modal.edit({
                         title: 'Delete Voucher',
@@ -237,7 +246,7 @@ function Vouchers() {
         'Created Date': '',
         Code: '',
         Status: '',
-        Qouta: '',
+        Quota: '',
         'Active Date': '',
         'Discount ': '',
         'Min Product Price': '',
@@ -252,7 +261,7 @@ function Vouchers() {
         <title>Murakali | Voucher Panel</title>
       </Head>
       <SellerPanelLayout selectedPage="voucher">
-        <div className="flex w-full items-center justify-between">
+        <div className="flex flex-col items-baseline justify-between gap-2 px-3 py-5 sm:flex-row sm:px-0">
           <H2>Voucher Shop List</H2>
           <Button
             size={'sm'}
@@ -305,7 +314,7 @@ function Vouchers() {
                 voucherStatus === '' ? 'border-primary' : 'border-transparent'
               )}
             >
-              All Order
+              All
             </button>
             {voucherData.map((status, index) => {
               return (
@@ -343,7 +352,7 @@ function Vouchers() {
               <div className="mt-4 flex h-[8rem] w-full justify-center">
                 <PaginationNav
                   page={page}
-                  total={sellerVoucher.data.data.total_pages}
+                  total={sellerVoucher.data?.data?.total_pages}
                   onChange={(p) => setPage(p)}
                 />
               </div>

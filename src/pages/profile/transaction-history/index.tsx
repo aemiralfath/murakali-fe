@@ -1,24 +1,3 @@
-import { useCompleteOrder, useGetOrders, useReceiveOrder } from '@/api/order'
-import { useGetTransactions } from '@/api/transaction'
-import { useGetUserSLP } from '@/api/user/slp'
-import { useGetUserWallet } from '@/api/user/wallet'
-import { A, Button, Chip, Divider, H1, P } from '@/components'
-import { orderStatus } from '@/constants/status'
-import cx from '@/helper/cx'
-import formatMoney from '@/helper/formatMoney'
-import { useModal } from '@/hooks'
-import ProfileLayout from '@/layout/ProfileLayout'
-import ConfirmationModal from '@/layout/template/confirmation/confirmationModal'
-import PaymentOption from '@/sections/checkout/option/PaymentOption'
-import type { BuyerOrder } from '@/types/api/order'
-import type { APIResponse } from '@/types/api/response'
-import type { Transaction } from '@/types/api/transaction'
-import type { AxiosError } from 'axios'
-import moment from 'moment'
-import Head from 'next/head'
-import Image from 'next/image'
-import { useRouter } from 'next/router'
-
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { FaStore } from 'react-icons/fa'
@@ -30,14 +9,37 @@ import {
   HiOutlineShieldCheck,
   HiShoppingCart,
 } from 'react-icons/hi'
+import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { useCompleteOrder, useGetOrders, useReceiveOrder } from '@/api/order'
+import { useGetTransactions } from '@/api/transaction'
+import { useGetRefundThread } from '@/api/user/refund'
+import { useGetUserSLP } from '@/api/user/slp'
+import { useGetUserWallet } from '@/api/user/wallet'
+import { A, Button, Chip, Divider, H1, P, PaginationNav } from '@/components'
+import { orderStatus } from '@/constants/status'
+import cx from '@/helper/cx'
+import formatMoney from '@/helper/formatMoney'
+import { useModal } from '@/hooks'
+import ProfileLayout from '@/layout/ProfileLayout'
+import ConfirmationModal from '@/layout/template/confirmation/confirmationModal'
+import PaymentOption from '@/sections/checkout/option/PaymentOption'
+import type { BuyerOrder } from '@/types/api/order'
+import type { APIResponse } from '@/types/api/response'
+import type { Transaction } from '@/types/api/transaction'
+
+import type { AxiosError } from 'axios'
+import moment from 'moment'
 
 const EmptyLayout = () => {
   return (
     <div className="flex flex-col items-center justify-center py-6">
       <div className="relative aspect-video w-full sm:w-96 md:w-[28rem]">
-        <Image
+        <img
           src={'/asset/tour.png'}
-          fill
           className="object-cover"
           alt="Buy your first product"
         />
@@ -116,7 +118,9 @@ const OrderCard: React.FC<
   const router = useRouter()
   const { pathname } = router
 
+  const userWallet = useGetUserWallet()
   const order = data
+  const getRefundThread = useGetRefundThread(data?.order_id)
   const receiveOrder = useReceiveOrder()
   const completeOrder = useCompleteOrder()
 
@@ -163,29 +167,37 @@ const OrderCard: React.FC<
       {isLoading ? (
         <div className="h-[1.5rem] w-[6rem] animate-pulse rounded bg-base-300" />
       ) : (
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <FaStore className="opacity-70" />
-            <A
-              className="line-clamp-1"
-              onClick={() => {
-                router.push('/seller/' + order.shop_id)
-              }}
-            >
-              {order.shop_name}
-            </A>
-          </div>
-          <div className="flex flex-wrap items-center gap-1">
-            <P className="text-xs opacity-60">
-              {moment(order.created_at).format('DD MMMM YYYY')}
-            </P>
-            <P className="text-xs opacity-60">•</P>
-            <Chip type="gray">{orderStatus[order.order_status]}</Chip>
-          </div>
+        <div className="flex items-center justify-between flex-wrap">
+          {order ? (
+            <>
+              <div className="flex items-center gap-2">
+                <FaStore className="opacity-70" />
+                <A
+                  className="line-clamp-1"
+                  onClick={() => {
+                    router.push('/seller/' + order.shop_id)
+                  }}
+                >
+                  {order.shop_name}
+                </A>
+              </div>
+              <div className="flex flex-wrap items-center gap-1">
+                <P className="text-xs opacity-60">
+                  {moment(order.created_at).format('DD MMMM YYYY')}
+                </P>
+                <P className="text-xs opacity-60">•</P>
+                <div className="block truncate max-w-md">
+                  <Chip type="gray">{orderStatus[order.order_status]}</Chip>
+                </div>
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
       )}
       <Divider />
-      {isLoading ? (
+      {!order ? (
         <div className="flex gap-2.5">
           <div className="h-[100px] w-[100px] animate-pulse rounded bg-base-300" />
           <div className="flex-1 px-2">
@@ -200,14 +212,16 @@ const OrderCard: React.FC<
               className="flex flex-wrap gap-2.5"
               key={`${detail.product_detail_id}-${order.order_id}`}
             >
-              <Image
+              <img
                 alt={detail.product_title}
                 src={detail.product_detail_url}
                 width={100}
                 height={100}
               />
               <div className="flex-1 px-2">
-                <P className="font-semibold">{detail.product_title}</P>
+                <P className="font-semibold line-clamp-1 w-32 sm:w-fit ">
+                  {detail.product_title}
+                </P>
                 <P className="text-sm opacity-60">
                   Quantity: {detail.order_quantity}
                 </P>
@@ -230,7 +244,7 @@ const OrderCard: React.FC<
       )}
       <Divider />
       <div className={'flex items-center justify-between'}>
-        {isLoading ? (
+        {!order ? (
           <div className="h-[1.5rem] w-[80%] animate-pulse rounded bg-base-300" />
         ) : (
           <>
@@ -385,34 +399,142 @@ const OrderCard: React.FC<
             <div className="mt-2 flex items-baseline justify-center gap-1 text-center">
               {order.is_refund === false ? (
                 <>
-                  <P className="text-xs opacity-50">Or</P>
-                  <A
-                    className="text-xs opacity-50 hover:opacity-100"
-                    underline
-                    onClick={() => {
-                      modal.info({
-                        title: 'Confirmation',
-                        closeButton: false,
-                        content: (
-                          <ConfirmationModal
-                            msg={
-                              'Are you sure Want to Complaint the Order and Refund?'
-                            }
-                            onConfirm={() => {
-                              router.push(
-                                '/order/complaint?id=' + order.order_id
-                              )
+                  {getRefundThread.data?.data?.refund_data?.rejected_at
+                    .Valid ? (
+                    <>
+                      <P className="text-xs opacity-50">
+                        your previous{' '}
+                        <A
+                          className="text-xs hover:opacity-100"
+                          underline
+                          onClick={() => {
+                            router.push(
+                              '/order/refund-thread?id=' + order.order_id
+                            )
+                          }}
+                        >
+                          File Complaint
+                        </A>{' '}
+                        has been rejected at{' '}
+                        {moment(
+                          getRefundThread.data?.data?.refund_data?.rejected_at
+                            .Time
+                        )
+                          .utcOffset(420)
+                          .format('DD MMMM YYYY HH:mm:ss')
+                          .toString()}
+                        {'.'}
+                        <P>
+                          you can create new File Complaint to refund before 24
+                          hours rejected.
+                        </P>
+                        <P>
+                          <A
+                            className="text-xs hover:opacity-100"
+                            underline
+                            onClick={() => {
+                              modal.info({
+                                title: 'Confirmation',
+                                closeButton: false,
+                                content: (
+                                  <ConfirmationModal
+                                    msg={
+                                      'Are you sure Want to Complaint the Order and Refund?'
+                                    }
+                                    onConfirm={() => {
+                                      if (
+                                        userWallet?.data?.data?.active_date
+                                          .Valid === true &&
+                                        new Date(
+                                          Date.parse(
+                                            userWallet.data.data.active_date
+                                              .Time
+                                          )
+                                        ) < new Date()
+                                      ) {
+                                        router.push(
+                                          '/order/complaint?id=' +
+                                            order.order_id
+                                        )
+                                        return
+                                      }
+                                      toast.error('wallet is not active')
+                                    }}
+                                  />
+                                ),
+                              })
                             }}
-                          />
-                        ),
-                      })
-                    }}
-                  >
-                    File a Complaint
-                  </A>
+                          >
+                            File a Complaint
+                          </A>
+                        </P>
+                      </P>
+                    </>
+                  ) : (
+                    <>
+                      <P className="text-xs opacity-50">Or</P>
+                      <A
+                        className="text-xs opacity-50 hover:opacity-100"
+                        underline
+                        onClick={() => {
+                          modal.info({
+                            title: 'Confirmation',
+                            closeButton: false,
+                            content: (
+                              <ConfirmationModal
+                                msg={
+                                  'Are you sure Want to Complaint the Order and Refund?'
+                                }
+                                onConfirm={() => {
+                                  if (
+                                    userWallet?.data?.data?.active_date
+                                      .Valid === true &&
+                                    new Date(
+                                      Date.parse(
+                                        userWallet.data.data.active_date.Time
+                                      )
+                                    ) < new Date()
+                                  ) {
+                                    router.push(
+                                      '/order/complaint?id=' + order.order_id
+                                    )
+                                    return
+                                  }
+                                  toast.error('wallet is not active')
+                                }}
+                              />
+                            ),
+                          })
+                        }}
+                      >
+                        File a Complaint
+                      </A>
+                    </>
+                  )}
+                  <></>
                 </>
               ) : (
-                <></>
+                <>
+                  {getRefundThread.data?.data?.refund_data?.accepted_at
+                    .Valid ? (
+                    <>
+                      <P className="text-xs opacity-50">
+                        your File Complaint has been accepted at{' '}
+                        {moment(
+                          getRefundThread.data?.data?.refund_data.accepted_at
+                            .Time
+                        )
+                          .utcOffset(420)
+                          .format('DD MMMM YYYY HH:mm:ss')
+                          .toString()}
+                        {'.'}
+                        <P>please wait the system to process refund order.</P>
+                      </P>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </>
               )}
             </div>
           ) : (
@@ -442,13 +564,21 @@ function TransactionHistory() {
     }
   }, [status])
 
+  const [sort, setSort] = useState('DESC')
+  const [page, setPage] = useState<number>(1)
+
   const orders = useGetOrders({
     order_status: qryStatus === 0 ? undefined : qryStatus,
+    sort: sort,
+    page: page,
   })
-  const transactions = useGetTransactions()
+  const transactions = useGetTransactions(sort, page)
   const userWallet = useGetUserWallet()
   const userSLP = useGetUserSLP()
 
+  useEffect(() => {
+    setPage(1)
+  }, [qryStatus])
   return (
     <>
       <Head>
@@ -461,9 +591,37 @@ function TransactionHistory() {
       <ProfileLayout selectedPage="transaction-history">
         <>
           <H1 className="text-primary">Transactions</H1>
-          <div className="my-4">
+          <div className="my-2">
             <Divider />
           </div>
+          <div className="flex-start flex">
+            <div className="flex items-center gap-x-2 px-5">
+              <P className="my-3  font-bold">Date</P>
+              <button
+                className={cx(
+                  'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                  sort === 'ASC' ? 'bg-primary text-xs text-white' : ''
+                )}
+                onClick={() => {
+                  setSort('ASC')
+                }}
+              >
+                <HiArrowUp />
+              </button>
+              <button
+                className={cx(
+                  'flex aspect-square h-[1.5rem] items-center justify-center rounded-full border text-xs',
+                  sort === 'DESC' ? 'bg-primary text-xs text-white' : ''
+                )}
+                onClick={() => {
+                  setSort('DESC')
+                }}
+              >
+                <HiArrowDown />
+              </button>
+            </div>
+          </div>
+
           <div className="customscroll mb-3 max-w-full overflow-auto">
             <div className="tabs mb-1 flex-nowrap">
               {['All', ...orderStatus.slice(1)].map((status, idx) => (
@@ -482,7 +640,9 @@ function TransactionHistory() {
                     })
                   }}
                 >
-                  {idx === 1 && transactions.data?.data.rows.length > 0 ? (
+                  {idx === 1 &&
+                  transactions.data?.data?.rows &&
+                  transactions.data.data.rows.length > 0 ? (
                     <span className="indicator-item border-none bg-transparent">
                       <div className=" relative mt-2 mr-9">
                         <div
@@ -505,6 +665,7 @@ function TransactionHistory() {
           <div>
             <div className="flex flex-col gap-3">
               {qryStatus === 1 ? (
+                transactions.data?.data?.rows &&
                 transactions.data?.data.rows.length > 0 ? (
                   <>
                     {transactions.data.data.rows.map((row) => {
@@ -576,16 +737,13 @@ function TransactionHistory() {
                                 size="sm"
                                 buttonType="primary"
                                 onClick={() => {
-                                  if (
-                                    userWallet.data?.data &&
-                                    userSLP.data?.data
-                                  ) {
+                                  if (userSLP.data?.data) {
                                     modal.edit({
                                       title: 'Choose Payment Option',
                                       content: (
                                         <PaymentOption
                                           transaction={row}
-                                          userWallet={userWallet.data.data}
+                                          userWallet={userWallet.data?.data}
                                           userSLP={userSLP.data.data}
                                         />
                                       ),
@@ -626,7 +784,8 @@ function TransactionHistory() {
                 ) : (
                   <EmptyLayout />
                 )
-              ) : orders.data?.data.rows.length > 0 ? (
+              ) : orders.data?.data?.rows &&
+                orders.data?.data.rows.length > 0 ? (
                 orders.data?.data.rows.map((order) => {
                   return (
                     <OrderCard
@@ -646,6 +805,21 @@ function TransactionHistory() {
                 <EmptyLayout />
               )}
             </div>
+            {orders.data?.data?.rows && transactions.data?.data?.rows ? (
+              <div className="mt-4 flex h-[8rem] w-full justify-center">
+                <PaginationNav
+                  page={page}
+                  total={
+                    qryStatus !== 1
+                      ? orders.data?.data?.total_pages
+                      : transactions.data?.data?.total_pages
+                  }
+                  onChange={(p) => setPage(p)}
+                />
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
         </>
       </ProfileLayout>

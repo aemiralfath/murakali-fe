@@ -1,15 +1,5 @@
-import { Avatar, Button, H2, Icon, TextInput } from '@/components'
-import {
-  useHover,
-  useLoadingModal,
-  useMediaQuery,
-  useSearchKeyword,
-  useSelector,
-  useUser,
-} from '@/hooks'
-import { Menu, Transition } from '@headlessui/react'
-import Link from 'next/link'
 import React, { Fragment, useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 import {
   HiCurrencyDollar,
   HiHeart,
@@ -18,24 +8,36 @@ import {
   HiShoppingCart,
 } from 'react-icons/hi'
 
-import type { CartData } from '@/types/api/cart'
-import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useLogout } from '@/api/auth/logout'
-import toast from 'react-hot-toast'
-import type { AxiosError } from 'axios'
-import type { APIResponse } from '@/types/api/response'
-import { useGetHoverCart } from '@/api/user/cart'
-import formatMoney from '@/helper/formatMoney'
 
-const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
-  cart,
-  isLogin,
-}) => {
+import { useLogout } from '@/api/auth/logout'
+import { useGetHoverCart } from '@/api/user/cart'
+import { Avatar, Button, H2, Icon, P, TextInput } from '@/components'
+import formatMoney from '@/helper/formatMoney'
+import {
+  useHover,
+  useLoadingModal,
+  useMediaQuery,
+  useSearchKeyword,
+  useSelector,
+  useUser,
+} from '@/hooks'
+import type { CartData } from '@/types/api/cart'
+import type { APIResponse } from '@/types/api/response'
+
+import { Menu, Transition } from '@headlessui/react'
+import type { AxiosError } from 'axios'
+
+const HoverableCartButton: React.FC<{
+  cart: CartData[]
+  isLogin: boolean
+  totalItem: number
+}> = ({ cart, isLogin, totalItem }) => {
   const [cartRef, isCartHover] = useHover()
   const router = useRouter()
   return (
-    <div className="nav-item relative" ref={cartRef}>
+    <div className="nav-item relative z-40" ref={cartRef}>
       <Link
         href={`/cart`}
         className="flex items-center px-3 py-2 text-xs font-bold uppercase leading-snug text-white hover:opacity-75"
@@ -54,7 +56,7 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
         leaveTo="transform opacity-0 scale-95"
       >
         <div className="absolute right-[10%] top-auto ">
-          <div className="relative z-40 mt-3 w-[32rem] rounded-md bg-white py-2 px-4 shadow-lg">
+          <div className="relative mt-3 w-[32rem] rounded-md bg-white py-2 px-4 shadow-lg">
             <div className="absolute -top-[7px] right-[10px] h-5 w-5 rotate-45 bg-white" />
             <H2 className="text-primary">Cart</H2>
             <div className="grid grid-cols-1 divide-y">
@@ -64,18 +66,20 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                     cart.map((data, idx) => {
                       return (
                         <div key={idx} className="flex py-2">
-                          <Image
+                          <img
                             width={60}
                             height={60}
                             src={
                               data.thumbnail_url === ' '
-                                ? undefined
+                                ? '/asset/image-empty.jpg'
                                 : data.thumbnail_url
                             }
                             alt={data.title}
-                            className={'aspect-square h-[4.5rem] w-[4.5rem]'}
+                            className={
+                              'aspect-square h-[4.5rem] w-[4.5rem] bg-base-300'
+                            }
                           />
-                          <div className="flex flex-1 flex-col gap-2 px-2">
+                          <div className="flex flex-1 flex-col flex-wrap gap-2 px-1">
                             <div className="mt-1 font-semibold leading-4 line-clamp-2">
                               {data.title}
                             </div>
@@ -85,8 +89,8 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                               })}
                             </div>
                           </div>
-                          <div className="flex w-[6rem] flex-col overflow-ellipsis text-right">
-                            <div className="text-lg font-semibold">
+                          <div className="flex w-[9rem] flex-col overflow-ellipsis text-right">
+                            <div className="block truncate text-lg font-semibold">
                               {data.sub_price === 0
                                 ? 'Rp.' + formatMoney(data.price)
                                 : 'Rp.' + formatMoney(data.sub_price)}
@@ -113,10 +117,13 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                     })
                   ) : (
                     <div className="flex py-2">
-                      <div className="flex flex-1 flex-col gap-2 px-2">
-                        <div className="mt-1 text-center font-semibold leading-4 line-clamp-2">
-                          No item in cart
-                        </div>
+                      <div className="my-8 flex flex-1 flex-col items-center justify-center">
+                        <P className="flex w-full items-center justify-center text-lg font-semibold">
+                          Cart is Empty
+                        </P>
+                        <P className="text-sm font-light">
+                          Start shopping now!
+                        </P>
                       </div>
                     </div>
                   )}
@@ -131,11 +138,13 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                 </div>
               )}
             </div>
-            <div className="my-2 flex justify-end">
+            <div className="my-2 flex justify-between">
+              {isLogin ? <>{totalItem} Item</> : <></>}
               {isLogin ? (
                 <Button
                   size="sm"
                   buttonType="ghost"
+                  disabled={!(cart && cart.length > 0)}
                   onClick={() => {
                     router.push('/cart')
                   }}
@@ -241,7 +250,7 @@ const Navbar: React.FC = () => {
   const { user, isLoading } = useUser()
 
   const sm = useMediaQuery('sm')
-  const cart = useGetHoverCart()
+  const cart = useGetHoverCart(Boolean(user?.id))
   const setIsLoading = useLoadingModal()
   const setSearchKeyword = useSearchKeyword()
   const router = useRouter()
@@ -257,7 +266,7 @@ const Navbar: React.FC = () => {
   return (
     <>
       <nav
-        className={`relative flex flex-wrap items-center justify-between bg-primary px-2 py-5`}
+        className={`relative z-[21] flex flex-wrap items-center justify-between bg-primary px-2 py-5`}
       >
         <div className="container mx-auto flex flex-wrap items-center justify-between gap-5 px-5">
           <div className="relative flex justify-between">
@@ -317,8 +326,13 @@ const Navbar: React.FC = () => {
             >
               <ul className="flex list-none flex-col items-start md:ml-auto md:flex-row">
                 <HoverableCartButton
-                  cart={cart.data?.data.cart_items}
+                  cart={cart.data?.data?.cart_items ?? []}
                   isLogin={user ? true : false}
+                  totalItem={
+                    cart.data?.data?.total_item
+                      ? cart.data?.data?.total_item
+                      : 0
+                  }
                 />
                 <li className="nav-item">
                   <Link
@@ -348,8 +362,13 @@ const Navbar: React.FC = () => {
             <div className={'hidden items-center md:flex'}>
               <ul className="flex list-none flex-col md:ml-auto md:flex-row">
                 <HoverableCartButton
-                  cart={cart.data?.data.cart_items}
+                  cart={cart.data?.data?.cart_items ?? []}
                   isLogin={user ? true : false}
+                  totalItem={
+                    cart.data?.data?.total_item
+                      ? cart.data?.data?.total_item
+                      : 0
+                  }
                 />
 
                 <li className="nav-item">

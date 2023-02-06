@@ -1,6 +1,7 @@
 import JNE from '../../public/asset/jne.png'
 import POS from '../../public/asset/pos.png'
 import TIKI from '../../public/asset/tiki.png'
+
 const courierData = [
   {
     id: '98c1921e-b80e-40f3-9cba-fe8806097517',

@@ -1,11 +1,15 @@
 import type { BuyerOrder } from '@/types/api/order'
 import type { APIResponse, PaginationData } from '@/types/api/response'
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { authorizedClient } from '../apiClient'
 import qs from 'qs'
+
+import { authorizedClient } from '../apiClient'
 
 type GetOrderParams = {
   order_status?: number
+  sort?: string
+  page?: number
 }
 const key = 'order'
 

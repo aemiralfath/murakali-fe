@@ -1,15 +1,18 @@
+import React, { useRef, useState } from 'react'
+import { useEffect } from 'react'
+import toast from 'react-hot-toast'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import { useSLPPayment } from '@/api/user/transaction'
 import { P } from '@/components'
 import { useLoadingModal } from '@/hooks'
 import { Navbar } from '@/layout/template'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React, { useRef, useState } from 'react'
-import { useEffect } from 'react'
-import toast from 'react-hot-toast'
 
 const SLPPayment = () => {
   const router = useRouter()
@@ -17,7 +20,7 @@ const SLPPayment = () => {
   const transactionID = router.query.id as string
   const paymentURL = useSLPPayment()
   const [paymentReason, setPaymentReason] = useState('')
-  const slpIframeRef = useRef<HTMLIFrameElement>()
+  const slpIframeRef = useRef<HTMLIFrameElement>(null)
 
   useEffect(() => {
     if (transactionID) {
@@ -85,7 +88,7 @@ const SLPPayment = () => {
       <TitlePageExtend title="SeaLabs Pay - Payment" />
       <div className="container my-8 mx-auto mb-10 w-full px-2">
         <div className="flex h-fit flex-wrap items-center justify-center">
-          {paymentURL.isSuccess ? (
+          {paymentURL.data?.data ? (
             <>
               <div className="mb-2 flex w-full flex-wrap items-baseline gap-2">
                 <P className="">Please insert your SeaLabs Pay OTP</P>

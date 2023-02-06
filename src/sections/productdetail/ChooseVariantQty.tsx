@@ -1,30 +1,45 @@
-import { H3, P, NumberInput, Divider, H4, Button } from '@/components'
 import React, { useEffect } from 'react'
-import { HiTag, HiPlus } from 'react-icons/hi'
-import type { ProductDetail } from '@/types/api/product'
-import { useAddToCart } from '@/api/user/cart'
 import toast from 'react-hot-toast'
-import type { AxiosError } from 'axios'
-import type { APIResponse } from '@/types/api/response'
-import { useUser } from '@/hooks'
+import { HiTag, HiPlus } from 'react-icons/hi'
+
 import { useRouter } from 'next/router'
+
+import { useAddToCart } from '@/api/user/cart'
+import { H3, P, NumberInput, Divider, H4, Button } from '@/components'
+import { env } from '@/env/client.mjs'
 import formatMoney from '@/helper/formatMoney'
+import { useUser } from '@/hooks'
+import type { CheckoutValues } from '@/pages/checkout'
+import type { ProductDetail } from '@/types/api/product'
+import type { Promotion } from '@/types/api/promotion'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
+import CryptoJS from 'crypto-js'
+
+const secret = env.NEXT_PUBLIC_SECRET_KEY
 
 interface ChooseVariantQtyProps {
   productID: string
+  productDetails: ProductDetail[] | undefined
   variantNamesState: string[]
   selectVariant: ProductDetail | undefined
   setSelectVariant: (p: ProductDetail | undefined) => void
   qty: number
   setQty: (p: number) => void
+  shopID?: string
+  promotionInfo?: Promotion
 }
 
 const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
   productID,
+  productDetails,
   variantNamesState,
   selectVariant,
   qty,
   setQty,
+  shopID,
+  promotionInfo,
 }) => {
   const addToCart = useAddToCart()
 
@@ -77,7 +92,9 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
             {selectVariant ? (
               <span>{selectVariant.stock}</span>
             ) : (
-              <span className="italic opacity-50">-</span>
+              <span className="">
+                {productDetails?.reduce((acc, curr) => acc + curr.stock, 0)}
+              </span>
             )}
           </P>
         </div>
@@ -87,15 +104,23 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
         <H4>Subtotal</H4>
         <div className="flex items-center justify-between">
           {selectVariant !== undefined ? (
-            selectVariant?.discount_price ? (
-              <>
-                <P className="text-sm line-through opacity-50">
-                  Rp.{formatMoney(selectVariant?.normal_price * qty)}
-                </P>
-                <P className="flex-1 text-right text-lg font-bold">
-                  Rp.{formatMoney(selectVariant?.discount_price * qty)}
-                </P>
-              </>
+            promotionInfo && qty <= promotionInfo.promotion_quota ? (
+              selectVariant?.discount_price ? (
+                <>
+                  <P className="text-sm line-through opacity-50">
+                    Rp.{formatMoney(selectVariant?.normal_price * qty)}
+                  </P>
+                  <P className="flex-1 text-right text-lg font-bold">
+                    Rp.{formatMoney(selectVariant?.discount_price * qty)}
+                  </P>
+                </>
+              ) : (
+                <>
+                  <P className="flex-1 text-right text-lg font-bold">
+                    Rp.{formatMoney(selectVariant?.normal_price * qty)}
+                  </P>
+                </>
+              )
             ) : (
               <>
                 <P className="flex-1 text-right text-lg font-bold">
@@ -107,15 +132,23 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
         </div>
       </div>
       <div className="flex flex-col gap-2">
-        {selectVariant ? (
-          <></>
+        {qty <= 0 ? (
+          <P className="text-sm italic text-error opacity-80">Out Of Stock</P>
         ) : (
-          <P className="text-sm italic opacity-60">Please select Variant</P>
+          <>
+            {' '}
+            {selectVariant ? (
+              <></>
+            ) : (
+              <P className="text-sm italic opacity-60">Please select Variant</P>
+            )}
+          </>
         )}
+
         <Button
           buttonType="primary"
           className="rounded"
-          disabled={!selectVariant}
+          disabled={!selectVariant || qty <= 0}
           onClick={() => {
             if (!user && !isLoading) {
               toast.error('You must login first')
@@ -126,12 +159,33 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
                 },
               })
             } else {
-              if (selectVariant) {
+              if (selectVariant && shopID) {
+                const tempValues: CheckoutValues = {
+                  idProducts: [selectVariant.id],
+                  idShops: [shopID],
+                  price: selectVariant.normal_price * qty,
+                  subPrice:
+                    (selectVariant.normal_price -
+                      selectVariant.discount_price) *
+                    qty,
+                  quantity: qty,
+                  result_discount: selectVariant.discount_price * qty,
+                }
+
                 addToCart.mutate({
                   id: selectVariant.id,
                   quantity: qty,
                 })
-                router.push('/cart')
+                router.push({
+                  pathname: '/checkout',
+                  query: {
+                    update: 'true',
+                    values: CryptoJS.AES.encrypt(
+                      JSON.stringify(tempValues),
+                      secret
+                    ).toString(),
+                  },
+                })
               } else {
                 toast.error('Please select variant!')
               }
@@ -143,7 +197,7 @@ const ChooseVariantQty: React.FC<ChooseVariantQtyProps> = ({
         <Button
           buttonType="primary"
           outlined
-          disabled={!selectVariant}
+          disabled={!selectVariant || qty <= 0}
           className="rounded"
           onClick={() => {
             if (!user && !isLoading) {

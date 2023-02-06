@@ -1,20 +1,21 @@
-/* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from 'react'
-import { Button, Chip, P } from '@/components'
-import formatMoney from '@/helper/formatMoney'
-import { HiStar } from 'react-icons/hi'
-import type { BriefProduct } from '@/types/api/product'
-import { useHover, useModal } from '@/hooks'
-import { Transition } from '@headlessui/react'
-import { useRouter } from 'next/router'
-import cx from '@/helper/cx'
-import { useDeleteFavProduct } from '@/api/product/favorite'
 import toast from 'react-hot-toast'
-import type { AxiosError } from 'axios'
-import type { APIResponse } from '@/types/api/response'
+import { HiStar } from 'react-icons/hi'
 import { useDispatch } from 'react-redux'
+
+import { useRouter } from 'next/router'
+
+import { useDeleteFavProduct } from '@/api/product/favorite'
+import { Button, Chip, P } from '@/components'
+import cx from '@/helper/cx'
+import formatMoney from '@/helper/formatMoney'
+import { useHover, useModal } from '@/hooks'
 import { closeModal } from '@/redux/reducer/modalReducer'
-import Image from 'next/image'
+import type { BriefProduct } from '@/types/api/product'
+import type { APIResponse } from '@/types/api/response'
+
+import { Transition } from '@headlessui/react'
+import type { AxiosError } from 'axios'
 
 type ProductCardProps = LoadingDataWrapper<BriefProduct> & {
   hoverable?: boolean
@@ -71,7 +72,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div
         className="min-h-full"
         onClick={() => {
-          if (data.id) {
+          if (data?.id) {
             router.push('/p/' + data.id)
           }
         }}
@@ -79,7 +80,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         {isLoading ? (
           <div className="aspect-square animate-pulse rounded-t-lg bg-base-200 object-cover" />
         ) : (
-          <Image
+          <img
             className="aspect-square rounded-t-lg object-cover"
             src={src}
             alt={data.title}
@@ -123,16 +124,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
                         <span className="text-[0.6rem]">Rp.</span>
                         {formatMoney(data.min_price)}-
                         <span className="text-[0.6rem]">Rp.</span>
-                        <span className="bg-green-200">
-                          {formatMoney(data.max_price)}
-                        </span>
+                        <span>{formatMoney(data.max_price)}</span>
                       </>
                     )}
                   </P>
                 ) : (
                   <>
-                    <div className="flex flex-wrap items-center justify-start ">
-                      <P className="mr-2 items-center text-slate-400 ">
+                    <div className="-mt-2 flex flex-col justify-start ">
+                      <P className="-mb-1 items-center text-slate-400 ">
                         <span className="text-[0.6rem] line-through">Rp.</span>
                         <span className="text-[0.8rem] line-through">
                           {formatMoney(data.min_price)}
@@ -207,7 +206,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
                                 type="button"
                                 buttonType="gray"
                                 onClick={() => {
-                                  useDeleteFavoriteProduct.mutate(data.id)
+                                  if (data) {
+                                    useDeleteFavoriteProduct.mutate(data.id)
+                                  }
                                 }}
                               >
                                 Delete
@@ -228,7 +229,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     buttonType="ghost"
                     className="w-full text-white"
                     onClick={() => {
-                      router.push('/p/' + data.id)
+                      if (data) {
+                        router.push('/p/' + data.id)
+                      }
                     }}
                   >
                     Detail<br></br>Product
@@ -248,7 +251,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     buttonType="ghost"
                     className="w-full text-white"
                     onClick={() => {
-                      router.push('/p/' + data.id)
+                      if (data) {
+                        router.push('/p/' + data.id)
+                      }
                     }}
                   >
                     See Details

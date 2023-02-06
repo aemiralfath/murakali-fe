@@ -1,16 +1,17 @@
-import { useCreateAdminBanner } from '@/api/admin/banner'
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { useCreateAdminBanner } from '@/api/admin/banner'
 import { Button, Chip, H2, H4, P, TextInput } from '@/components'
 import Uploader from '@/components/uploader'
 import AdminPanelLayout from '@/layout/AdminPanelLayout'
 import type { BannerData } from '@/types/api/banner'
-
 import type { APIResponse } from '@/types/api/response'
+
 import type { AxiosError } from 'axios'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
 
 function ManageCategoryAdmin() {
   const router = useRouter()
@@ -89,7 +90,7 @@ function ManageCategoryAdmin() {
                   <Chip type={'gray'}>Required</Chip>
                 </div>
                 <P className="mt-2 max-w-[20rem] text-sm">
-                  maximum 10 characters
+                  maximum 17 characters
                 </P>
               </div>
               <div className="flex flex-1 items-center">
@@ -98,7 +99,7 @@ function ManageCategoryAdmin() {
                   name="title"
                   onChange={handleChange}
                   full
-                  maxLength={10}
+                  maxLength={17}
                   required
                 />
               </div>
@@ -156,6 +157,7 @@ function ManageCategoryAdmin() {
                   <Uploader
                     id={'admincategoryimage'}
                     title={'Photo'}
+                    aspect={5 / 3}
                     onChange={(s) =>
                       setInput((prev) => ({
                         ...prev,

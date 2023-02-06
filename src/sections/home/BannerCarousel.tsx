@@ -1,8 +1,12 @@
+import React, { useEffect, useRef, useState } from 'react'
+
+import Image from 'next/image'
+
 import { Button, P } from '@/components'
+import bannerData from '@/dummy/bannerData'
 import { useMediaQuery } from '@/hooks'
 import type { BannerData } from '@/types/api/banner'
-import Link from 'next/link'
-import React from 'react'
+
 import style from './carousel.module.css'
 
 const Banner: React.FC<{
@@ -15,7 +19,7 @@ const Banner: React.FC<{
 
   return (
     <div
-      className="flex h-[16rem] w-full  justify-center gap-4 bg-cover bg-center bg-no-repeat px-8 py-12 sm:h-[22rem] sm:px-12 sm:pt-12 sm:pb-20 lg:h-[28rem] lg:justify-around"
+      className="flex h-[16rem] w-full relative  justify-center gap-4 bg-cover bg-center bg-no-repeat px-8 py-12 sm:h-[22rem] sm:px-12 sm:pt-12 sm:pb-20 lg:h-[28rem]"
       style={
         lg
           ? {
@@ -25,7 +29,7 @@ const Banner: React.FC<{
           rgba(0, 0, 0, 0), 
           rgba(0, 0, 0, 0.4), 
           rgba(0, 0, 0, 0.6)
-        ), url(${imageUrl})`,
+        )`,
             }
           : {
               backgroundImage: `linear-gradient(
@@ -33,10 +37,16 @@ const Banner: React.FC<{
           rgba(0, 0, 0, 0), 
           rgba(0, 0, 0, 0.4), 
           rgba(0, 0, 0, 0.6)
-        ), url(${imageUrl})`,
+        )`,
             }
       }
     >
+      <Image
+        className="flex -z-50 h-[16rem] w-full absolute object-cover object-center object-no-repeat sm:h-[22rem] lg:h-[28rem]"
+        src={imageUrl ?? '/asset/no-image.png'}
+        alt={title ?? ''}
+        fill
+      />
       <div>
         <div className="container mx-auto flex h-full flex-col gap-3 text-white lg:justify-center">
           <div className="flex flex-col gap-3 sm:max-w-[80%] lg:max-w-[50%]">
@@ -48,21 +58,19 @@ const Banner: React.FC<{
             </div>
 
             <div className="mt-3">
-              <Link href={pageUrl}>
+              <a href={pageUrl === '' ? '#recommended-product-list' : pageUrl}>
                 <Button
                   buttonType="white"
                   size={lg ? 'md' : 'sm'}
                   className="px-6 text-base-content"
                 >
-                  Shop Now
+                  Click here
                 </Button>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
       </div>
-      <div></div>
-      <div></div>
     </div>
   )
 }
@@ -71,9 +79,43 @@ const BannerCarousel: React.FC<{
   banners: BannerData[]
   isLoading?: boolean
 }> = ({ banners, isLoading }) => {
+  const carouselRef = useRef<HTMLDivElement>(null)
+  const [scroll, setScroll] = useState<'none' | 'left' | 'right'>('none')
+
+  useEffect(() => {
+    const carouselContainer = carouselRef.current
+    if (carouselContainer) {
+      if (scroll === 'left') {
+        carouselContainer.scrollLeft -= carouselContainer.clientWidth
+        setScroll('none')
+      }
+      if (scroll === 'right') {
+        carouselContainer.scrollLeft += carouselContainer.clientWidth
+        setScroll('none')
+      }
+    }
+  }, [scroll])
+
+  useEffect(() => {
+    const carouselContainer = carouselRef.current
+    if (carouselContainer !== null) {
+      const interval = setInterval(() => {
+        if (
+          carouselContainer.scrollLeft + carouselContainer.clientWidth ===
+          carouselContainer.scrollWidth
+        ) {
+          carouselContainer.scrollLeft = 0
+        } else {
+          setScroll('right')
+        }
+      }, 7000)
+      return () => clearInterval(interval)
+    }
+  }, [])
+
   return (
     <div className="max-w-full">
-      <div className={style.bannerCarousel}>
+      <div className={style.bannerCarousel} ref={carouselRef}>
         {isLoading ? (
           <>
             <div className="carousel-item relative h-[16rem] w-screen sm:h-[22rem] lg:h-[28rem]">
@@ -86,28 +128,57 @@ const BannerCarousel: React.FC<{
           </>
         ) : (
           <>
-            {banners.map((banner, index) => {
-              return (
-                <>
-                  {banner.is_active ? (
-                    <div
-                      id={`slide${index}`}
-                      className="carousel-item relative h-[16rem] w-full sm:h-[22rem] lg:h-[28rem]"
-                      key={index}
-                    >
-                      <Banner
-                        title={banner.title}
-                        content={banner.content}
-                        imageUrl={banner.image_url}
-                        pageUrl={banner.page_url}
-                      />
-                    </div>
-                  ) : (
-                    <></>
-                  )}
-                </>
-              )
-            })}
+            {banners.filter((item) => item.is_active === true) ? (
+              banners
+                .filter((item) => item.is_active === true)
+                .map((banner, index) => {
+                  return (
+                    <>
+                      {banner.is_active ? (
+                        <div
+                          id={`slide${index}`}
+                          className="carousel-item relative h-[16rem] w-full sm:h-[22rem] lg:h-[28rem]"
+                          key={index}
+                        >
+                          <Banner
+                            title={banner.title}
+                            content={banner.content}
+                            imageUrl={banner.image_url}
+                            pageUrl={banner.page_url}
+                          />
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                    </>
+                  )
+                })
+            ) : (
+              <>
+                {bannerData.map((banner, index) => {
+                  return (
+                    <>
+                      {banner.is_active ? (
+                        <div
+                          id={`slide${index}`}
+                          className="carousel-item relative h-[16rem] w-full sm:h-[22rem] lg:h-[28rem]"
+                          key={index}
+                        >
+                          <Banner
+                            title={banner.title}
+                            content={banner.content}
+                            imageUrl={banner.image_url}
+                            pageUrl={banner.page_url}
+                          />
+                        </div>
+                      ) : (
+                        <></>
+                      )}
+                    </>
+                  )
+                })}
+              </>
+            )}
           </>
         )}
       </div>

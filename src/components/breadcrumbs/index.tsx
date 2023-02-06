@@ -1,7 +1,7 @@
-import cx from '@/helper/cx'
-import Link from 'next/link'
 import React from 'react'
 import { HiChevronRight } from 'react-icons/hi'
+
+import cx from '@/helper/cx'
 
 const Breadcrumbs: React.FC<{
   data: Array<{ name: string; link: string }>
@@ -11,15 +11,14 @@ const Breadcrumbs: React.FC<{
       {data.map((d, idx) => {
         return (
           <div key={idx} className={'flex items-center'}>
-            <Link
-              href={d.link}
+            <div
               className={cx(
                 'text-primary line-clamp-1 hover:underline',
                 idx === data.length - 1 ? 'font-semibold' : ''
               )}
             >
               {d.name}
-            </Link>
+            </div>
             {idx === data.length - 1 ? (
               <></>
             ) : (

@@ -1,31 +1,43 @@
+import React, { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
 import {
   useAdminVoucherDetail,
   useCreateAdminVouchers,
   useUpdateAdminVouchers,
 } from '@/api/admin/voucher'
-
 import { Button, Chip, H2, H4, P, TextInput } from '@/components'
 import AdminPanelLayout from '@/layout/AdminPanelLayout'
-
 import type { APIResponse } from '@/types/api/response'
 import type { CreateUpdateVoucher } from '@/types/api/voucher'
+
 import type { AxiosError } from 'axios'
 import moment from 'moment'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
 
 function ManageVouchersAdmin() {
   const router = useRouter()
 
-  const [id, setId] = useState<string>()
+  const [id, setId] = useState<string>('')
   const [edit, setEdit] = useState<boolean>(false)
   const [duplicate, setDuplicate] = useState<boolean>(false)
   const adminVoucher = useAdminVoucherDetail(id)
   const createVoucher = useCreateAdminVouchers()
   const updateVoucher = useUpdateAdminVouchers(id)
   const [selected, setSelected] = useState<'P' | 'F'>('P')
+
+  const [input, setInput] = useState<CreateUpdateVoucher>({
+    code: '',
+    quota: 0,
+    actived_date: '',
+    expired_date: '',
+    discount_percentage: 0,
+    discount_fix_price: 0,
+    min_product_price: 0,
+    max_discount_price: 0,
+  })
 
   const voucherId = router.query.voucher
   const typeManage = router.query.type
@@ -39,54 +51,48 @@ function ManageVouchersAdmin() {
     if (adminVoucher.isSuccess) {
       if (typeManage === 'update') {
         setInput({
-          code: adminVoucher.data?.data?.code,
-          quota: adminVoucher.data?.data?.quota,
+          code: adminVoucher.data?.data?.code ?? '',
+          quota: adminVoucher.data?.data?.quota ?? 0,
           actived_date: moment(adminVoucher.data?.data?.actived_date).format(
             'YYYY-MM-DD HH:mm'
           ),
           expired_date: moment(adminVoucher.data?.data?.expired_date).format(
             'YYYY-MM-DD HH:mm'
           ),
-          discount_percentage: adminVoucher.data?.data?.discount_percentage,
-          discount_fix_price: adminVoucher.data?.data?.discount_fix_price,
-          min_product_price: adminVoucher.data?.data?.min_product_price,
-          max_discount_price: adminVoucher.data?.data?.max_discount_price,
+          discount_percentage:
+            adminVoucher.data?.data?.discount_percentage ?? 0,
+          discount_fix_price: adminVoucher.data?.data?.discount_fix_price ?? 0,
+          min_product_price: adminVoucher.data?.data?.min_product_price ?? 0,
+          max_discount_price: adminVoucher.data?.data?.max_discount_price ?? 0,
         })
         setEdit(true)
       } else if (typeManage === 'duplicate') {
         setInput({
           code: '',
-          quota: adminVoucher.data?.data?.quota,
+          quota: adminVoucher.data?.data?.quota ?? 0,
           actived_date: moment(adminVoucher.data?.data?.actived_date).format(
             'YYYY-MM-DD HH:mm'
           ),
           expired_date: moment(adminVoucher.data?.data?.expired_date).format(
             'YYYY-MM-DD HH:mm'
           ),
-          discount_percentage: adminVoucher.data?.data?.discount_percentage,
-          discount_fix_price: adminVoucher.data?.data?.discount_fix_price,
-          min_product_price: adminVoucher.data?.data?.min_product_price,
-          max_discount_price: adminVoucher.data?.data?.max_discount_price,
+          discount_percentage:
+            adminVoucher.data?.data?.discount_percentage ?? 0,
+          discount_fix_price: adminVoucher.data?.data?.discount_fix_price ?? 0,
+          min_product_price: adminVoucher.data?.data?.min_product_price ?? 0,
+          max_discount_price: adminVoucher.data?.data?.max_discount_price ?? 0,
         })
         setDuplicate(true)
       }
 
-      if (adminVoucher.data?.data?.discount_fix_price > 0) {
+      if (
+        typeof adminVoucher.data?.data?.discount_fix_price === 'number' &&
+        adminVoucher.data?.data?.discount_fix_price > 0
+      ) {
         setSelected('F')
       }
     }
   }, [adminVoucher.isSuccess])
-
-  const [input, setInput] = useState<CreateUpdateVoucher>({
-    code: '',
-    quota: 0,
-    actived_date: '',
-    expired_date: '',
-    discount_percentage: 0,
-    discount_fix_price: 0,
-    min_product_price: 0,
-    max_discount_price: 0,
-  })
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
     const inputName = event.currentTarget.name
@@ -158,7 +164,13 @@ function ManageVouchersAdmin() {
       toast.error('input code must alphabet')
       return
     }
-
+    if (
+      Number(input.discount_fix_price) > 100000000 ||
+      Number(input.max_discount_price) > 100000000
+    ) {
+      toast.error('Input cannot more than 100000000')
+      return
+    }
     let bodyInput: CreateUpdateVoucher
 
     if (selected === 'F') {
@@ -229,7 +241,7 @@ function ManageVouchersAdmin() {
                   <Chip type={'gray'}>Required</Chip>
                 </div>
                 <P className="mt-2 max-w-[20rem] text-sm">
-                  Code Voucher, code maximum 5 characters
+                  Code Voucher, code maximum 15 characters
                 </P>
               </div>
               <div className="flex flex-1 items-center">
@@ -239,7 +251,7 @@ function ManageVouchersAdmin() {
                   onChange={handleChange}
                   value={input.code.toUpperCase()}
                   full
-                  maxLength={10}
+                  maxLength={15}
                   required
                   disabled={edit}
                 />
@@ -337,7 +349,7 @@ function ManageVouchersAdmin() {
               </div>
             </div>
             <div className="label-text mt-5 block">
-              <H4>Select Voucher Type (Discount Persentage/Fix Price)</H4>
+              <H4>Select Voucher Type (Discount Percentage/Fix Price)</H4>
             </div>
             <div className="mx-5 flex flex-row flex-wrap gap-2">
               <div>
@@ -351,7 +363,7 @@ function ManageVouchersAdmin() {
                     name="Discount"
                     checked={selected === 'P'}
                   />
-                  Persentage
+                  Percentage
                 </label>
               </div>
               <div>
@@ -375,11 +387,11 @@ function ManageVouchersAdmin() {
                 <div className="mt-6 flex flex-wrap justify-between gap-3">
                   <div className="w-[30%]">
                     <div className="flex items-center gap-3">
-                      <H4>Discount Persentage</H4>
+                      <H4>Discount Percentage</H4>
                       <Chip type={'gray'}>Required</Chip>
                     </div>
                     <P className="mt-2 max-w-[20rem] text-sm">
-                      Please input Discount persentage
+                      Please input Discount Percentage
                     </P>
                   </div>
                   <div className="flex flex-1 items-center">
@@ -387,7 +399,7 @@ function ManageVouchersAdmin() {
                       type="number"
                       name="discount_percentage"
                       onChange={handleChange}
-                      placeholder="persentage"
+                      placeholder="percentage"
                       value={input.discount_percentage}
                       full
                       maxLength={3}

@@ -1,5 +1,6 @@
-import cx from '@/helper/cx'
 import React from 'react'
+
+import cx from '@/helper/cx'
 
 type HeadingProps = React.HTMLAttributes<HTMLHeadingElement>
 const H1: React.FC<HeadingProps> = ({ className, ...rest }) => {
@@ -46,7 +47,7 @@ const P: React.FC<PProps> = ({ className, ...rest }) => {
   return <p className={cx('', className ?? '')} {...rest} />
 }
 
-interface AProps extends React.HTMLAttributes<HTMLAnchorElement> {
+interface AProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   underline?: boolean
 }
 const A: React.FC<AProps> = ({ underline, className, ...rest }) => {

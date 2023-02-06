@@ -1,22 +1,23 @@
+import { useEffect, useState } from 'react'
+import { AiFillStar } from 'react-icons/ai'
+
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { useGetSellerProduct } from '@/api/product'
+import { useSearchQueryProduct } from '@/api/product/search'
 import { useGetSellerInfo } from '@/api/seller'
 import { useGetSellerCategory } from '@/api/seller/category'
 import { Divider, H2, H3, H4, P } from '@/components'
 import cx from '@/helper/cx'
 import { useMediaQuery } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
-import Head from 'next/head'
-import Image from 'next/image'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { AiFillStar } from 'react-icons/ai'
-import type { CategoryData } from '@/types/api/category'
-import { useGetSellerProduct } from '@/api/product'
-import ProductCarousel from '@/sections/home/ProductCarousel'
-import type { ProductQuery } from '@/types/api/product'
 import ProductListingLayout, {
   useProductListing,
 } from '@/layout/ProductListingLayout'
-import { useSearchQueryProduct } from '@/api/product/search'
+import ProductCarousel from '@/sections/home/ProductCarousel'
+import type { CategoryData } from '@/types/api/category'
+import type { ProductQuery } from '@/types/api/product'
 
 const CategoryTab: React.FC<{
   categories: CategoryData[]
@@ -30,36 +31,22 @@ const CategoryTab: React.FC<{
     <div className="tabs-boxed z-10 grid w-full grid-cols-2 bg-primary bg-opacity-10 sm:grid-cols-5 ">
       {sm ? (
         <div className="tabs col-span-4 flex-nowrap items-center space-x-5 overflow-auto">
-          <button
-            onClick={() => setSelectedTab('')}
-            className={cx(
-              'tab-lg w-1/2 min-w-max text-center text-base sm:w-1/4',
-              selectedTab === '' ? 'tab-active' : ''
-            )}
-          >
-            All Item
-          </button>
+          <a href="#seller-products">
+            <button
+              onClick={() => setSelectedTab('')}
+              className={cx(
+                'tab-lg w-1/2 min-w-max text-center text-base sm:w-1/4',
+                selectedTab === '' ? 'tab-active' : ''
+              )}
+            >
+              All Item
+            </button>
+          </a>
           {categories.length <= 4 ? (
             categories.map((item, index) => {
               return (
-                <button
-                  key={index}
-                  onClick={() => setSelectedTab(item.name)}
-                  className={cx(
-                    'tab-lg w-1/4 min-w-max text-center text-base',
-                    selectedTab === item.name ? 'tab-active' : ''
-                  )}
-                >
-                  {item.name}
-                </button>
-              )
-            })
-          ) : (
-            <>
-              {categories.slice(0, 3).map((item, index) => {
-                return (
+                <a href="#seller-products" key={index}>
                   <button
-                    key={index}
                     onClick={() => setSelectedTab(item.name)}
                     className={cx(
                       'tab-lg w-1/4 min-w-max text-center text-base',
@@ -68,6 +55,24 @@ const CategoryTab: React.FC<{
                   >
                     {item.name}
                   </button>
+                </a>
+              )
+            })
+          ) : (
+            <>
+              {categories.slice(0, 3).map((item, index) => {
+                return (
+                  <a href="#seller-products" key={index}>
+                    <button
+                      onClick={() => setSelectedTab(item.name)}
+                      className={cx(
+                        'tab-lg w-1/4 min-w-max text-center text-base',
+                        selectedTab === item.name ? 'tab-active' : ''
+                      )}
+                    >
+                      {item.name}
+                    </button>
+                  </a>
                 )
               })}
             </>
@@ -75,21 +80,23 @@ const CategoryTab: React.FC<{
         </div>
       ) : (
         <div className="tabs flex-nowrap items-center space-x-5 overflow-auto">
-          <button
-            onClick={() => setSelectedTab('')}
-            className={cx(
-              'tab-lg w-full min-w-max text-center text-base',
-              selectedTab === '' ? 'tab-active' : ''
-            )}
-          >
-            All Item
-          </button>
+          <a href="#seller-products">
+            <button
+              onClick={() => setSelectedTab('')}
+              className={cx(
+                'tab-lg w-full min-w-max text-center text-base',
+                selectedTab === '' ? 'tab-active' : ''
+              )}
+            >
+              All Item
+            </button>
+          </a>
         </div>
       )}
       <>
         {sm ? (
           categories.length > 4 ? (
-            <div className="dropdown-end dropdown dropdown-hover mx-auto w-full">
+            <div className="dropdown-end dropdown-hover dropdown mx-auto w-full">
               <label
                 tabIndex={0}
                 className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
@@ -104,7 +111,7 @@ const CategoryTab: React.FC<{
 
               <ul
                 tabIndex={0}
-                className="dropdown-end dropdown-content dropdown-hover menu rounded-box w-52 bg-base-100 p-2 shadow"
+                className="dropdown-end dropdown-hover dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
               >
                 {categories.slice(3, 999).map((item, index) => {
                   return (
@@ -128,7 +135,7 @@ const CategoryTab: React.FC<{
           )
         ) : (
           <>
-            <div className="dropdown-end dropdown dropdown-hover mx-auto w-full">
+            <div className="dropdown-end dropdown-hover dropdown mx-auto w-full">
               <label
                 tabIndex={0}
                 className="btn-outline btn-primary btn w-full border-0 text-base font-normal"
@@ -183,17 +190,14 @@ function Seller() {
   const sellerProfile = useGetSellerInfo(param.query.id as string)
   const sellerCategory = useGetSellerCategory(param.query.id as string)
   const product = useGetSellerProduct(
-    1,
-    6,
-    '',
-    '',
-    param.query.id as string,
-    'unit_sold',
-    'desc',
-    0,
-    0,
-    0,
-    0
+    {
+      page: 1,
+      limit: 6,
+      sort_by: 'unit_sold',
+      sort: 'desc',
+      shop_id: String(param.query.id),
+    },
+    Boolean(param.query.id)
   )
 
   const {
@@ -203,6 +207,7 @@ function Seller() {
     filterRating,
     filterLocation,
     filterCategory,
+    setFilterCategory,
     page,
     setPage,
   } = controller
@@ -289,7 +294,7 @@ function Seller() {
 
   const productQuery: ProductQuery = {
     search: '',
-    category: selectedTab,
+    category: filterCategory,
     limit: 20,
     page: page,
     sort_by: sortBy.sort_by,
@@ -300,6 +305,7 @@ function Seller() {
     max_rating: 5,
     shop_id: param.query.id as string,
     province_ids: locationState,
+    listed_status: 1,
   }
 
   const SearchProductList = useSearchQueryProduct(productQuery)
@@ -317,11 +323,14 @@ function Seller() {
               {sellerProfile.data?.data ? (
                 <>
                   <div className="relative -z-0 mb-6 flex h-[150px] w-[150px] justify-center rounded-full sm:mb-0 md:h-[200px] md:w-[200px]">
-                    <Image
+                    <img
                       src={sellerProfile.data.data.photo_url}
                       alt={sellerProfile.data.data.name}
-                      className={'z-10 rounded-full object-cover shadow-lg'}
-                      fill
+                      className={
+                        'z-10 aspect-square w-full rounded-full object-cover shadow-lg'
+                      }
+                      height={150}
+                      width={150}
                     />
                     <div className="absolute top-1/2 left-1/2 -z-0 hidden h-[200px] w-[200px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white sm:block md:h-[280px] md:w-[280px]" />
                     <div className="absolute top-1/2 left-0 -z-0 hidden h-[300px]  w-[150px] -translate-y-1/2 -translate-x-[50%] bg-white sm:block md:w-[300px]" />
@@ -338,25 +347,20 @@ function Seller() {
                         {sellerProfile.data.data.total_product} Products
                       </span>
                     </P>
-                    <P className="flex gap-4">
-                      Total Rating
-                      <span className="text-primary">
-                        {sellerProfile.data.data.total_rating} Rating
-                      </span>
-                    </P>
+
                     <P className="mb-2 flex items-start gap-4">
                       Rating Avg
                       <span className="flex items-center gap-1 text-primary">
                         <AiFillStar className="text-accent" />{' '}
-                        {sellerProfile.data.data.rating_avg} Rating
+                        {sellerProfile.data.data.rating_avg.toFixed(1)} Rating
                       </span>
                     </P>
                     {md ? (
                       sellerCategory.data?.data ? (
                         <CategoryTab
                           categories={sellerCategory.data.data}
-                          selectedTab={selectedTab}
-                          setSelectedTab={setSelectedTab}
+                          selectedTab={filterCategory}
+                          setSelectedTab={setFilterCategory}
                         />
                       ) : (
                         <></>
@@ -387,22 +391,31 @@ function Seller() {
           <div className="flex justify-between ">
             <H3>Most Purchased Products</H3>
             <H4 className="self-end">
-              <a href="#allproducts">See All</a>
+              <a
+                href="#allproducts"
+                onClick={() => {
+                  setSortBy({ sort: 'DESC', sort_by: 'unit_sold' })
+                }}
+              >
+                See All
+              </a>
             </H4>
           </div>
-          <ProductCarousel product={product.data?.data.rows} />
+          <ProductCarousel product={product.data?.data?.rows ?? []} />
           <div id="allproducts"></div>
           <Divider />
-          <H3>Seller Products</H3>
+          <H3 id="seller-products">Seller Products</H3>
           {SearchProductList.isLoading ? (
             <ProductListingLayout controller={controller} isLoading={true} />
-          ) : SearchProductList.data.data.rows ? (
+          ) : SearchProductList.data?.data &&
+            SearchProductList.data.data.rows ? (
             <ProductListingLayout
               controller={controller}
               isLoading={false}
               data={SearchProductList.data.data.rows}
               totalPage={SearchProductList.data.data.total_pages}
               noCategory={true}
+              sellerCategory={sellerCategory.data?.data ?? []}
             />
           ) : (
             <div>handle error</div>

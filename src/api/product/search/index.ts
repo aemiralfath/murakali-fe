@@ -1,46 +1,29 @@
 import { unauthorizedClient } from '@/api/apiClient'
-import { useQuery } from '@tanstack/react-query'
-
-import type { APIResponse, PaginationData } from '@/types/api/response'
 import type { BriefProduct, ProductQuery } from '@/types/api/product'
+import type { APIResponse, PaginationData } from '@/types/api/response'
 
-const profileKey = ['search']
+import { useQuery } from '@tanstack/react-query'
+import qs from 'qs'
+
+const key = ['search']
+const INF = 1000000000
 
 const getSearchQueryProduct = async (productQuery: ProductQuery) => {
+  const query = qs.stringify({
+    ...productQuery,
+    max_price:
+      productQuery.max_price === undefined ? INF : productQuery.max_price,
+    max_rating: 5,
+  })
   const response = await unauthorizedClient.get<
     APIResponse<PaginationData<BriefProduct>>
-  >(
-    '/product/?search=' +
-      productQuery.search +
-      '&category=' +
-      productQuery.category +
-      '&limit=' +
-      productQuery.limit +
-      '&page=' +
-      productQuery.page +
-      '&sort_by=' +
-      productQuery.sort_by +
-      '&sort=' +
-      productQuery.sort +
-      '&min_price=' +
-      productQuery.min_price +
-      '&max_price=' +
-      productQuery.max_price +
-      '&min_rating=' +
-      productQuery.min_rating +
-      '&max_rating=' +
-      productQuery.max_rating +
-      '&shop_id=' +
-      productQuery.shop_id +
-      '&province_ids=' +
-      productQuery.province_ids
-  )
+  >('/product/?' + query)
   return response.data
 }
 
 export const useSearchQueryProduct = (productQuery: ProductQuery) => {
   return useQuery(
-    [profileKey, productQuery],
+    [key, productQuery],
     async () => await getSearchQueryProduct(productQuery)
   )
 }

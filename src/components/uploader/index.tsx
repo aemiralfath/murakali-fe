@@ -1,12 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
+import React, { useCallback, useEffect, useState } from 'react'
+import type { ChangeEvent } from 'react'
+import { HiTrash, HiUpload } from 'react-icons/hi'
+
 import cx from '@/helper/cx'
 import { useModal } from '@/hooks'
 import CropperComponent from '@/layout/template/cropper'
-import React, { useCallback, useEffect, useState } from 'react'
-import { HiTrash, HiUpload } from 'react-icons/hi'
-import Button from '../button'
 
-import type { ChangeEvent } from 'react'
+import Button from '../button'
 
 const Uploader: React.FC<{
   id: string
@@ -14,13 +15,14 @@ const Uploader: React.FC<{
   onChange: (s: string) => void
   size?: 'md' | 'lg'
   defaultImage?: string
-}> = ({ id, title, onChange, size = 'md', defaultImage }) => {
+  aspect?: number
+}> = ({ id, title, onChange, size = 'md', defaultImage, aspect = 1 }) => {
   const modal = useModal()
   const [image, setImage] = useState<string>()
   const [option, setOption] = useState(-1)
 
   useEffect(() => {
-    onChange(image)
+    onChange(image ?? '')
   }, [image])
 
   useEffect(() => {
@@ -52,6 +54,7 @@ const Uploader: React.FC<{
               src={image}
               setImage={setImage}
               setOption={setOption}
+              aspect={aspect}
             />
           </div>
         ),

@@ -1,8 +1,8 @@
 import React from 'react'
-import type { OrderProductDetail } from '@/types/api/order'
-import Image from 'next/image'
+
 import { H4, P } from '@/components'
 import { ConvertShowMoney } from '@/helper/convertshowmoney'
+import type { OrderProductDetail } from '@/types/api/order'
 
 interface OrderDetailProductProps {
   detail: OrderProductDetail[]
@@ -18,7 +18,7 @@ const OrderDetailProduct: React.FC<OrderDetailProductProps> = ({ detail }) => {
               <div className="flex flex-wrap justify-around gap-3 px-3">
                 <div className="align-center flex-start justify-between gap-x-4">
                   {productDetail.product_detail_url !== null ? (
-                    <Image
+                    <img
                       width={96}
                       height={96}
                       src={productDetail.product_detail_url}
@@ -26,7 +26,7 @@ const OrderDetailProduct: React.FC<OrderDetailProductProps> = ({ detail }) => {
                       className={'aspect-square h-24 w-24'}
                     />
                   ) : (
-                    <Image
+                    <img
                       width={96}
                       height={96}
                       src={'/asset/image-empty.jpg'}
@@ -45,7 +45,7 @@ const OrderDetailProduct: React.FC<OrderDetailProductProps> = ({ detail }) => {
                     })}
                   </P>
                 </div>
-                <div className="flex gap-10">
+                <div className="flex flex-wrap gap-10">
                   <div className="flex-auto">
                     <P className="">Unit Price :</P>{' '}
                     <P>

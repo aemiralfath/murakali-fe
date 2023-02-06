@@ -1,9 +1,11 @@
-import { Button, H2, P, PaginationNav } from '@/components'
-import type { SellerInfo } from '@/types/api/seller'
-import Image from 'next/image'
-import { useRouter } from 'next/router'
 import React from 'react'
 import { HiStar } from 'react-icons/hi'
+
+import { useRouter } from 'next/router'
+
+import { Button, H2, P, PaginationNav } from '@/components'
+import type { SellerInfo } from '@/types/api/seller'
+
 interface SellerLayoutProps {
   isLoading: boolean
   data?: SellerInfo[]
@@ -59,7 +61,7 @@ const SellerLayout: React.FC<SellerLayoutProps> = ({
         </>
       ) : (
         <>
-          {data.length > 0 ? (
+          {data && data.length > 0 ? (
             <>
               {data.map((shop, index) => (
                 <div key={index}>
@@ -71,7 +73,7 @@ const SellerLayout: React.FC<SellerLayoutProps> = ({
                   >
                     <div className="flex flex-wrap justify-around gap-3 ">
                       <div className="align-center  flex flex-wrap  items-center justify-between gap-x-4 ">
-                        <Image
+                        <img
                           className="mx-auto h-24 w-24 rounded-full  object-contain"
                           width={100}
                           height={100}
@@ -96,7 +98,8 @@ const SellerLayout: React.FC<SellerLayoutProps> = ({
                       </div>
                       <div className="my-auto text-center ">
                         <P className="flex items-center font-bold text-primary">
-                          <HiStar className="text-accent" /> {shop.rating_avg}
+                          <HiStar className="text-accent" />{' '}
+                          {shop.rating_avg.toFixed(1)}
                         </P>
                         <P className="">Rating</P>
                       </div>
@@ -115,11 +118,11 @@ const SellerLayout: React.FC<SellerLayoutProps> = ({
                   </div>
                 </div>
               ))}
-              {!isLoading && data?.length !== 0 ? (
+              {!isLoading && data?.length !== 0 && setPageShop ? (
                 <div className="mt-4 flex w-full justify-center">
                   <PaginationNav
                     total={totalPage ?? 1}
-                    page={pageShop}
+                    page={pageShop ?? 1}
                     onChange={setPageShop}
                     size="sm"
                   />
@@ -129,7 +132,17 @@ const SellerLayout: React.FC<SellerLayoutProps> = ({
               )}
             </>
           ) : (
-            <></>
+            <div className="col-span-2 flex w-full flex-col items-center justify-center p-6 sm:col-span-3 md:col-span-4 xl:col-span-6">
+              <img
+                src={'/asset/sorry.svg'}
+                width={300}
+                height={300}
+                alt={'Sorry'}
+              />
+              <P className="text-sm italic text-gray-400">
+                Sorry, shop you requested is not found.
+              </P>
+            </div>
           )}
         </>
       )}

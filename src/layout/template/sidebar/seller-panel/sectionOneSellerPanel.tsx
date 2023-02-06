@@ -1,15 +1,16 @@
-import { useLogout } from '@/api/auth/logout'
-import { Avatar, Icon } from '@/components'
-
-import { useMediaQuery, useUser } from '@/hooks'
-import type { APIResponse } from '@/types/api/response'
-import { Menu, Transition } from '@headlessui/react'
-import type { AxiosError } from 'axios'
-import { useRouter } from 'next/router'
-
 import React, { Fragment, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { HiMenu } from 'react-icons/hi'
+
+import { useRouter } from 'next/router'
+
+import { useLogout } from '@/api/auth/logout'
+import { Avatar } from '@/components'
+import { useMediaQuery, useUser } from '@/hooks'
+import type { APIResponse } from '@/types/api/response'
+
+import { Menu, Transition } from '@headlessui/react'
+import type { AxiosError } from 'axios'
 
 const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
   const router = useRouter()
@@ -84,21 +85,25 @@ const AvatarMenu: React.FC<{ url: string }> = ({ url }) => {
 const SectionOneSideBarSellerPanel: React.FC = ({}) => {
   const [navbarOpen, setNavbarOpen] = useState(false)
 
+  const lg = useMediaQuery('lg')
   const { user } = useUser()
-
-  const sm = useMediaQuery('sm')
 
   return (
     <>
       <nav
-        className={`relative flex flex-wrap items-center justify-between bg-white px-2 py-5 shadow-md`}
+        className={`relative z-20 flex flex-wrap items-center justify-between bg-white px-2 py-5 shadow-md`}
       >
-        <div className="mx-auto flex w-screen flex-wrap items-center justify-between gap-2 px-3">
-          <div className="relative flex justify-between ">
-            <div className="mx-1 flex max-w-[2rem] items-center sm:max-w-[6rem]">
-              <Icon color="primary" small={!sm} />
-            </div>
-          </div>
+        <div className="mx-auto flex w-full flex-wrap items-center justify-end gap-2 px-3">
+          {lg ? (
+            <></>
+          ) : (
+            <label
+              htmlFor="my-drawer-2"
+              className="btn-ghost drawer-button btn text-primary lg:hidden"
+            >
+              <HiMenu />
+            </label>
+          )}
           <div className="text-heading relative flex flex-1 items-center text-xl font-semibold text-primary">
             Seller Panel
           </div>

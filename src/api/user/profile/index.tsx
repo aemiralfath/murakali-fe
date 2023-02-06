@@ -1,8 +1,8 @@
 import { authorizedClient } from '@/api/apiClient'
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
-
 import type { APIResponse } from '@/types/api/response'
 import type { UserDetail } from '@/types/api/user'
+
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
 import moment from 'moment'
 
 const profileKey = ['profile']

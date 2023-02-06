@@ -1,6 +1,7 @@
-import cx from '@/helper/cx'
 import React, { useEffect } from 'react'
 import { HiMinus, HiPlus } from 'react-icons/hi'
+
+import cx from '@/helper/cx'
 
 type NumberInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   maxValue?: number
@@ -16,8 +17,10 @@ const NumberInput: React.FC<NumberInputProps> = ({
   ...rest
 }) => {
   useEffect(() => {
-    if (value >= maxValue) {
-      setValue(maxValue)
+    if (typeof value === 'number') {
+      if (value >= maxValue) {
+        setValue(maxValue)
+      }
     }
   }, [maxValue])
 

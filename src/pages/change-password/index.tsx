@@ -1,15 +1,17 @@
-import { useUpdatePassword } from '@/api/auth/resetpassword'
-import { Button, H1, Icon, P, TextInput } from '@/components'
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
-import YupPassword from 'yup-password'
 import React, { useEffect } from 'react'
 import toast from 'react-hot-toast'
 
-import type { AxiosError } from 'axios'
-import type { APIResponse } from '@/types/api/response'
-import { useRouter } from 'next/router'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
+
+import { useUpdatePassword } from '@/api/auth/resetpassword'
+import { Button, H1, Icon, P, TextInput } from '@/components'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
+import { useFormik } from 'formik'
+import * as Yup from 'yup'
+import YupPassword from 'yup-password'
 
 YupPassword(Yup)
 

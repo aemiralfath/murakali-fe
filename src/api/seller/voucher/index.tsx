@@ -1,6 +1,7 @@
 import { authorizedClient } from '@/api/apiClient'
 import type { APIResponse, PaginationData } from '@/types/api/response'
 import type { CreateUpdateVoucher, VoucherData } from '@/types/api/voucher'
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const profileKey = 'voucher-seller'
@@ -34,7 +35,7 @@ export const useSellerVouchers = (
   )
 }
 
-const getSellerVoucherDetail = async (id: string) => {
+const getSellerVoucherDetail = async (id?: string) => {
   const response = await authorizedClient.get<APIResponse<VoucherData>>(
     '/seller/voucher/' + id
   )
@@ -83,7 +84,7 @@ export const useCreateVouchers = () => {
   )
 }
 
-export const useUpdateVouchers = (id: string) => {
+export const useUpdateVouchers = (id?: string) => {
   const queryClient = useQueryClient()
   return useMutation(
     async (data: CreateUpdateVoucher) => {

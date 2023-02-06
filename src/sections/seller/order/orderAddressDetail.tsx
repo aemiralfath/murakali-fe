@@ -1,6 +1,7 @@
+import React from 'react'
+
 import { H3, H4, P } from '@/components'
 import type { AddressDetail } from '@/types/api/address'
-import React from 'react'
 
 interface OrderAddressDetailProps {
   title: string

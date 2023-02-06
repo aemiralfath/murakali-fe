@@ -1,15 +1,18 @@
-import { A, Button, Divider, H1, H2, P } from '@/components'
-import { useModal } from '@/hooks'
 import React, { useEffect } from 'react'
-import Head from 'next/head'
-import FormChangeEmail from '@/layout/template/profile/FormChangeEmail'
-import { useSendEmailChangePassword } from '@/api/auth/changepassword'
 import toast from 'react-hot-toast'
-import FormOTP from '@/components/form/FormOTP'
-import type { AxiosError } from 'axios'
-import type { APIResponse } from '@/types/api/response'
-import ProfileLayout from '@/layout/ProfileLayout'
 import { HiLockClosed } from 'react-icons/hi'
+
+import Head from 'next/head'
+
+import { useSendEmailChangePassword } from '@/api/auth/changepassword'
+import { A, Button, Divider, H1, H2, P } from '@/components'
+import FormOTP from '@/components/form/FormOTP'
+import { useModal } from '@/hooks'
+import ProfileLayout from '@/layout/ProfileLayout'
+import FormChangeEmail from '@/layout/template/profile/FormChangeEmail'
+import type { APIResponse } from '@/types/api/response'
+
+import type { AxiosError } from 'axios'
 
 function ChangeLoginCredential() {
   const modal = useModal()

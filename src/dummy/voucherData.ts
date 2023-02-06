@@ -10,7 +10,7 @@ const voucherData = [
 
   {
     id: '4',
-    name: 'Has Endded',
+    name: 'Has Ended',
   },
 ]
 
