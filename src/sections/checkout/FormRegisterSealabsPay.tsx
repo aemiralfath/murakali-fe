@@ -180,7 +180,7 @@ const FormRegisterSealabsPay: React.FC<FormRegisterSealabsPayProps> = ({
               }
             }}
           >
-            cancel
+            Cancel
           </Button>
           <Button
             type="submit"

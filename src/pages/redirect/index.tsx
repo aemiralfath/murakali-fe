@@ -23,7 +23,9 @@ const Redirect = () => {
 
     if (refreshToken.isSuccess) {
       if (typeof from === 'string') {
-        router.push(from)
+        setTimeout(() => {
+          router.push(from)
+        }, 300)
       }
     }
   }, [refreshToken.isSuccess, refreshToken.isError, from])

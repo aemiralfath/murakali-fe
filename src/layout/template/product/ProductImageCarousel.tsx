@@ -5,7 +5,7 @@ import { useSwipeable } from 'react-swipeable'
 import Image from 'next/image'
 
 import cx from '@/helper/cx'
-import { useHover } from '@/hooks'
+import { useHover, useMediaQuery } from '@/hooks'
 import ModalPicture from '@/sections/productdetail/ModalPicture'
 import type { ProductImages } from '@/types/api/product'
 
@@ -65,6 +65,8 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   const [mainID, setMainID] = useState(0)
   const [mainImage, setMainImage] = useState(selectedImageUrl)
 
+  const md = useMediaQuery('md')
+
   const [ref, isHovered] = useHover()
 
   const handleNextImage = () => {
@@ -105,7 +107,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
             <div className="aspect-square h-[50px] animate-pulse rounded bg-base-300 md:h-[2.8rem] xl:h-[4rem]" />
           </>
         ) : data?.images ? (
-          data.images.map((img, idx) => {
+          data.images.slice(0, md ? 5 : undefined).map((img, idx) => {
             return (
               <div key={idx}>
                 <SubImage
