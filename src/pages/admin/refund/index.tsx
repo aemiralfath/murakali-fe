@@ -41,54 +41,62 @@ function RefundAdmin() {
     if (pagination) {
       if (pagination.rows?.length) {
         return pagination.rows.map((data) => {
-          return {
-            Date: (
-              <div>
-                {moment(data?.accepted_at.Time).format(
-                  'dddd, DD MMM YYYY  HH:mm'
-                )}
-              </div>
-            ),
-            Order: <div>{data?.order_id}</div>,
-            Reason: <div>{data?.reason}</div>,
-            Refund: (
-              <div>
-                {data?.is_seller_refund ? (
-                  <>
-                    Rp.{' '}
-                    {formatMoney(
-                      data.order.total_price + data.order.delivery_fee
-                    )}
-                  </>
-                ) : (
-                  <>Rp. {formatMoney(data?.order.total_price ?? 0)}</>
-                )}
-              </div>
-            ),
-            Status: (
-              <div>
-                {data?.is_seller_refund ? (
-                  <Chip type="gray"> Seller Refund</Chip>
-                ) : (
-                  <Chip type="gray"> Buyer Refund</Chip>
-                )}
-              </div>
-            ),
-            Action: (
-              <div className="flex w-fit flex-col gap-1">
-                <Button
-                  buttonType="primary"
-                  outlined
-                  onClick={() => {
-                    if (data) {
+          if (data !== null) {
+            return {
+              Date: (
+                <div>
+                  {moment(data.accepted_at.Time).format(
+                    'dddd, DD MMM YYYY  HH:mm'
+                  )}
+                </div>
+              ),
+              Order: <div>{data.order_id}</div>,
+              Reason: <div>{data.reason}</div>,
+              Refund: (
+                <div>
+                  {data.is_seller_refund ? (
+                    <>
+                      Rp.{' '}
+                      {formatMoney(
+                        data.order.total_price + data.order.delivery_fee
+                      )}
+                    </>
+                  ) : (
+                    <>Rp. {formatMoney(data.order.total_price)}</>
+                  )}
+                </div>
+              ),
+              Status: (
+                <div>
+                  {data.is_seller_refund ? (
+                    <Chip type="gray"> Seller Refund</Chip>
+                  ) : (
+                    <Chip type="gray"> Buyer Refund</Chip>
+                  )}
+                </div>
+              ),
+              Action: (
+                <div className="flex w-fit flex-col gap-1">
+                  <Button
+                    buttonType="primary"
+                    outlined
+                    onClick={() => {
                       confirmRefund.mutate(data.id)
-                    }
-                  }}
-                >
-                  Confirm
-                </Button>
-              </div>
-            ),
+                    }}
+                  >
+                    Confirm
+                  </Button>
+                </div>
+              ),
+            }
+          } else {
+            return {
+              Date: '',
+              Order: '',
+              Reason: '',
+              Refund: '',
+              Status: '',
+            }
           }
         })
       }

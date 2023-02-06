@@ -1,8 +1,6 @@
 import React from 'react'
 import { HiChevronRight } from 'react-icons/hi'
 
-import Link from 'next/link'
-
 import cx from '@/helper/cx'
 
 const Breadcrumbs: React.FC<{
