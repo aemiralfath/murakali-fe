@@ -43,6 +43,7 @@ export interface Product {
 export interface BriefProduct {
   id: string
   title: string
+  sku: string
   unit_sold: number
   rating_avg: number
   thumbnail_url: string
