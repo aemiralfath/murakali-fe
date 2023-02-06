@@ -7,7 +7,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import {
-  getProductById,
   useGetProductById,
   useGetProductImagesByProductID,
   useGetTotalReview,
@@ -39,10 +38,9 @@ import type { Product, ProductDetail } from '@/types/api/product'
 import type { APIResponse } from '@/types/api/response'
 
 import type { UseQueryResult } from '@tanstack/react-query'
-import { dehydrate, QueryClient } from '@tanstack/react-query'
 import type { AxiosError } from 'axios'
 import moment from 'moment'
-import type { GetServerSideProps, NextPage } from 'next'
+import type { NextPage } from 'next'
 
 const useProductFavorite = (pid: string) => {
   const router = useRouter()
@@ -592,24 +590,3 @@ const ProductPage: NextPage = () => {
 }
 
 export default ProductPage
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { pid } = context.params as { pid: string }
-  const queryClient = new QueryClient()
-  let isError = false
-
-  try {
-    await queryClient.fetchQuery({
-      queryFn: () => getProductById(pid as string),
-      queryKey: ['product', pid],
-    })
-  } catch (error) {
-    isError = true
-  }
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
-    notFound: isError,
-  }
-}

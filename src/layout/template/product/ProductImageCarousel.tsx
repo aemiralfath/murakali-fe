@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { useSwipeable } from 'react-swipeable'
 
+import Image from 'next/image'
+
 import cx from '@/helper/cx'
 import { useHover } from '@/hooks'
 import ModalPicture from '@/sections/productdetail/ModalPicture'
@@ -160,14 +162,15 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
                 </button>
               </>
             </Transition>
-            <img
+            <Image
               onClick={() => {
                 setIsOpen(true)
               }}
               {...swipeHandler}
-              src={mainImage ?? '/asset/image-empty.jpg'}
+              src={mainImage ?? '/asset/no-image.png'}
               width={400}
               height={400}
+              priority
               alt={data.alt ?? 'Product Main Image'}
               className={'w-full rounded'}
               onError={({ currentTarget }) => {
