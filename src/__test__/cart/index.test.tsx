@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { authorizedClient } from '@/api/apiClient'
+import { env } from '@/env/client.mjs'
 import Cart from '@/pages/cart'
+import type { CheckoutValues } from '@/pages/checkout'
 
 import '@testing-library/jest-dom'
 import { screen } from '@testing-library/react'
 import MockAdapter from 'axios-mock-adapter'
+import CryptoJS from 'crypto-js'
 import mockRouter from 'next-router-mock'
 
 import { mockUseMediaQuery } from '../mock/hooks'
@@ -13,6 +16,7 @@ import { renderWithProviders, userEvent } from '../testUtils'
 jest.mock('next/router', () => require('next-router-mock'))
 
 const mockAuthorizedClient = new MockAdapter(authorizedClient)
+const secret = env.NEXT_PUBLIC_SECRET_KEY
 
 const getCartHoverHomeDummy = {
   message: 'success',
@@ -294,5 +298,48 @@ describe('Cart Page', () => {
     expect(shopCheckbox1.checked).toEqual(false)
     expect(shopCheckbox2.checked).toEqual(false)
     expect(buyButton).toBeDisabled()
+
+    await userEvent.click(chooseAllCheckbox)
+    await userEvent.click(buyButton)
+    expect(mockRouter.query).toHaveProperty('values')
+    const queryVal = mockRouter.query.values
+
+    const dec = CryptoJS.AES.decrypt(String(queryVal), secret).toString(
+      CryptoJS.enc.Utf8
+    )
+    const tempValue = JSON.parse(dec) as CheckoutValues
+    expect(tempValue.idProducts).toHaveLength(4)
+  })
+
+  it('can select and deselect a shop', async () => {
+    renderWithProviders(<Cart />)
+    const buyButton = screen.getByTestId('button-buy') as HTMLButtonElement
+    expect(buyButton).toBeDisabled()
+
+    await userEvent.click(buyButton)
+
+    const shopCheckbox1 = screen.getByTestId(
+      'checkbox-a050cfb3-957c-4b35-83cb-ff65095c6eb5'
+    ) as HTMLInputElement
+    await userEvent.click(shopCheckbox1)
+    expect(shopCheckbox1.checked).toEqual(true)
+    expect(buyButton.disabled).toEqual(false)
+
+    await userEvent.click(shopCheckbox1)
+    expect(shopCheckbox1.checked).toEqual(false)
+    expect(buyButton).toBeDisabled()
+
+    await userEvent.click(shopCheckbox1)
+    expect(buyButton.disabled).toEqual(false)
+    await userEvent.click(buyButton)
+
+    expect(mockRouter.query).toHaveProperty('values')
+    const queryVal = mockRouter.query.values
+
+    const dec = CryptoJS.AES.decrypt(String(queryVal), secret).toString(
+      CryptoJS.enc.Utf8
+    )
+    const tempValue = JSON.parse(dec) as CheckoutValues
+    expect(tempValue.idProducts).toHaveLength(1)
   })
 })
