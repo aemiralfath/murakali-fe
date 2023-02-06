@@ -29,10 +29,11 @@ import type { APIResponse } from '@/types/api/response'
 import { Menu, Transition } from '@headlessui/react'
 import type { AxiosError } from 'axios'
 
-const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
-  cart,
-  isLogin,
-}) => {
+const HoverableCartButton: React.FC<{
+  cart: CartData[]
+  isLogin: boolean
+  totalItem: number
+}> = ({ cart, isLogin, totalItem }) => {
   const [cartRef, isCartHover] = useHover()
   const router = useRouter()
   return (
@@ -75,7 +76,7 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                             }
                             alt={data.title}
                             className={
-                              'aspect-square bg-base-300 h-[4.5rem] w-[4.5rem]'
+                              'aspect-square h-[4.5rem] w-[4.5rem] bg-base-300'
                             }
                           />
                           <div className="flex flex-1 flex-col flex-wrap gap-2 px-1">
@@ -116,8 +117,8 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                     })
                   ) : (
                     <div className="flex py-2">
-                      <div className="flex justify-center items-center flex-1 flex-col my-8">
-                        <P className="flex w-full items-center justify-center font-semibold text-lg">
+                      <div className="my-8 flex flex-1 flex-col items-center justify-center">
+                        <P className="flex w-full items-center justify-center text-lg font-semibold">
                           Cart is Empty
                         </P>
                         <P className="text-sm font-light">
@@ -137,7 +138,8 @@ const HoverableCartButton: React.FC<{ cart: CartData[]; isLogin: boolean }> = ({
                 </div>
               )}
             </div>
-            <div className="my-2 flex justify-end">
+            <div className="my-2 flex justify-between">
+              {isLogin ? <>{totalItem} Item</> : <></>}
               {isLogin ? (
                 <Button
                   size="sm"
@@ -264,7 +266,7 @@ const Navbar: React.FC = () => {
   return (
     <>
       <nav
-        className={`z-[21] relative flex flex-wrap items-center justify-between bg-primary px-2 py-5`}
+        className={`relative z-[21] flex flex-wrap items-center justify-between bg-primary px-2 py-5`}
       >
         <div className="container mx-auto flex flex-wrap items-center justify-between gap-5 px-5">
           <div className="relative flex justify-between">
@@ -326,6 +328,11 @@ const Navbar: React.FC = () => {
                 <HoverableCartButton
                   cart={cart.data?.data?.cart_items ?? []}
                   isLogin={user ? true : false}
+                  totalItem={
+                    cart.data?.data?.total_item
+                      ? cart.data?.data?.total_item
+                      : 0
+                  }
                 />
                 <li className="nav-item">
                   <Link
@@ -357,6 +364,11 @@ const Navbar: React.FC = () => {
                 <HoverableCartButton
                   cart={cart.data?.data?.cart_items ?? []}
                   isLogin={user ? true : false}
+                  totalItem={
+                    cart.data?.data?.total_item
+                      ? cart.data?.data?.total_item
+                      : 0
+                  }
                 />
 
                 <li className="nav-item">
