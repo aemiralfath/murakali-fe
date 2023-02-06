@@ -203,9 +203,3 @@ const SearchPage: NextPage = () => {
 }
 
 export default SearchPage
-
-export async function getServerSideProps() {
-  return {
-    props: {},
-  }
-}
