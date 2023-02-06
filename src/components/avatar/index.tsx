@@ -1,5 +1,4 @@
-import React from 'react'
-import { HiUser } from 'react-icons/hi'
+import React, { useEffect, useState } from 'react'
 
 const Avatar: React.FC<{
   size?: 'sm' | 'md' | 'lg' | 'xl'
@@ -15,22 +14,28 @@ const Avatar: React.FC<{
       ? 'h-48 w-48'
       : 'h-8 w-8'
 
+  const [src, setSrc] = useState<string>()
+  useEffect(() => {
+    if (url !== undefined) {
+      setSrc(url)
+    }
+  }, [url])
+
   return (
     <div className={`rounded-full p-[2px]`}>
-      <div
-        className={`${computedSize} flex items-center justify-center rounded-full bg-base-200 bg-cover bg-center bg-no-repeat text-gray-500 ${
+      <img
+        className={`${computedSize} flex aspect-square items-center justify-center rounded-full object-base-200 object-cover object-center object-no-repeat text-gray-500 ${
           isLoading ? 'animate-pulse bg-gray-100' : ''
         }`}
-        style={
-          url && url !== ''
-            ? {
-                backgroundImage: `url(${url})`,
-              }
-            : { backgroundColor: '#E6E6E6' }
-        }
-      >
-        {url ? <></> : <HiUser />}
-      </div>
+        alt={'Avatar'}
+        src={src ?? '/asset/no-image.png'}
+        width={56}
+        height={65}
+        onError={({ currentTarget }) => {
+          currentTarget.onerror = null
+          setSrc('/asset/no-image.png')
+        }}
+      />
     </div>
   )
 }

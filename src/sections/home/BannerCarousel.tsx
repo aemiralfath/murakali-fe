@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 
+import Image from 'next/image'
+
 import { Button, P } from '@/components'
 import bannerData from '@/dummy/bannerData'
 import { useMediaQuery } from '@/hooks'
@@ -17,7 +19,7 @@ const Banner: React.FC<{
 
   return (
     <div
-      className="flex h-[16rem] w-full  justify-center gap-4 bg-cover bg-center bg-no-repeat px-8 py-12 sm:h-[22rem] sm:px-12 sm:pt-12 sm:pb-20 lg:h-[28rem] lg:justify-around"
+      className="flex h-[16rem] w-full relative  justify-center gap-4 bg-cover bg-center bg-no-repeat px-8 py-12 sm:h-[22rem] sm:px-12 sm:pt-12 sm:pb-20 lg:h-[28rem]"
       style={
         lg
           ? {
@@ -27,7 +29,7 @@ const Banner: React.FC<{
           rgba(0, 0, 0, 0), 
           rgba(0, 0, 0, 0.4), 
           rgba(0, 0, 0, 0.6)
-        ), url(${imageUrl})`,
+        )`,
             }
           : {
               backgroundImage: `linear-gradient(
@@ -35,10 +37,16 @@ const Banner: React.FC<{
           rgba(0, 0, 0, 0), 
           rgba(0, 0, 0, 0.4), 
           rgba(0, 0, 0, 0.6)
-        ), url(${imageUrl})`,
+        )`,
             }
       }
     >
+      <Image
+        className="flex -z-50 h-[16rem] w-full absolute object-cover object-center object-no-repeat sm:h-[22rem] lg:h-[28rem]"
+        src={imageUrl ?? '/asset/no-image.png'}
+        alt={title ?? ''}
+        fill
+      />
       <div>
         <div className="container mx-auto flex h-full flex-col gap-3 text-white lg:justify-center">
           <div className="flex flex-col gap-3 sm:max-w-[80%] lg:max-w-[50%]">
@@ -63,8 +71,6 @@ const Banner: React.FC<{
           </div>
         </div>
       </div>
-      <div></div>
-      <div></div>
     </div>
   )
 }

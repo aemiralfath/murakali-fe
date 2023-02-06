@@ -59,7 +59,7 @@ const ProductDescription = ({ seller, productInfo }: ProductDescription) => {
           >
             <Avatar size="lg" url={seller.photo_url} />
           </A>
-          <div className="w-fit overflow-ellipsis xl:w-[10rem]">
+          <div className="w-fit flex-1 overflow-ellipsis xl:w-[10rem]">
             <A
               className="font-semibold"
               onClick={() => {

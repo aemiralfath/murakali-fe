@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
 
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 
 import { useGetProductReview } from '@/api/product'
@@ -79,7 +80,7 @@ export const ReviewCard: React.FC<ReviewProps> = ({ item }) => {
           {item.image_url === null ? (
             <></>
           ) : (
-            <img
+            <Image
               src={item.image_url}
               width={100}
               height={100}
