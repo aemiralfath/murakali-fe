@@ -4,7 +4,7 @@ import { H1, H2, H4, P, RatingStars, Spinner } from '@/components'
 import cx from '@/helper/cx'
 import formatMoney from '@/helper/formatMoney'
 import type { ProductDetail, ProductInfo } from '@/types/api/product'
-import { Promotion } from '@/types/api/promotion'
+import type { Promotion } from '@/types/api/promotion'
 
 // TODO: Add interface to Rating, Sold Count, Title, Prices
 interface MainProductDetailProps {

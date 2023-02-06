@@ -11,7 +11,7 @@ import formatMoney from '@/helper/formatMoney'
 import { useUser } from '@/hooks'
 import type { CheckoutValues } from '@/pages/checkout'
 import type { ProductDetail } from '@/types/api/product'
-import { Promotion } from '@/types/api/promotion'
+import type { Promotion } from '@/types/api/promotion'
 import type { APIResponse } from '@/types/api/response'
 
 import type { AxiosError } from 'axios'

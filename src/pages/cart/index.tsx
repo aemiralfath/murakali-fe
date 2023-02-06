@@ -193,6 +193,7 @@ function Cart() {
                             )}
                             type="checkbox"
                             readOnly
+                            data-testid={`checkbox-${cart.shop.id}`}
                             checked={
                               selectedShop.findIndex((data) => {
                                 return data === cart.shop.id
