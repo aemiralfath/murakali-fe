@@ -3,6 +3,8 @@ import { FaAngleDoubleRight, FaAngleDoubleLeft } from 'react-icons/fa'
 import { HiArrowDown, HiArrowUp } from 'react-icons/hi'
 import { HiLockClosed, HiSave, HiStatusOnline } from 'react-icons/hi'
 
+import Head from 'next/head'
+
 import { useGetUserWallet, useGetUserWalletHistory } from '@/api/user/wallet'
 import { Button, H1, H2, P, PaginationNav, Spinner } from '@/components'
 import cx from '@/helper/cx'
@@ -28,6 +30,10 @@ function Wallet() {
 
   return (
     <>
+      <Head>
+        <title>Wallet | Murakali</title>
+      </Head>
+
       <Navbar />
       <TitlePageExtend title="My Wallet" />
 

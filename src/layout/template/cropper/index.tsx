@@ -130,7 +130,8 @@ const CropperComponent: React.FC<{
   src?: string
   setImage: (s: string | undefined) => void
   setOption: (s: number) => void
-}> = ({ src, setImage, setOption }) => {
+  aspect?: number
+}> = ({ src, setImage, setOption, aspect = 1 }) => {
   const dispatch = useDispatch()
   const uploadProductPicture = useUploadProductPicture()
   const [isLoading, setIsLoading] = useState(false)
@@ -166,12 +167,12 @@ const CropperComponent: React.FC<{
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="relative aspect-square w-full">
+      <div className={'relative aspect-square w-full'}>
         <Cropper
           image={src}
           crop={crop}
           zoom={zoom}
-          aspect={1}
+          aspect={aspect}
           onCropChange={setCrop}
           onCropComplete={onCropComplete}
           onZoomChange={setZoom}

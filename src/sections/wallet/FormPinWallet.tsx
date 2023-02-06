@@ -132,7 +132,6 @@ const FormPINWallet: React.FC<FormPINWalletProps> = ({ createPin }) => {
               width: '100%',
               display: 'flex',
               justifyContent: 'center',
-              flexWrap: 'wrap',
             }}
             inputStyle={{ borderColor: 'grey' }}
             inputFocusStyle={{ borderColor: 'blue' }}
@@ -166,7 +165,6 @@ const FormPINWallet: React.FC<FormPINWalletProps> = ({ createPin }) => {
               width: '100%',
               display: 'flex',
               justifyContent: 'center',
-              flexWrap: 'wrap',
             }}
             inputStyle={{ borderColor: 'grey' }}
             inputFocusStyle={{ borderColor: 'blue' }}

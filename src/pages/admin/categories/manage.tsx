@@ -150,7 +150,7 @@ function ManageCategoryAdmin() {
                     type="text"
                     value={input.id}
                     full
-                    maxLength={10}
+                    maxLength={20}
                     required
                     disabled={edit}
                   />
@@ -167,7 +167,7 @@ function ManageCategoryAdmin() {
                   <Chip type={'gray'}>Required</Chip>
                 </div>
                 <P className="mt-2 max-w-[20rem] text-sm">
-                  maximum 10 characters
+                  maximum 20 characters
                 </P>
               </div>
               <div className="flex flex-1 items-center">
@@ -177,7 +177,7 @@ function ManageCategoryAdmin() {
                   onChange={handleChange}
                   value={input.name}
                   full
-                  maxLength={10}
+                  maxLength={20}
                   required
                 />
               </div>

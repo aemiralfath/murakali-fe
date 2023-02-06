@@ -12,7 +12,7 @@ const ProfileLayout: React.FC<{
     <MainLayout>
       <div className="grid grid-cols-1 gap-x-0 gap-y-2 md:grid-cols-4 md:gap-x-2">
         <ProfileMenu selectedPage={selectedPage} />
-        <div className="col-span-3 min-h-full rounded border-[1px] bg-white p-8">
+        <div className="col-span-3 min-h-full rounded md:border-[1px] bg-white py-8 md:px-8">
           {children}
         </div>
       </div>

@@ -219,11 +219,14 @@ const Products = () => {
                 alt={row.title}
               />
             </div>
-            <div className="flex flex-1 flex-col gap-2 p-1">
+            <div className="flex flex-1 flex-col p-1">
               <P className="w-[16rem] font-semibold line-clamp-2">
                 {row.title}
               </P>
-              <P className="flex items-center gap-1 text-xs text-gray-500">
+              <P className="flex items-center gap-1 mt-0.5 text-xs max-w-[18rem] whitespace-pre-wrap line-clamp-1 text-gray-500">
+                <span className="font-mono">SKU: {row.sku}</span>
+              </P>
+              <P className="flex items-center mt-0.5 gap-1 text-xs text-gray-500">
                 <HiOutlineEye />
                 <span>{row.view_count}</span>
               </P>

@@ -5030,7 +5030,7 @@ recharts-scale@^0.4.4:
 
 recharts@^2.3.2:
   version "2.3.2"
-  resolved "https://registry.npmjs.org/recharts/-/recharts-2.3.2.tgz#6e9498533dd93314e1d7f08e6496fc422e2e991f"
+  resolved "https://registry.yarnpkg.com/recharts/-/recharts-2.3.2.tgz#6e9498533dd93314e1d7f08e6496fc422e2e991f"
   integrity sha512-2II30fGzKaypHfHNQNUhCfiLMxrOS/gF0WFahDIEFgXtJkVEe2DpZWFfEfAn+RU3B7/h2V/B05Bwmqq3rTXwLw==
   dependencies:
     classnames "^2.2.5"

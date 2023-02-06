@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -12,8 +12,16 @@ const Redirect = () => {
   const router = useRouter()
   const { from } = router.query
 
+  const [showRefresh, setShowRefresh] = useState(false)
+
   useEffect(() => {
     refreshToken.mutate()
+    const timer = setTimeout(() => {
+      setShowRefresh(true)
+    }, 3000)
+    return () => {
+      clearTimeout(timer)
+    }
   }, [])
 
   useEffect(() => {
@@ -23,7 +31,12 @@ const Redirect = () => {
 
     if (refreshToken.isSuccess) {
       if (typeof from === 'string') {
-        router.push(from)
+        const timer = setTimeout(() => {
+          router.push(from)
+        }, 300)
+        return () => {
+          clearTimeout(timer)
+        }
       }
     }
   }, [refreshToken.isSuccess, refreshToken.isError, from])
@@ -37,6 +50,26 @@ const Redirect = () => {
       <div className="flex min-h-screen w-full flex-col items-center justify-center">
         <Spinner color="gray" />
         <P className="opacity-70 mt-2">Redirecting ...</P>
+        {showRefresh ? (
+          <div className="mt-2">
+            <p className="opacity-70 text-sm">
+              If nothing happens,{' '}
+              <a
+                className="font-semibold underline hover:text-primary cursor-pointer"
+                href={'#'}
+                onClick={() => {
+                  if (typeof window !== undefined) {
+                    window.location.reload()
+                  }
+                }}
+              >
+                click here to refresh
+              </a>
+            </p>
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
     </>
   )

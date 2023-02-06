@@ -542,7 +542,7 @@ const ProductPage: NextPage = () => {
 
         <ProductCarousel product={sellerProduct.data?.data?.rows ?? []} />
         <Divider />
-        <H3 className="mx-5">Recommended Product</H3>
+        <H3 className="mx-5">Products You Might Like</H3>
         <ProductCarousel product={recommendedProduct.data?.data?.rows ?? []} />
         <Divider />
         <div className="mx-5 flex justify-between flex-wrap">

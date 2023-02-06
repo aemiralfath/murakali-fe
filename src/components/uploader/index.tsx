@@ -15,7 +15,8 @@ const Uploader: React.FC<{
   onChange: (s: string) => void
   size?: 'md' | 'lg'
   defaultImage?: string
-}> = ({ id, title, onChange, size = 'md', defaultImage }) => {
+  aspect?: number
+}> = ({ id, title, onChange, size = 'md', defaultImage, aspect = 1 }) => {
   const modal = useModal()
   const [image, setImage] = useState<string>()
   const [option, setOption] = useState(-1)
@@ -53,6 +54,7 @@ const Uploader: React.FC<{
               src={image}
               setImage={setImage}
               setOption={setOption}
+              aspect={aspect}
             />
           </div>
         ),
