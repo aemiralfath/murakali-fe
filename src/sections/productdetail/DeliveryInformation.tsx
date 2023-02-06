@@ -10,7 +10,7 @@ import { useLocationCost } from '@/api/user/location'
 import { useGetUserProfile } from '@/api/user/profile'
 import { Button, P, Spinner } from '@/components'
 import formatMoney from '@/helper/formatMoney'
-import { useModal } from '@/hooks'
+import { useMediaQuery, useModal } from '@/hooks'
 import type { LocationCostRequest } from '@/types/api/location'
 
 import { Menu } from '@headlessui/react'
@@ -36,6 +36,7 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
   )
 
   const locationCost = useLocationCost()
+  const xl = useMediaQuery('xl')
 
   const [destination, setDestination] = useState({
     city: 'Jakarta Selatan',
@@ -119,7 +120,7 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
               <HiOutlineTruck /> To {destination.city}
             </span>
           </Button>
-          <HiArrowNarrowRight />
+          {xl ? <HiArrowNarrowRight /> : <></>}
           <div className="block">
             <Menu>
               <Menu.Button className="btn-ghost btn-sm btn w-fit gap-2 bg-white py-0 text-start hover:bg-white hover:text-primary">
@@ -127,10 +128,14 @@ const DeliveryInformation: React.FC<DeliveryInformationProps> = ({
                 {minMax.max === 0 && minMax.min === 0 ? (
                   <>
                     -
-                    <span className="text-start  italic text-gray-400">
-                      {' '}
-                      Choose variant first
-                    </span>
+                    {locationCost.isLoading ? (
+                      <div className="w-[8rem] h-[1.25rem] rounded bg-base-300 animate-pulse" />
+                    ) : (
+                      <span className="text-start  italic text-gray-400">
+                        {' '}
+                        Choose variant first
+                      </span>
+                    )}
                   </>
                 ) : (
                   <>
