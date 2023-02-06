@@ -1,22 +1,9 @@
-import React, { useEffect } from 'react'
-
-import { useRouter } from 'next/router'
-
-import { useGetUserProfile } from '@/api/user/profile'
+import React from 'react'
 
 import { Navbar } from './template'
 import Footer from './template/footer'
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const userProfile = useGetUserProfile()
-  const router = useRouter()
-
-  useEffect(() => {
-    if (userProfile.data?.data?.role === 3) {
-      router.push('/admin/vouchers')
-    }
-  }, [userProfile.data?.data?.role])
-
   return (
     <div className="max-w-screen relative min-h-screen overflow-hidden">
       <div className="absolute z-20 w-full">

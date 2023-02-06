@@ -62,6 +62,7 @@ function MerchantRegistration() {
 
   useEffect(() => {
     if (logout.isSuccess) {
+      toast.error('Please re-login to your account')
       router.push('/login')
     }
   }, [logout.isSuccess])

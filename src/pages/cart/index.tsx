@@ -6,13 +6,12 @@ import { useDispatch } from 'react-redux'
 
 import Head from 'next/head'
 import Image from 'next/image'
-import Router from 'next/router'
 
 import { useDeleteCart, useGetCart } from '@/api/user/cart'
 import { Button, Divider, P } from '@/components'
 import ProductCart from '@/components/card/ProductCart'
 import cx from '@/helper/cx'
-import { useMediaQuery, useModal, useUser } from '@/hooks'
+import { useMediaQuery, useModal } from '@/hooks'
 import { Navbar } from '@/layout/template'
 import Footer from '@/layout/template/footer'
 import TitlePageExtend from '@/layout/template/navbar/TitlePageExtend'
@@ -23,7 +22,6 @@ import type { APIResponse } from '@/types/api/response'
 import type { AxiosError } from 'axios'
 
 function Cart() {
-  const { user, isLoading } = useUser()
   const cartList = useGetCart()
   const [checkAll, setCheckAll] = useState<boolean>(false)
   const [selectedProducts, setSelectedProduct] = useState<string[]>([])
@@ -47,12 +45,6 @@ function Cart() {
       toast.error(errmsg.response?.data.message as string)
     }
   }, [deleteCart.isError])
-
-  useEffect(() => {
-    if (!isLoading && !(user ? true : false)) {
-      Router.push('/login')
-    }
-  }, [user, isLoading])
 
   useEffect(() => {
     let countQuantity = 0

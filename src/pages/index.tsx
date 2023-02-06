@@ -16,12 +16,10 @@ import { type NextPage } from 'next'
 
 const Home: NextPage = () => {
   const router = useRouter()
-
   const categories = useGetAllCategory()
-
   const recommendedProduct = useRecommendedProduct()
-
   const banner = useAdminBanner()
+
   return (
     <div className="relative">
       <Head>
