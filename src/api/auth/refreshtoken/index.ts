@@ -20,6 +20,7 @@ export const useRefreshToken = () => {
           })
         }
       },
+      retry: false,
     }
   )
 }

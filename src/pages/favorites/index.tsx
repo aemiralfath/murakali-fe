@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
 import Head from 'next/head'
-import Router from 'next/router'
 
 import { useFavoriteQueryProduct } from '@/api/product/favorite'
 import { Breadcrumbs } from '@/components'
-import { useUser } from '@/hooks'
 import MainLayout from '@/layout/MainLayout'
 import ProductFavoriteLayout, {
   useFavoriteProductListing,
@@ -19,7 +17,6 @@ const dummyBreadcrumbs = [
 
 function Favorite() {
   const INF = 1000000000
-  const { user, isLoading } = useUser()
   const [queryParam] = useState<Map<string, string>>(new Map<string, string>())
   const [categoryState, setCategoryState] = useState('')
   const controller = useFavoriteProductListing()
@@ -38,12 +35,6 @@ function Favorite() {
       queryParam.delete('sort')
     }
   }, [sortBy])
-
-  useEffect(() => {
-    if (!isLoading && !(user ? true : false)) {
-      Router.push('/login')
-    }
-  }, [user, isLoading])
 
   useEffect(() => {
     const queryCategory = filterCategory
